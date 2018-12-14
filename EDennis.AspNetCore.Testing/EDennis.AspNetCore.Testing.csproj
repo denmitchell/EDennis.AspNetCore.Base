@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EDennis.MigrationsExtensions" Version="1.7.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
+    <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
   </ItemGroup>
 
 </Project>
