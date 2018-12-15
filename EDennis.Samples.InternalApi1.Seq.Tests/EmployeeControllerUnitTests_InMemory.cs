@@ -1,5 +1,5 @@
-﻿using EDennis.AspNetCore.Testing;
-using EDennis.NetCoreTestingUtilities;
+﻿using EDennis.NetCoreTestingUtilities;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.InternalApi1.Models;
 using EDennis.Samples.InternalApi1.Seq.Controllers;
 using System.Threading.Tasks;

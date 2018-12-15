@@ -1,4 +1,4 @@
-﻿using EDennis.AspNetCore.Testing;
+﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.Samples.InternalApi1.Models;
 using EDennis.Samples.InternalApi1.Seq.Controllers;

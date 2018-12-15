@@ -1,5 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Testing;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.InternalApi1.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;

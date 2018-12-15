@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 
-namespace EDennis.AspNetCore.Testing {
+namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class QueryTest<TContext>  
         where TContext : DbContextBase {

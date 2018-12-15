@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace EDennis.AspNetCore.Testing {
+namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class TransactionTest<TContext> : IDisposable 
         where TContext : DbContextBase {

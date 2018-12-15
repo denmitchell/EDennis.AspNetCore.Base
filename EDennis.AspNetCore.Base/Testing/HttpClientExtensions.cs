@@ -8,7 +8,7 @@ using static EDennis.AspNetCore.Base.Web.TestingActionFilter;
 using EDennis.AspNetCore.Base.EntityFramework;
 
 
-namespace EDennis.AspNetCore.Testing {
+namespace EDennis.AspNetCore.Base.Testing {
 
     public static class HttpClientExtensions {
 

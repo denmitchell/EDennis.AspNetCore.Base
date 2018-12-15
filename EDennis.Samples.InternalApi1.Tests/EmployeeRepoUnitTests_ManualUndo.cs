@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.Samples.InternalApi1.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using Xunit;
 using Xunit.Abstractions;
-using EDennis.Samples.InternalApi1.Models;
-using EDennis.AspNetCore.Testing;
-using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 
 namespace EDennis.Samples.InternalApi1.Tests {
 

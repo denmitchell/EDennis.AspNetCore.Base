@@ -1,8 +1,7 @@
-﻿using EDennis.AspNetCore.Testing;
+﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.Samples.InternalApi1.Controllers;
 using EDennis.Samples.InternalApi1.Models;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 

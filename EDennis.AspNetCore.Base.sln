@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{11EF6620-8034-4D03-A1C9-032FED7523AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Testing", "EDennis.AspNetCore.Testing\EDennis.AspNetCore.Testing.csproj", "{4C6B792C-93CD-42F0-9DFA-0D5B80A75172}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.InternalApi1", "EDennis.Samples.InternalApi1\EDennis.Samples.InternalApi1.csproj", "{008CB93C-BEAE-4B02-AC79-DDCB92729D89}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.InternalApi2", "EDennis.Samples.InternalApi2\EDennis.Samples.InternalApi2.csproj", "{921F02C7-02BE-4344-8273-143901F9048A}"
@@ -45,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Reflecti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ExternalApi.Tests", "EDennis.Samples.ExternalApi.Tests\EDennis.Samples.ExternalApi.Tests.csproj", "{8FF38A6C-F0AB-4526-BEC0-AEC9A05865A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.InternalApi2.Tests", "EDennis.Samples.InternalApi2.Tests\EDennis.Samples.InternalApi2.Tests.csproj", "{AB399B7C-7495-4D53-AC08-E1797B13FC93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.InternalApi2.Tests", "EDennis.Samples.InternalApi2.Tests\EDennis.Samples.InternalApi2.Tests.csproj", "{AB399B7C-7495-4D53-AC08-E1797B13FC93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +55,6 @@ Global
 		{11EF6620-8034-4D03-A1C9-032FED7523AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11EF6620-8034-4D03-A1C9-032FED7523AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11EF6620-8034-4D03-A1C9-032FED7523AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C6B792C-93CD-42F0-9DFA-0D5B80A75172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C6B792C-93CD-42F0-9DFA-0D5B80A75172}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C6B792C-93CD-42F0-9DFA-0D5B80A75172}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C6B792C-93CD-42F0-9DFA-0D5B80A75172}.Release|Any CPU.Build.0 = Release|Any CPU
 		{008CB93C-BEAE-4B02-AC79-DDCB92729D89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{008CB93C-BEAE-4B02-AC79-DDCB92729D89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{008CB93C-BEAE-4B02-AC79-DDCB92729D89}.Release|Any CPU.ActiveCfg = Release|Any CPU

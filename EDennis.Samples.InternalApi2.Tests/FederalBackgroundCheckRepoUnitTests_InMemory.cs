@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.Samples.InternalApi2.Models;
+using System;
 using Xunit;
 using Xunit.Abstractions;
-using EDennis.Samples.InternalApi2.Models;
-using EDennis.AspNetCore.Testing;
-using EDennis.AspNetCore.Base.EntityFramework;
 
 namespace EDennis.Samples.InternalApi2.Tests {
     [Collection("Sequential")]

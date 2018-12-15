@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.Samples.InternalApi1.Models;
+using EDennis.Samples.InternalApi1.Seq.Controllers;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using EDennis.Samples.InternalApi1.Models;
-using EDennis.AspNetCore.Testing;
-using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using EDennis.Samples.InternalApi1.Seq.Controllers;
-using System.Threading.Tasks;
 
 namespace EDennis.Samples.InternalApi1.Tests {
 

@@ -1,9 +1,9 @@
-﻿using EDennis.AspNetCore.Testing;
-using EDennis.Samples.InternalApi2.Models;
+﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.InternalApi2.Controllers;
+using EDennis.Samples.InternalApi2.Models;
+using System;
 using Xunit;
 using Xunit.Abstractions;
-using System;
 
 namespace EDennis.Samples.InternalApi2.Tests {
 
