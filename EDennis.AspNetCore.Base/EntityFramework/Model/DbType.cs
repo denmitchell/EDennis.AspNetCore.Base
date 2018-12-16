@@ -7,6 +7,7 @@
     /// </summary>
     public enum DbType {
         InMemory,
+        Transaction,
         Default
     }
 }

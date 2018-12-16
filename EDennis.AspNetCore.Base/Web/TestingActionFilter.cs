@@ -31,6 +31,8 @@ namespace EDennis.AspNetCore.Base.Web {
         public const string DEFAULT_NAMED_INSTANCE = "default";
         public const string HDR_USE_INMEMORY = HDR_PREFIX + "UseInMemory";
         public const string HDR_DROP_INMEMORY = HDR_PREFIX + "DropInMemory";
+        public const string HDR_USE_TRANSACTION = HDR_PREFIX + "UseTransaction";
+        public const string HDR_ROLLBACK_TRANSACTION = HDR_PREFIX + "RollbackTransaction";
 
 
         /// <summary>
@@ -68,11 +70,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
             //if there is no X-Testing- header (which occurs in
             //Swagger spot-testing scenarios), create a new
-            //X-Testing- header, using an in-memory database
+            //X-Testing- header, using an testing-transaction connection
             //with a default name
             if (header.Key == null) {
-                context.HttpContext.Request.Headers.Add(HDR_USE_INMEMORY, "default");
-                header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, "default");
+                context.HttpContext.Request.Headers.Add(HDR_USE_TRANSACTION, "default");
+                header = new KeyValuePair<string, string>(HDR_USE_TRANSACTION, "default");
             }
 
             //if the target controller is a ProxyController ...
@@ -101,6 +103,18 @@ namespace EDennis.AspNetCore.Base.Web {
                 //use an in-memory database (adding it if necessary)
                 else if (header.Key == HDR_USE_INMEMORY)
                     dict = cache.GetOrAddInMemoryContexts(header.Value);
+
+                //rollback the current transaction
+                else if (header.Key == HDR_ROLLBACK_TRANSACTION)
+                    cache.DropTestingTransactionContexts(header.Value);
+
+                //use an in-memory database (adding it if necessary)
+                else if (header.Key == HDR_USE_INMEMORY)
+                    dict = cache.GetOrAddInMemoryContexts(header.Value);
+
+                //use a testing-transaction (adding it if necessary)
+                else if (header.Key == HDR_USE_TRANSACTION)
+                    dict = cache.GetOrAddTestingTransactionContexts(header.Value);
 
                 //replace all of the repositories in the controller
                 if (dict != null && dict.Count > 0) {

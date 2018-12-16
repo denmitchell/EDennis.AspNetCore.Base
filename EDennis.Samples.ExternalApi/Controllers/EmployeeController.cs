@@ -31,7 +31,10 @@ namespace EDennis.Samples.ExternalApi.Controllers {
         public ActionResult<Employee> GetEmployee(
             [FromRoute] int id) {
             var employee = _internalApi1.GetEmployee(id);
-            return Ok(employee);
+            if (employee == null)
+                return NotFound();
+            else
+                return Ok(employee);
         }
 
 

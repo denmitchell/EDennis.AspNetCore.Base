@@ -29,11 +29,11 @@ namespace EDennis.AspNetCore.Base.Web {
     /// The development BaseAddress must be unique
     /// across all dependent APIs listed.
     /// </summary>
-    public partial class ApiLauncher : IDisposable{
+    public partial class ApiLauncher : IDisposable {
 
         //a dictionary of APIs that are running on an in-memory server 
-        private Dictionary<Type,Api> _runningApis
-            = new Dictionary<Type,Api>();
+        private Dictionary<Type, Api> _runningApis
+            = new Dictionary<Type, Api>();
 
         //the configuration holding API data
         private IConfiguration _config;
@@ -80,7 +80,7 @@ namespace EDennis.AspNetCore.Base.Web {
             foreach (var apiSection in apiSections) {
                 //build a dictionary of controller URLs (usually just one)
                 var controllerUrls = apiSection.GetSection("ControllerUrls").GetChildren()
-                    .ToDictionary(cu=>cu.Key,cu=>cu.Value);
+                    .ToDictionary(cu => cu.Key, cu => cu.Value);
 
                 //create an API object to hold the data
                 var api = new Api {
@@ -146,12 +146,12 @@ namespace EDennis.AspNetCore.Base.Web {
             //add the current API to the dictionary of running APIs
             _runningApis.Add(startupType, api);
 
-            _logger.LogInformation("Starting {ApiName} @ {BaseAddress}", 
+            _logger.LogInformation("Starting {ApiName} @ {BaseAddress}",
                 api.ApiName, api.BaseAddress);
 
             //within a separate thread, launch the IWebHost server
             Task.Run(() => {
-                host.StartAsync().Wait();
+                host.RunAsync();
             });
 
         }
@@ -165,7 +165,12 @@ namespace EDennis.AspNetCore.Base.Web {
         private void StopApi(Api api, Type startupType) {
             //stop the server
             _logger.LogInformation("Stopping {ApiName}", api.ApiName);
-            api.Host.StopAsync().Wait();
+            if (api.Process != null) {
+                api.Process.StandardInput.Close();
+                api.Process.Close();
+            } else {
+                api.Host.StopAsync().Wait();
+            }
             //remove the server from the dictionary of running servers
             _runningApis.Remove(startupType);
         }

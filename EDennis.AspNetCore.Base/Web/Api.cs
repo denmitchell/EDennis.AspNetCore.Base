@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -28,6 +29,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
         //a reference to an in-memory server
         public IWebHost Host { get; set; }
+
+        //a reference to the process (when needed)
+        public Process Process { get; set; }
 
         //the config key for the api
         public string ApiName { get; set; }

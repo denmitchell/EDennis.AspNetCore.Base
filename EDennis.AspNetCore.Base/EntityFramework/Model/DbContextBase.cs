@@ -19,6 +19,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         //the in-memory database name or name assigned to the connection/transaction
         public string NamedInstance { get; set; }
 
+        public bool HasSequences { get; set; }
+        public bool HasIdentities { get; set; }
+
         /// <summary>
         /// Provides the maximum value of the key for a model
         /// class having an integer Id property

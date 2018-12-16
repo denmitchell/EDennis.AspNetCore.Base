@@ -30,7 +30,10 @@ namespace EDennis.Samples.InternalApi1.Controllers {
         public async Task<ActionResult<Employee>> GetEmployee(
             [FromRoute] int id) {
             var employee = await _repo.GetByIdAsync(id);
-            return Ok(employee);
+            if (employee == null)
+                return NotFound();
+            else
+                return Ok(employee);
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

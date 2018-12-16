@@ -29,6 +29,8 @@ namespace EDennis.Samples.ExternalApi {
         public Employee GetEmployee(int employeeId) {
             var response = HttpClient.GetAsync($"{HttpClient.BaseAddress}/{employeeId}");
             var message = response.Result;
+            if (message.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
             var emp = message.GetObject<Employee>();
             return emp;
         }

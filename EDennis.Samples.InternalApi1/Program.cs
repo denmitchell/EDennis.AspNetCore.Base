@@ -16,6 +16,11 @@ namespace EDennis.Samples.InternalApi1 {
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                //.ConfigureAppConfiguration(options=> {
+                //    options.AddJsonFile("appsettings.json");
+                //    options.AddJsonFile("appsettings.Development.json");
+                //    options.AddCommandLine(args);
+                //})                    
                 .UseStartup<Startup>();
     }
 }
