@@ -38,7 +38,7 @@ namespace EDennis.Samples.InternalApi1.Models {
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<Employee>()
                     .Property(e => e.Id)
-                    .HasValueGenerator<ResettableValueGenerator>();
+                    .HasValueGenerator<MaxPlusOneValueGenerator>();
             }
 
 
@@ -80,7 +80,7 @@ namespace EDennis.Samples.InternalApi1.Models {
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<Position>()
                     .Property(e => e.Id)
-                    .HasValueGenerator<ResettableValueGenerator>();
+                    .HasValueGenerator<MaxPlusOneValueGenerator>();
             }
 
             modelBuilder.Entity<Position>()

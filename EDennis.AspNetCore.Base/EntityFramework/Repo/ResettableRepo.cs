@@ -39,8 +39,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public void ReplaceDbContext(dynamic dbContext) {
             Context = dbContext;
 
-            if (Context.Database.IsInMemory())
-                Context.ResetValueGenerators();
+            //if (Context.Database.IsInMemory())
+            //    Context.ResetValueGenerators();
         }
 
     }

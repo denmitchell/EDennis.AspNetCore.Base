@@ -16,15 +16,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <para>
     ///   Specifically designed to be instantiated as a singleton,
     ///   this class provides holds test contexts that extend 
-    ///   DbContextBase.  The test contexts support both
-    ///   (a) in-memory databases AND
-    ///   (b) "testing-transaction" connections to real databases
-    ///   The latter can be used to rollback to a pre-test state.
+    ///   DbContextBase.  The test contexts support in-memory 
+    ///   databases.
     /// </para>
     /// <para>
     ///   Each DbContextBase instance is keyed in two ways:
     ///   (1) NamedInstance (string) -- a GUID used to keep track
-    ///       of a specific testing instance of a database or connection
+    ///       of a specific testing instance of a database
     ///   (2) ConnectionStringName (string) -- also the same as the
     ///       class name, this is used to differentiate two or more 
     ///       DbContextBase subclasses. 
@@ -44,16 +42,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         //holds all DbContextBase subclass types
         private readonly IEnumerable<Type> _dbContextTypes;
-        
-        //true, if sequences need to be reset when an in-memory
-        //database is dropped or testing-transaction is rolled back
-        private readonly bool _resetSequences = true;
-
-        //true, if identities need to be reset when an in-memory
-        //database is dropped or testing-transaction is rolled back
-        private readonly bool _resetIdentities = true;
-
-        private readonly ILogger<DbContextBaseTestCache> _logger;
 
         /// <summary>
         /// Constructs a new DbContextBaseTestCache, based upon
@@ -65,31 +53,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Testing:ResetIdentities
         /// </summary>
         /// <param name="config">configuration data</param>
-        public DbContextBaseTestCache(IConfiguration config, ILogger<DbContextBaseTestCache> logger) {
-
-            _logger = logger;
+        public DbContextBaseTestCache(IConfiguration config) {
 
             //get all connection strings
             _cxns = config.GetSection("ConnectionStrings").GetChildren();
 
-            //get setting for resetting sequences
-            var resetSequences = config["Testing:ResetSequences"];
-            if (resetSequences != null)
-                _resetSequences = bool.Parse(resetSequences.ToLower());
-
-            //get setting for resetting identities
-            var resetIdentities = config["Testing:ResetIdentities"];
-            if (resetIdentities != null)
-                _resetIdentities = bool.Parse(resetIdentities.ToLower());
-
             //get a collection of DbContextBase types
             _dbContextTypes = GetDbContextTypes();
 
-            var configFiles = config.PrintConfigFilePaths();
-            var hashcode = GetHashCode();
-            _logger.LogDebug("new DbContextBaseTestCache {Hashcode} created from {Files}", 
-                hashcode, configFiles);
-            Debug.WriteLine($"new DbContextBaseTestCache {hashcode} created from {configFiles[0]}");
         }
 
 
@@ -130,7 +101,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 //build the options for the database
                 var options = new DbContextOptionsBuilder()
                     .UseInMemoryDatabase(dbName)
-                    .ReplaceService<IModelCacheKeyFactory, DynamicModelCacheKeyFactory>()
                     .Options;
 
                 //using reflection, instantiate the DbContextBase subclass
@@ -144,9 +114,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 //generate the database and data
                 context.Database.EnsureCreated();
 
-                //reset value generator (sequence or identity mocks)
-                context.ResetValueGenerators();
-
                 //add the current DbContextBase to the dictionary
                 dict.Add(cxn.Key, context);
             }
@@ -158,104 +125,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             return dict;
         }
 
-
-        /// <summary>
-        /// Gets a dictionary of DbContextBase subclasses, 
-        /// keyed by the ConnectionStringName (which also should
-        /// be the name of the DbContextBase subclass itself).
-        /// If the dictionary doesn't exist, create it first.
-        /// All entries in this dictionary will have different
-        /// connections governed by testing transactions.
-        /// </summary>
-        /// <param name="namedInstance">The GUID key for the 
-        /// testing instance</param>
-        /// <returns>a dictionary of DbContextBase classes
-        /// keyed by the ConnectionStringName</returns>        
-        public Dictionary<string,DbContextBase> GetOrAddTestingTransactionContexts(string namedInstance) {
-
-            //get the current NamedInstance of DbContextBase classes
-            if (ContainsKey(namedInstance))
-                return this[namedInstance];
-
-            //otherwise ...
-
-            //create a new dictionary to hold all classes for this named instance
-            var dict = new Dictionary<string, DbContextBase>();
-
-            //iterate over all subclasses of DbContextBase
-            foreach (var contextType in _dbContextTypes) {
-
-                //get the relevant connection string
-                var cxn = _cxns.Where(c => c.Key == contextType.Name)
-                    .FirstOrDefault();
-
-                //create a new connection to SQL Server
-                var connection = new SqlConnection(cxn.Value);
-
-                //open the connection and start a transaction
-                connection.Open();
-                var transaction = connection.BeginTransaction(IsolationLevel.Serializable);
-
-                //create the options for the DbContextBase subclass
-                var options = new DbContextOptionsBuilder()
-                    .UseSqlServer(connection)
-                    .Options;
-
-                //using reflection, instantiate the DbContextBase subclass
-                var context = Activator.CreateInstance(contextType, 
-                    new object[] { options }) as DbContextBase;
-
-                //attach the transaction to the current connection 
-                context.Database.UseTransaction(transaction);
-                context.Database.AutoTransactionsEnabled = false;
-
-                //set properties for the current DbContextBase 
-                context.NamedInstance = namedInstance;
-                context.ConnectionStringName = cxn.Key;
-
-                //add the current DbContextBase to the dictionary
-                dict.Add(cxn.Key, context);
-            }
-
-            //add the dictionary to the cache
-            Add(namedInstance, dict);
-
-            //return the dictionary
-            return dict;
-        }
-
-
-        /// <summary>
-        /// Rolls back a testing transaction, resets identities
-        /// or sequences (as needed), and removes the named instance
-        /// of DbContextBase subclasses from the cache.
-        /// </summary>
-        /// <param name="namedInstance">The GUID key for the 
-        /// testing instance</param>
-        public void DropTestingTransactionContexts(string namedInstance) {
-
-            //retrieve a reference to the cache entry
-            var dict = this[namedInstance];
-
-            //iterate over all DbContextBase subclasses in the 
-            //retrieved cache entry
-            foreach(string key in dict.Keys) {
-
-                //rollback the transaction
-                dict[key].Database.RollbackTransaction();
-
-                //get the connection
-                var cxn = dict[key].Database.GetDbConnection() as SqlConnection;
-
-                //reset identities and/or sequences, as needed
-                if (_resetIdentities)
-                    cxn.ResetIdentities();
-                if (_resetSequences)
-                    cxn.ResetSequences();
-            }
-            //remove the named instance from the cache
-            Remove(namedInstance);
-        }
 
         /// <summary>
         /// Drops the in-memory database from the cache
@@ -272,12 +141,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             foreach (string key in dict.Keys) {
                 //get a reference to the current DbContextBase subclass
                 var context = dict[key];
-
-                //delete the database
                 context.Database.EnsureDeleted();
-
-                //reset all value generators (mock identities or sequences)
-                context.ResetValueGenerators();
             }
             //remove the named instance from the cache
             Remove(namedInstance);

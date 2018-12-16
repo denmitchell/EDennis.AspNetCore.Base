@@ -22,8 +22,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             string ConnectionStringName = typeof(TContext).Name;
 
-            ILogger<DbContextBaseTestCache> logger = new LoggerFactory().CreateLogger<DbContextBaseTestCache>();
-            dbContextBaseRepo = new DbContextBaseTestCache(config,logger);
+            dbContextBaseRepo = new DbContextBaseTestCache(config);
 
             NamedInstance = Guid.NewGuid().ToString();
             dbContextBaseRepo.GetOrAddInMemoryContexts(NamedInstance);
@@ -40,12 +39,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             if (!disposedValue) {
                 if (disposing) {
                     if (dbContextBaseRepo.ContainsKey(NamedInstance)) {
-                        var contexts = dbContextBaseRepo.GetDbContexts(NamedInstance);
-                        foreach(var contextName in contexts.Keys) {
-                            var context = contexts[contextName];
-                            context.Database.EnsureDeleted();
-                            context.ResetValueGenerators();
-                        }
                         dbContextBaseRepo.DropInMemoryContexts(NamedInstance);
                     }
                 }

@@ -30,7 +30,7 @@ namespace EDennis.Samples.InternalApi2.Models {
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<AgencyInvestigatorCheck>()
                     .Property(e => e.Id)
-                    .HasValueGenerator<ResettableValueGenerator>();
+                    .HasValueGenerator<MaxPlusOneValueGenerator>();
             }
 
             modelBuilder.Entity<AgencyInvestigatorCheck>()

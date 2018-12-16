@@ -491,23 +491,15 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         private static void UseTestDbHeader(this HttpRequestMessage msg, DbType testDbType, string testDb) {
-            if (testDbType == DbType.Transaction ||
-                testDbType == DbType.InMemory) {
-
+            if (testDbType == DbType.InMemory) {
                 var key = HDR_USE_INMEMORY;
-                if (testDbType == DbType.Transaction)
-                    key = HDR_USE_TRANSACTION;
                 msg.Headers.Add(key, testDb);
             }
         }
 
         private static void DropTestDbHeader(this HttpRequestMessage msg, DbType testDbType, string testDb) {
-            if (testDbType == DbType.Transaction ||
-                testDbType == DbType.InMemory) {
-
+            if (testDbType == DbType.InMemory) {
                 var key = HDR_DROP_INMEMORY;
-                if (testDbType == DbType.Transaction)
-                    key = HDR_ROLLBACK_TRANSACTION;
                 msg.Headers.Add(key, testDb);
             }
         }

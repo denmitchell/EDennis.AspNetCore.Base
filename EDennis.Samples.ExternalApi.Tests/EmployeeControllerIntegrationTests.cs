@@ -10,7 +10,6 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.ExternalApi.Tests {
 
-    [Collection("Sequential")]
     public class EmployeeControllerIntegrationTests
         : IClassFixture<WebApplicationFactory<Startup>> {
 

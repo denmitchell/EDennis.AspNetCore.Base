@@ -11,7 +11,6 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Reflection.Tests {
-    [Collection("Sequential")]
     public class AddDbContextPoolTests {
 
         private static WebApplicationFactory<Startup> _factory;

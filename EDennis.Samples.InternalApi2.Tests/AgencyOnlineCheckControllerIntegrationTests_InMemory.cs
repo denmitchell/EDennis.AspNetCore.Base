@@ -10,7 +10,6 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi2.Tests {
 
-    [Collection("Sequential")]
     public class AgencyOnlineCheckControllerIntegrationTests_InMemory {
 
         private static WebApplicationFactory<Startup> _factory;        

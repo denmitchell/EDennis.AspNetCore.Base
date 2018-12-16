@@ -7,7 +7,6 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi1.Tests {
 
-    [Collection("Sequential")]
     public class EmployeeControllerUnitTests_InMemory : InMemoryUnitTest<HrContext> {
 
         private EmployeeController _controller;

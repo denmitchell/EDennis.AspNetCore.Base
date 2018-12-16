@@ -44,36 +44,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         /// <summary>
-        /// Gets a dictionary of DbContextBase subclasses, 
-        /// keyed by the ConnectionStringName (which also should
-        /// be the name of the DbContextBase subclass itself).
-        /// If the dictionary doesn't exist, create it first.
-        /// All entries in this dictionary will have different
-        /// connections governed by testing transactions.
-        /// </summary>
-        /// <param name="namedInstance">The GUID key for the 
-        /// testing instance</param>
-        /// <returns>a dictionary of DbContextBase classes
-        /// keyed by the ConnectionStringName</returns>        
-        Dictionary<string, DbContextBase> GetOrAddTestingTransactionContexts(string namedInstance);
-
-
-        /// <summary>
         /// Drops the in-memory database from the cache
         /// </summary>
         /// <param name="namedInstance">The GUID key for the 
         void DropInMemoryContexts(string namedInstance);
-
-
-        /// <summary>
-        /// Rolls back a testing transaction, resets identities
-        /// or sequences (as needed), and removes the named instance
-        /// of DbContextBase subclasses from the cache.
-        /// </summary>
-        /// <param name="namedInstance">The GUID key for the 
-        /// testing instance</param>
-        void DropTestingTransactionContexts(string namedInstance);
-
 
         /// <summary>
         /// Retrieves a dictionary of DbContextBase subclasses

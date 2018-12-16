@@ -46,8 +46,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 api.HttpClient.DefaultRequestHeaders.Add(
                     headerToPropagate.Key, headerToPropagate.Value);
 
-                if (headerToPropagate.Key == HDR_DROP_INMEMORY
-                    || headerToPropagate.Key == HDR_ROLLBACK_TRANSACTION) {
+                if (headerToPropagate.Key == HDR_DROP_INMEMORY) {
 
                     var uri = api.ResetUri;
 

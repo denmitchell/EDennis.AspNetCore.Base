@@ -7,7 +7,6 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi2.Tests {
 
-    [Collection("Sequential")]
     public class AgencyOnlineCheckControllerUnitTests_InMemory : InMemoryUnitTest<AgencyOnlineCheckContext> {
 
         private AgencyOnlineCheckController _controller;

@@ -4,7 +4,6 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Web.Launcher.Tests {
 
-    [Collection("Sequential")]
     public class ApiLauncherTests : IClassFixture<ApiFixture> {
 
         private readonly ITestOutputHelper _output;
@@ -17,7 +16,7 @@ namespace EDennis.AspNetCore.Base.Web.Launcher.Tests {
         }
 
 
-        [Fact]
+        //[Fact]
         public async void StartCheckStopMultipleApis() {
 
             var client = new HttpClient();

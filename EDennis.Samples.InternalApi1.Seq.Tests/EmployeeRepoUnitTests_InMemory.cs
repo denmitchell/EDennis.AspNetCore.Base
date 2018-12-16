@@ -4,7 +4,6 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi1.Tests {
-    [Collection("Sequential")]
     public class EmployeeRepoUnitTests_InMemory : InMemoryUnitTest<HrContext> {
 
         private EmployeeRepo _repo;

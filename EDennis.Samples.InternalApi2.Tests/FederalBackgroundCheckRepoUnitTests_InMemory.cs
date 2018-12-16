@@ -5,7 +5,6 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi2.Tests {
-    [Collection("Sequential")]
     public class FederalBackgroundCheckRepoUnitTests_InMemory : InMemoryUnitTest<FederalBackgroundCheckContext> {
 
         private FederalBackgroundCheckViewRepo _repo;
