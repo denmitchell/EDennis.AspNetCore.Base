@@ -202,6 +202,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
                 //open the connection and start a transaction
                 connection.Open();
+
+                //proactively reset sequences and identities that
+                //might have not been reset during the last session
+                if (_resetSequences)
+                    connection.ResetSequences();
+                if (_resetIdentities)
+                    connection.ResetIdentities();
+
                 var transaction = connection.BeginTransaction(IsolationLevel.Serializable);
 
                 //create the options for the DbContextBase subclass
