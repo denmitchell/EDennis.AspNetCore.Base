@@ -6,13 +6,11 @@ ASP.NET Core MVC and Entity Framework Core collectively provide a great framewor
 
 ## Features
 The current library has a number of features that assist with application development:
-- An action filter that looks for special header values in HTTP requests in order to initialize or reset a test connection or in-memory database.  This action filter supports two kinds of testing approaches:
-  1. Testing Transaction Approach, in which an open transaction is rolled back after each test
-  2. In-Memory Database Approach, in which the In-Memory database provider is used
+- An action filter that looks for special header values in HTTP requests in order to initialize or reset a test connection or in-memory database.  Originally, this action filter supported both real databases and in-memory databases; however, only the in-memory databases proved to be reliable with parallel unit/integration testing.
 - An ApiLauncher class that uses appsettings.json to identify, start, and one or more web applications.  This utility class makes it easier to start and manage a set of micro-services  
 - A base repository class that simplifies basic Entity Framework operations but still allows querying via Linq expressions
 - A pair of design-time factory classes that allow code-first migrations without default constructors in the DbContext class. (One of these classes, in combination with the EDennis.MigrationsExtensions NuGet library, supports auto-creation of temporal tables.)
-- a ResettableValueGenerator class, based upon Arthur Vickers' solution of the same name.  This enhancement resets **to pre-test values** all in-memory IDs backed by either identity specs or sequences
+- a MaxPlusOneValueGenerator class that *mostly* emulates a sequence or identity during testing
 - SQL scripts that identify and reset all identity values and sequences in a SQL Server database
 - Extensions to IServiceCollection that use Reflection to simplify the setup of Dependency Injection for
   - Typed HttpClients
@@ -26,6 +24,5 @@ The current library has a number of features that assist with application develo
   - ProxyController, which is designed to work with one or more API classes backed by HttpClient instances
 
 ## Constraints
-- The current library does not support *parallel* integration/unit tests.  The Testing Transaction Approach does not work well with parallel testing because the isolation level is serializable.  The In-Memory Database Approach does not work well with parallel testing because the generated values are using a shared cache.  To ensure that all integration tests are executed sequentially in Xunit, decorate all test classes in a solution with the same attribute: [Collection("Sequential")].
-
-
+- Currently, the libraries have minimal exception-handling.  
+- Currently, the ApiLauncher will simply fail if the target port for an API is unavailable.
