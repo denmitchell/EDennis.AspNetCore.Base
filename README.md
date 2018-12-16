@@ -6,8 +6,8 @@ ASP.NET Core MVC and Entity Framework Core collectively provide a great framewor
 
 ## Features
 The current library has a number of features that assist with application development:
-- An action filter that looks for special header values in HTTP requests in order to initialize or reset a test connection or in-memory database.  Originally, this action filter fully supported both real databases and in-memory databases; however, only the in-memory databases proved to be reliable with parallel unit/integration testing. 
-- An ApiLauncher class that uses appsettings.json to identify, start, and one or more web applications.  This utility class makes it easier to start and manage a set of micro-services during both automated integration testing and spot-testing (e.g., using Swagger).    
+- An action filter that looks for special header values in HTTP requests in order to initialize or reset a test connection or in-memory database.  Originally, this action filter fully supported both real databases and in-memory databases; however, only the in-memory databases proved to be reliable with parallel unit/integration testing.  (A testing-transaction alternative to in-memory databases is still available, but it should be used only in situations where database locks are not likely -- e.g., spot testing using Swagger.)
+- An ApiLauncher class that uses appsettings.json to identify, start, and stop one or more web applications.  This utility class makes it easier to start and manage a set of micro-services during both automated integration testing and spot-testing (e.g., using Swagger).    
 - A base repository class that simplifies basic Entity Framework operations but still allows querying via Linq expressions
 - A pair of design-time factory classes that allow code-first migrations without default constructors in the DbContext class. (One of these classes, in combination with the EDennis.MigrationsExtensions NuGet library, supports auto-creation of temporal tables.)
 - a MaxPlusOneValueGenerator class that *mostly* emulates a sequence or identity during testing
@@ -26,4 +26,4 @@ The current library has a number of features that assist with application develo
 ## Constraints
 - Currently, the libraries have minimal exception-handling.  
 - Currently, the ApiLauncher will simply fail if the target port for an API is unavailable.
-- In order for the ApiLauncher to work appropriately with spot-testing a master Api (one that calls other APIs), the master Api must be launched using the project profile (with a port in an acceptable range), rather than IIS Express.
+- In order for the ApiLauncher to work appropriately with spot-testing a master Api (one that calls other APIs), the master Api must be launched using the project profile (with a port in an acceptable range), rather than using IIS Express.  To rollback a testing transaction and reset sequences/identities during spot-testing, be sure to suspend the application by pressing CTRL-C in the command window, rather than by closing the browser window/tab.
