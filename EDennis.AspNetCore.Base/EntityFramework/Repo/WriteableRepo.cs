@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -13,12 +14,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContext class</typeparam>
-    public class WriteableRepo<TEntity, TContext> :  IRepo
+    public class WriteableRepo<TEntity, TContext> : IRepo, IDisposable
             where TEntity : class, new()
             where TContext : DbContextBase {
 
         protected TContext Context { get; set; }
         protected DbSet<TEntity> _dbset;
+
+        public bool IsTestingInstance { get; set; } = false;
 
 
         /// <summary>
@@ -287,5 +290,38 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing) {
+            if (!disposedValue) {
+                if (disposing) {
+                    //rollback any outstanding transactions
+                    if (IsTestingInstance)
+                        if (Context.Database.CurrentTransaction != null) {
+                            var cxn = Context.Database.GetDbConnection() as SqlConnection;
+                            if (cxn.State == System.Data.ConnectionState.Open) {
+                                Context.Database.RollbackTransaction();
+                                if (Context.HasIdentities)
+                                    cxn.ResetIdentities();
+                                if (Context.HasSequences)
+                                    cxn.ResetSequences();
+                            }
+                        }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
+
     }
 }

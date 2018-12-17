@@ -4,7 +4,7 @@ using System.Linq;
 namespace EDennis.Samples.InternalApi2.Models {
 
     public class AgencyOnlineCheckRepo 
-        : ResettableRepo<AgencyOnlineCheck,
+        : WriteableRepo<AgencyOnlineCheck,
             AgencyOnlineCheckContext>{
 
         public AgencyOnlineCheckRepo(

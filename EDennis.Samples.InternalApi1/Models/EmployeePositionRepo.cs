@@ -4,7 +4,7 @@ using System.Linq;
 namespace EDennis.Samples.InternalApi1.Models {
 
     public class EmployeePositionRepo 
-        : ResettableRepo<EmployeePosition,HrContext>{
+        : WriteableRepo<EmployeePosition,HrContext>{
 
         public EmployeePositionRepo(HrContext context) 
             : base(context) { }

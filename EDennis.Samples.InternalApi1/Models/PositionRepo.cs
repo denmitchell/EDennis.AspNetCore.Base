@@ -5,7 +5,7 @@ using System.Linq;
 namespace EDennis.Samples.InternalApi1.Models {
 
     public class PositionRepo 
-        : ResettableRepo<Position,HrContext>{
+        : WriteableRepo<Position,HrContext>{
 
         public PositionRepo(HrContext context) 
             : base(context) { }
