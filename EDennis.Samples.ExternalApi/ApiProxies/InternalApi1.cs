@@ -20,18 +20,20 @@ namespace EDennis.Samples.ExternalApi {
 
 
         public Employee CreateEmployee(Employee employee) {
-            var response = HttpClient.PostAsync(HttpClient.BaseAddress, new BodyContent<Employee>(employee));
-            var message = response.Result;
-            var emp = message.GetObject<Employee>();
+            var emp = HttpClient.Post(employee);
+            //var response = HttpClient.PostAsync(HttpClient.BaseAddress, new BodyContent<Employee>(employee));
+            //var message = response.Result;
+            //var emp = message.GetObject<Employee>();
             return emp;
         }
 
         public Employee GetEmployee(int employeeId) {
-            var response = HttpClient.GetAsync($"{HttpClient.BaseAddress}/{employeeId}");
-            var message = response.Result;
-            if (message.StatusCode == System.Net.HttpStatusCode.NotFound)
-                return null;
-            var emp = message.GetObject<Employee>();
+            var emp = HttpClient.Get<Employee>(employeeId);
+            //var response = HttpClient.GetAsync($"{HttpClient.BaseAddress}/{employeeId}");
+            //var message = response.Result;
+            //if (message.StatusCode == System.Net.HttpStatusCode.NotFound)
+            //    return null;
+            //var emp = message.GetObject<Employee>();
             return emp;
         }
     }
