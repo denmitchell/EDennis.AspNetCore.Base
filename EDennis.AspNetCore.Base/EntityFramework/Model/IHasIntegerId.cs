@@ -5,6 +5,6 @@
     /// to implement this interface.
     /// </summary>
     public interface IHasIntegerId {
-        int Id { get; set; }
+        int Id { get; set; } //primary key field
     }
 }

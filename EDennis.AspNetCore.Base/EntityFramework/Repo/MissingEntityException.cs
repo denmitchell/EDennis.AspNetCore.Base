@@ -5,7 +5,7 @@ using System.Text;
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
     /// <summary>
-    /// Exception that can be used with a not found result
+    /// Exception that can be used with a "Not Found" result
     /// </summary>
     public class MissingEntityException : Exception {
 

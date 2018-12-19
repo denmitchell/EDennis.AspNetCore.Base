@@ -19,6 +19,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         //the in-memory database name or name assigned to the connection/transaction
         public string NamedInstance { get; set; }
 
+        //whether the underlying database has sequences or identities
+        //(used for testing purposes to reset next values for IDs)
         public bool HasSequences { get; set; }
         public bool HasIdentities { get; set; }
 

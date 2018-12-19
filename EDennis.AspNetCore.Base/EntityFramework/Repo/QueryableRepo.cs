@@ -6,6 +6,15 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
+
+    /// <summary>
+    /// A read-only base repository class, backed by
+    /// a DbQuery, exposing methods that allow one to
+    /// query by a Linq expression or a parameterized
+    /// SQL SELECT statement.  The results are pageable.
+    /// </summary>
+    /// <typeparam name="TEntity">The model class</typeparam>
+    /// <typeparam name="TContext">The DbContext (or DbContextBase) subclass</typeparam>
     public class QueryableRepo<TEntity, TContext> : IRepo
             where TEntity : class, new()
             where TContext : DbContext {
