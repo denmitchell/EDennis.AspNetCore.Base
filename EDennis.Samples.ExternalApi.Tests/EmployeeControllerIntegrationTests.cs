@@ -35,7 +35,7 @@ namespace EDennis.Samples.ExternalApi.Tests {
             var newEmployee = new Employee {
                 FirstName = firstName
             };
-            var actual = _client.PostAndGet(newEmployee,NEXTID);
+            var actual = _client.PostAndGetForTest(newEmployee,NEXTID);
             Assert.Equal(firstName, actual.FirstName);
         }
 
@@ -56,7 +56,7 @@ namespace EDennis.Samples.ExternalApi.Tests {
             };
             _client.BaseAddress = new Uri("http://localhost:5999/api/employee/", UriKind.Absolute);
 
-            var actual = _client.PostAndGet(newCheck, DbType.Default, "default",
+            var actual = _client.PostAndGetForTest(newCheck, DbType.Default, "default",
                 getUri: new Uri(_client.BaseAddress + $"preemployment/{employeeId}"),
                 postUri: new Uri(_client.BaseAddress + "agencyinvestigatorcheck")
                 );

@@ -4,7 +4,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi1.Tests {
-    public class EmployeeRepoUnitTests_InMemory : InMemoryUnitTest<HrContext> {
+    public class EmployeeRepoUnitTests_InMemory : InMemoryTest<HrContext> {
 
         private EmployeeRepo _repo;
         private readonly ITestOutputHelper _output;

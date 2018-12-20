@@ -38,7 +38,7 @@ namespace EDennis.Samples.InternalApi1.Tests {
 
             var dbName = Guid.NewGuid().ToString();
 
-            var actual = _client.PostAndGet(
+            var actual = _client.PostAndGetForTest(
                 new Employee { FirstName = firstName },
                 DbType.InMemory, dbName, new object[] { 5 });
 

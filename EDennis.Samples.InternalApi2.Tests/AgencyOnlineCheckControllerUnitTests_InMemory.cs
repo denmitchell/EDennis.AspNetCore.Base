@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.InternalApi2.Tests {
 
-    public class AgencyOnlineCheckControllerUnitTests_InMemory : InMemoryUnitTest<AgencyOnlineCheckContext> {
+    public class AgencyOnlineCheckControllerUnitTests_InMemory : InMemoryTest<AgencyOnlineCheckContext> {
 
         private AgencyOnlineCheckController _controller;
         private AgencyOnlineCheckRepo _repo;

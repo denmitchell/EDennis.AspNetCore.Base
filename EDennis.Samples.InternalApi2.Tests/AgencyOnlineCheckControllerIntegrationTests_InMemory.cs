@@ -37,7 +37,7 @@ namespace EDennis.Samples.InternalApi2.Tests {
 
             var dbName = Guid.NewGuid().ToString();
 
-            var actual = _client.PostAndGet(
+            var actual = _client.PostAndGetForTest(
                 new AgencyOnlineCheck { EmployeeId = employeeId, DateCompleted = DateTime.Parse(strDateCompleted), Status = status },
                 DbType.InMemory, dbName, new object[] { employeeId });
 
