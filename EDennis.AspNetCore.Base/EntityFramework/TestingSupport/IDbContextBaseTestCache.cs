@@ -4,7 +4,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <summary>
     /// <para>
     ///   Specifically designed to be instantiated as a singleton,
-    ///   this class provides holds test contexts that extend 
+    ///   this interface specifies handling of test contexts that extend 
     ///   DbContextBase.  The test contexts support both
     ///   (a) in-memory databases AND
     ///   (b) "testing-transaction" connections to real databases
@@ -17,13 +17,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     ///   (2) ConnectionStringName (string) -- also the same as the
     ///       class name, this is used to differentiate two or more 
     ///       DbContextBase subclasses. 
-    /// </para>
-    /// <para>
-    ///   Testing Note: Currently, all tests must be run sequentially;
-    ///   otherwise, value generators are not reset correctly.  That
-    ///   said, this class is designed to allow parallel tests in the
-    ///   future.  Assuming each test instance uses a unique 
-    ///   NamedInstance, this class will be thread safe.
     /// </para>
     /// </summary>
     public interface IDbContextBaseTestCache {

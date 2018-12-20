@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
     /// <summary>
-    /// This class can serve as a base repository for an
-    /// Entity Framework Core.
+    /// A read/write base repository class, backed by
+    /// a DbSet, exposing basic CRUD methods, as well
+    /// as methods exposed by QueryableRepo 
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
-    /// <typeparam name="TContext">The associated DbContext class</typeparam>
+    /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
+    /// <see cref="QueryableRepo{TEntity, TContext}"/>
     public class WriteableRepo<TEntity, TContext> : IRepo, IDisposable
             where TEntity : class, new()
             where TContext : DbContextBase {
@@ -21,6 +23,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         protected TContext Context { get; set; }
         protected DbSet<TEntity> _dbset;
 
+        //whether this repo has a testing instance of DbContextBase
         public bool IsTestingInstance { get; set; } = false;
 
 

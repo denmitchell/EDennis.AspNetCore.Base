@@ -15,6 +15,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The model class</typeparam>
     /// <typeparam name="TContext">The DbContext (or DbContextBase) subclass</typeparam>
+    /// <see cref="WriteableRepo{TEntity, TContext}"/>
     public class QueryableRepo<TEntity, TContext> : IRepo
             where TEntity : class, new()
             where TContext : DbContext {

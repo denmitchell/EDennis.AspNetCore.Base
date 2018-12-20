@@ -1,14 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EDennis.AspNetCore.Base.Web;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Data;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Diagnostics;
-using Microsoft.Extensions.Logging;
-using EDennis.AspNetCore.Base.Web;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
