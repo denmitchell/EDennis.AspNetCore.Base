@@ -35,7 +35,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// the DELETE, GET and HEAD URLs use the base URL for the HttpClient
         /// </summary>
         /// <typeparam name="T">The object type to DELETE and GET</typeparam>
-        /// <param name="client">The HttpClient used to PUT and GET</param>
+        /// <param name="client">The HttpClient used to DELETE and GET</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns>the GETed list of objects</returns>
         /// <see cref="DeleteAndGetMultipleForTest{T}(HttpClient, object[])"/>
@@ -61,9 +61,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// the DELETE, GET and HEAD URLs use the base URL for the HttpClient
         /// </summary>
         /// <typeparam name="T">The object type to DELETE and GET</typeparam>
-        /// <param name="client">The HttpClient used to PUT and GET</param>
+        /// <param name="client">The HttpClient used to DELETE and GET</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns>a GETed list of objects</returns>
         /// <see cref="DeleteAndGetMultipleForTest{T}(HttpClient, object[])"/>
@@ -88,9 +88,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// default headers include an X-Testing- header
         /// </summary>
         /// <typeparam name="T">The object type to DELETE and GET</typeparam>
-        /// <param name="client">The HttpClient used to PUT and GET</param>
+        /// <param name="client">The HttpClient used to DELETE and GET</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="deleteUri">The URL for the DELETE request</param>
         /// <param name="getUri">The URL for the GET request</param>
         /// <param name="headUri">The URL for the HEAD request</param>
@@ -201,7 +201,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <typeparam name="T">The object type to DELETE and GET</typeparam>
         /// <param name="client">The HttpClient used to DELETE and GET</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns>a list of HttpResponseMessage objects, which contain
         /// status codes and return objects (when relevant) for the DELETE and GET</returns>
@@ -233,7 +233,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <typeparam name="T">The object type to DELETE and GET</typeparam>
         /// <param name="client">The HttpClient used to DELETE and GET</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="putUri">The URL for the PUT request</param>
         /// <param name="getUri">The URL for the GET request</param>
         /// <param name="headUri">The URL for the HEAD request</param>

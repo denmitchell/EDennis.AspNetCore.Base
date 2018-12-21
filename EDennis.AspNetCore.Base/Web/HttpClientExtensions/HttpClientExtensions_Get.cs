@@ -1,13 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Text;
-using System.Collections.Generic;
-
-using static EDennis.AspNetCore.Base.Web.TestingActionFilter;
-using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.Extensions.Configuration;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -33,18 +27,24 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="client">the HttpClient</param>
         /// <param name="id">the param array of values representing the Id</param>
         /// <returns>the retrieved object</returns>
-        /// <seealso cref="GetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="GetAsync{T}(HttpClient, Uri)"/>
-        /// <seealso cref="Get{T}(HttpClient, object[])"/>
-        /// <seealso cref="Get{T}(HttpClient, Uri)"/>
-        /// <seealso cref="GetMultiple{T}(HttpClient, DbType, string, Uri)"/>
-        /// <seealso cref="TryGet{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGet{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static async Task<T> GetAsync<T>(
-            this HttpClient client,
-            params object[] id) {
+            this HttpClient client, params object[] id) {
             return await GetAsync<T>(client,
                 client.BaseAddress.At(id));
         }
@@ -57,14 +57,22 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="client">the HttpClient</param>
         /// <param name="id">the param array of values representing the Id</param>
         /// <returns>the retrieved object</returns>
-        /// <seealso cref="GetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="GetAsync{T}(HttpClient, Uri)"/>
-        /// <seealso cref="Get{T}(HttpClient, object[])"/>
-        /// <seealso cref="Get{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGet{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGet{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static async Task<T> GetAsync<T>(
             this HttpClient client, Uri uri) {
 
@@ -96,17 +104,24 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="client">the HttpClient</param>
         /// <param name="id">the param array of values representing the Id</param>
         /// <returns>the retrieved object</returns>
-        /// <seealso cref="GetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="GetAsync{T}(HttpClient, Uri)"/>
-        /// <seealso cref="Get{T}(HttpClient, object[])"/>
-        /// <seealso cref="Get{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGet{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGet{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static T Get<T>(
-            this HttpClient client,
-            params object[] id) {
+            this HttpClient client, params object[] id) {
             return Get<T>(client,
                 client.BaseAddress.At(id));
         }
@@ -119,14 +134,22 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="client">the HttpClient</param>
         /// <param name="id">the param array of values representing the Id</param>
         /// <returns>the retrieved object</returns>
-        /// <seealso cref="GetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="GetAsync{T}(HttpClient, Uri)"/>
-        /// <seealso cref="Get{T}(HttpClient, object[])"/>
-        /// <seealso cref="Get{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGet{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGet{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static T Get<T>(
             this HttpClient client, Uri uri) {
 
@@ -135,7 +158,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 Method = HttpMethod.Get,
                 RequestUri = uri
             };
-            
+
             //send the GET message
             var response = client.SendAsync(msg).Result;
 
@@ -147,21 +170,154 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+        /// <summary>
+        /// Performs a synchronous GET for a list of objects.
+        /// NOTE: this version of the method assumes that the 
+        /// GET url is the base url for the HttpClient object.
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <returns>the GETed list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public static List<T> GetMultiple<T>(this HttpClient client) {
+            return GetMultiple<T>(client, client.BaseAddress);
+        }
+
+
+        /// <summary>
+        /// Performs a synchronous GET for a list of objects
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <returns>the GETed list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static List<T> GetMultiple<T>(this HttpClient client,
-            DbType testDbType, string testDb,
             Uri getUri = null) {
 
+            //use the client's base address as the default address
             if (getUri == null)
                 getUri = client.BaseAddress;
 
+            //build a new request message object
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Get,
                 RequestUri = getUri,
             };
-            msg.UseTestDbHeader(testDbType, testDb);
-            var response = client.SendAsync(msg).Result;
-            List<T> content = response.Content.ReadAsAsync<List<T>>().Result;
 
+            //send the GET request.
+            var response = client.SendAsync(msg).Result;
+
+            //retrieve and deserialize the list of objects
+            List<T> content = response.GetObject<List<T>>();
+
+            //return the list of objects
+            return content;
+        }
+
+
+        /// <summary>
+        /// Performs an asynchronous GET for a list of objects.
+        /// NOTE: this version of the method assumes that the 
+        /// GET url is the base url for the HttpClient object.
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <returns>the GETed list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public async static Task<List<T>> GetMultipleAsync<T>(this HttpClient client) {
+            return await GetMultipleAsync<T>(client, client.BaseAddress);
+        }
+
+
+        /// <summary>
+        /// Performs a synchronous GET for a list of objects
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <returns>the GETed list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public async static Task<List<T>> GetMultipleAsync<T>(this HttpClient client,
+            Uri getUri = null) {
+
+            //use the client's base address as the default address
+            if (getUri == null)
+                getUri = client.BaseAddress;
+
+            //build a new request message object
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = getUri,
+            };
+
+            //send the GET request.
+            var response = await client.SendAsync(msg);
+
+            //retrieve and deserialize the list of objects
+            List<T> content = await response.GetObjectAsync<List<T>>();
+
+            //return the list of objects
             return content;
         }
 
@@ -177,37 +333,105 @@ namespace EDennis.AspNetCore.Base.Web {
         /// exact URL needed for the GET, except for
         /// the addition of the id in the path.
         /// </summary>
+        /// <typeparam name="T">The type of the object to retrieve</typeparam>
         /// <param name="client">the HttpClient</param>
         /// <param name="id">the param array of values representing the Id</param>
         /// <returns>the HttpResponseMessage, containing a 
         /// status code and possibly an object</returns>
-        /// <seealso cref="GetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="GetAsync{T}(HttpClient, Uri)"/>
-        /// <seealso cref="Get{T}(HttpClient, object[])"/>
-        /// <seealso cref="Get{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGet{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGet{T}(HttpClient, Uri)"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, object[])"/>
-        /// <seealso cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static async Task<HttpResponseMessage> TryGetAsync<T>(
-            this HttpClient client,
-            params object[] id) {
+            this HttpClient client, params object[] id) {
             return await TryGetAsync<T>(client,
                 client.BaseAddress.At(id));
         }
 
+
+
+        /// <summary>
+        /// Performs an asynchronous HTTP GET
+        /// and returns the HTTP response message.
+        /// </summary>
+        /// <param name="client">the HttpClient</param>
+        /// <param name="id">the param array of values representing the Id</param>
+        /// <returns>the HttpResponseMessage, containing a 
+        /// status code and possibly an object</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static async Task<HttpResponseMessage> TryGetAsync<T>(
             this HttpClient client, Uri uri) {
 
+            //build a new request message object
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Get,
                 RequestUri = uri
             };
+
+            //send the message and receive the response
             var response = await client.SendAsync(msg);
+
+            //return the HttpResponseMessage object
             return response;
         }
 
 
+        /// <summary>
+        /// Performs an synchronous HTTP GET
+        /// and returns the HTTP response message.
+        /// This overload of the method presumes that
+        /// the base URL for the HttpClient is the
+        /// exact URL needed for the GET, except for
+        /// the addition of the id in the path.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to retrieve</typeparam>
+        /// <param name="client">the HttpClient</param>
+        /// <param name="id">the param array of values representing the Id</param>
+        /// <returns>the HttpResponseMessage, containing a 
+        /// status code and possibly an object</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static HttpResponseMessage TryGet<T>(
             this HttpClient client,
             params object[] id) {
@@ -215,31 +439,197 @@ namespace EDennis.AspNetCore.Base.Web {
                 client.BaseAddress.At(id));
         }
 
+        /// <summary>
+        /// Performs an synchronous HTTP GET
+        /// and returns the HTTP response message.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to retrieve</typeparam>
+        /// <param name="client">the HttpClient</param>
+        /// <param name="uri">the URL for the GET request</param>
+        /// <returns>the HttpResponseMessage, containing a 
+        /// status code and possibly an object</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
         public static HttpResponseMessage TryGet<T>(
             this HttpClient client, Uri uri) {
 
+            //build a new request message object
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Get,
                 RequestUri = uri
             };
+
+            //send the message and receive the response
             var response = client.SendAsync(msg).Result;
+
+            //return the response
             return response;
         }
 
+        /// <summary>
+        /// Performs an asynchronous GET for a list of objects, but
+        /// returns the HttpResponseMessage
+        /// NOTE: this version of the method assumes that the 
+        /// GET url is the base url for the HttpClient object.
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <returns>the HttpResponseMessage, which contains the
+        /// status code and may contain a list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public async static Task<HttpResponseMessage> TryGetMultipleAsync<T>(this HttpClient client) {
+            return await TryGetMultipleAsync<T>(client, client.BaseAddress);
+        }
 
-        public static HttpResponseMessage TryGetMultiple<T>(this HttpClient client,
-            DbType testDbType, string testDb,
+
+        /// <summary>
+        /// Performs a synchronous GET for a list of objects, but
+        /// returns the HttpResponseMessage
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <returns>the HttpResponseMessage, which contains the
+        /// status code and may contain a list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public async static Task<HttpResponseMessage> TryGetMultipleAsync<T>(this HttpClient client,
             Uri getUri = null) {
 
+            //use the client's base address as the default address
             if (getUri == null)
                 getUri = client.BaseAddress;
 
+            //build a new request message object
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Get,
                 RequestUri = getUri,
             };
-            msg.UseTestDbHeader(testDbType, testDb);
+
+            //send the GET request.
+            var response = await client.SendAsync(msg);
+
+            //return the HttpResponseMessage object
+            return response;
+        }
+
+
+        /// <summary>
+        /// Performs a synchronous GET for a list of objects, but
+        /// returns the HttpResponseMessage
+        /// NOTE: this version of the method assumes that the 
+        /// GET url is the base url for the HttpClient object.
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <returns>the HttpResponseMessage, which contains the
+        /// status code and may contain a list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public static HttpResponseMessage TryGetMultiple<T>(this HttpClient client) {
+            return TryGetMultiple<T>(client, client.BaseAddress);
+        }
+
+
+        /// <summary>
+        /// Performs a synchronous GET for a list of objects, but
+        /// returns the HttpResponseMessage
+        /// </summary>
+        /// <typeparam name="T">The type of each element in the list</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <returns>the HttpResponseMessage, which contains the
+        /// status code and may contain a list of objects</returns>
+        /// <see cref="Get{T}(HttpClient, object[])"/>
+        /// <see cref="Get{T}(HttpClient, Uri)"/>
+        /// <see cref="GetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="GetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultiple{T}(HttpClient)"/>
+        /// <see cref="GetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="GetMultipleAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGet{T}(HttpClient, object[])"/>
+        /// <see cref="TryGet{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, object[])"/>
+        /// <see cref="TryGetAsync{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient)"/>
+        /// <see cref="TryGetMultiple{T}(HttpClient, Uri)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient)"/>
+        /// <see cref="TryGetMultipleAsync{T}(HttpClient, Uri)"/>
+        public static HttpResponseMessage TryGetMultiple<T>(this HttpClient client,
+                Uri getUri = null) {
+
+            //use the client's base address as the default address
+            if (getUri == null)
+                getUri = client.BaseAddress;
+
+            //build a new request message object
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = getUri,
+            };
+
+            //send the GET request.
             var response = client.SendAsync(msg).Result;
+
+            //return the HttpResponseMessage object
             return response;
         }
 

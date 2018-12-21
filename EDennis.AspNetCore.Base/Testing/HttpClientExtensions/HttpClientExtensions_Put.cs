@@ -70,7 +70,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to PUT and GET</param>
         /// <param name="obj">The object to PUT</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns>the GETed object, which should be equivalent to the PUTted object</returns>
         /// <see cref="PutAndGetForTest{T}(HttpClient, T, object[])"/>
@@ -105,7 +105,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to PUT and GET</param>
         /// <param name="obj">The object to PUT</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <param name="putUri">The URL for the PUT request</param>
         /// <param name="getUri">The URL for the GET request</param>
@@ -231,7 +231,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to PUT and GET</param>
         /// <param name="obj">The object to PUT</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="getUri"></param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns></returns>
@@ -270,7 +270,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to POST and GET</param>
         /// <param name="obj">The object to POST</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="getUri">The URL for the GET request</param>
         /// <param name="postUri">The URL for the POST request</param>
         /// <param name="headUri">The URL for the HEAD request</param>
@@ -386,7 +386,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to PUT and GET</param>
         /// <param name="obj">The object to PUT</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns>a list of HttpResponseMessage objects, which contain
         /// status codes and return objects (when relevant) for the PUT and GET</returns>
@@ -425,7 +425,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to PUT and GET</param>
         /// <param name="obj">The object to PUT</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="getUri">The URL for the GET request</param>
         /// <param name="postUri">The URL for the POST request</param>
         /// <param name="headUri">The URL for the HEAD request</param>
@@ -553,7 +553,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to PUT and GET</param>
         /// <param name="obj">The object to PUT</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="id">The expected ID of the object to retrieve</param>
         /// <returns>a list of HttpResponseMessage objects, which contain
         /// status codes and return objects (when relevant) for the PUT and GET</returns>
@@ -592,7 +592,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="client">The HttpClient used to POST and GET</param>
         /// <param name="obj">The object to POST</param>
         /// <param name="testDbType">InMemory or Transaction</param>
-        /// <param name="testDb">The name of the test database (often the ConnectionString key)</param>
+        /// <param name="testDb">The name of the test database</param>
         /// <param name="putUri">The URL for the PUT request</param>
         /// <param name="getUri">The URL for the GET request</param>
         /// <param name="headUri">The URL for the HEAD request</param>

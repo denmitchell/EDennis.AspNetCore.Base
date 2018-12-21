@@ -22,10 +22,62 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         #region GetForTest
 
+        /// <summary>
+        /// Sends a Get request, retrieves the result,
+        /// disposes the test database, and returns the result.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: This version of the method uses an 
+        /// in-memory database with a default name
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <typeparam name="T">The object type to GET</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="id">The expected ID of the object to retrieve</param>
+        /// <returns>The GETed object</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static T GetForTest<T>(this HttpClient client, params object[] id) {
             return GetForTest<T>(client, DbType.InMemory, DEFAULT_NAMED_INSTANCE, id);
         }
 
+        /// <summary>
+        /// Sends a Get request, retrieves the result,
+        /// disposes the test database, and returns the result.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <typeparam name="T">The object type to GET</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <param name="id">The expected ID of the object to retrieve</param>
+        /// <returns>The GETed object</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static T GetForTest<T>(this HttpClient client,
             DbType testDbType, string testDb, params object[] id) {
             Uri getUri = client.BaseAddress.At(id);
@@ -33,6 +85,31 @@ namespace EDennis.AspNetCore.Base.Testing {
                 getUri, client.BaseAddress);
         }
 
+        /// <summary>
+        /// Sends a Get request, retrieves the result,
+        /// disposes the test database, and returns the result.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// </summary>
+        /// <typeparam name="T">The object type to GET</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <param name="headUri">The URL for the HEAD request</param>
+        /// <returns>The GETed object</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static T GetForTest<T>(this HttpClient client,
             DbType testDbType, string testDb, Uri getUri, Uri headUri = null) {
 
@@ -72,17 +149,95 @@ namespace EDennis.AspNetCore.Base.Testing {
             return content;
         }
 
+        /// <summary>
+        /// Sends a Get request for a list of objects, 
+        /// retrieves the result, disposes the test database, 
+        /// and returns the result.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: This version of the method uses an 
+        /// in-memory database with a default name
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <typeparam name="T">The object type to GET</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <returns>The GETed list of objects</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static List<T> GetForTestMultiple<T>(this HttpClient client) {
             return GetForTestMultiple<T>(client, DbType.InMemory, DEFAULT_NAMED_INSTANCE,
                 client.BaseAddress, client.BaseAddress);
         }
 
+        /// <summary>
+        /// Sends a Get request for a list of objects, 
+        /// retrieves the result, disposes the test database, 
+        /// and returns the result.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <typeparam name="T">The object type to GET</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <returns>The GETed list of objects</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static List<T> GetForTestMultiple<T>(this HttpClient client,
             DbType testDbType, string testDb) {
             return GetForTestMultiple<T>(client, testDbType, testDb,
                 client.BaseAddress, client.BaseAddress);
         }
 
+        /// <summary>
+        /// Sends a Get request for a list of objects, 
+        /// retrieves the result, disposes the test database, 
+        /// and returns the result.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// </summary>
+        /// <typeparam name="T">The object type to GET</typeparam>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <param name="headUri">The URL for the HEAD request</param>
+        /// <returns>The GETed list of objects</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static List<T> GetForTestMultiple<T>(this HttpClient client,
             DbType testDbType, string testDb,
             Uri getUri, Uri headUri = null) {
@@ -126,6 +281,33 @@ namespace EDennis.AspNetCore.Base.Testing {
         #region TryGetForTest
 
 
+        /// <summary>
+        /// Sends a Get request, retrieves the result,
+        /// disposes the test database, and returns the 
+        /// HttpResponseMessage, which includes the status code.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: This version of the method uses an 
+        /// in-memory database with a default name
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="id">The ID of the object to GET</param>
+        /// <returns>The HttpResponseMessage, which contains the
+        /// status code and may also contain the GETed object</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static HttpResponseMessage TryGetForTest(this HttpClient client,
             params object[] id) {
             Uri getUri = client.BaseAddress.At(id);
@@ -133,6 +315,33 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+        /// <summary>
+        /// Sends a Get request, retrieves the result,
+        /// disposes the test database, and returns the 
+        /// HttpResponseMessage, which includes the status code.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <param name="id">The ID of the object to GET</param>
+        /// <returns>The HttpResponseMessage, which contains the
+        /// status code and may also contain the GETed object</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static HttpResponseMessage TryGetForTest(this HttpClient client,
             DbType testDbType, string testDb, params object[] id) {
             Uri getUri = client.BaseAddress.At(id);
@@ -140,6 +349,32 @@ namespace EDennis.AspNetCore.Base.Testing {
                 getUri, getUri, client.BaseAddress);
         }
 
+        /// <summary>
+        /// Sends a Get request, retrieves the result,
+        /// disposes the test database, and returns the 
+        /// HttpResponseMessage, which includes the status code.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// </summary>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <param name="headUri">The URL for the HEAD request</param>
+        /// <returns>The HttpResponseMessage, which contains the
+        /// status code and may also contain the GETed object</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static HttpResponseMessage TryGetForTest(this HttpClient client,
             DbType testDbType, string testDb,
             Uri getUri, Uri headUri = null) {
@@ -177,12 +412,65 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+        /// <summary>
+        /// Sends a Get request for a list of objects, 
+        /// retrieves the result, disposes the test database, 
+        /// and returns the HttpResponseMessage, which includes 
+        /// the status code.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: This version of the method uses an 
+        /// in-memory database with a default name
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <returns>The HttpResponseMessage, which contains the
+        /// status code and may also contain the GETed list of objects</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static HttpResponseMessage TryGetForTestMultiple(this HttpClient client) {
-
             return TryGetForTestMultiple(client, DbType.InMemory, DEFAULT_NAMED_INSTANCE,
                 client.BaseAddress, client.BaseAddress);
         }
 
+        /// <summary>
+        /// Sends a Get request for a list of objects, 
+        /// retrieves the result, disposes the test database, 
+        /// and returns the HttpResponseMessage, which includes 
+        /// the status code.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// NOTE: this version of the method assumes that
+        /// the GET and HEAD URLs use the base URL for the HttpClient
+        /// </summary>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <returns>The HttpResponseMessage, which contains the
+        /// status code and may also contain the GETed list of objects</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static HttpResponseMessage TryGetForTestMultiple(this HttpClient client,
             DbType testDbType, string testDb) {
 
@@ -191,6 +479,33 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+        /// <summary>
+        /// Sends a Get request for a list of objects, 
+        /// retrieves the result, disposes the test database, 
+        /// and returns the HttpResponseMessage, which includes 
+        /// the status code.
+        /// NOTE: This method assumes that HttpClient's 
+        /// default headers include an X-Testing- header
+        /// </summary>
+        /// <param name="client">The HttpClient used to GET</param>
+        /// <param name="testDbType">InMemory or Transaction</param>
+        /// <param name="testDb">The name of the test database</param>
+        /// <param name="getUri">The URL for the GET request</param>
+        /// <param name="headUri">The URL for the HEAD request</param>
+        /// <returns>The HttpResponseMessage, which contains the
+        /// status code and may also contain the GETed list of objects</returns>
+        /// <see cref="GetForTest{T}(HttpClient, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, object[])"/>
+        /// <see cref="GetForTest{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string)"/>
+        /// <see cref="GetForTestMultiple{T}(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTest(HttpClient, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, object[])"/>
+        /// <see cref="TryGetForTest(HttpClient, DbType, string, Uri, Uri)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string)"/>
+        /// <see cref="TryGetForTestMultiple(HttpClient, DbType, string, Uri, Uri)"/>
         public static HttpResponseMessage TryGetForTestMultiple(this HttpClient client,
             DbType testDbType, string testDb, Uri getUri, Uri headUri = null) {
 
@@ -229,7 +544,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         #endregion
 
     }
-
 
 }
 
