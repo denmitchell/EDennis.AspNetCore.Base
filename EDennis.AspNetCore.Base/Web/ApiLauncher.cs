@@ -38,21 +38,15 @@ namespace EDennis.AspNetCore.Base.Web {
         //the configuration holding API data
         private IConfiguration _config;
 
-        private ILogger<ApiLauncher> _logger;
-
         /// <summary>
         /// Constructs a new ApiLauncher with the
         /// provided configuration
         /// </summary>
         /// <param name="config">configuration holding API data</param>
-        public ApiLauncher(IConfiguration config, ILogger<ApiLauncher> logger) {
-            _logger = logger;
+        public ApiLauncher(IConfiguration config) {
             _config = config;
 
             var configFiles = config.PrintConfigFilePaths();
-            _logger.LogDebug("ApiLauncher started with configs from {files}",
-                configFiles);
-            Debug.WriteLine($"ApiLauncher started with configs from {configFiles[0]}");
 
             StartApis(); //start all of the APIs
         }
@@ -146,9 +140,6 @@ namespace EDennis.AspNetCore.Base.Web {
             //add the current API to the dictionary of running APIs
             _runningApis.Add(startupType, api);
 
-            _logger.LogInformation("Starting {ApiName} @ {BaseAddress}",
-                api.ApiName, api.BaseAddress);
-
             //within a separate thread, launch the IWebHost server
             Task.Run(() => {
                 host.RunAsync();
@@ -164,7 +155,6 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="startupType">A reference to the Startup class</param>
         private void StopApi(Api api, Type startupType) {
             //stop the server
-            _logger.LogInformation("Stopping {ApiName}", api.ApiName);
             if (api.Process != null) {
                 api.Process.StandardInput.Close();
                 api.Process.Close();

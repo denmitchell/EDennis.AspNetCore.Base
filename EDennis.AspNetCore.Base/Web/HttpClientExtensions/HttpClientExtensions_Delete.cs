@@ -63,11 +63,16 @@ namespace EDennis.AspNetCore.Base.Web {
         public static async Task DeleteAsync(
             this HttpClient client, Uri uri) {
 
+            //build the request message object
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Delete,
                 RequestUri = uri
             };
+
+            //send the message and get the response
             var response = await client.SendAsync(msg);
+
+            //return
             return;
         }
 
@@ -90,8 +95,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryDeleteAsync(HttpClient, object[])"/>
         /// <seealso cref="TryDeleteAsync(HttpClient, Uri)"/>
         public static void Delete(
-            this HttpClient client,
-            params object[] id) {
+            this HttpClient client, params object[] id) {
             Delete(client, client.BaseAddress.At(id));
         }
 
@@ -111,10 +115,14 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryDeleteAsync(HttpClient, Uri)"/>
         public static void Delete(
             this HttpClient client, Uri uri) {
+
+            //build the request message object
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Delete,
                 RequestUri = uri
             };
+
+            //send the message and get the response
             var response = client.SendAsync(msg).Result;
         }
 
@@ -140,8 +148,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryDeleteAsync(HttpClient, object[])"/>
         /// <seealso cref="TryDeleteAsync(HttpClient, Uri)"/>
         public static async Task<HttpResponseMessage> TryDeleteAsync(
-            this HttpClient client,
-            params object[] id) {
+            this HttpClient client, params object[] id) {
             return await TryDeleteAsync(client,
                 client.BaseAddress.At(id));
         }
@@ -164,11 +171,16 @@ namespace EDennis.AspNetCore.Base.Web {
         public static async Task<HttpResponseMessage> TryDeleteAsync(
             this HttpClient client, Uri uri) {
 
+            //build the request message
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Delete,
                 RequestUri = uri
             };
+
+            //send the message and get the response
             var response = await client.SendAsync(msg);
+
+            //return the response
             return response;
         }
 
@@ -192,8 +204,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryDeleteAsync(HttpClient, object[])"/>
         /// <seealso cref="TryDeleteAsync(HttpClient, Uri)"/>
         public static HttpResponseMessage TryDelete(
-            this HttpClient client,
-            params object[] id) {
+            this HttpClient client, params object[] id) {
             return TryDelete(client, client.BaseAddress.At(id));
         }
 
@@ -215,11 +226,17 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryDeleteAsync(HttpClient, Uri)"/>
         public static HttpResponseMessage TryDelete(
             this HttpClient client, Uri uri) {
+
+            //build the request message
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Delete,
                 RequestUri = uri
             };
+
+            //send the message and get the response
             var response = client.SendAsync(msg).Result;
+
+            //return the response
             return response;
         }
 

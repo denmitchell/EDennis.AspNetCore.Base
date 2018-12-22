@@ -22,8 +22,7 @@ namespace EDennis.AspNetCore.Base.Web.Launcher.Tests {
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
 
-            ILogger<ApiLauncher> logger = new LoggerFactory().CreateLogger<ApiLauncher>();
-            Launcher = new ApiLauncher(config,logger);
+            Launcher = new ApiLauncher(config);
 
             var apiSections = config.GetSection("ExpectedResponses").GetChildren();
 

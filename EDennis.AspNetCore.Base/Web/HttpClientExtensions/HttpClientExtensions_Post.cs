@@ -1,13 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Text;
-using System.Collections.Generic;
-
-using static EDennis.AspNetCore.Base.Web.TestingActionFilter;
-using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.Extensions.Configuration;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -86,7 +79,6 @@ namespace EDennis.AspNetCore.Base.Web {
             //return the serialized object
             return content;
         }
-
 
         /// <summary>
         /// Performs a synchronous HTTP POST and 
@@ -216,7 +208,6 @@ namespace EDennis.AspNetCore.Base.Web {
             return response;
         }
 
-
         /// <summary>
         /// Performs an synchronous HTTP POST and 
         /// returns the HTTP response message.
@@ -241,7 +232,6 @@ namespace EDennis.AspNetCore.Base.Web {
             this HttpClient client, T obj) {
             return TryPost(client, obj, client.BaseAddress);
         }
-
 
         /// <summary>
         /// Performs a synchronous HTTP POST and 
@@ -277,7 +267,6 @@ namespace EDennis.AspNetCore.Base.Web {
             //return the response message
             return response;
         }
-
 
         #endregion
     }

@@ -18,6 +18,9 @@ namespace EDennis.AspNetCore.Base.Web {
     public interface IApiProxy {
         //object used to communicate with REST Service API
         HttpClient HttpClient { get; set; }
+
+        //the URI for sending a HEAD request for resetting
+        //a database/connection during testing
         Uri ResetUri { get; }
     }
 }

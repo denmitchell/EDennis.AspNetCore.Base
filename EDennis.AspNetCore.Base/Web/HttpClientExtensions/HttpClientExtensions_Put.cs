@@ -1,13 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Text;
-using System.Collections.Generic;
-
-using static EDennis.AspNetCore.Base.Web.TestingActionFilter;
-using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.Extensions.Configuration;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -115,8 +108,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryPutAsync{T}(HttpClient, T, object[])"/>
         /// <seealso cref="TryPutAsync{T}(HttpClient, T, Uri)"/>
         public static T Put<T>(
-            this HttpClient client, T obj,
-            params object[] id) {
+            this HttpClient client, T obj, params object[] id) {
             return Put(client, obj, client.BaseAddress.At(id));
         }
 
@@ -185,12 +177,10 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryPutAsync{T}(HttpClient, T, object[])"/>
         /// <seealso cref="TryPutAsync{T}(HttpClient, T, Uri)"/>
         public static async Task<HttpResponseMessage> TryPutAsync<T>(
-            this HttpClient client, T obj,
-            params object[] id) {
+            this HttpClient client, T obj, params object[] id) {
             return await TryPutAsync(client, obj,
                 client.BaseAddress.At(id));
         }
-
 
         /// <summary>
         /// Performs an asynchronous HTTP PUT and 
@@ -227,7 +217,6 @@ namespace EDennis.AspNetCore.Base.Web {
             return response;
         }
 
-
         /// <summary>
         /// Performs a synchronous HTTP PUT and 
         /// returns the HTTP response message.
@@ -251,8 +240,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <seealso cref="TryPutAsync{T}(HttpClient, T, object[])"/>
         /// <seealso cref="TryPutAsync{T}(HttpClient, T, Uri)"/>
         public static HttpResponseMessage TryPut<T>(
-            this HttpClient client, T obj,
-            params object[] id) {
+            this HttpClient client, T obj, params object[] id) {
             return TryPut(client, obj, client.BaseAddress.At(id));
         }
 

@@ -40,8 +40,7 @@ namespace EDennis.Samples.ExternalApi {
             }
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                var logger = services.BuildServiceProvider().GetService<ILogger<ApiLauncher>>() as ILogger<ApiLauncher>;
-                var launcher = new ApiLauncher(Configuration,logger);
+                var launcher = new ApiLauncher(Configuration);
             }
 
 

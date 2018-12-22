@@ -1,14 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
-using EDennis.Samples.InternalApi1.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
-using System.Linq;
 
 namespace EDennis.Samples.InternalApi1 {
     public class Startup {
@@ -42,12 +38,6 @@ namespace EDennis.Samples.InternalApi1 {
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
                 services.AddSingleton<IDbContextBaseTestCache, DbContextBaseTestCache>();
-                var provider = services.BuildServiceProvider();
-                var cache = provider.GetService<IDbContextBaseTestCache>() as DbContextBaseTestCache;
-                var cacheHashCode = cache.GetHashCode();
-                var configHashCode = Configuration.GetHashCode();
-                var configPaths = Configuration.PrintConfigFilePaths();
-                Debug.WriteLine($"InternalApi1.Startup.ConfigureServices with cache ({cacheHashCode}) and config ({configHashCode}: {configPaths[0]}) ");
             }
 
 
