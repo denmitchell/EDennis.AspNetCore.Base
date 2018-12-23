@@ -1,0 +1,6 @@
+﻿{
+  "ConnectionString": "Server = (localdb)\\mssqllocaldb;Database=Todo;Trusted_Connection=True;MultipleActiveResultSets=True;",
+  "TestJsonSchema": "_maintenance",
+  "TestJsonTable": "TestJson",
+  "ProjectName": "EDennis.Samples.TodoApi"
+}

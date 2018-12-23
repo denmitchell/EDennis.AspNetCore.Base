@@ -46,8 +46,6 @@ namespace EDennis.AspNetCore.Base.Web {
         public ApiLauncher(IConfiguration config) {
             _config = config;
 
-            var configFiles = config.PrintConfigFilePaths();
-
             StartApis(); //start all of the APIs
         }
 
