@@ -37,3 +37,4 @@ exec _maintenance.SaveTestJson 'EDennis.Samples.TodoApi', 'TaskController', 'Pos
 exec _maintenance.SaveTestJson 'EDennis.Samples.TodoApi', 'TaskController', 'Post','PostAndGet','B','Expected', @expected
 
 exec _maintenance.ResetIdentities
+drop table #input;

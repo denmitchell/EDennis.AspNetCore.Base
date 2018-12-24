@@ -49,8 +49,31 @@ namespace EDennis.Samples.TodoApi.Tests {
                 input, DbType.InMemory, _dbName, id);
 
             Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
-
         }
+
+
+        [Theory]
+        [TestJson(className: "TaskController", methodName: "Post", testScenario: "PostAndGet", testCase: "A")]
+        [TestJson(className: "TaskController", methodName: "Post", testScenario: "PostAndGet", testCase: "B")]
+        public void TryPostAndGet(string t, JsonTestCase jsonTestCase) {
+
+            _output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<Task>("Input");
+            var expected = jsonTestCase.GetObject<Task>("Expected");
+
+            var response = _client.TryPostAndGetForTest(
+                input, DbType.InMemory, _dbName, id);
+
+            Assert.True(response[0].StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response[1].StatusCode == System.Net.HttpStatusCode.OK);
+
+            var actual = response[1].Content.ReadAsAsync<Task>().Result;
+            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+        }
+
+
 
         [Theory]
         [TestJson(className: "TaskController", methodName: "Post", testScenario: "PostAndGetMultiple", testCase: "A")]
@@ -68,6 +91,30 @@ namespace EDennis.Samples.TodoApi.Tests {
             Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
 
         }
+
+
+        [Theory]
+        [TestJson(className: "TaskController", methodName: "Post", testScenario: "PostAndGetMultiple", testCase: "A")]
+        [TestJson(className: "TaskController", methodName: "Post", testScenario: "PostAndGetMultiple", testCase: "B")]
+        public void TryPostAndGetMultiple(string t, JsonTestCase jsonTestCase) {
+
+            _output.WriteLine(t);
+
+            var input = jsonTestCase.GetObject<Task>("Input");
+            var expected = jsonTestCase.GetObject<List<Task>>("Expected");
+
+            var response = _client.TryPostAndGetMultipleForTest(
+                input, DbType.InMemory, _dbName);
+
+            Assert.True(response[0].StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response[1].StatusCode == System.Net.HttpStatusCode.OK);
+
+            var actual = response[1].Content.ReadAsAsync<List<Task>>().Result;
+
+            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+
+        }
+
 
         [Theory]
         [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGet", testCase: "A")]
@@ -89,6 +136,28 @@ namespace EDennis.Samples.TodoApi.Tests {
 
 
         [Theory]
+        [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGet", testCase: "A")]
+        [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGet", testCase: "B")]
+        public void TryPutAndGet(string t, JsonTestCase jsonTestCase) {
+
+            _output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<Task>("Input");
+            var expected = jsonTestCase.GetObject<Task>("Expected");
+
+            var response = _client.TryPutAndGetForTest(
+                input, DbType.InMemory, _dbName, id);
+
+            Assert.True(response[0].StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response[1].StatusCode == System.Net.HttpStatusCode.OK);
+
+            var actual = response[1].Content.ReadAsAsync<Task>().Result;
+            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+        }
+
+
+        [Theory]
         [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGetMultiple", testCase: "A")]
         [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGetMultiple", testCase: "B")]
         public void PutAndGetMultiple(string t, JsonTestCase jsonTestCase) {
@@ -106,6 +175,31 @@ namespace EDennis.Samples.TodoApi.Tests {
 
         }
 
+
+        [Theory]
+        [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGetMultiple", testCase: "A")]
+        [TestJson(className: "TaskController", methodName: "Put", testScenario: "PutAndGetMultiple", testCase: "B")]
+        public void TryPutAndGetMultiple(string t, JsonTestCase jsonTestCase) {
+
+            _output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<Task>("Input");
+            var expected = jsonTestCase.GetObject<List<Task>>("Expected");
+
+            var response = _client.TryPutAndGetMultipleForTest(
+                input, DbType.InMemory, _dbName, id);
+
+            Assert.True(response[0].StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response[1].StatusCode == System.Net.HttpStatusCode.OK);
+
+            var actual = response[1].Content.ReadAsAsync<List<Task>>().Result;
+
+            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+
+        }
+
+
         [Theory]
         [TestJson(className: "TaskController", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "A")]
         [TestJson(className: "TaskController", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "B")]
@@ -122,6 +216,29 @@ namespace EDennis.Samples.TodoApi.Tests {
             Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
 
         }
+
+        [Theory]
+        [TestJson(className: "TaskController", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "A")]
+        [TestJson(className: "TaskController", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "B")]
+        public void TryDeleteAndGetMultiple(string t, JsonTestCase jsonTestCase) {
+
+            _output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Task>>("Expected");
+
+            var response = _client.TryDeleteAndGetMultipleForTest<Task>(
+                DbType.InMemory, _dbName, id);
+
+            Assert.True(response[0].StatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(response[1].StatusCode == System.Net.HttpStatusCode.OK);
+
+            var actual = response[1].Content.ReadAsAsync<List<Task>>().Result;
+
+            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+
+        }
+
 
     }
 }
