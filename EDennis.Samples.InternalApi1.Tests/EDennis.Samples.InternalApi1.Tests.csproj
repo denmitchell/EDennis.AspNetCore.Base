@@ -38,4 +38,10 @@
     <ProjectReference Include="..\EDennis.Samples.InternalApi1\EDennis.Samples.InternalApi1.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestJsonConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -34,24 +34,24 @@ namespace EDennis.Samples.TodoApi.Controllers {
         }
 
         [HttpPost]
-        public void Post([FromBody] Models.Task task) {
-            _repo.Create(task);
+        public Models.Task Post([FromBody] Models.Task task) {
+            return _repo.Create(task);
         }
 
         [HttpPost("async")]
-        public async System.Threading.Tasks.Task PostAsync([FromBody] Models.Task task) {
-            await _repo.CreateAsync(task);
+        public async System.Threading.Tasks.Task<Models.Task> PostAsync([FromBody] Models.Task task) {
+            return await _repo.CreateAsync(task);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Models.Task task) {
-            _repo.Update(task);
+        public Models.Task Put(int id, [FromBody] Models.Task task) {
+            return _repo.Update(task);
         }
 
         [HttpPut("async/{id}")]
-        public async System.Threading.Tasks.Task PutAsync(
+        public async System.Threading.Tasks.Task<Models.Task> PutAsync(
             int id, [FromBody] Models.Task task) {
-            await _repo.UpdateAsync(task);
+            return await _repo.UpdateAsync(task);
         }
 
         [HttpDelete("{id}")]
