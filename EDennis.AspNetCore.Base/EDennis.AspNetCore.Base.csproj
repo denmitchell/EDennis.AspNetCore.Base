@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>A library that supports ASP.NET Core MVC development with a repository pattern and various classes that make it easier to perform unit/integration testing in a three-tier architecture.</Description>
+    <Copyright>Dennis C. Mitchell, 2018</Copyright>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;v=4</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</PackageProjectUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
+    <PackageTags>Repository ASP.NET API Launcher Testing</PackageTags>
+    <PackageReleaseNotes>This is the initial release for NuGet.  This library is the next generation of EDennis.EFBase -- supporting testing with in-memory databases.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
