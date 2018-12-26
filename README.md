@@ -24,6 +24,5 @@ The current library has a number of features that assist with application develo
   - ProxyController, which is designed to work with one or more API classes backed by HttpClient instances
 
 ## Constraints
-- Currently, the libraries have minimal exception-handling.  
-- Currently, the ApiLauncher will simply fail if the target port for an API is unavailable.
+- The ApiLauncher will fail if the target port for an API is unavailable.
 - In order for the ApiLauncher to work appropriately with spot-testing a master Api (one that calls other APIs), the master Api must be launched using the project profile (with a port in an acceptable range), rather than using IIS Express.  To reset sequences/identities at the end of a spot-testing session, be sure to suspend the application by pressing CTRL-C in the command window, rather than by closing the browser window/tab.  (Upon restarting spot-testing, identities and sequences will be reset, just in case.)
