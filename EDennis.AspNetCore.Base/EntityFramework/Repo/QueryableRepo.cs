@@ -21,10 +21,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TContext : DbContext {
 
         //reference to DbContext class
-        protected TContext Context { get; }
+        public TContext Context { get; set; }
 
         //reference to the underlying DbQuery (analogous to DbSet)
-        protected DbQuery<TEntity> _dbquery;
+        public DbQuery<TEntity> DbQuery { get; set; }
 
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             Context = context;
 
             //get a reference to the DbQuery
-            _dbquery = Context.Query<TEntity>();
+            DbQuery = Context.Query<TEntity>();
         }
 
 
@@ -48,7 +48,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="pageSize">The number of record per page</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual List<TEntity> GetByLinq(Expression<Func<TEntity, bool>> linqExpression, int pageNumber, int pageSize) {
-            return _dbquery.Where(linqExpression)
+            return DbQuery.Where(linqExpression)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -63,7 +63,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="pageSize">The number of record per page</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual async Task<List<TEntity>> GetByLinqAsync(Expression<Func<TEntity, bool>> linqExpression, int pageNumber, int pageSize) {
-            return await _dbquery.Where(linqExpression)
+            return await DbQuery.Where(linqExpression)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -79,7 +79,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="parameters">an array of parameters for the SQL statement</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual List<TEntity> GetFromSql(string sql, int pageNumber, int pageSize, params object[] parameters) {
-            return _dbquery.FromSql(sql,parameters)
+            return DbQuery.FromSql(sql,parameters)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -95,7 +95,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="parameters">an array of parameters for the SQL statement</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql, int pageNumber, int pageSize, params object[] parameters) {
-            return await _dbquery.FromSql(sql, parameters)
+            return await DbQuery.FromSql(sql, parameters)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

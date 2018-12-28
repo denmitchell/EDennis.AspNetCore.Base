@@ -10,12 +10,14 @@
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
     <PackageTags>Repository ASP.NET API Launcher Testing</PackageTags>
-    <PackageReleaseNotes>This is the initial release for NuGet.  This library is the next generation of EDennis.EFBase -- supporting testing with in-memory databases.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added a base Hub for SignalR that supports integration testing.  Exposed DbSet, DbQuery, and Context properties for the base repository classes</PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="EDennis.MigrationsExtensions" Version="1.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

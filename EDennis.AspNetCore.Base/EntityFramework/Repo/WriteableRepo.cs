@@ -20,8 +20,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TEntity : class, new()
             where TContext : DbContextBase {
 
-        protected TContext Context { get; set; }
-        protected DbSet<TEntity> _dbset;
+        public TContext Context { get; set; }
+        public DbSet<TEntity> DbSet { get; set; }
 
         //whether this repo has a testing instance of DbContextBase
         public bool IsTestingInstance { get; set; } = false;
@@ -35,7 +35,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             Context = context;
 
             //get a reference to the DbSet
-            _dbset = Context.Set<TEntity>();
+            DbSet = Context.Set<TEntity>();
         }
 
 
@@ -45,7 +45,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
         public virtual TEntity GetById(params object[] keyValues) {
-            return _dbset.Find(keyValues);
+            return DbSet.Find(keyValues);
         }
 
 
@@ -55,7 +55,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
         public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
-            return await _dbset.FindAsync(keyValues);
+            return await DbSet.FindAsync(keyValues);
             //without _dbSet ...
             //return await Context.FindAsync<TEntity>(keyValues);
         }
@@ -69,7 +69,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="pageSize">The number of record per page</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual List<TEntity> GetByLinq(Expression<Func<TEntity, bool>> linqExpression, int pageNumber, int pageSize) {
-            return _dbset.Where(linqExpression)
+            return DbSet.Where(linqExpression)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -90,7 +90,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="pageSize">The number of record per page</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual async Task<List<TEntity>> GetByLinqAsync(Expression<Func<TEntity, bool>> linqExpression, int pageNumber, int pageSize) {
-            return await _dbset.Where(linqExpression)
+            return await DbSet.Where(linqExpression)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -105,7 +105,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key values</param>
         /// <returns></returns>
         public async Task<Boolean> ExistsAsync(params object[] keyValues) {
-            var x = await _dbset.FindAsync(keyValues);
+            var x = await DbSet.FindAsync(keyValues);
             var exists = (x != null);
             Context.Entry(x).State = EntityState.Detached;
             return exists;
@@ -120,7 +120,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key values</param>
         /// <returns>true if an entity with the provided keys exists</returns>
         public bool Exists(params object[] keyValues) {
-            var x = _dbset.Find(keyValues);
+            var x = DbSet.Find(keyValues);
             var exists = (x != null);
             Context.Entry(x).State = EntityState.Detached;
             return exists;
@@ -158,7 +158,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            _dbset.Add(entity);
+            DbSet.Add(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
@@ -210,9 +210,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     $"Cannot delete a null {entity.GetType().Name}");
 
             if (Context.Entry(entity).State == EntityState.Detached)
-                _dbset.Attach(entity);
+                DbSet.Attach(entity);
 
-            _dbset.Remove(entity);
+            DbSet.Remove(entity);
             Context.SaveChanges();
         }
 
@@ -226,9 +226,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     $"Cannot delete a null {entity.GetType().Name}");
 
             if (Context.Entry(entity).State == EntityState.Detached)
-                _dbset.Attach(entity);
+                DbSet.Attach(entity);
 
-            _dbset.Remove(entity);
+            DbSet.Remove(entity);
             await Context.SaveChangesAsync();
         }
 
@@ -237,7 +237,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
         public virtual void Delete(params object[] keyValues) {
-            TEntity entity = _dbset.Find(keyValues);
+            TEntity entity = DbSet.Find(keyValues);
             if (entity == null)
                 throw new MissingEntityException(
                     $"Cannot find {new TEntity().GetType().Name} object with key value = {PrintKeys(keyValues)}");
@@ -250,7 +250,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
         public virtual async Task DeleteAsync(params object[] keyValues) {
-            TEntity entity = _dbset.Find(keyValues);
+            TEntity entity = DbSet.Find(keyValues);
             if (entity == null)
                 throw new MissingEntityException(
                     $"Cannot find {new TEntity().GetType().Name} object with key value = {PrintKeys(keyValues)}");
@@ -272,7 +272,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="parameters">an array of parameters for the SQL statement</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual List<TEntity> GetFromSql(string sql, int pageNumber, int pageSize, params object[] parameters) {
-            return _dbset.FromSql(sql, parameters)
+            return DbSet.FromSql(sql, parameters)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -288,7 +288,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="parameters">an array of parameters for the SQL statement</param>
         /// <returns>A list of all TEntity objects</returns>
         public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql, int pageNumber, int pageSize, params object[] parameters) {
-            return await _dbset.FromSql(sql, parameters)
+            return await DbSet.FromSql(sql, parameters)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
