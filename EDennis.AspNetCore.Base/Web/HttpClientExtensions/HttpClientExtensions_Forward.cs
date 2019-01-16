@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -30,7 +31,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="url">The target URL</param>
         /// <returns>An HttpResponseMessage returned by the HttpClient</returns>
         [UnTested]
-        public static HttpResponseMessage Forward(this HttpClient client, HttpContext context, string url) {
+        public static ActionResult Forward<TEntity>(this HttpClient client, HttpContext context, string url) {
 
             #warning Untested code in this method.
             //initialize the HttpRequestMessage
@@ -47,9 +48,7 @@ namespace EDennis.AspNetCore.Base.Web {
             // if a body exists, copy it to the message
             if (req.Body != null &&
                 (req.Method.ToUpper() == "POST"
-                ||
-                req.Method.ToUpper() == "PUT")
-                )
+                || req.Method.ToUpper() == "PUT"))
                 msg.Content = new StreamContent(req.Body);
             //needed??? msg.Content.Headers.ContentType = new MediaTypeHeaderValue(req.ContentType);
             //using (StreamReader reader = new StreamReader(req.Body, Encoding.UTF8)) {
@@ -81,8 +80,27 @@ namespace EDennis.AspNetCore.Base.Web {
             //send the message and record the response
             var response = client.SendAsync(msg).Result;
 
-            //return the HttpResponseMessage
-            return response;
+            //get the status code of the response
+            var statusCode = (int)response.StatusCode;
+
+            //return the appropriate ActionResult ...
+
+            //StatusCodeResult ...
+            if (statusCode != 200)
+                return new StatusCodeResult(statusCode);
+
+            //ObjectResult ...
+            if (msg.Method == HttpMethod.Post 
+                || msg.Method == HttpMethod.Put
+                || msg.Method == HttpMethod.Get) {
+                var obj = response.GetObject<TEntity>();
+                var result = new ObjectResult(obj);
+                return result;
+            } else {
+                var result = new StatusCodeResult(statusCode);
+                return result;
+            }
+
         }
 
 

@@ -111,8 +111,9 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="api">Api object</param>
         private void StartApi(Api api) {
 
-            //load the relevant DLL
-            var apiAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(api.AssemblyPath);
+            //load the relevant DLL (and dependent DLLs
+            var apiAssembly = AssemblyLoader.LoadFromAssemblyPath(api.AssemblyPath);
+
             //get a reference to the Startup class
             var startupType = apiAssembly.GetType(api.StartupNamespaceAndClass);
 
@@ -126,8 +127,12 @@ namespace EDennis.AspNetCore.Base.Web {
             .UseContentRoot(api.LocalProjectDirectory)
             .ConfigureAppConfiguration(options => {
                 options.SetBasePath(api.LocalProjectDirectory);
-                options.AddJsonFile(api.LocalProjectDirectory + "\\appsettings.json");
-                options.AddJsonFile(api.LocalProjectDirectory + "\\appsettings.Development.json");
+                options.AddJsonFile(api.LocalProjectDirectory + "\\appsettings.json",true);
+                options.AddJsonFile(api.LocalProjectDirectory + "\\appsettings.Development.json",true);
+                options.AddInMemoryCollection(
+                    new KeyValuePair<string, string>[] 
+                    { new KeyValuePair<string, string>(
+                        "LaunchContext", "ApiLauncher") });
             })
             .UseUrls(api.BaseAddress)
             .Build();

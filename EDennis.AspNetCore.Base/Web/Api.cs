@@ -60,6 +60,8 @@ namespace EDennis.AspNetCore.Base.Web {
         public string LocalProjectDirectory { get => $"{_repoDir}{SolutionName}\\{ProjectName}"; }
 
         //the path to the DLL on the local computer
+        public string AssemblyName { get => $"{ProjectName}.dll"; }
+        public string AssemblyFolder { get => $"{LocalProjectDirectory}\\bin\\Debug\\netcoreapp{NetCoreAppVersion.ToString("F1")}"; }
         public string AssemblyPath { get => $"{LocalProjectDirectory}\\bin\\Debug\\netcoreapp{NetCoreAppVersion.ToString("F1")}\\{ProjectName}.dll"; }
     }
 
