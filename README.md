@@ -22,6 +22,11 @@ The current library has a number of features that assist with application develo
 - Two types of Controllers
   - RepoController, which is designed to work with one or more repository classes backed by Entity Framework
   - ProxyController, which is designed to work with one or more API classes backed by HttpClient instances
+- Default security for users and clients
+  - AutologinMiddleware, which allows configuration of users that can be automatically logged on during different launch configurations
+  - MockClientAuthorizationMiddleware, which allows configuration of OAuth clients for which access tokens are automatically generated during different launch configurations (especially helpful if you are spot-testing with Swagger)
+  - AddDefaultAuthorizationPolicyConvention, which automatically adds Authorize policies to controllers and action methods (obviating the need for the Authorize attribute)
+  - AddClientAuthenticationAndAuthorizationWithDefaultPolicies, which is an IServiceCollection extension method that uses reflection to automatically assign default, scope-defined policies to controllers and action methods.
 
 ## Constraints
 - The ApiLauncher will fail if the target port for an API is unavailable.
