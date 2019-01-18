@@ -159,10 +159,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services) {
-            var callingAssembly = Assembly.GetEntryAssembly();
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
             var env = provider.GetRequiredService<IHostingEnvironment>();
+
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a=>a.FullName.Contains(env.ApplicationName + ",")).FirstOrDefault();
 
             var authority = config["IdentityServer:Authority"];
             if (authority == null)
@@ -176,7 +177,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     options.Audience = env.ApplicationName;
                 });
 
-            services.AddAuthorizationWithDefaultPolicies(callingAssembly);
+            services.AddAuthorizationWithDefaultPolicies(assembly);
 
         }
 

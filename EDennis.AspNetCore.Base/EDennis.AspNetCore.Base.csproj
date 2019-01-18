@@ -10,8 +10,8 @@
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
     <PackageTags>Repository ASP.NET API Launcher Testing</PackageTags>
-    <PackageReleaseNotes>Added classes for default security -- for users and clients (supporting Identity Server).  Also, updated ApiLauncher to ensure that dependent DLLs are loaded.</PackageReleaseNotes>
-    <Version>1.2.0</Version>
+    <PackageReleaseNotes>Updated AddClientAuthenticationAndAuthorizationWithDefaultPolicies to work with unit/integration tests (where the calling assembly is the test host).</PackageReleaseNotes>
+    <Version>1.3.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
