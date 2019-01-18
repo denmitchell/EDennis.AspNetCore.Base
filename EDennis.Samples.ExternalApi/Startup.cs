@@ -39,9 +39,9 @@ namespace EDennis.Samples.ExternalApi {
                 });
             }
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                var launcher = new ApiLauncher(Configuration);
-            }
+            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            //    var launcher = new ApiLauncher(Configuration);
+            //}
 
 
         }

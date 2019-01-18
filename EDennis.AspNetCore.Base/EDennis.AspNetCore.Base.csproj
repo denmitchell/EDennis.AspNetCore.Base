@@ -10,8 +10,8 @@
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
     <PackageTags>Repository ASP.NET API Launcher Testing</PackageTags>
-    <PackageReleaseNotes>Added a base Hub for SignalR that supports integration testing.  Exposed DbSet, DbQuery, and Context properties for the base repository classes</PackageReleaseNotes>
-    <Version>1.1.0</Version>
+    <PackageReleaseNotes>Added classes for default security -- for users and clients (supporting Identity Server).  Also, updated ApiLauncher to ensure that dependent DLLs are loaded.</PackageReleaseNotes>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

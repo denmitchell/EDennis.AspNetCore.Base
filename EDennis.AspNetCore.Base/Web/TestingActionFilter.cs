@@ -108,10 +108,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 else if (header.Key == HDR_ROLLBACK_TRANSACTION)
                     cache.DropTestingTransactionContexts(header.Value);
 
-                //use an in-memory database (adding it if necessary)
-                else if (header.Key == HDR_USE_INMEMORY)
-                    dict = cache.GetOrAddInMemoryContexts(header.Value);
-
                 //use a testing-transaction (adding it if necessary)
                 else if (header.Key == HDR_USE_TRANSACTION)
                     dict = cache.GetOrAddTestingTransactionContexts(header.Value);

@@ -36,6 +36,12 @@ namespace EDennis.Samples.InternalApi1.Controllers {
                 return Ok(employee);
         }
 
+        [HttpGet("check")]
+        public IActionResult Check() {
+            return Ok(new { Status = "Ok" });
+        }
+
+
         [ApiExplorerSettings(IgnoreApi = true)]
         [NonAction]
         public override void ReplaceRepos(Dictionary<string, DbContextBase> dict) {

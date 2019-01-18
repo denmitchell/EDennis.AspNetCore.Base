@@ -2,19 +2,27 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web.Launcher.Tests {
 
     public class ExpectedResponses {
-        public string ApiName { get; set; }
+        public int Port { get; set; }
         public string ExpectedResponse { get; set; }
+    }
+    public class Urls {
+        public int Port { get; set; }
+        public string Url { get; set; }
     }
 
     public class ApiFixture : IDisposable {
 
         public List<ExpectedResponses> ExpectedResponses
             = new List<ExpectedResponses>();
-        public ApiLauncher Launcher { get; set; }
+        public List<Urls> Urls
+            = new List<Urls>();
+
+        private ApiLauncher launcher = new ApiLauncher();
 
         public ApiFixture() {
 
@@ -22,15 +30,26 @@ namespace EDennis.AspNetCore.Base.Web.Launcher.Tests {
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
 
-            Launcher = new ApiLauncher(config);
+            launcher.StartApis(config);
 
             var apiSections = config.GetSection("ExpectedResponses").GetChildren();
 
             foreach (var apiSection in apiSections) {
                 ExpectedResponses.Add(
                     new ExpectedResponses {
-                        ApiName = apiSection.Key,
+                        Port = int.Parse(apiSection.Key),
                         ExpectedResponse = apiSection.Value
+                    });
+            }
+
+
+            apiSections = config.GetSection("Urls").GetChildren();
+
+            foreach (var apiSection in apiSections) {
+                Urls.Add(
+                    new Urls {
+                        Port = int.Parse(apiSection.Key),
+                        Url = apiSection.Value
                     });
             }
 
@@ -44,7 +63,7 @@ namespace EDennis.AspNetCore.Base.Web.Launcher.Tests {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    Launcher.Dispose();
+                    launcher.StopApis();
                 }
                 disposedValue = true;
             }

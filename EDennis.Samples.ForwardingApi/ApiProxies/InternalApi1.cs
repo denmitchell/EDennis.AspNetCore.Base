@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace EDennis.Samples.ForwardingApi {
 
@@ -25,6 +26,13 @@ namespace EDennis.Samples.ForwardingApi {
             return emp;
         }
 
+        public async Task<Employee> CreateEmployeeAsync(HttpRequest httpRequest, Employee employee) {
+            var url = HttpClient.BaseAddress.ToString();
+            var response = await HttpClient.ForwardRequestAsync(httpRequest,employee,url);
+            var emp = await response.GetObjectAsync<Employee>();
+            return emp;
+        }
+
 
         public Employee UpdateEmployee(Employee employee, int id) {
             var emp = HttpClient.Put(employee, id);
@@ -42,18 +50,12 @@ namespace EDennis.Samples.ForwardingApi {
             return emp;
         }
 
-        public HttpResponseMessage Forward(HttpContext context, int id) {
-            var url = HttpClient.BaseAddress.At(id).ToString();
-            var response = HttpClient.Forward(context, url);
-            return response;
+        public async Task<Employee> GetEmployeeAsync(HttpRequest httpRequest, int employeeId) {
+            var url = HttpClient.BaseAddress.At(employeeId).ToString();
+            var response = await HttpClient.ForwardRequestAsync(httpRequest, url);
+            var emp = await response.GetObjectAsync<Employee>();
+            return emp;
         }
-
-        public HttpResponseMessage Forward(HttpContext context) {
-            var url = HttpClient.BaseAddress.ToString();
-            var response = HttpClient.Forward(context, url);
-            return response;
-        }
-
 
     }
 }

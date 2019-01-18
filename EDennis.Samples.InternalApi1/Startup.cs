@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.JsonUtils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +20,15 @@ namespace EDennis.Samples.InternalApi1 {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc(options=> {
+            services.AddMvc(options => {
                 if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
                     options.Filters.Add<TestingActionFilter>();
-                }                
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                }
+            })
+            .AddJsonOptions(opt => {
+                opt.SerializerSettings.Converters.Add(new SafeJsonConverter());
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContextPools(Configuration);
             services.AddRepos();

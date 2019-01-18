@@ -2,6 +2,7 @@
 using EDennis.Samples.ForwardingApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace EDennis.Samples.ForwardingApi.Controllers {
 
@@ -26,10 +27,26 @@ namespace EDennis.Samples.ForwardingApi.Controllers {
             return msg;
         }
 
+
+        [HttpPost("via-forward")]
+        public async Task<ActionResult<Employee>> CreateEmployeeViaForward([FromBody] Employee employee) {
+            var emp = await _internalApi1.CreateEmployeeAsync(HttpContext.Request,employee);
+            return emp;
+        }
+
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployee(
             [FromRoute] int id) {
             var employee = _internalApi1.GetEmployee(id);
+            if (employee == null)
+                return NotFound();
+            else
+                return Ok(employee);
+        }
+
+        [HttpGet("via-forward/{id}")]
+        public ActionResult<Employee> GetEmployeeViaForward([FromRoute] int id) {
+            var employee = _internalApi1.GetEmployeeAsync(HttpContext.Request,id);
             if (employee == null)
                 return NotFound();
             else
@@ -46,7 +63,7 @@ namespace EDennis.Samples.ForwardingApi.Controllers {
                 return Ok(employee);
         }
 
-        [HttpPut("{id}")]
+        [HttpDelete("{id}")]
         public void DeleteEmployee(
             [FromRoute] int id) {
             _internalApi1.DeleteEmployee(id);

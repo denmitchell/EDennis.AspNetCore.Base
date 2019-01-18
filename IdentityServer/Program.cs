@@ -14,7 +14,7 @@ namespace IdentityServer {
     public class Program {
 
         public static void Main(string[] args) {
-            Console.Title = "IdentityServer4";
+            //Console.Title = "IdentityServer4";
             CreateWebHostBuilder(args).Build().Run();
         }
 

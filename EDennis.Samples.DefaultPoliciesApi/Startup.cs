@@ -45,10 +45,9 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 });
             }
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                var launcher = new ApiLauncher(Configuration);
-                //Thread.Sleep(10000);
-            }
+            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            //    var launcher = new ApiLauncher(Configuration);
+            //}
 
         }
 

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace EDennis.Samples.ForwardingApi {
     public class Startup {
@@ -32,10 +33,15 @@ namespace EDennis.Samples.ForwardingApi {
 
             services.AddHttpClients(Configuration);
 
-
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                var launcher = new ApiLauncher(Configuration);
+                services.AddSwaggerGen(c => {
+                    c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                });
             }
+
+            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            //    var launcher = new ApiLauncher(Configuration);
+            //}
 
 
         }
@@ -44,6 +50,14 @@ namespace EDennis.Samples.ForwardingApi {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+            }
+
+            if (env.EnvironmentName == EnvironmentName.Development) {
+                app.UseSwagger();
+
+                app.UseSwaggerUI(c => {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
             }
 
             app.UseMvc();

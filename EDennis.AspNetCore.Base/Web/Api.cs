@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -27,9 +26,6 @@ namespace EDennis.AspNetCore.Base.Web {
             _repoDir = $"C:\\Users\\{Environment.UserName}\\source\\repos\\";
         }
 
-        //a reference to an in-memory server
-        public IWebHost Host { get; set; }
-
         //a reference to the process (when needed)
         public Process Process { get; set; }
 
@@ -42,27 +38,32 @@ namespace EDennis.AspNetCore.Base.Web {
         //the name of the VS project for the web api
         public string ProjectName { get; set; }
 
-        //the SDK version
-        public decimal NetCoreAppVersion { get; set; }
+        //the full path to the project.  This setting is
+        //not needed if the default project path is used
+        //c:\Users\{USER_PROFILE}\sources\repos\{SolutionName}\{ProjectName}
+        public string FullProjectPath { get; set; }
 
-        //the server's base address ({protocol}://{hostname}:{port}/)
-        public string BaseAddress{ get; set; }
+        //launch profile to use (note: this will set the port)
+        public string LaunchProfile { get; set; }
+
+        //the server's port
+        public int Port { get; set; }
 
         //Holds all of the URLs for each controller associated with an api.
         //For microservices, this is often just a single controller/URL
         public Dictionary<string, string> ControllerUrls { get; set; }
             = new Dictionary<string, string>();
 
-        //the fully qualified name of the Startup class
-        public string StartupNamespaceAndClass { get => $"{ProjectName}.Startup"; }
 
         //the path to the project on the development computer
-        public string LocalProjectDirectory { get => $"{_repoDir}{SolutionName}\\{ProjectName}"; }
+        public string LocalProjectDirectory {
+            get {
+                if (FullProjectPath == null)
+                    return $"{_repoDir}{SolutionName}\\{ProjectName}";
+                else
+                    return FullProjectPath;
+            }
+        }
 
-        //the path to the DLL on the local computer
-        public string AssemblyName { get => $"{ProjectName}.dll"; }
-        public string AssemblyFolder { get => $"{LocalProjectDirectory}\\bin\\Debug\\netcoreapp{NetCoreAppVersion.ToString("F1")}"; }
-        public string AssemblyPath { get => $"{LocalProjectDirectory}\\bin\\Debug\\netcoreapp{NetCoreAppVersion.ToString("F1")}\\{ProjectName}.dll"; }
     }
-
 }

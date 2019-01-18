@@ -1,72 +1,90 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Loader;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-using System.Threading;
 
 namespace EDennis.AspNetCore.Base.Web {
-
     /// <summary>
-    /// This class is used to launch one or more
-    /// Api dependencies.  The class can be used by
-    /// an integration test or by a web application
-    /// (e.g., for Swagger-oriented spot-testing).
-    /// In the latter case, ApiLauncher should be
-    /// dependency-injected as a singleton.  Note
-    /// that the class depends upon the existence
-    /// of an "Apis" section in the config
-    /// (e.g., appsettings.Development.json) which
-    /// has one or more named APIs (key), whose 
-    /// properties include: SolutionName, ProjectName,
-    /// NetCoreAppVersion, BaseAddress and 
-    /// ControllerUrls.
-    /// The development BaseAddress must be unique
-    /// across all dependent APIs listed.
+    /// This class is a testing tool -- used to launch 
+    /// one or more Api dependencies when in Development.  
+    /// 
+    /// To use the ApiLauncher ...
+    /// (1) Ensure that all projects are in the default
+    /// directory structure: c:\users\{USER_PROFILE}\sources\repos\{SolutionName}\{ProjectName};
+    /// otherwise, you must use the ProjectFullPath property in
+    /// appsettings.Development.json.
+    /// (2) Add an Apis section to appsettings.Development.json.  EXAMPLE:
+    ///   "Apis": {
+    ///       "IdentityServer": {
+    ///           "SolutionName": "EDennis.AspNetCore.Base",
+    ///           "ProjectName": "IdentityServer",
+    ///           "Port": 5006
+    ///       },
+    ///       "InternalApi1": {
+    ///           "LaunchProfile":  "AltProfile",
+    ///           "SolutionName": "EDennis.AspNetCore.Base",
+    ///           "ProjectName": "EDennis.Samples.InternalApi1",
+    ///           "Port": 5007
+    ///       }
+    ///   }
+    /// (3) Ensure that appsettings.Development.json is marked as
+    ///     Copy always or Copy if newer.
+    /// (4) In Program.cs, replace the Main method body with the
+    ///     following:
+    ///         CreateWebHostBuilder(args).BuildAndRunWithLauncher();
     /// </summary>
-    public partial class ApiLauncher : IDisposable {
+    public class ApiLauncher : IDisposable {
 
-        //a dictionary of APIs that are running on an in-memory server 
-        private Dictionary<Type, Api> _runningApis
-            = new Dictionary<Type, Api>();
+        //holds references to all launched APIs
+        private Dictionary<int, Api> _runningApis
+            = new Dictionary<int, Api>();
 
-        //the configuration holding API data
-        private IConfiguration _config;
+        //used to synchronize access to the Console's title bar.
+        private static object _lockObj = new object();
+
 
         /// <summary>
-        /// Constructs a new ApiLauncher with the
-        /// provided configuration
+        /// Starts the APIs using the Program class's IWebHostBuilder
+        /// to obtain the Environment name and port setting
         /// </summary>
-        /// <param name="config">configuration holding API data</param>
-        public ApiLauncher(IConfiguration config) {
-            _config = config;
+        /// <param name="builder">Program class's IWebHostBuilder</param>
+        public void StartApis(IWebHostBuilder builder) {
 
-            StartApis(); //start all of the APIs
+            //get the port setting (does not work with IIS)
+            var portSetting = builder.GetSetting("Urls");
+            if (portSetting != null) {
+                var port = portSetting.Replace("https", "").Replace("http", "").Replace("://localhost:", "");
+
+                lock (_lockObj) {
+                    Console.Title += $"({port})";
+                }
+            }
+
+            //read in appsettings.Development.json
+            var config = new ConfigurationBuilder();
+            config.SetBasePath(AppContext.BaseDirectory);
+            config.AddJsonFile("appsettings.Development.json");
+
+            //start the APIs, passing in the configuration
+            StartApis(config.Build());
         }
 
-        /// <summary>
-        /// Retrieves data about the API, based
-        /// upon the API name
-        /// </summary>
-        /// <param name="apiName">Name/Key for the API</param>
-        /// <returns>an API object holding data</returns>
-        public Api GetApi(string apiName) {
-            return _runningApis
-                .Where(a => a.Value.ApiName == apiName)
-                .FirstOrDefault().Value;
-        }
 
         /// <summary>
-        /// Starts all APIs referenced in the configuration
+        /// Starts all APIs referenced in configuration
         /// </summary>
-        private void StartApis() {
+        /// <param name="config">Configuration holding data for APIs</param>
+        public void StartApis(IConfiguration config) {
+
             //get the API data from the configuration
-            var apiSections = _config.GetSection("Apis").GetChildren();
+            var apiSections = config.GetSection("Apis").GetChildren();
 
             //iterate over all API data
             foreach (var apiSection in apiSections) {
@@ -79,9 +97,9 @@ namespace EDennis.AspNetCore.Base.Web {
                     ApiName = apiSection.Key,
                     SolutionName = apiSection["SolutionName"],
                     ProjectName = apiSection["ProjectName"],
-                    NetCoreAppVersion = decimal.Parse(apiSection["NetCoreAppVersion"]),
-                    BaseAddress = apiSection["BaseAddress"],
-                    ControllerUrls = controllerUrls
+                    FullProjectPath = apiSection["FullProjectPath"],
+                    Port = int.Parse(apiSection["Port"]),
+                    LaunchProfile = apiSection["LaunchProfile"]
                 };
 
                 //start the API
@@ -89,84 +107,114 @@ namespace EDennis.AspNetCore.Base.Web {
             }
         }
 
-        /// <summary>
-        /// Stops all running APIs
-        /// </summary>
-        private void StopApis() {
-            //get a collection of all API Startup classes
-            var startupTypes = _runningApis.Keys.ToList();
-
-            //iterate over all API Startup classes
-            foreach (var type in startupTypes) {
-                //retrieve the API
-                var api = _runningApis[type];
-                //stop the API
-                StopApi(api, type);
-            }
-        }
 
         /// <summary>
         /// Starts the API in a new thread
         /// </summary>
-        /// <param name="api">Api object</param>
+        /// <param name="api">The Api to start</param>
         private void StartApi(Api api) {
 
-            //load the relevant DLL (and dependent DLLs
-            var apiAssembly = AssemblyLoader.LoadFromAssemblyPath(api.AssemblyPath);
+            //if LaunchProfile has been set, create dotnet run param for it.
+            var launchProfileArg = "--no-launch-profile";
+            if (api.LaunchProfile != null)
+                launchProfileArg = $"--launch-profile {api.LaunchProfile}";
 
-            //get a reference to the Startup class
-            var startupType = apiAssembly.GetType(api.StartupNamespaceAndClass);
+            //configure a background process for running dotnet,
+            //ensuring that the port is set appropriately and
+            //that all console output is to the same console
+            var info = new ProcessStartInfo {
+                FileName = "cmd.exe",
+                Arguments = $"/c SET ASPNETCORE_URLS=http://localhost:{api.Port} && dotnet run {launchProfileArg} --no-build --ASPNETCORE_URLS=http://localhost:{api.Port}",
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
 
-            //build a new IWebHost server, setting
-            //the content root to the project's directory
-            //and retrieving the appsettings config files
-            var host = new WebHostBuilder()
-            .UseKestrel()
-            .UseIISIntegration()
-            .UseStartup(startupType)
-            .UseContentRoot(api.LocalProjectDirectory)
-            .ConfigureAppConfiguration(options => {
-                options.SetBasePath(api.LocalProjectDirectory);
-                options.AddJsonFile(api.LocalProjectDirectory + "\\appsettings.json",true);
-                options.AddJsonFile(api.LocalProjectDirectory + "\\appsettings.Development.json",true);
-                options.AddInMemoryCollection(
-                    new KeyValuePair<string, string>[] 
-                    { new KeyValuePair<string, string>(
-                        "LaunchContext", "ApiLauncher") });
-            })
-            .UseUrls(api.BaseAddress)
-            .Build();
+                WorkingDirectory = api.LocalProjectDirectory
+            };
 
-            //set a reference to the IWebHost server
-            api.Host = host;
-
-            //add the current API to the dictionary of running APIs
-            _runningApis.Add(startupType, api);
-
-            //within a separate thread, launch the IWebHost server
+            //call the dotnet run command asynchronously
             Task.Run(() => {
-                host.RunAsync();
-            });
+                Process p = new Process();
+                p.StartInfo = info;
+                p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                p.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
 
+                //get the port number, if available
+                var port = (api.LaunchProfile == null) ? $"({api.Port.ToString()})" : "";
+
+                //update the console title to add the launched API
+                lock (_lockObj) {
+                    Console.Title += $", {api.ApiName}{port}";
+                }
+
+                //add the launched Api to the dictionary of running APIs
+                api.Process = p;
+                _runningApis.Add(api.Port, api);
+
+                //wait for the process to be suspended.
+                p.WaitForExit();
+            });
         }
 
+        /// <summary>
+        /// Gets the last segment in a network/folder path
+        /// </summary>
+        /// <param name="path">the source path</param>
+        /// <returns>the last segment of the source path</returns>
+        private static string GetLastSegment(string path) {
+            int index = path.LastIndexOf("\\");
+            if (index == -1)
+                return null;
+            var proj = path.Substring(index + 1);
+            index = proj.LastIndexOf(".");
+            if (index == -1)
+                return proj;
+            else
+                return proj.Substring(index + 1);
+        }
+
+        /// <summary>
+        /// Writes output to the console
+        /// </summary>
+        /// <param name="sendingProcess">the process sending the data</param>
+        /// <param name="args">the data to write to the console</param>
+        static void OutputHandler(object sendingProcess, DataReceivedEventArgs args) {
+            Console.WriteLine(args.Data);
+        }
 
         /// <summary>
         /// Stop a specific API
         /// </summary>
-        /// <param name="api">The API object to stop</param>
-        /// <param name="startupType">A reference to the Startup class</param>
-        private void StopApi(Api api, Type startupType) {
+        public void StopApi(int port) {
+            var api = _runningApis[port];
             //stop the server
-            if (api.Process != null) {
-                api.Process.StandardInput.Close();
-                api.Process.Close();
-            } else {
-                api.Host.StopAsync().Wait();
-            }
+            api.Process.Close();
             //remove the server from the dictionary of running servers
-            _runningApis.Remove(startupType);
+            _runningApis.Remove(port);
         }
+
+
+        /// <summary>
+        /// Stops all running APIs
+        /// </summary>
+        public void StopApis() {
+            //get a collection of all API Startup classes
+            var ports = _runningApis.Keys.ToList();
+
+            //iterate over all API Startup classes
+            foreach (var port in ports) {
+                //retrieve the API
+                var api = _runningApis[port];
+                //stop the API
+                StopApi(port);
+            }
+        }
+
+
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -187,7 +235,4 @@ namespace EDennis.AspNetCore.Base.Web {
         #endregion
 
     }
-
-
-
 }
