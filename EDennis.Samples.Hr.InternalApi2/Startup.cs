@@ -1,5 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.Samples.Hr.InternalApi2.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,26 +12,28 @@ namespace EDennis.Samples.Hr.InternalApi2 {
     public class Startup {
         public Startup(IConfiguration configuration, IHostingEnvironment environment) {
             Configuration = configuration;
-            HostingEnvironment = environment;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment HostingEnvironment { get; set; }
+        public IHostingEnvironment Environment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc(options => {
-                if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                    options.Filters.Add<TestingActionFilter>();
-                }
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContextPools(Configuration);
-            services.AddRepos();
+            //AspNetCore.Base config
+            services.AddSqlContexts<
+                AgencyInvestigatorCheckContext,
+                AgencyOnlineCheckContext,
+                FederalBackgroundCheckContext,
+                StateBackgroundCheckContext>(Configuration, Environment);
+            services.AddSqlRepos<
+                AgencyInvestigatorCheckRepo,
+                AgencyOnlineCheckRepo,
+                FederalBackgroundCheckRepo,
+                StateBackgroundCheckRepo> ();
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                services.AddSingleton<IDbContextBaseTestCache, DbContextBaseTestCache>();
-            }
 
             var provider = services.BuildServiceProvider();
             var mvc = provider.GetRequiredService<IMvcBuilder>();
@@ -39,6 +43,14 @@ namespace EDennis.Samples.Hr.InternalApi2 {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+
+                //AspNetCore.Base config 
+                app.UseRepoInterceptor<AgencyInvestigatorCheckRepo, AgencyInvestigatorCheck, AgencyInvestigatorCheckContext>();
+                app.UseRepoInterceptor<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext>();
+                app.UseRepoInterceptor<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext>();
+                app.UseRepoInterceptor<StateBackgroundCheckRepo, StateBackgroundCheckView, StateBackgroundCheckContext>();
+
+
             }
 
             app.UseMvc();

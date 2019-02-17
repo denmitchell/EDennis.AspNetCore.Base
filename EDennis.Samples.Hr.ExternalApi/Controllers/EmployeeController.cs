@@ -6,7 +6,7 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
 
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ProxyController {
+    public class EmployeeController : ControllerBase {
 
         InternalApi1 _internalApi1;
         InternalApi2 _internalApi2;
@@ -21,11 +21,12 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
 
 
         [HttpPost]
-        public ActionResult<Employee> CreateEmployee(
+        public ActionResult CreateEmployee(
             [FromBody] Employee employee){
-            var newEmployee = _internalApi1.CreateEmployee(employee);
-            return Ok(newEmployee);
+            _internalApi1.CreateEmployee(employee);
+            return NoContent();
         }
+
 
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployee(
@@ -34,7 +35,7 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
             if (employee == null)
                 return NotFound();
             else
-                return Ok(employee);
+                return employee;
         }
 
 
@@ -60,11 +61,5 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
             return Ok(checks);
         }
 
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [NonAction]
-        public override IApiProxy[] GetApis() {
-            return new IApiProxy[] { _internalApi1, _internalApi2 };
-        }
     }
 }

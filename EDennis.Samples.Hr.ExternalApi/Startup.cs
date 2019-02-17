@@ -1,4 +1,6 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
+using EDennis.AspNetCore.Base.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using A = EDennis.Samples.Hr.InternalApi1;
+using B = EDennis.Samples.Hr.InternalApi2;
 
 namespace EDennis.Samples.Hr.ExternalApi {
     public class Startup {
@@ -20,15 +25,13 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc(options => {
-                if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                    options.Filters.Add<TestingActionFilter>();
-                }
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddHttpClients(Configuration);
+            //AspNetCore.Base config
+            services.AddApiClients<InternalApi1,InternalApi2>();
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+
                 services.AddSwaggerGen(c => {
                     c.SwaggerDoc("v1", new Info { Title = "HR API", Version = "v1" });
                 });
@@ -39,17 +42,22 @@ namespace EDennis.Samples.Hr.ExternalApi {
                 });
             }
 
-            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-            //    var launcher = new ApiLauncher(Configuration);
-            //}
 
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider provider) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+
+                //AspNetCore.Base config
+                app.UseApiClientInterceptor<InternalApi1>();
+                app.UseApiClientInterceptor<InternalApi2>();
+                app.UseLaunchers<A.Startup>(provider, Configuration);
+                app.UseLaunchers<B.Startup>(provider, Configuration);
+
+
             }
 
             app.UseMvc();

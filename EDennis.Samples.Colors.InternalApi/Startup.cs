@@ -32,7 +32,6 @@ namespace EDennis.Samples.Colors.InternalApi {
 
             //AspNetCore.Base config
             services.AddSqlContexts<ColorDbContext>(Configuration, Environment);
-            //AspNetCore.Base config
             services.AddSqlRepos<ColorRepo>();
 
             services.AddSwaggerGen(c => {
