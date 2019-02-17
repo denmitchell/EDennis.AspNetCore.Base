@@ -2,25 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>A library that supports ASP.NET Core MVC development with a repository pattern and various classes that make it easier to perform unit/integration testing in a three-tier architecture.</Description>
-    <Copyright>Dennis C. Mitchell, 2018</Copyright>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;v=4</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</PackageProjectUrl>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
-    <PackageTags>Repository ASP.NET API Launcher Testing</PackageTags>
-    <PackageReleaseNotes>Updated AddClientAuthenticationAndAuthorizationWithDefaultPolicies to work with unit/integration tests (where the calling assembly is the test host).</PackageReleaseNotes>
-    <Version>1.3.1</Version>
   </PropertyGroup>
-
+  
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.7" />
     <PackageReference Include="EDennis.MigrationsExtensions" Version="1.8.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-    <!--<PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.7.0" />-->
+    <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.2.1" />
+    <PackageReference Include="Flurl" Version="2.8.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="2.3.2" />
+    <PackageReference Include="IdentityServer4.Storage" Version="2.3.1" />
     <PackageReference Include="IdentityModel" Version="4.0.0-bruichladdich" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Build" Version="15.3.409" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="140.17283.0" />
+    <PackageReference Include="xunit.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base.Security;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.DefaultPoliciesApi.Models;
 using Microsoft.AspNetCore.Builder;
@@ -31,7 +33,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
 
             services.AddMvc(options => {
-                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment));
+                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment,Configuration));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 

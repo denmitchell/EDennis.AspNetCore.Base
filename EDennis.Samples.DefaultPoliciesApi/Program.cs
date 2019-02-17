@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace EDennis.Samples.DefaultPoliciesApi {
     public class Program {
         public static void Main(string[] args) {
-            CreateWebHostBuilder(args).BuildAndRunWithLauncher();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
