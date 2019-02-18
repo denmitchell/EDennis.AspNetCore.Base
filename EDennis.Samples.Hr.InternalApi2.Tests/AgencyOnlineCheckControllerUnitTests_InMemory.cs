@@ -2,21 +2,23 @@
 using EDennis.Samples.Hr.InternalApi2.Controllers;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
-    public class AgencyOnlineCheckControllerUnitTests_InMemory : InMemoryTest<AgencyOnlineCheckContext> {
+    public class AgencyOnlineCheckControllerUnitTests_InMemory :
+        InMemoryRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
+
+        private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         private AgencyOnlineCheckController _controller;
-        private AgencyOnlineCheckRepo _repo;
-        private readonly ITestOutputHelper _output;
 
-        public AgencyOnlineCheckControllerUnitTests_InMemory(ITestOutputHelper output) {
-            _repo = new AgencyOnlineCheckRepo(Context);
+        public AgencyOnlineCheckControllerUnitTests_InMemory(
+                ITestOutputHelper output, ConfigurationClassFixture fixture) 
+            : base (output,fixture){
             _controller = new AgencyOnlineCheckController(_repo);
-            _output = output;
         }
 
         [Theory]
@@ -25,13 +27,28 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(3, "2018-12-03", "Pass")]
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
-            var max = Context.GetMaxKeyValue<AgencyOnlineCheck>();
-            _output.WriteLine($"max of AgencyOnlineCheck Id: {max}");
-            _controller.Post(new AgencyOnlineCheck { EmployeeId = employeeId, DateCompleted = DateTime.Parse(strDateCompleted), Status = status });
-            var check = _repo.GetByLinq(e => e.EmployeeId == employeeId && e.DateCompleted == DateTime.Parse(strDateCompleted) && e.Id == (max + 1), 1, 1000)[0];
-            _output.WriteLine($"Id: {check.Id}, NamedInstance: {NamedInstance}");
-            var count = _repo.GetByLinq(e => e.EmployeeId == employeeId && e.DateCompleted == DateTime.Parse(strDateCompleted) && e.Id == (max + 1), 1, 1000).Count;
-            Assert.Equal(1, count);
+
+            var preCount = _repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+
+            _controller.Post(new AgencyOnlineCheck {
+                EmployeeId = employeeId,
+                DateCompleted = DateTime.Parse(strDateCompleted),
+                Status = status
+            });
+
+            var postCount = _repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+
+            Assert.Equal(preCount + 1, postCount);
+
+            var targetRec = _repo.Query
+                .OrderBy(e => e.Id)
+                .LastOrDefault();
+
+            Assert.Equal(employeeId, targetRec.EmployeeId);
+            Assert.Equal(DateTime.Parse(strDateCompleted), targetRec.DateCompleted);
+            Assert.Equal(status, targetRec.Status);
+
+
         }
 
 

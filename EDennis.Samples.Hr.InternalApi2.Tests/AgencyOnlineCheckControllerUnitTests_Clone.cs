@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.Samples.Hr.InternalApi2.Controllers;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
 using System.Linq;
@@ -6,15 +7,19 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
-    public class AgencyOnlineCheckRepoUnitTests_InMemory :
-        InMemoryRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
+
+    public class AgencyOnlineCheckControllerUnitTests_Clone :
+        CloneRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public AgencyOnlineCheckRepoUnitTests_InMemory(ITestOutputHelper output,
-            ConfigurationClassFixture fixture)
-            : base(output, fixture) { }
+        private AgencyOnlineCheckController _controller;
 
+        public AgencyOnlineCheckControllerUnitTests_Clone(
+                ITestOutputHelper output, CloneClassFixture fixture) 
+            : base (output,fixture){
+            _controller = new AgencyOnlineCheckController(_repo);
+        }
 
         [Theory]
         [InlineData(1, "2018-12-01", "Pass")]
@@ -25,7 +30,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
             var preCount = _repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
 
-            _repo.Create(new AgencyOnlineCheck {
+            _controller.Post(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
                 DateCompleted = DateTime.Parse(strDateCompleted),
                 Status = status
