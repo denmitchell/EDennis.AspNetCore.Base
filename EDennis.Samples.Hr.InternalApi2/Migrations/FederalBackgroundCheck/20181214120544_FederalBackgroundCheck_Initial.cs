@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using EDennis.MigrationsExtensions;
+using System.IO;
 
 namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
 {
@@ -26,16 +27,8 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
                     table.PrimaryKey("PK_FederalBackgroundCheck", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "FederalBackgroundCheck",
-                columns: new[] { "Id", "DateCompleted", "EmployeeId", "Status" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Pass" },
-                    { 2, new DateTime(2018, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Pass" },
-                    { 3, new DateTime(2018, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Fail" },
-                    { 4, new DateTime(2018, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, "Pass" }
-                });
+
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\FederalBackgroundCheck_Insert.sql"));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

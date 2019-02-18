@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using EDennis.MigrationsExtensions;
+using System.IO;
 
 namespace EDennis.Samples.Hr.InternalApi1.Migrations
 {
@@ -69,41 +70,13 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Employee",
-                columns: new[] { "Id", "FirstName" },
-                values: new object[,]
-                {
-                    { 1, "Bob" },
-                    { 2, "Monty" },
-                    { 3, "Drew" },
-                    { 4, "Wayne" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Position",
-                columns: new[] { "Id", "IsManager", "Title" },
-                values: new object[,]
-                {
-                    { 1, true, "Game Show Manager" },
-                    { 2, false, "Game Show Host" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "EmployeePosition",
-                columns: new[] { "EmployeeId", "PositionId" },
-                values: new object[,]
-                {
-                    { 1, 1 },
-                    { 2, 1 },
-                    { 3, 2 },
-                    { 4, 2 }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeePosition_PositionId",
                 table: "EmployeePosition",
                 column: "PositionId");
+
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using EDennis.MigrationsExtensions;
+using System.IO;
 
 namespace EDennis.Samples.Hr.InternalApi2.Migrations.StateBackgroundCheck
 {
@@ -27,16 +28,8 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.StateBackgroundCheck
                     table.PrimaryKey("PK_StateBackgroundCheck", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "StateBackgroundCheck",
-                columns: new[] { "Id", "DateCompleted", "EmployeeId", "Status" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Pass" },
-                    { 2, new DateTime(2018, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Pass" },
-                    { 3, new DateTime(2018, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Fail" },
-                    { 4, new DateTime(2018, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, "Pass" }
-                });
+
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\StateBackgroundCheck_Insert.sql"));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

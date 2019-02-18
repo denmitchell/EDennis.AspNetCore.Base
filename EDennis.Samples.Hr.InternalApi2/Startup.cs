@@ -34,9 +34,6 @@ namespace EDennis.Samples.Hr.InternalApi2 {
                 FederalBackgroundCheckRepo,
                 StateBackgroundCheckRepo> ();
 
-
-            var provider = services.BuildServiceProvider();
-            var mvc = provider.GetRequiredService<IMvcBuilder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

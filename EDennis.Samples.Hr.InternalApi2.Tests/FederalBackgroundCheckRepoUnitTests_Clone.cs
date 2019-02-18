@@ -5,13 +5,13 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
-    public class FederalBackgroundCheckRepoUnitTests_InMemory :
-        InMemoryRepoTests<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext> {
+    public class FederalBackgroundCheckRepoUnitTests_Clone :
+        CloneRepoTests<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public FederalBackgroundCheckRepoUnitTests_InMemory(ITestOutputHelper output,
-            ConfigurationClassFixture fixture)
+        public FederalBackgroundCheckRepoUnitTests_Clone(ITestOutputHelper output,
+            CloneClassFixture fixture)
             : base(output, fixture) { }
 
 
