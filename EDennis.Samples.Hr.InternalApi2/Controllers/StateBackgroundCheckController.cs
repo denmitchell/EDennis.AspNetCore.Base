@@ -20,8 +20,8 @@ namespace EDennis.Samples.Hr.InternalApi2.Controllers {
 
         // GET: api/StateBackgroundCheck/5
         [HttpGet("{employeeId}")]
-        public StateBackgroundCheckView GetByEmployeeId(int employeeId) {
-            return _repo.GetByEmployeeId(employeeId);
+        public StateBackgroundCheckView GetLastCheck(int employeeId) {
+            return _repo.GetLastCheck(employeeId);
         }
 
     }

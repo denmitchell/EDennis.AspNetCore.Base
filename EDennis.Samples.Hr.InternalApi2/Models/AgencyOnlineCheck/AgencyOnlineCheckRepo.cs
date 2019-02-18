@@ -11,7 +11,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             AgencyOnlineCheckContext context) 
             : base(context) { }
 
-        public AgencyOnlineCheck GetByEmployeeId(int employeeId) {
+        public AgencyOnlineCheck GetLastCheck(int employeeId) {
             return Context.AgencyOnlineChecks
                 .Where(e => e.EmployeeId == employeeId)
                 .OrderByDescending(e => e.DateCompleted)

@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json.Linq;
@@ -10,20 +11,15 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.ExternalApi.Tests {
 
-    public class EmployeeControllerIntegrationTests
-        : IClassFixture<WebApplicationFactory<Startup>> {
+    public class EmployeeControllerIntegrationTests_InMemory
+        : InMemoryIntegrationTests<EDennis.Samples.Hr.ExternalApi.Startup> {
 
-        private readonly HttpClient _client;
-        private readonly ITestOutputHelper _output;
-        private const int NEXTID = 5;
 
-        public EmployeeControllerIntegrationTests(
-                WebApplicationFactory<Startup> factory,
-                ITestOutputHelper output) {
-            _client = factory.CreateClient();
-            _client.BaseAddress = new Uri("http://localhost:5999/api/employee",UriKind.Absolute);
-            _output = output;
-        }
+        private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
+
+        public EmployeeControllerIntegrationTests_InMemory(ITestOutputHelper output, InMemoryWebApplicationFactory<EDennis.Samples.Hr.ExternalApi.Startup> factory)
+            : base(output, factory) { }
+
 
         [Theory]
         [InlineData("Bob")]
@@ -35,9 +31,11 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
             var newEmployee = new Employee {
                 FirstName = firstName
             };
-            var actual = _client.PostAndGetForTest(newEmployee,NEXTID);
+            _client.Post("api/employee", newEmployee);
+            var actual = _client.Get<Employee>("api/employee").Value;
             Assert.Equal(firstName, actual.FirstName);
         }
+
 
         [Theory]
         [InlineData(1, "2018-12-01", "Pass")]
@@ -54,12 +52,10 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
                 DateCompleted = dateCompleted,
                 Status = status
             };
-            _client.BaseAddress = new Uri("http://localhost:5999/api/employee/", UriKind.Absolute);
 
-            var actual = _client.PostAndGetForTest(newCheck, DbType.Default, "default",
-                getUri: new Uri(_client.BaseAddress + $"preemployment/{employeeId}"),
-                postUri: new Uri(_client.BaseAddress + "agencyinvestigatorcheck")
-                );
+
+            _client.Post("api/employee",newCheck);
+            var actual = _client.Get<AgencyInvestigatorCheck>($"preemployment/{employeeId}").Value;
 
             var actualJson = JToken.FromObject(actual).ToString();
             _output.WriteLine(actualJson);

@@ -11,7 +11,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             FederalBackgroundCheckContext context) 
             : base(context) { }
 
-        public FederalBackgroundCheckView GetByEmployeeId(int employeeId) {
+        public FederalBackgroundCheckView GetLastCheck(int employeeId) {
             return Context.FederalBackgroundCheckViewRecords
                 .Where(e => e.EmployeeId == employeeId)
                 .OrderByDescending(e => e.DateCompleted)

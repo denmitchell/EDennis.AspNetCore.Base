@@ -20,8 +20,8 @@ namespace EDennis.Samples.Hr.InternalApi2.Controllers {
 
         // GET: api/AgencyOnlineCheck/5
         [HttpGet("{employeeId}")]
-        public AgencyOnlineCheck GetByEmployeeId(int employeeId) {
-            var result = _repo.GetByEmployeeId(employeeId);
+        public AgencyOnlineCheck GetLastCheck(int employeeId) {
+            var result = _repo.GetLastCheck(employeeId);
             return result;
         }
 

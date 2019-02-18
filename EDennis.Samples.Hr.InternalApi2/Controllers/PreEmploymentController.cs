@@ -26,11 +26,11 @@ namespace EDennis.Samples.Hr.InternalApi2.Controllers {
 
         // GET api/preemployment/5
         [HttpGet("{employeeId}")]
-        public ActionResult<dynamic> Get(int employeeId) {
-            var aic = _agencyInvestigatorCheckRepo.GetByEmployeeId(employeeId);
-            var aoc = _agencyOnlineCheckRepo.GetByEmployeeId(employeeId);
-            var fbc = _federalBackgroundCheckRepo.GetByEmployeeId(employeeId);
-            var sbc = _stateBackgroundCheckRepo.GetByEmployeeId(employeeId);
+        public ActionResult<dynamic> GetLastChecks(int employeeId) {
+            var aic = _agencyInvestigatorCheckRepo.GetLastCheck(employeeId);
+            var aoc = _agencyOnlineCheckRepo.GetLastCheck(employeeId);
+            var fbc = _federalBackgroundCheckRepo.GetLastCheck(employeeId);
+            var sbc = _stateBackgroundCheckRepo.GetLastCheck(employeeId);
 
             var data = DataShaping.CombineCheckData(aic,aoc,fbc,sbc);
             return data;

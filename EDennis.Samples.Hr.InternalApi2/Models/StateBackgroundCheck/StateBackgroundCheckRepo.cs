@@ -11,7 +11,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             StateBackgroundCheckContext context) 
             : base(context) { }
 
-        public StateBackgroundCheckView GetByEmployeeId(int employeeId) {
+        public StateBackgroundCheckView GetLastCheck(int employeeId) {
             return Context.StateBackgroundCheckViewRecords
                 .Where(e => e.EmployeeId == employeeId)
                 .OrderByDescending(e => e.DateCompleted)
