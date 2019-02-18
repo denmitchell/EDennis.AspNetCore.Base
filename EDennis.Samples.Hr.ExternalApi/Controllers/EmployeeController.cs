@@ -8,14 +8,12 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
     [ApiController]
     public class EmployeeController : ControllerBase {
 
-        InternalApi1 _internalApi1;
-        InternalApi2 _internalApi2;
+        InternalApi1 _api1;
+        InternalApi2 _api2;
 
-        public EmployeeController(
-            InternalApi1 internalApi1,
-            InternalApi2 internalApi2) {
-            _internalApi1 = internalApi1;
-            _internalApi2 = internalApi2;
+        public EmployeeController(InternalApi1 api1,InternalApi2 api2) {
+            _api1 = api1;
+            _api2 = api2;
         }
 
 
@@ -23,7 +21,7 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
         [HttpPost]
         public ActionResult CreateEmployee(
             [FromBody] Employee employee){
-            _internalApi1.CreateEmployee(employee);
+            _api1.CreateEmployee(employee);
             return NoContent();
         }
 
@@ -31,7 +29,7 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployee(
             [FromRoute] int id) {
-            var employee = _internalApi1.GetEmployee(id);
+            var employee = _api1.GetEmployee(id);
             if (employee == null)
                 return NotFound();
             else
@@ -40,24 +38,24 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
 
 
         [HttpPost("agencyonlinecheck")]
-        public ActionResult<AgencyOnlineCheck> CreateAgencyOnlineCheck(
+        public ActionResult CreateAgencyOnlineCheck(
             [FromBody] AgencyOnlineCheck check) {
-            var newCheck = _internalApi2.CreateAgencyOnlineCheck(check);
-            return Ok(newCheck);
+            _api2.CreateAgencyOnlineCheck(check);
+            return Ok();
         }
 
 
         [HttpPost("agencyinvestigatorcheck")]
-        public ActionResult<AgencyInvestigatorCheck> CreateAgencyInvestigatorCheck(
+        public ActionResult CreateAgencyInvestigatorCheck(
             [FromBody] AgencyInvestigatorCheck check) {
-            var newCheck = _internalApi2.CreateAgencyInvestigatorCheck(check);
-            return Ok(newCheck);
+            _api2.CreateAgencyInvestigatorCheck(check);
+            return Ok();
         }
 
         [HttpGet("preemployment/{id}")]
         public ActionResult<dynamic> GetPreEmploymentChecks(
             [FromRoute] int id) {
-            var checks = _internalApi2.GetPreEmploymentChecks(id);
+            var checks = _api2.GetPreEmploymentChecks(id);
             return Ok(checks);
         }
 

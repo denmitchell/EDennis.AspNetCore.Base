@@ -41,7 +41,6 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
                 //AspNetCore.Base config
                 app.UseApiClientInterceptor<InternalApi>();
-                //AspNetCore.Base config
                 app.UseLaunchers<A.Startup>(provider, Configuration);
             }
 

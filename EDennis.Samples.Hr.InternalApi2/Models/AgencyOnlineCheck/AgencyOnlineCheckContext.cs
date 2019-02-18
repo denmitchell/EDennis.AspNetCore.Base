@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
+    //AspNetCore.Base config
     public class AgencyOnlineCheckContextDesignTimeFactory :
         SqlTemporalContextDesignTimeFactory<AgencyOnlineCheckContext> { }
 
@@ -47,6 +48,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
                 .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
                 .ValueGeneratedOnAddOrUpdate();
 
+            //AspNetCore.Base config
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<AgencyOnlineCheck>()
                     .Property(e => e.Id)

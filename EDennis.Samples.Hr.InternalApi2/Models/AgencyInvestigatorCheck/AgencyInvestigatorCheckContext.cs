@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
+    //AspNetCore.Base config
     public class AgencyInvestigatorCheckContextDesignTimeFactory :
         SqlTemporalContextDesignTimeFactory<AgencyInvestigatorCheckContext> { }
 
@@ -48,6 +49,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
                 .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
                 .ValueGeneratedOnAddOrUpdate();
 
+            //AspNetCore.Base config
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<AgencyInvestigatorCheck>()
                     .Property(e => e.Id)

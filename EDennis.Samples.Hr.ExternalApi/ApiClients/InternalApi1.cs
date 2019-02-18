@@ -8,27 +8,26 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
     public class InternalApi1 : ApiClient {
 
-        private string _employeeControllerUrl = "iapi/color";
+        private const string EMPLOYEE_URL = "iapi/employee";
 
         public InternalApi1(HttpClient client, IConfiguration config) :
             base(client, config) {
-            _employeeControllerUrl = config["Apis:InternalApi1:ControllerUrls:EmployeeController"];
         }
 
         public void CreateEmployee(Employee employee) {
-            HttpClient.Post(_employeeControllerUrl, employee);
+            HttpClient.Post(EMPLOYEE_URL, employee);
         }
 
-        public void UpdateEmployee(Employee employee, int employeeId) {
-            HttpClient.Put($"{_employeeControllerUrl}\\{employeeId}", employee);
+        public void UpdateEmployee(Employee employee, int id) {
+            HttpClient.Put($"{EMPLOYEE_URL}/{id}", employee);
         }
 
-        public void DeleteEmployee(int employeeId) {
-            HttpClient.Delete<Employee>($"{_employeeControllerUrl}\\{employeeId}");
+        public void DeleteEmployee(int id) {
+            HttpClient.Delete<Employee>($"{EMPLOYEE_URL}/{id}");
         }
 
-        public Employee GetEmployee(int employeeId) {
-            var emp = HttpClient.Get<Employee>($"{_employeeControllerUrl}\\{employeeId}");
+        public Employee GetEmployee(int id) {
+            var emp = HttpClient.Get<Employee>($"{EMPLOYEE_URL}/{id}");
             return emp.Value;
         }
     }

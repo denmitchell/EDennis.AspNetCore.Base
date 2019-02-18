@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
+    //AspNetCore.Base config
     public class StateBackgroundCheckContextDesignTimeFactory :
         SqlTemporalContextDesignTimeFactory<StateBackgroundCheckContext> { }
 
@@ -39,6 +40,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
                 .HasMaxLength(100);
 
 
+            //AspNetCore.Base config
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<StateBackgroundCheck>()
                     .Property(e => e.Id)

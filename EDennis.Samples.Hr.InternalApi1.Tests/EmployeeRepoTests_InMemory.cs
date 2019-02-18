@@ -1,24 +1,26 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Hr.InternalApi1.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi1.Tests {
-    public class EmployeeRepoTests : InMemoryTest<HrContext> {
+    public class EmployeeRepoTests_InMemory :
+        InMemoryRepoTests<EmployeeRepo, Employee, HrContext> {
 
-        private EmployeeRepo _repo;
-        private readonly ITestOutputHelper _output;
-        private string[] _propsToIgnore = new string[] { "SysStart", "SysEnd" };
+        private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public EmployeeRepoTests(ITestOutputHelper output) {
-            _repo = new EmployeeRepo(Context);
-            _output = output;
-        }
+        public EmployeeRepoTests_InMemory(ITestOutputHelper output,
+            ConfigurationClassFixture configFixture)
+            : base(output, configFixture) { }
+
 
         [Theory]
         [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGet", testCase: "A")]
@@ -31,7 +33,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var expected = jsonTestCase.GetObject<Employee>("Expected");
 
             var actual = _repo.Create(input);
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -45,8 +47,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var input = jsonTestCase.GetObject<Employee>("Input");
             var expected = jsonTestCase.GetObject<Employee>("Expected");
 
-            var actual = await _repo.CreateAsync(input);
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            await _repo.CreateAsync(input);
+            var actual = _repo.GetById(id);
+
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -60,10 +64,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var input = jsonTestCase.GetObject<Employee>("Input");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-            var created = _repo.Create(input);
-            var actual = _repo.GetByLinq(e => 1 == 1, 1, 1000);
+            _repo.Create(input);
+            var actual = _repo.Query.OrderBy(e => e.Id).ToList();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -78,9 +82,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
             var created = await _repo.CreateAsync(input);
-            var actual = await _repo.GetByLinqAsync(e => 1 == 1, 1, 1000);
+            var actual = await _repo.Query.OrderBy(e=>e.Id).ToListAsync();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -94,9 +98,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
             _repo.Delete(id);
-            var actual = _repo.GetByLinq(e => 1 == 1, 1, 1000);
+            var actual = _repo.Query.OrderBy(e => e.Id).ToList();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -110,9 +114,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
             await _repo.DeleteAsync(id);
-            var actual = await _repo.GetByLinqAsync(e => 1 == 1, 1, 1000);
+            var actual = await _repo.Query.OrderBy(e => e.Id).ToListAsync();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
         [Theory]
@@ -126,7 +130,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
             var actual = _repo.GetById(id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -141,7 +145,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
             var actual = await _repo.GetByIdAsync(id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
         [Theory]
@@ -155,9 +159,12 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var alpha = jsonTestCase.GetObject<string>("Alpha");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-            var actual = _repo.GetByLinq(e=>e.FirstName.Contains(alpha),1,1000);
+            var actual = _repo.Query
+                .Where(e => e.FirstName.Contains(alpha))
+                .OrderBy(e => e.Id)
+                .ToList();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -172,9 +179,12 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var alpha = jsonTestCase.GetObject<string>("Alpha");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-            var actual = await _repo.GetByLinqAsync(e => e.FirstName.Contains(alpha), 1, 1000);
+            var actual = await _repo.Query
+                .Where(e => e.FirstName.Contains(alpha))
+                .OrderBy(e => e.Id)
+                .ToListAsync();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -192,9 +202,12 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var pageSize = jsonTestCase.GetObject<int>("PageSize");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-            var actual = _repo.GetByLinq(e => e.FirstName.Contains(alpha), pageNumber, pageSize);
+            var actual = _repo.Query
+                .Where(e => e.FirstName.Contains(alpha))
+                .OrderBy(e => e.Id)
+                .ToPagedList(pageNumber,pageSize);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -211,9 +224,12 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var pageSize = jsonTestCase.GetObject<int>("PageSize");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-            var actual = await _repo.GetByLinqAsync(e => e.FirstName.Contains(alpha), pageNumber, pageSize);
+            var actual = await _repo.Query
+                .Where(e => e.FirstName.Contains(alpha))
+                .OrderBy(e => e.Id)
+                .ToPagedListAsync(pageNumber, pageSize);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
         [Theory]
@@ -222,21 +238,13 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         public void TestGetFromSqlEmployee(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
-            var options = new DbContextOptionsBuilder()
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Hr;Trusted_Connection=True;")
-                .Options;
-            using (var cxt = new HrContext(options)) {
-                using (var repo = new EmployeeRepo(cxt)) {
+            var firstName = jsonTestCase.GetObject<string>("FirstName");
+            var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-                    var firstName = jsonTestCase.GetObject<string>("FirstName");
-                    var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
+            var sql = "select * from Employee where FirstName = {0}";
+            var actual = _repo.GetFromSql(sql, 1, 1000, true, firstName);
 
-                    var sql = "select * from Employee where FirstName = {0}";
-                    var actual = repo.GetFromSql(sql, 1, 1000, firstName);
-
-                    Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
-                }
-            }
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
 
         }
 
@@ -247,21 +255,13 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         public async Task TestGetFromSqlAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
-            var options = new DbContextOptionsBuilder()
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Hr;Trusted_Connection=True;")
-                .Options;
-            using (var cxt = new HrContext(options)) {
-                using (var repo = new EmployeeRepo(cxt)) {
+            var firstName = jsonTestCase.GetObject<string>("FirstName");
+            var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
-                    var firstName = jsonTestCase.GetObject<string>("FirstName");
-                    var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
+            var sql = "select * from Employee where FirstName = {0}";
+            var actual = await _repo.GetFromSqlAsync(sql, 1, 1000, true, firstName);
 
-                    var sql = "select * from Employee where FirstName = {0}";
-                    var actual = await repo.GetFromSqlAsync(sql, 1, 1000, firstName);
-
-                    Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
-                }
-            }
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
 
         }
 
@@ -276,9 +276,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var input = jsonTestCase.GetObject<Employee>("Input");
             var expected = jsonTestCase.GetObject<Employee>("Expected");
 
-            var actual = _repo.Update(input);
+            _repo.Update(input);
+            var actual = _repo.GetById(id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -293,9 +294,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var input = jsonTestCase.GetObject<Employee>("Input");
             var expected = jsonTestCase.GetObject<Employee>("Expected");
 
-            var actual = await _repo.UpdateAsync(input);
+            _repo.Update(input);
+            var actual = await _repo.GetByIdAsync(id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
         [Theory]
@@ -309,9 +311,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
             var updated = _repo.Update(input);
-            var actual = _repo.GetByLinq(e => 1 == 1, 1, 1000);
+            var actual = _repo.Query.OrderBy(e => e.Id).ToList();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }
 
 
@@ -326,9 +328,41 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
 
             var updated = await _repo.UpdateAsync(input);
-            var actual = await _repo.GetByLinqAsync(e => 1 == 1, 1, 1000);
+            var actual = await _repo.Query.OrderBy(e => e.Id).ToListAsync();
 
-            Assert.True(actual.IsEqualOrWrite(expected, _propsToIgnore, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
+        }
+
+
+
+
+        [Theory]
+        [InlineData("Regis")]
+        [InlineData("Wink")]
+        [InlineData("Moe")]
+        [InlineData("Larry")]
+        [InlineData("Curly")]
+        public void TestCreateEmployee(string firstName) {
+
+            var preCount = _repo.GetScalarFromDapper<int>("select count(*) recs from employee");
+
+            _repo.Create(new Employee { FirstName = firstName });
+
+            var postCount = _repo.GetScalarFromDapper<int>("select count(*) recs from employee");
+
+            Assert.Equal(preCount + 1, postCount);
+
+            var employees = _repo.Query.ToList()
+                .OrderBy(e => e.Id);
+
+            Assert.Collection(employees,
+                new Action<Employee>[] {
+                    item=>Assert.Contains("Bob",item.FirstName),
+                    item=>Assert.Contains("Monty",item.FirstName),
+                    item=>Assert.Contains("Drew",item.FirstName),
+                    item=>Assert.Contains("Wayne",item.FirstName),
+                    item=>Assert.Contains(firstName,item.FirstName),
+                });
         }
 
     }

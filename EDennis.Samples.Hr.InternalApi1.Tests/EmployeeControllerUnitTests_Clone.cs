@@ -2,6 +2,7 @@
 using EDennis.NetCoreTestingUtilities;
 using EDennis.Samples.Hr.InternalApi1.Controllers;
 using EDennis.Samples.Hr.InternalApi1.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,21 +11,19 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
-    public class EmployeeControllerUnitTests_InMemory :
-        InMemoryRepoTests<EmployeeRepo, Employee, HrContext> {
+
+    public class EmployeeControllerUnitTests_Clone :
+        CloneRepoTests<EmployeeRepo, Employee, HrContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-
         private EmployeeController _controller;
 
-        public EmployeeControllerUnitTests_InMemory(ITestOutputHelper output,
-            ConfigurationClassFixture configFixture)
-            : base(output, configFixture) {
-
+        public EmployeeControllerUnitTests_Clone(ITestOutputHelper output,
+            CloneClassFixture cloneFixture) : base(output, cloneFixture) {
             _controller = new EmployeeController(_repo);
-
         }
+
 
 
         [Theory]
@@ -64,5 +63,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             Assert.Equal(firstName, employee.FirstName);
 
         }
+
     }
 }

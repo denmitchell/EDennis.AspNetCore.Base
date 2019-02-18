@@ -10,23 +10,23 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
     public class InternalApi : ApiClient {
 
-        private const string COLOR_CONTROLLER_URL = "iapi/color";
+        private const string COLOR_URL = "iapi/color";
 
         public InternalApi(HttpClient client, IConfiguration config ):
             base (client,config){ }
 
 
         public void Create(Color color) {
-            HttpClient.Post(COLOR_CONTROLLER_URL, color);
+            HttpClient.Post(COLOR_URL, color);
         }
 
         public List<Color> GetColors() {
-            var result = HttpClient.Get<List<Color>>(COLOR_CONTROLLER_URL);
+            var result = HttpClient.Get<List<Color>>(COLOR_URL);
             return result.Value; //second line for easier debugging
         }
 
         public Color GetColor(int id) {
-            var result = HttpClient.Get<Color>(COLOR_CONTROLLER_URL + $"/{id}");
+            var result = HttpClient.Get<Color>($"COLOR_URL/{id}");
             return result.Value; //second line for easier debugging
         }
 

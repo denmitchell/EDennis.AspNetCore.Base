@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
+    //AspNetCore.Base config
     public class HrContextDesignTimeFactory :
         SqlTemporalContextDesignTimeFactory<HrContext> { }
 
@@ -29,17 +30,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .Property(e => e.Id)
                 .UseSqlServerIdentityColumn();
 
-            if (Database.IsInMemory()) {
-
-                modelBuilder.Entity<Employee>()
-                    .Property(e => e.Id)
-                    .HasValueGenerator<MaxPlusOneValueGenerator<Employee>>();
-
-                modelBuilder.Entity<Employee>()
-                    .HasData(HrContextDataFactory.EmployeeRecordsFromRetriever);
-            }
-
-
             modelBuilder.Entity<Employee>()
                 .Property(e => e.FirstName)
                 .HasMaxLength(30);
@@ -56,6 +46,17 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
                 .ValueGeneratedOnAddOrUpdate();
 
+
+            //AspNetCore.Base config
+            if (Database.IsInMemory()) {
+
+                modelBuilder.Entity<Employee>()
+                    .Property(e => e.Id)
+                    .HasValueGenerator<MaxPlusOneValueGenerator<Employee>>();
+
+                modelBuilder.Entity<Employee>()
+                    .HasData(HrContextDataFactory.EmployeeRecordsFromRetriever);
+            }
 
             #endregion
             #region Position
@@ -84,6 +85,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
                 .ValueGeneratedOnAddOrUpdate();
 
+            //AspNetCore.Base config
             if (Database.IsInMemory()) {
 
                 modelBuilder.Entity<Position>()
@@ -128,6 +130,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .HasConstraintName("fk_EmployeePosition_Position")
                 .OnDelete(DeleteBehavior.Restrict);
 
+
+            //AspNetCore.Base config
             if (Database.IsInMemory()) {
 
                 modelBuilder.Entity<EmployeePosition>()
