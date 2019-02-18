@@ -1,8 +1,32 @@
 ﻿[
   {
-    "AgencyInvestigatorCheck": {
-      "DateCompleted": "2018-01-01",
-      "Status": "Pass"
-    }
+    "Id": 1,
+    "FirstName": "Bob",
+    "SysStart": "2019-02-18T21:00:48.0536345",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": 2,
+    "FirstName": "Monty",
+    "SysStart": "2019-02-18T21:00:48.0536345",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": 3,
+    "FirstName": "Drew",
+    "SysStart": "2019-02-18T21:00:48.0536345",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": 4,
+    "FirstName": "Wayne",
+    "SysStart": "2019-02-18T21:00:48.0536345",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": 5,
+    "FirstName": "Moe",
+    "SysStart": "2019-02-18T23:19:23.6960882",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
   }
 ]
