@@ -1,0 +1,8 @@
+﻿[
+  {
+    "AgencyInvestigatorCheck": "{\"DateCompleted\":\"2018-01-01\",\"Status\":\"Pass\"}",
+    "AgencyOnlineCheck": "{\"DateCompleted\":\"2018-01-01\",\"Status\":\"Pass\"}",
+    "FederalBackroundCheck": "{\"DateCompleted\":\"2018-01-01\",\"Status\":\"Pass\"}",
+    "StateBackroundCheck": "{\"DateCompleted\":\"2018-01-01\",\"Status\":\"Pass\"}"
+  }
+]
