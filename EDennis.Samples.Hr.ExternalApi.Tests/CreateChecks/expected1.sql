@@ -10,34 +10,39 @@ declare @Id int = 1;
 declare @Expected varchar(max) = (
 	select 
 		a.DateCompleted as [AgencyInvestigatorCheck.DateCompleted],
-		a.Status as [AgencyInvestigatorCheck.Status]
+		a.Status as [AgencyInvestigatorCheck.Status],
+		b.DateCompleted as [AgencyOnlineCheck.DateCompleted],
+		b.Status as [AgencyOnlineCheck.Status],
+		c.DateCompleted as [FederalBackgroundCheck.DateCompleted],
+		c.Status as [FederalBackgroundCheck.Status],
+		d.DateCompleted as [StateBackgroundCheck.DateCompleted],
+		d.Status as [StateBackgroundCheck.Status]
 		from 
-		(select EmployeeId from AgencyInvestigatorCheck
-		union select EmployeeId from AgencyOnlineCheck
-		union select EmployeeId from FederalBackgroundCheck
-		union select EmployeeId from StateBackgroundCheck) emps
+		(select @Id EmployeeId) emps
 		left outer join
 		(select top 1 DateCompleted, Status 
 			from AgencyInvestigatorCheck..AgencyInvestigatorCheck 
 			where EmployeeId = @Id
-			order by DateCompleted desc
-			for json path, without_array_wrapper) a
+			order by DateCompleted desc) a
+			on 1=1
 		left outer join 
 		(select top 1 DateCompleted, Status 
 			from AgencyOnlineCheck..AgencyOnlineCheck
 			where EmployeeId = @Id
-			order by DateCompleted desc
-			for json path, without_array_wrapper) AgencyOnlineCheck,
+			order by DateCompleted desc) b
+			on 1=1
+		left outer join 
 		(select top 1 DateCompleted, Status 
 			from FederalBackgroundCheck..FederalBackgroundCheck 
 			where EmployeeId = @Id
-			order by DateCompleted desc
-			for json path, without_array_wrapper) FederalBackroundCheck,
+			order by DateCompleted desc) c
+			on 1=1
+		left outer join
 		(select top 1 DateCompleted, Status 
 			from StateBackgroundCheck..StateBackgroundCheck 
 			where EmployeeId = @Id
-			order by DateCompleted desc
-			for json path, without_array_wrapper) StateBackroundCheck
+			order by DateCompleted desc) d
+			on 1=1
 		for json path);
 
 select @Expected
