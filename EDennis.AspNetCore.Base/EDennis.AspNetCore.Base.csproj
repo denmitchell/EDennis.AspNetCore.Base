@@ -6,7 +6,7 @@
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.7" />
-    <PackageReference Include="EDennis.MigrationsExtensions" Version="1.8.0" />
+    <PackageReference Include="EDennis.MigrationsExtensions" Version="1.9.0" />
     <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.2.1" />
     <PackageReference Include="Flurl" Version="2.8.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />

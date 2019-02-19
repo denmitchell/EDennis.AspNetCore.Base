@@ -1,5 +1,6 @@
 ﻿use hr;
 
+declare @TestCase varchar(1) = 'C'
 declare @alpha varchar(30) = 'y'
 
 declare 
@@ -10,7 +11,7 @@ declare
 	for json path, include_null_values
 );
 
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'GetByLinq','GetByLinq','C','Alpha', @alpha
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'GetByLinq','GetByLinq','C','Expected', @expected
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','Query',@TestCase,'Alpha', @alpha
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','Query',@TestCase,'Expected', @expected
 
---exec _maintenance.ResetIdentities
+exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','Query',@TestCase

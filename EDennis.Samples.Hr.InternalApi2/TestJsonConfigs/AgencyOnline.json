@@ -1,0 +1,6 @@
+﻿{
+  "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=AgencyOnlineCheck;Trusted_Connection=True;MultipleActiveResultSets=True;",
+  "TestJsonSchema": "_maintenance",
+  "TestJsonTable": "TestJson",
+  "ProjectName": "EDennis.Samples.Hr.ExternalApi"
+}

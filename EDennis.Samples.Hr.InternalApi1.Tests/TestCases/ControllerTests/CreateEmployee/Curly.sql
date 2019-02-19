@@ -23,9 +23,4 @@ exec _maintenance.ResetIdentities
 exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'CreateEmployee','CreateAndGetAll',@firstName,'Input', @input
 exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'CreateEmployee','CreateAndGetAll',@firstName,'Expected', @expected
 
-select * from _maintenance.TestJson
-	where ProjectName = 'EDennis.Samples.Hr.InternalApi1'
-		and ClassName = 'EmployeeController'
-		and MethodName = 'CreateEmployee'
-		and TestScenario = 'CreateAndGetAll'
-		and TestCase = @firstName
+exec _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'CreateEmployee','CreateAndGetAll',@firstName
