@@ -2,10 +2,13 @@
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
+using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Xunit;
 using Xunit.Abstractions;
@@ -23,42 +26,40 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeController", methodName: "CreateEmployee", testScenario: "MultitierIntegrationTests_InMemory", testCase: "Moe")]
-        [TestJson(className: "EmployeeController", methodName: "CreateEmployee", testScenario: "MultitierIntegrationTests_InMemory", testCase: "Larry")]
-        [TestJson(className: "EmployeeController", methodName: "CreateEmployee", testScenario: "MultitierIntegrationTests_InMemory", testCase: "Curly")]
-        public void CreateEmployee(string firstName) {
-            var newEmployee = new Employee {
-                FirstName = firstName
-            };
-            _client.Post("api/employee", newEmployee);
-            var actual = _client.Get<Employee>("api/employee").Value;
-            Assert.Equal(firstName, actual.FirstName);
+        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Moe", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        public void CreateEmployee(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine(t);
+            _output.WriteLine($"Db instance name: {_instanceName}");
+
+            var input = jsonTestCase.GetObject<Employee>("Input");
+            var expected = jsonTestCase.GetObject<List<Employee>>("Expected").OrderBy(x=>x.Id);
+
+            _client.Post("api/employee", input);
+            var actual = _client.Get<List<Employee>>("api/employee").Value.OrderBy(x => x.Id);
+
+            Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,_output));
         }
 
 
         [Theory]
-        [TestJson(className: "EmployeeController", methodName: "CreateChecks", testScenario: "MultitierIntegrationTests_InMemory", testCase: "1")]
-        [TestJson(className: "EmployeeController", methodName: "CreateChecks", testScenario: "MultitierIntegrationTests_InMemory", testCase: "2")]
-        [TestJson(className: "EmployeeController", methodName: "CreateChecks", testScenario: "MultitierIntegrationTests_InMemory", testCase: "3")]
-        [TestJson(className: "EmployeeController", methodName: "CreateChecks", testScenario: "MultitierIntegrationTests_InMemory", testCase: "4")]
-        public void CreateChecks(int employeeId, 
-            string dateCompletedString, string status) {
+        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "1", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        public void CreateChecks(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine(t);
+            _output.WriteLine($"Db instance name: {_instanceName}");
 
-            var dateCompleted = DateTime.Parse(dateCompletedString);
+            var input = jsonTestCase.GetObject<Employee>("Input");
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<dynamic>("Expected");
 
-            var newCheck = new AgencyInvestigatorCheck {
-                EmployeeId = employeeId,
-                DateCompleted = dateCompleted,
-                Status = status
-            };
+            _client.Post("api/employee",input);
+            var actual = _client.Get<dynamic>($"preemployment/{id}").Value;
 
-
-            _client.Post("api/employee",newCheck);
-            var actual = _client.Get<AgencyInvestigatorCheck>($"preemployment/{employeeId}").Value;
-
-            var actualJson = JToken.FromObject(actual).ToString();
-            _output.WriteLine(actualJson);
-            //Assert.Equal(expectedJson, actualJson);
+            Assert.True(actual.IsEqualOrWrite(expected, _output));
         }
 
     }

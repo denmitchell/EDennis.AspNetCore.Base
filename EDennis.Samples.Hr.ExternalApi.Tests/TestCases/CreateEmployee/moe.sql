@@ -15,6 +15,6 @@ select @Expected
 
 rollback transaction
 exec _maintenance.ResetIdentities;
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','MultitierIntegrationTests_InMemory',@firstName,'Input',@Input
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','MultitierIntegrationTests_InMemory',@firstName,'Expected',@Expected
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@firstName,'Input',@Input
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@firstName,'Expected',@Expected
 

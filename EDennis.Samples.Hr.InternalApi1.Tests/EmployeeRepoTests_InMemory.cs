@@ -18,8 +18,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public EmployeeRepoTests_InMemory(ITestOutputHelper output,
-            ConfigurationClassFixture configFixture)
-            : base(output, configFixture) { }
+            InMemoryClassFixture fixture) : base(output, fixture) { }
 
 
         [Theory]

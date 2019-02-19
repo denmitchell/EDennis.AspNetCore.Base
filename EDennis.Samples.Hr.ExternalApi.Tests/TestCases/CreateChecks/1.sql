@@ -1,12 +1,12 @@
 ﻿use AgencyInvestigatorCheck;
 begin transaction
-declare @Id int = 3;
+declare @Id int = 1;
 declare @Input varchar(max) = (
-select 3 EmployeeId, '2018-12-03' DateCompleted, 'Pass' Status
+select 1 EmployeeId, '2018-12-01' DateCompleted, 'Fail' Status
 	for json path, without_array_wrapper
 );
 insert into AgencyInvestigatorCheck(EmployeeId,DateCompleted,Status) 
-	values (3,'2018-12-03','Pass');
+	values (1,'2018-12-01','Fail');
 declare @Expected varchar(max) = (
 	select 
 		a.DateCompleted as [AgencyInvestigatorCheck.DateCompleted],
@@ -45,7 +45,7 @@ select @Expected
 
 rollback transaction
 exec _maintenance.ResetIdentities;
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateChecks','MultitierIntegrationTests_InMemory','3','Id',@Id
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateChecks','MultitierIntegrationTests_InMemory','3','Input',@Input
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateChecks','MultitierIntegrationTests_InMemory','3','Expected',@Expected
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateChecks','IntegrationTests','1','Id',@Id
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateChecks','IntegrationTests','1','Input',@Input
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateChecks','IntegrationTests','1','Expected',@Expected
 

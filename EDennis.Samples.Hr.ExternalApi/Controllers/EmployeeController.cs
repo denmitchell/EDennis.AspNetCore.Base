@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace EDennis.Samples.Hr.ExternalApi.Controllers {
 
@@ -35,6 +36,16 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
             else
                 return employee;
         }
+
+
+        [HttpGet]
+        public ActionResult<List<Employee>> GetEmployees(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 1000) {
+            var employees = _api1.GetEmployees(pageNumber,pageSize);
+            return employees;
+        }
+
 
 
         [HttpPost("agencyonlinecheck")]

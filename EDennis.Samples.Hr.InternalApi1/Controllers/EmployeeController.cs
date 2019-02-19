@@ -17,7 +17,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Controllers {
         }
 
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         public ActionResult<Employee> CreateEmployee(
             [FromBody] Employee employee){
@@ -25,7 +25,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Controllers {
             return Ok(newEmployee);
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(
             [FromRoute] int id) {
@@ -36,9 +36,13 @@ namespace EDennis.Samples.Hr.InternalApi1.Controllers {
                 return Ok(employee);
         }
 
-        [HttpGet("check")]
-        public IActionResult Check() {
-            return Ok(new { Status = "Ok" });
+
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet]
+        public async Task<ActionResult<List<Employee>>> GetEmployees(
+            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000) {
+            var employee = await _repo.Query.ToPagedListAsync(pageNumber,pageSize);
+            return Ok(employee);
         }
 
     }

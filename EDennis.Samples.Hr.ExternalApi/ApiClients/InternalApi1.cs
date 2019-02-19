@@ -2,6 +2,7 @@
 using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace EDennis.Samples.Hr.ExternalApi {
@@ -30,5 +31,11 @@ namespace EDennis.Samples.Hr.ExternalApi {
             var emp = HttpClient.Get<Employee>($"{EMPLOYEE_URL}/{id}");
             return emp.Value;
         }
+
+        public List<Employee> GetEmployees(int pageNumber, int pageSize) {
+            var emps = HttpClient.Get<List<Employee>>($"{EMPLOYEE_URL}");
+            return emps.Value;
+        }
+
     }
 }

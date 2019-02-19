@@ -14,8 +14,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public SqlRepoInMemoryTests(ITestOutputHelper output, ConfigurationClassFixture configFixture)
-            : base(output, configFixture) { }
+        public SqlRepoInMemoryTests(ITestOutputHelper output, InMemoryClassFixture fixture)
+            : base(output, fixture) { }
 
 
         [Theory]
