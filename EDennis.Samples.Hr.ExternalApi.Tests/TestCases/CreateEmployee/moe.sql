@@ -1,12 +1,12 @@
 ﻿use Hr;
 begin transaction
-declare @firstName varchar(30) = 'Moe'
+declare @FirstName varchar(30) = 'Moe'
 declare @Input varchar(max) = (
-select @firstName FirstName
+select @FirstName FirstName
 	for json path, without_array_wrapper
 );
 insert into Employee(FirstName) 
-	values (@firstName);
+	values (@FirstName);
 declare @Expected varchar(max) = (
 	select * from Employee
 		for json path);
@@ -15,6 +15,7 @@ select @Expected
 
 rollback transaction
 exec _maintenance.ResetIdentities;
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@firstName,'Input',@Input
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@firstName,'Expected',@Expected
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName,'Input',@Input
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName,'Expected',@Expected
 
+exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName
