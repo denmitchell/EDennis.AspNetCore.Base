@@ -1,40 +1,32 @@
 ﻿use hr;
 
-declare @id int = 1
-
-if object_id('tempdb..#input') is not null
-    drop table #input
-
-select
-    @id Id,
-	'Larry' FirstName
-into #input 
+declare @TestCase varchar(1) = 'A'
+declare @Id int = 1
+declare @FirstName varchar(30) = 'Larry'
 
 declare 
-	@input varchar(max) = 
+	@Input varchar(max) = 
 	( 
-		select * from #input
+		select @Id Id, @FirstName FirstName 
+		from Employee
+		where Id = @Id
 		for json path, include_null_values, without_array_wrapper
 	);
 
 begin transaction
-update e
-	set FirstName= i.FirstName
-	from Employee e
-	inner join #input i
-		on i.Id = e.Id
+update Employee
+	set FirstName = @FirstName
+	where Id = @Id
 
-declare 
-	@expected varchar(max) = 
+declare @Expected varchar(max) = 
 (
 	select * from Employee
 	for json path, include_null_values
 );
 
 rollback transaction
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple','A','Id', @id
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple','A','Input', @input
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple','A','Expected', @expected
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple',@TestCase,'Id', @Id
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple',@TestCase,'Input', @Input
+exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple',@TestCase,'Expected', @Expected
 
---exec _maintenance.ResetIdentities
-drop table #input;
+exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Update','UpdateAndGetMultiple',@TestCase
