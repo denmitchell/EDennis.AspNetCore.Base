@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class CloneRepoTests<TRepo, TEntity, TContext> : IClassFixture<CloneClassFixture>, IDisposable
+    public class CloneRepoTests<TRepo, TEntity, TContext> : IClassFixture<CloneClassFixture<TContext>>, IDisposable
         where TEntity : class, new()
         where TContext : DbContext
         where TRepo : SqlRepo<TEntity, TContext> {
@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected readonly BlockingCollection<int> _cloneIndexPool;
         protected readonly int _cloneIndex;
 
-        public CloneRepoTests(ITestOutputHelper output, CloneClassFixture cloneFixture) {
+        public CloneRepoTests(ITestOutputHelper output, CloneClassFixture<TContext> cloneFixture) {
             _output = output;
 
             _cloneConnections = cloneFixture.CloneConnections;

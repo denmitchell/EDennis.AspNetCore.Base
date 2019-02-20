@@ -1,15 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Concurrent;
 using System.Data;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class CloneClassFixture : ConfigurationClassFixture, IDisposable {        
+
+
+    public class CloneClassFixture<TContext> : ConfigurationClassFixture, IDisposable 
+        where TContext : DbContext{        
 
         public BlockingCollection<int> CloneIndexPool { get; } 
             = new BlockingCollection<int>();
 
-        public CloneConnections CloneConnections { get; }
+        public CloneConnections CloneConnections { get; set; }
 
         public const int DEFAULT_CLONE_COUNT = 5;
 
@@ -18,7 +22,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var cloneCountStr = Configuration["Testing:DatabaseCloneCount"] ?? DEFAULT_CLONE_COUNT.ToString() ;
             var cloneCount = int.Parse(cloneCountStr);
 
-            CloneConnections = DatabaseCloneManager.GetCloneConnections(Configuration, cloneCount);
+            CloneConnections = new CloneConnections { CloneCount = cloneCount };
+            DatabaseCloneManager.PopulateCloneConnections<TContext>(CloneConnections);
             CloneConnections.AutomatedTest = true;
 
             for (int i=0; i<cloneCount; i++) {

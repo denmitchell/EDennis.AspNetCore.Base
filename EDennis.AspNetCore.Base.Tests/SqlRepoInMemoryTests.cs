@@ -18,8 +18,20 @@ namespace EDennis.AspNetCore.Base.Testing {
             : base(output, fixture) { }
 
 
+        /// <summary>
+        /// Optional internal class ... reduced the number of parameters in TestJson attribute
+        /// by specifying constant parameter values for className and testJsonConfigPath here
+        /// </summary>
+        internal class TestJsonSpecific : TestJsonAttribute {
+            public TestJsonSpecific(string methodName, string testScenario, string testCase)
+                : base("ColorRepo", methodName, testScenario, testCase, "TestJsonConfigs\\InternalApi.json") {
+            }
+        }
+
+
         [Theory]
-        [TestJson("ColorRepo", "Create", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Create", "SqlRepo", "brown")]
+        [TestJsonSpecific("Create", "SqlRepo", "orange")]
         public void Create(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -34,8 +46,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
         }
 
+
+
         [Theory]
-        [TestJson("ColorRepo", "Create", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Create", "SqlRepo", "brown")]
+        [TestJsonSpecific("Create", "SqlRepo", "orange")]
         public async Task CreateAsync(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -49,6 +64,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
         }
+
 
         [Theory]
         [TestJson("ColorRepo", "GetById", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]

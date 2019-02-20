@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.Build.Construction;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,16 @@ namespace EDennis.AspNetCore.Base.Testing {
             foreach (var cxn in connections)
                 cloneConnections.Add(cxn.Key, cxn.Value);
         }
+
+
+        public static void PopulateCloneConnections<TContext>(CloneConnections cloneConnections)
+            where TContext: DbContext{
+            var contextsAndDatabases = GetSolutionContextsAndDatabasesFromAppSettings(typeof(TContext).Name);
+            var connections = GetSharedConnections(contextsAndDatabases, cloneConnections.CloneCount);
+            foreach (var cxn in connections)
+                cloneConnections.Add(cxn.Key, cxn.Value);
+        }
+
 
         private static Dictionary<string, SqlConnectionAndTransaction[]> GetSharedConnections(
             Dictionary<string, string> contextsAndDatabases, int cloneCount) {
@@ -90,6 +101,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <returns></returns>
         public static Dictionary<string, string> GetSolutionContextsAndDatabasesFromAppSettings() {
 
+            //hold a reference to the current directory (to reset later)
+            var currDir = Directory.GetCurrentDirectory();
+
             //get solution file path
             var solutionFile = GetSolutionfile();
             var dir = solutionFile.Directory;
@@ -100,6 +114,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var appSettingsFiles = SolutionFile
                 .Parse(solutionFile.FullName)
                 .ProjectsInOrder
+                .Where(p => p.ProjectType ==
+                        SolutionProjectType.KnownToBeMSBuildFormat
+                    || p.ProjectType ==
+                        SolutionProjectType.WebProject)
                 .SelectMany(p => new DirectoryInfo(p.AbsolutePath.Replace($@"\{p.ProjectName}.csproj", "")).GetFiles("appsettings.Development.json"))
                 .ToList();
             //note: I build this regex for sln files, which also works: (?:Project)(?:[^,]*,\s")(.*)(?:\\.*\.csproj)
@@ -130,6 +148,76 @@ namespace EDennis.AspNetCore.Base.Testing {
                     }
                 }
             }
+
+            //restore current directory
+            Directory.SetCurrentDirectory(currDir);
+
+            //return result
+            return contextsAndDatabases;
+        }
+
+
+
+        /// <summary>
+        /// requires 
+        ///     Microsoft.Build
+        ///     Microsoft.Extensions.Configuration.Json
+        ///     Microsoft.Extensions.Configuration.Binder
+        ///     System.Data.SqlClient
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetSolutionContextsAndDatabasesFromAppSettings(string contextName) {
+
+            //hold a reference to the current directory (to reset later)
+            var currDir = Directory.GetCurrentDirectory();
+
+            //get solution file path
+            var solutionFile = GetSolutionfile();
+            var dir = solutionFile.Directory;
+            Directory.SetCurrentDirectory(dir.FullName);
+
+            //get all appsettings.Development.json files
+            //note: requires Microsoft.Build Nuget
+            var appSettingsFiles = SolutionFile
+                .Parse(solutionFile.FullName)
+                .ProjectsInOrder
+                .Where(p=>p.ProjectType == 
+                        SolutionProjectType.KnownToBeMSBuildFormat
+                    || p.ProjectType ==
+                        SolutionProjectType.WebProject)
+                .SelectMany(p => new DirectoryInfo(p.AbsolutePath.Replace($@"\{p.ProjectName}.csproj", "")).GetFiles("appsettings.Development.json"))
+                .ToList();
+            //note: I build this regex for sln files, which also works: (?:Project)(?:[^,]*,\s")(.*)(?:\\.*\.csproj)
+
+            //initialize dictionary for all connection strings (optional return value)
+            var contextsAndDatabases = new Dictionary<string, string>();
+
+            //intialize list of databases
+            var databases = new List<string>();
+
+            foreach (var file in appSettingsFiles) {
+
+                //build configs for each appsettings file
+                var cxnStrings = new Dictionary<string, string>();
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile(file.FullName)
+                    .Build();
+                //bind to internal dictionary
+                config.GetSection("ConnectionStrings").Bind(cxnStrings);
+
+                //add to main collection variables
+                foreach (var c in cxnStrings.Where(x=>x.Key == contextName)) {
+                    if (!contextsAndDatabases.ContainsKey(c.Key)) {
+                        var cxnStrBuilder = new SqlConnectionStringBuilder {
+                            ConnectionString = c.Value
+                        };
+                        contextsAndDatabases.Add(c.Key, cxnStrBuilder.InitialCatalog);
+                    }
+                }
+            }
+            //restore current directory
+            Directory.SetCurrentDirectory(currDir);
+
             //return result
             return contextsAndDatabases;
         }
