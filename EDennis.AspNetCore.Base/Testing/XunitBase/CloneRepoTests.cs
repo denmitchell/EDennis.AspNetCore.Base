@@ -22,6 +22,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected readonly BlockingCollection<int> _cloneIndexPool;
         protected readonly int _cloneIndex;
 
+        EventWaitHandle ewh;
+
         public CloneRepoTests(ITestOutputHelper output, CloneClassFixture<TContext> cloneFixture) {
             _output = output;
 
@@ -29,6 +31,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             _cloneIndexPool = cloneFixture.CloneIndexPool;
 
             _cloneIndex = _cloneIndexPool.Take();
+            ewh = new EventWaitHandle(true, EventResetMode.AutoReset, CloneConstants.WAIT_HANDLE_NAME + ":" + _cloneIndex.ToString());
 
             _context = TestDbContextManager<TContext>.GetDatabaseClone(
                 _cloneConnections,typeof(TContext).Name,_cloneIndex);
@@ -48,6 +51,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (disposing) {
                     DatabaseCloneManager.ReleaseClones(_cloneConnections,_cloneIndex);
                     _cloneIndexPool.Add(_cloneIndex);
+                    ewh.Set();
                 }
                 disposedValue = true;
             }

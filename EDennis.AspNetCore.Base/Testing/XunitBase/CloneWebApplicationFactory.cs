@@ -12,7 +12,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         WebApplicationFactory<TStartup>, IDisposable
         where TStartup : class {
 
-
         public BlockingCollection<int> CloneIndexPool { get; }
             = new BlockingCollection<int>();
 

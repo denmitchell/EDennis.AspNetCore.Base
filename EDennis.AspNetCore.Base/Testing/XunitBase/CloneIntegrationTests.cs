@@ -19,7 +19,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected readonly CloneConnections _cloneConnections;
         protected readonly BlockingCollection<int> _cloneIndexPool;
         protected readonly int _cloneIndex;
-
+        
+        EventWaitHandle ewh;
 
         public CloneIntegrationTests(ITestOutputHelper output, CloneWebApplicationFactory<TStartup> factory) {
             _output = output;
@@ -29,12 +30,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             _cloneIndexPool = factory.CloneIndexPool;
 
             _cloneIndex = _cloneIndexPool.Take();
+            ewh = new EventWaitHandle(true, EventResetMode.AutoReset, CloneConstants.WAIT_HANDLE_NAME + ":" + _cloneIndex.ToString());
 
             _client = factory.CreateClient();
             var port = PortInspector.GetRandomAvailablePorts(1)[0];
             _client.BaseAddress = new Uri($"http://localhost:{port}");
             _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_CLONE, _cloneIndex.ToString());
-
 
         }
 
@@ -47,6 +48,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (disposing) {
                     DatabaseCloneManager.ReleaseClones(_cloneConnections, _cloneIndex);
                     _cloneIndexPool.Add(_cloneIndex);
+                    ewh.Set();
                 }
                 disposedValue = true;
             }
