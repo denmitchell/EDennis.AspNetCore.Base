@@ -67,7 +67,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJson("ColorRepo", "GetById", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("GetById", "SqlRepo", "1")]
+        [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public void GetById(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -80,7 +81,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJson("ColorRepo", "GetById", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("GetById", "SqlRepo", "1")]
+        [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -93,8 +95,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJson("ColorRepo", "GetByLinq", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
-        public void GetByLinq(string t, JsonTestCase jsonTestCase) {
+        [TestJsonSpecific("Query", "SqlRepo", "A")]
+        [TestJsonSpecific("Query", "SqlRepo", "B")]
+        public void Query(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
             var alpha = jsonTestCase.GetObject<string>("Alpha");
@@ -108,8 +111,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJson("ColorRepo", "GetByLinq", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
-        public async Task GetByLinqAsync(string t, JsonTestCase jsonTestCase) {
+        [TestJsonSpecific("Query", "SqlRepo", "A")]
+        [TestJsonSpecific("Query", "SqlRepo", "B")]
+        public async Task QueryAsync(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
             var alpha = jsonTestCase.GetObject<string>("Alpha");
@@ -123,7 +127,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJson("ColorRepo", "Exists", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Exists", "SqlRepo", "4")]
+        [TestJsonSpecific("Exists", "SqlRepo", "999")]
         public void Exists(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -136,7 +141,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJson("ColorRepo", "Exists", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Exists", "SqlRepo", "4")]
+        [TestJsonSpecific("Exists", "SqlRepo", "999")]
         public async Task ExistsAsync(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
