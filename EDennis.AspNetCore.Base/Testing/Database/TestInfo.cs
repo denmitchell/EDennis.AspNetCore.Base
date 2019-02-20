@@ -9,7 +9,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         Readonly
     }
     public class TestInfo {
-        public TestDatabaseType TestDatabaseType 
-            { get; set; } = TestDatabaseType.Clone;
+        public TestDatabaseType TestDatabaseType { get; set; } = TestDatabaseType.Clone;
     }
 }

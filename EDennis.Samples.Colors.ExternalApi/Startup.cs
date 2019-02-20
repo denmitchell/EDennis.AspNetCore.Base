@@ -12,11 +12,14 @@ using A = EDennis.Samples.Colors.InternalApi;
 
 namespace EDennis.Samples.Colors.ExternalApi {
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration, IHostingEnvironment env) {
             Configuration = configuration;
+            Environment = env;
+
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
@@ -24,6 +27,10 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
             //AspNetCore.Base config
             services.AddApiClients<InternalApi>();
+
+            if(Environment.EnvironmentName == EnvironmentName.Development) {
+                services.AddScoped<TestHeader>();
+            }
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "Color API", Version = "v1" });

@@ -1,4 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Web;
+using EDennis.NetCoreTestingUtilities;
+using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Colors.InternalApi;
 using EDennis.Samples.Colors.InternalApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -18,6 +20,94 @@ namespace EDennis.AspNetCore.Base.Testing {
             :base(output,factory){}
 
 
+        /// <summary>
+        /// Optional internal class ... reduced the number of parameters in TestJson attribute
+        /// by specifying constant parameter values for className and testJsonConfigPath here
+        /// </summary>
+        internal class TestJsonSpecific : TestJsonAttribute {
+            public TestJsonSpecific(string methodName, string testScenario, string testCase)
+                : base("ColorRepo", methodName, testScenario, testCase, "TestJsonConfigs\\InternalApi.json") {
+            }
+        }
+
+
+
+        [Theory]
+        [TestJsonSpecific("GetById", "SqlRepo", "1")]
+        [TestJsonSpecific("GetById", "SqlRepo", "2")]
+        public void Get(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine(t);
+            _output.WriteLine($"Instance Name:{_instanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Input");
+            var expected = jsonTestCase.GetObject<Color>("Expected");
+
+            var actual = _client.Get<Color>($"iapi/color/{id}").Value;
+
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+        }
+
+
+
+        [Theory]
+        [TestJsonSpecific("Post", "SqlRepo", "brown")]
+        [TestJsonSpecific("Post", "SqlRepo", "orange")]
+        public void Post(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine(t);
+
+            var input = jsonTestCase.GetObject<Color>("Input");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x => x.Id);
+
+            _client.Post("iapi/color", input);
+            var actual = _client.Get<List<Color>>("iapi/color")
+                    .Value
+                    .OrderBy(x=>x.Id);
+
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+        }
+
+
+        [Theory]
+        [TestJsonSpecific("Update", "SqlRepo", "1")]
+        [TestJsonSpecific("Update", "SqlRepo", "2")]
+        public void Put(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine(t);
+
+            var input = jsonTestCase.GetObject<Color>("Input");
+            var id = input.Id;
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x => x.Id);
+
+            _client.Put($"iapi/color/{id}", input);
+            var actual = _client.Get<List<Color>>("iapi/color")
+                .Value
+                .OrderBy(x => x.Id);
+
+            Assert.True(actual.IsEqualOrWrite(expected, _output));
+        }
+
+
+
+        [Theory]
+        [TestJsonSpecific("Delete", "SqlRepo", "3")]
+        [TestJsonSpecific("Delete", "SqlRepo", "4")]
+        public void Delete(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine(t);
+
+            var input = jsonTestCase.GetObject<int>("Input");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x => x.Id);
+
+            _client.Delete<Color>($"iapi/color/{input}");
+            var actual = _client.Get<List<Color>>("iapi/color")
+                .Value
+                .OrderBy(x => x.Id);
+
+            Assert.True(actual.IsEqualOrWrite(expected, _output));
+        }
+
+
         [Theory]
         [InlineData(1, "black")]
         [InlineData(2, "white")]
@@ -25,7 +115,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         [InlineData(4, "red")]
         [InlineData(5, "green")]
         [InlineData(6, "blue")]
-        public void Get(int id, string expectedName) {
+        public void Get_Inline(int id, string expectedName) {
             _output.WriteLine($"Instance Name:{_instanceName}");
 
             var color = _client.Get<Color>($"iapi/color/{id}").Value;
@@ -36,7 +126,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Fact]
-        public void Post() {
+        public void Post_Fact() {
             _output.WriteLine($"Instance Name:{_instanceName}");
 
             _client.Post("iapi/color", new Color { Name = "burgundy" });
@@ -57,7 +147,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Fact]
-        public void Put() {
+        public void Put_Fact() {
             _output.WriteLine($"Instance Name:{_instanceName}");
 
             _client.Put("iapi/color/1", new Color { Id = 1, Name = "burgundy" });
@@ -78,7 +168,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Fact]
-        public void Delete() {
+        public void Delete_Fact() {
             _output.WriteLine($"Instance Name:{_instanceName}");
 
             _client.Delete("iapi/color/3", new Color { Id = 3, Name = "gray" });

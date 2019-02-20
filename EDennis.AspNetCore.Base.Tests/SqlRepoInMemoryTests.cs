@@ -156,7 +156,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJson("ColorRepo", "Update", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Update", "SqlRepo", "1")]
+        [TestJsonSpecific("Update", "SqlRepo", "2")]
         public void Update(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -173,7 +174,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJson("ColorRepo", "Update", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Update", "SqlRepo", "1")]
+        [TestJsonSpecific("Update", "SqlRepo", "2")]
         public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -190,7 +192,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJson("ColorRepo", "Delete", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Delete", "SqlRepo", "3")]
+        [TestJsonSpecific("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 
@@ -206,7 +209,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJson("ColorRepo", "Delete", "SqlRepo", "A", "TestJsonConfigs\\InternalApi.json")]
+        [TestJsonSpecific("Delete", "SqlRepo", "3")]
+        [TestJsonSpecific("Delete", "SqlRepo", "4")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
 

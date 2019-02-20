@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Colors.ExternalApi.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -12,8 +13,8 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
         private const string COLOR_URL = "iapi/color";
 
-        public InternalApi(HttpClient client, IConfiguration config ):
-            base (client,config){ }
+        public InternalApi(HttpClient client, IConfiguration config, TestHeader testHeader):
+            base (client,config,testHeader){ }
 
 
         public void Create(Color color) {
@@ -26,7 +27,7 @@ namespace EDennis.Samples.Colors.ExternalApi {
         }
 
         public Color GetColor(int id) {
-            var result = HttpClient.Get<Color>($"COLOR_URL/{id}");
+            var result = HttpClient.Get<Color>($"{COLOR_URL}/{id}");
             return result.Value; //second line for easier debugging
         }
 

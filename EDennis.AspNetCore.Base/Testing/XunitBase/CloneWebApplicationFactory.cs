@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
 using System.Data;
+using System.IO;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class CloneWebApplicationFactory<TStartup> :
@@ -17,14 +18,18 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public CloneConnections CloneConnections { get; }
 
+        public const int DEFAULT_CLONE_COUNT = 5;
+
+
         public CloneWebApplicationFactory() {
 
             var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json")
                 .AddEnvironmentVariables()
                 .Build();
 
-            var cloneCountStr = config["Testing:DatabaseCloneCount"];
+            var cloneCountStr = config["Testing:DatabaseCloneCount"] ?? DEFAULT_CLONE_COUNT.ToString();
             var cloneCount = int.Parse(cloneCountStr);
 
             CloneConnections = new CloneConnections();

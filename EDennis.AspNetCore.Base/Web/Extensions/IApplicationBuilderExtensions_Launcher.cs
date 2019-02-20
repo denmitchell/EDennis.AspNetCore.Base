@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -16,7 +17,10 @@ namespace EDennis.AspNetCore.Base.Web {
             if (!(provider.GetService<TestInfo>() is TestInfo testInfo)) {
                 testInfo = new TestInfo();
             }
-            var launcher = new ApiLauncher(config, cloneConnections, testInfo);
+            if (!(provider.GetService<ILogger<ApiLauncher>>() is ILogger<ApiLauncher> logger)) {
+                logger = new Logger<ApiLauncher>(new LoggerFactory());
+            }
+            var launcher = new ApiLauncher(config, cloneConnections, testInfo, logger);
             launcher.StartAsync<TStartup1>().Wait();
             return app;
         }

@@ -19,8 +19,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             _instanceName = Guid.NewGuid().ToString();
             _factory = factory;
             _client = factory.CreateClient();
-            var port = PortInspector.GetRandomAvailablePorts(1)[0];
-            _client.BaseAddress = new Uri($"http://localhost:{port}");
+            //var port = PortInspector.GetRandomAvailablePorts(1)[0];
+            //_client.BaseAddress = new Uri($"http://localhost:{port}");
             _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, _instanceName);
         }
 

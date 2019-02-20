@@ -509,4 +509,4 @@ function CreateClones([string]$database,[int]$cloneCount){
 }
 
 #sample call
-CreateClones ColorDb 6
+CreateClones StateBackgroundCheck 5

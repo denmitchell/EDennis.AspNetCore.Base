@@ -18,6 +18,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
+                var testInfo = provider.GetRequiredService(typeof(TestInfo)) as TestInfo;
+
                 var header = GetTestingHeader(context);
 
                 if (header.Key == null) {
@@ -27,9 +29,21 @@ namespace EDennis.AspNetCore.Base.Testing {
                 string operation = header.Key;
                 string instanceName = header.Value;
 
+                if (operation.Contains("InMemory"))
+                    testInfo.TestDatabaseType = TestDatabaseType.InMemory;
+                if (operation.Contains("Clone"))
+                    testInfo.TestDatabaseType = TestDatabaseType.Clone;
+                else
+                    testInfo.TestDatabaseType = TestDatabaseType.Readonly;
+
+                testInfo.Operation = operation;
+                testInfo.InstanceName = instanceName;
+
+                //does not seem to work
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
                 if (operation == HDR_USE_INMEMORY || operation == HDR_USE_CLONE ) {
+                    //does not seem to work
                     client.HttpClient.DefaultRequestHeaders.Add(operation, instanceName);
                 } else if (operation == HDR_DROP_INMEMORY || operation == HDR_RETURN_CLONE ) {
                     client.HttpClient.SendResetAsync(operation,instanceName);

@@ -9,18 +9,22 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
     public class ApiLauncher {
+        readonly ILogger _logger;
 
-        public ApiLauncher(IConfiguration config, 
+        public ApiLauncher(IConfiguration config,
             CloneConnections cloneConnections,
-            TestInfo testInfo) {
+            TestInfo testInfo,
+            ILogger<ApiLauncher> logger) {
             _config = config;
             _apis = config.GetApiConfig();
             _cloneConnections = cloneConnections;
             _testInfo = testInfo;
+            _logger = logger;
 
             if(testInfo.TestDatabaseType == TestDatabaseType.Clone) {
                 DatabaseCloneManager.PopulateCloneConnections(cloneConnections);
