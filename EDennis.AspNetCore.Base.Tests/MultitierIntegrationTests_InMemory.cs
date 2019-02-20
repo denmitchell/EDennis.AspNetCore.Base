@@ -58,10 +58,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             _output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
-            var expected = jsonTestCase.GetObject<List<Color>>("Expected");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x=>x.Id);
 
-            _client.Post("api/color", new Color { Name = "burgundy" });
-            var actual = _client.Get<List<Color>>("api/color").Value;
+            _client.Post("api/color", input);
+            var actual = _client.Get<List<Color>>("api/color").Value
+                .OrderBy(x => x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, _output));
         }

@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
+using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
+    [Collection("Clone")] //needed to ensure that different test classes run sequentially
     public class CloneIntegrationTests<TStartup> : IClassFixture<CloneWebApplicationFactory<TStartup>>, IDisposable 
         where TStartup: class {
 
         protected readonly ITestOutputHelper _output;
-        protected readonly string _instanceName;
         protected readonly CloneWebApplicationFactory<TStartup> _factory;
         protected readonly HttpClient _client;
 
@@ -22,7 +23,6 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public CloneIntegrationTests(ITestOutputHelper output, CloneWebApplicationFactory<TStartup> factory) {
             _output = output;
-            _instanceName = Guid.NewGuid().ToString();
             _factory = factory;
 
             _cloneConnections = factory.CloneConnections;
@@ -34,6 +34,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var port = PortInspector.GetRandomAvailablePorts(1)[0];
             _client.BaseAddress = new Uri($"http://localhost:{port}");
             _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_CLONE, _cloneIndex.ToString());
+
+
         }
 
 

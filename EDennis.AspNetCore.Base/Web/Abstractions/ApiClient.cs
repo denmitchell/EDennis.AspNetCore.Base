@@ -13,7 +13,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public ApiClient(HttpClient httpClient, IConfiguration config,
             TestHeader testHeader) {
             HttpClient = httpClient;
-            httpClient.DefaultRequestHeaders.Add(testHeader.Operation, testInfo.InstanceName)
+            httpClient.DefaultRequestHeaders.Add(testHeader.Operation, testHeader.InstanceName);
             var baseAddress = config[$"Apis:{GetType().Name}:BaseAddress"];
             HttpClient.BaseAddress = new Uri(baseAddress);
         }

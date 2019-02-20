@@ -26,8 +26,8 @@ namespace EDennis.Samples.Colors.ExternalApi.Controllers {
         }
 
         [HttpPost]
-        public void Post(string colorName) {
-            _api.Create(new Color { Name = colorName });
+        public void Post(Color color) {
+            _api.Create(color);
         }
 
     }

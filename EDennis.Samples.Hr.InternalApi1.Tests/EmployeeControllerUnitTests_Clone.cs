@@ -20,7 +20,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         private EmployeeController _controller;
 
         public EmployeeControllerUnitTests_Clone(ITestOutputHelper output,
-            CloneClassFixture cloneFixture) : base(output, cloneFixture) {
+            CloneClassFixture<HrContext> cloneFixture) : base(output, cloneFixture) {
             _controller = new EmployeeController(_repo);
         }
 

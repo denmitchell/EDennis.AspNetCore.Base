@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,8 +17,8 @@ namespace EDennis.Samples.Hr.ExternalApi {
         private const string PREEMPLOYMENT_URL = "iapi/PreEmployment";
 
 
-        public InternalApi2(HttpClient client, IConfiguration config) :
-            base(client, config) {
+        public InternalApi2(HttpClient client, IConfiguration config, TestHeader testHeader) :
+            base(client, config, testHeader) {
         }
 
         public void CreateAgencyOnlineCheck(AgencyOnlineCheck check) 

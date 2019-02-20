@@ -39,7 +39,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine(t);
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            _output.WriteLine($"Instance Name:{_cloneIndex}");
 
             var id = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<Color>("Expected");
@@ -118,7 +118,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         [InlineData(5, "green")]
         [InlineData(6, "blue")]
         public void Get_Inline(int id, string expectedName) {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            _output.WriteLine($"Instance Name:{_cloneIndex}");
 
             var color = _client.Get<Color>($"iapi/color/{id}").Value;
 
@@ -129,7 +129,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         [Fact]
         public void Post_Fact() {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            _output.WriteLine($"Instance Name:{_cloneIndex}");
 
             _client.Post("iapi/color", new Color { Name = "burgundy" });
             var colors = _client.Get<List<Color>>("iapi/color").Value;
@@ -150,7 +150,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         [Fact]
         public void Put_Fact() {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            _output.WriteLine($"Instance Name:{_cloneIndex}");
 
             _client.Put("iapi/color/1", new Color { Id = 1, Name = "burgundy" });
             var colors = _client.Get<List<Color>>("iapi/color").Value;
@@ -171,7 +171,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         [Fact]
         public void Delete_Fact() {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            _output.WriteLine($"Instance Name:{_cloneIndex}");
 
             _client.Delete("iapi/color/3", new Color { Id = 3, Name = "gray" });
             var colors = _client.Get<List<Color>>("iapi/color").Value;

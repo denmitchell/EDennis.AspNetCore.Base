@@ -20,7 +20,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public EmployeeRepoTests_Clone(ITestOutputHelper output, 
-            CloneClassFixture cloneFixture) :base (output, cloneFixture) {
+            CloneClassFixture<HrContext> cloneFixture) :base (output, cloneFixture) {
         }
 
 

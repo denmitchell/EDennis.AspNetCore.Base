@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
+    [Collection("Clone")] //needed to ensure that different test classes run sequentially
     public class CloneRepoTests<TRepo, TEntity, TContext> : IClassFixture<CloneClassFixture<TContext>>, IDisposable
         where TEntity : class, new()
         where TContext : DbContext
@@ -34,6 +36,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             //using reflection, instantiate the repo
             _repo = Activator.CreateInstance(typeof(TRepo),
                 new object[] { _context }) as TRepo;
+
 
         }
 
