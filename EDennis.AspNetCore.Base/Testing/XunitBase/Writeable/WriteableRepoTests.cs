@@ -6,17 +6,17 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class InMemoryRepoTests<TRepo, TEntity, TContext> : IClassFixture<InMemoryClassFixture>, IDisposable
-        where TEntity : class, new()
+    public class WriteableRepoTests<TRepo, TEntity, TContext> : IClassFixture<ConfigurationClassFixture>, IDisposable
+        where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
-        where TRepo : SqlRepo<TEntity, TContext> {
+        where TRepo : WriteableRepo<TEntity, TContext> {
 
         protected readonly ITestOutputHelper _output;
         protected readonly string _dbName;
         protected readonly TContext _context;
         protected readonly TRepo _repo;
 
-        public InMemoryRepoTests(ITestOutputHelper output, InMemoryClassFixture configFixture) {
+        public WriteableRepoTests(ITestOutputHelper output, ConfigurationClassFixture configFixture) {
 
             _output = output;
             var dbName = configFixture.Configuration.GetDatabaseName<TContext>(); 

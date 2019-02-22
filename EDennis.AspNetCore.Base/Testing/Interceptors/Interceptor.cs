@@ -8,15 +8,12 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected readonly RequestDelegate _next;
         public const string HDR_PREFIX = "X-Testing-";
-        public const string DEFAULT_NAMED_INSTANCE = "0";
+        public const string DEFAULT_NAMED_INSTANCE = "default";
 
         public const string HDR_USE_READONLY = HDR_PREFIX + "UseReadonly";
 
         public const string HDR_USE_INMEMORY = HDR_PREFIX + "UseInMemory";
         public const string HDR_DROP_INMEMORY = HDR_PREFIX + "DropInMemory";
-
-        public const string HDR_USE_CLONE = HDR_PREFIX + "UseClone";
-        public const string HDR_RETURN_CLONE = HDR_PREFIX + "ReturnClone";
 
         public Interceptor(RequestDelegate next) {
             _next = next;

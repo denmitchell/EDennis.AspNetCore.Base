@@ -6,21 +6,19 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class InMemoryIntegrationTests<TStartup> : IClassFixture<InMemoryWebApplicationFactory<TStartup>>, IDisposable 
+    public class WriteableIntegrationTests<TStartup> : IClassFixture<WebApplicationFactory<TStartup>>, IDisposable 
         where TStartup: class {
 
         protected readonly ITestOutputHelper _output;
         protected readonly string _instanceName;
-        protected readonly InMemoryWebApplicationFactory<TStartup> _factory;
+        protected readonly WebApplicationFactory<TStartup> _factory;
         protected readonly HttpClient _client;
 
-        public InMemoryIntegrationTests(ITestOutputHelper output, InMemoryWebApplicationFactory<TStartup> factory) {
+        public WriteableIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory) {
             _output = output;
             _instanceName = Guid.NewGuid().ToString();
             _factory = factory;
             _client = factory.CreateClient();
-            //var port = PortInspector.GetRandomAvailablePorts(1)[0];
-            //_client.BaseAddress = new Uri($"http://localhost:{port}");
             _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, _instanceName);
         }
 

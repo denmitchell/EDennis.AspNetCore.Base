@@ -18,27 +18,18 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
-                var testHeader = provider.GetRequiredService(typeof(TestHeader)) as TestHeader;
-
                 var header = GetTestingHeader(context);
 
                 if (header.Key == null) {
-                    context.Request.Headers.Add(HDR_USE_CLONE, DEFAULT_NAMED_INSTANCE);
-                    header = new KeyValuePair<string, string>(HDR_USE_CLONE, DEFAULT_NAMED_INSTANCE);
+                    context.Request.Headers.Add(HDR_USE_INMEMORY, DEFAULT_NAMED_INSTANCE);
+                    header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, DEFAULT_NAMED_INSTANCE);
                 }
                 string operation = header.Key;
                 string instanceName = header.Value;
 
-                testHeader.Operation = operation;
-                testHeader.InstanceName = instanceName;
-
-                //does not seem to work
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
-                //if (operation == HDR_USE_INMEMORY || operation == HDR_USE_CLONE ) {
-                    //does not seem to work
-                    //client.HttpClient.DefaultRequestHeaders.Add(operation, instanceName);
-                if (operation == HDR_DROP_INMEMORY || operation == HDR_RETURN_CLONE ) {
+                if (operation == HDR_DROP_INMEMORY ) {
                     client.HttpClient.SendResetAsync(operation,instanceName);
                     return;
                 }

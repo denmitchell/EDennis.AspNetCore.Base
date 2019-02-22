@@ -16,11 +16,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public ReadonlyIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory) {
             _output = output;
-            _instanceName = Guid.NewGuid().ToString();
             _factory = factory;
             _client = factory.CreateClient();
-            var port = PortInspector.GetRandomAvailablePorts(1)[0];
-            _client.BaseAddress = new Uri($"http://localhost:{port}");
+            //needed?
+            //var port = PortInspector.GetRandomAvailablePorts(1)[0];
+            //_client.BaseAddress = new Uri($"http://localhost:{port}");
             _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_READONLY, Interceptor.DEFAULT_NAMED_INSTANCE);
         }
 

@@ -12,13 +12,13 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class MultitierIntegrationTests_InMemory : 
-        InMemoryIntegrationTests<EDennis.Samples.Colors.ExternalApi.Startup> {
+        WriteableIntegrationTests<EDennis.Samples.Colors.ExternalApi.Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public MultitierIntegrationTests_InMemory(ITestOutputHelper output, 
-            InMemoryWebApplicationFactory<EDennis.Samples.Colors.ExternalApi.Startup> factory)
+            WriteableWebApplicationFactory<EDennis.Samples.Colors.ExternalApi.Startup> factory)
             :base(output,factory){}
 
 

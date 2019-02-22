@@ -13,12 +13,12 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi1.Tests {
     public class EmployeeRepoTests_InMemory :
-        InMemoryRepoTests<EmployeeRepo, Employee, HrContext> {
+        WriteableRepoTests<EmployeeRepo, Employee, HrContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public EmployeeRepoTests_InMemory(ITestOutputHelper output,
-            InMemoryClassFixture fixture) : base(output, fixture) { }
+            WriteableClassFixture fixture) : base(output, fixture) { }
 
 
         [Theory]

@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class RepoInterceptor<TRepo, TEntity, TContext> : Interceptor
-        where TEntity : class, new()
+        where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
-        where TRepo : SqlRepo<TEntity, TContext> {
+        where TRepo : WriteableRepo<TEntity, TContext> {
 
         public RepoInterceptor(RequestDelegate next) : base(next) { }
 
@@ -25,45 +25,30 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var header = GetTestingHeader(context);
 
                 if (header.Key == null) {
-                    context.Request.Headers.Add(HDR_USE_CLONE, DEFAULT_NAMED_INSTANCE);
-                    header = new KeyValuePair<string, string>(HDR_USE_CLONE, DEFAULT_NAMED_INSTANCE);
+                    context.Request.Headers.Add(HDR_USE_INMEMORY, DEFAULT_NAMED_INSTANCE);
+                    header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, DEFAULT_NAMED_INSTANCE);
                 }
 
                 var operation = header.Key;
-                var instanceName = header.Value;
+                var baseInstanceName = header.Value;
 
                 var repo = provider.GetRequiredService(typeof(TRepo)) as TRepo;
                 var cache = provider.GetRequiredService(typeof(TestDbContextCache<TContext>))
                         as TestDbContextCache<TContext>;
 
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(config);
-                var contextName = typeof(TContext).Name;
 
                 if (operation == HDR_USE_READONLY)
-                    GetReadonlyDatabase(repo, baseDatabaseName);
-                else if (operation == HDR_USE_INMEMORY)
-                    GetOrAddInMemoryDatabase(repo, cache, baseDatabaseName, instanceName);
-                else if (operation == HDR_USE_CLONE) {
-                    var cloneConnections = provider.GetRequiredService(typeof(CloneConnections))
-                        as CloneConnections;
-                    GetDatabaseClone(repo, cache, cloneConnections, contextName, instanceName);
+                    throw new ApplicationException("HDR_USE_READONLY not appropriate for Writeable Repo.");
+                else if (operation == HDR_USE_INMEMORY) {
+                    GetOrAddInMemoryDatabase(repo, cache, baseInstanceName, baseDatabaseName);
                 } else if (operation == HDR_DROP_INMEMORY)
-                    DropInMemory(cache, instanceName);
-                else if (operation == HDR_RETURN_CLONE) {
-                    var cloneConnections = provider.GetRequiredService(typeof(CloneConnections))
-                        as CloneConnections;
-                    ReturnClone(cache, cloneConnections, instanceName);
-                }
+                    DropInMemory(cache, baseInstanceName);
 
             }
 
             await _next(context);
 
-        }
-
-        private void GetReadonlyDatabase(TRepo repo, string baseDatabaseName) {
-            var dbContext = TestDbContextManager<TContext>.GetReadonlyDatabase(baseDatabaseName);
-            repo.Context = dbContext;
         }
 
         private void GetOrAddInMemoryDatabase(TRepo repo, TestDbContextCache<TContext> cache,
@@ -78,20 +63,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             }
         }
 
-
-        private void GetDatabaseClone(TRepo repo, TestDbContextCache<TContext> cache,
-            CloneConnections cloneConnections, string contextName, string instanceName) {
-            var cloneIndex = int.Parse(instanceName);
-            //if (cache.ContainsKey(instanceName))
-            //    repo.Context = cache[instanceName];
-            //else {
-                var dbContext = TestDbContextManager<TContext>.GetDatabaseClone(cloneConnections, contextName, cloneIndex);
-                repo.Context = dbContext;
-            //    cache.Add(instanceName, repo.Context);
-            //}
-        }
-
-
         private void DropInMemory(TestDbContextCache<TContext> cache, string instanceName) {
             if (cache.ContainsKey(instanceName)) {
                 var context = cache[instanceName];
@@ -101,25 +72,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        private void ReturnClone(TestDbContextCache<TContext> cache, 
-            CloneConnections cloneConnections, string instanceName) {
-            //if (cache.ContainsKey(instanceName)) {
-            //    var context = cache[instanceName];
-                var contextName = typeof(TContext).Name;
-                var cloneIndex = int.Parse(instanceName);
-                var cxnTrans = cloneConnections[contextName][cloneIndex];
-                TestDbContextManager<TContext>.ReturnDatabaseClone(cxnTrans);
-                //cache.Remove(instanceName);
-            //}
-        }
+
 
     }
 
-    public static class IApplicationBuilderExtensions_RepoInterceptorMiddleware {
-        public static IApplicationBuilder UseRepoInterceptor<TRepo, TEntity, TContext>(this IApplicationBuilder app)
-        where TEntity : class, new()
+    public static partial class IApplicationBuilderExtensions_RepoInterceptorMiddleware {
+        public static IApplicationBuilder UseWriteableRepoInterceptor<TRepo, TEntity, TContext>(this IApplicationBuilder app)
+                where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
-        where TRepo : SqlRepo<TEntity, TContext> {
+        where TRepo : WriteableRepo<TEntity, TContext> {
             app.UseMiddleware<RepoInterceptor<TRepo, TEntity, TContext>>();
             return app;
         }

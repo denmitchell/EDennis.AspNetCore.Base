@@ -17,24 +17,14 @@ namespace EDennis.AspNetCore.Base.Testing {
         readonly ILogger _logger;
 
         public ApiLauncher(IConfiguration config,
-            CloneConnections cloneConnections,
-            TestInfo testInfo,
             ILogger<ApiLauncher> logger) {
             _config = config;
             _apis = config.GetApiConfig();
-            _cloneConnections = cloneConnections;
-            _testInfo = testInfo;
             _logger = logger;
-
-            if(testInfo.TestDatabaseType == TestDatabaseType.Clone) {
-                DatabaseCloneManager.PopulateCloneConnections(cloneConnections);
-            }
         }
 
         private IConfiguration _config { get; }
         private Dictionary<string,ApiConfig> _apis { get; }
-        private CloneConnections _cloneConnections { get; }
-        private TestInfo _testInfo { get; }
 
         public async Task StartAsync<TStartup>(params string[] args) 
             where TStartup : class {
@@ -64,10 +54,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             .UseStartup<TStartup>()
             .UseContentRoot(dir)
             .UseUrls($"http://localhost:{port}")
-            .ConfigureServices(services=> {
-                services.AddSingleton(_cloneConnections);
-                services.AddSingleton(_testInfo);
-            })
             .ConfigureAppConfiguration(options => {                
                 options.SetBasePath(dir);
                 if (args != null)
@@ -83,6 +69,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                 host.WaitForShutdownAsync();
                 host.RunAsync();
             });
+
+
 
             _config[$"{configKey}:BaseAddress"] = urls[0];
 

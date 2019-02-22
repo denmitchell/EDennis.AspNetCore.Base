@@ -9,24 +9,30 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class ReadOnlyRepoTests<TRepo, TEntity, TContext> : IClassFixture<ReadonlyClassFixture>
-        where TEntity : class, new()
+    public class ReadonlyTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationClassFixture>
+        where TEntity : class, IEFCoreTemporalModel , new()
         where TContext : DbContext
-        where TRepo : SqlRepo<TEntity, TContext> {
+        where THistoryContext : DbContext
+        where TRepo : ReadonlyTemporalRepo<TEntity, TContext, THistoryContext> {
 
         protected readonly ITestOutputHelper _output;
         protected readonly TContext _context;
+        protected readonly THistoryContext _histContext;
         protected readonly TRepo _repo;
 
-        public ReadOnlyRepoTests(ITestOutputHelper output, ReadonlyClassFixture configFixture) {
+        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture configFixture) {
             _output = output;
 
             _context = TestDbContextManager<TContext>.GetReadonlyDatabase(
                 configFixture.Configuration);
 
+            _histContext = TestDbContextManager<THistoryContext>.GetReadonlyDatabase(
+                configFixture.Configuration);
+
+
             //using reflection, instantiate the repo
             _repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { _context }) as TRepo;
+                new object[] { _context, _histContext }) as TRepo;
 
         }
     }

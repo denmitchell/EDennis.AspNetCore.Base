@@ -12,6 +12,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class TestDbContextManager<TContext>
         where TContext : DbContext {
 
+
         public static TContext CreateInMemoryDatabase(string baseDatabaseName, string instanceName) {
             var options = new DbContextOptionsBuilder<TContext>()
                 .UseInMemoryDatabase($"{baseDatabaseName}-{instanceName}")
@@ -32,27 +33,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-
-        public static TContext GetDatabaseClone(CloneConnections cloneConnections,
-            string contextName, int cloneIndex) {
-
-            var cxn = cloneConnections[contextName][cloneIndex];
-
-            //create the options for the DbContextBase subclass
-            var options = new DbContextOptionsBuilder<TContext>()
-                .UseSqlServer(cxn.SqlConnection)
-                .Options;
-
-            //using reflection, instantiate the DbContextBase subclass
-            var context = Activator.CreateInstance(typeof(TContext),
-                new object[] { options }) as TContext;
-
-            context.Database.AutoTransactionsEnabled = false;
-            context.Database.UseTransaction(cxn.SqlTransaction);
-
-            return context;
-
-        }
 
         public static TContext GetReadonlyDatabase(string databaseName) {
 
@@ -84,12 +64,6 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             return context;
         }
-
-
-        public static void ReturnDatabaseClone(SqlConnectionAndTransaction cxnTrans) {
-            DatabaseCloneManager.ResetConnection(cxnTrans);
-        }
-
 
 
 

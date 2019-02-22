@@ -9,14 +9,14 @@ using Xunit.Abstractions;
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
     public class AgencyOnlineCheckControllerUnitTests_InMemory :
-        InMemoryRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
+        WriteableRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         private AgencyOnlineCheckController _controller;
 
         public AgencyOnlineCheckControllerUnitTests_InMemory(
-                ITestOutputHelper output, InMemoryClassFixture fixture) 
+                ITestOutputHelper output, WriteableClassFixture fixture) 
             : base (output,fixture){
             _controller = new AgencyOnlineCheckController(_repo);
         }

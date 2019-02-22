@@ -7,12 +7,12 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
     public class AgencyOnlineCheckRepoUnitTests_InMemory :
-        InMemoryRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
+        WriteableRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public AgencyOnlineCheckRepoUnitTests_InMemory(ITestOutputHelper output,
-            InMemoryClassFixture fixture) : base(output, fixture) { }
+            WriteableClassFixture fixture) : base(output, fixture) { }
 
 
         [Theory]

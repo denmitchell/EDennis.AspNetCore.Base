@@ -11,12 +11,12 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class RepoControllerTests_InMemory : InMemoryIntegrationTests<Startup> {
+    public class RepoControllerTests_InMemory : WriteableIntegrationTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public RepoControllerTests_InMemory(ITestOutputHelper output, InMemoryWebApplicationFactory<Startup> factory)
+        public RepoControllerTests_InMemory(ITestOutputHelper output, WriteableWebApplicationFactory<Startup> factory)
             :base(output,factory){}
 
 
