@@ -65,6 +65,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var serverAddresses = host.ServerFeatures.Get<IServerAddressesFeature>();
             var urls = serverAddresses.Addresses.ToArray();
 
+            _logger.LogInformation($"ApiLauncher starting {projectName} @ {port}");
             await Task.Run(() => {
                 host.WaitForShutdownAsync();
                 host.RunAsync();

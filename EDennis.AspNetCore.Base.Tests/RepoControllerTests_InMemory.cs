@@ -36,15 +36,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("GetById", "SqlRepo", "1")]
         [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine(t);
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
             var id = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<Color>("Expected");
 
-            var actual = _client.Get<Color>($"iapi/color/{id}").Value;
+            var actual = HttpClient.Get<Color>($"iapi/color/{id}").Value;
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
 
@@ -53,18 +53,18 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Post", "SqlRepo", "brown")]
         [TestJsonSpecific("Post", "SqlRepo", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            _client.Post("iapi/color", input);
-            var actual = _client.Get<List<Color>>("iapi/color")
+            HttpClient.Post("iapi/color", input);
+            var actual = HttpClient.Get<List<Color>>("iapi/color")
                     .Value
                     .OrderBy(x=>x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
 
@@ -72,19 +72,19 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Update", "SqlRepo", "1")]
         [TestJsonSpecific("Update", "SqlRepo", "2")]
         public void Put(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var id = input.Id;
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            _client.Put($"iapi/color/{id}", input);
-            var actual = _client.Get<List<Color>>("iapi/color")
+            HttpClient.Put($"iapi/color/{id}", input);
+            var actual = HttpClient.Get<List<Color>>("iapi/color")
                 .Value
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
 
@@ -93,18 +93,18 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Delete", "SqlRepo", "3")]
         [TestJsonSpecific("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            _client.Delete<Color>($"iapi/color/{input}");
-            var actual = _client.Get<List<Color>>("iapi/color")
+            HttpClient.Delete<Color>($"iapi/color/{input}");
+            var actual = HttpClient.Get<List<Color>>("iapi/color")
                 .Value
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
 
@@ -116,9 +116,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         [InlineData(5, "green")]
         [InlineData(6, "blue")]
         public void Get_Inline(int id, string expectedName) {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
-            var color = _client.Get<Color>($"iapi/color/{id}").Value;
+            var color = HttpClient.Get<Color>($"iapi/color/{id}").Value;
 
             Assert.Equal(expectedName, color.Name);
 
@@ -127,10 +127,10 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         [Fact]
         public void Post_Fact() {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
-            _client.Post("iapi/color", new Color { Name = "burgundy" });
-            var colors = _client.Get<List<Color>>("iapi/color").Value;
+            HttpClient.Post("iapi/color", new Color { Name = "burgundy" });
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Value;
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 7).Name);
 
@@ -148,10 +148,10 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         [Fact]
         public void Put_Fact() {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
-            _client.Put("iapi/color/1", new Color { Id = 1, Name = "burgundy" });
-            var colors = _client.Get<List<Color>>("iapi/color").Value;
+            HttpClient.Put("iapi/color/1", new Color { Id = 1, Name = "burgundy" });
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Value;
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 1).Name);
 
@@ -169,10 +169,10 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         [Fact]
         public void Delete_Fact() {
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
-            _client.Delete("iapi/color/3", new Color { Id = 3, Name = "gray" });
-            var colors = _client.Get<List<Color>>("iapi/color").Value;
+            HttpClient.Delete("iapi/color/3", new Color { Id = 3, Name = "gray" });
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Value;
 
             Assert.Collection(colors,
                 new Action<Color>[] {

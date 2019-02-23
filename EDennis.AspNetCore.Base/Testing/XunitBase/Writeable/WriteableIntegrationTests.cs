@@ -9,17 +9,19 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class WriteableIntegrationTests<TStartup> : IClassFixture<WebApplicationFactory<TStartup>>, IDisposable 
         where TStartup: class {
 
-        protected readonly ITestOutputHelper _output;
-        protected readonly string _instanceName;
         protected readonly WebApplicationFactory<TStartup> _factory;
-        protected readonly HttpClient _client;
+
+        protected ITestOutputHelper Output { get; }
+        protected HttpClient HttpClient { get; }
+        protected string InstanceName { get; }
+
 
         public WriteableIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory) {
-            _output = output;
-            _instanceName = Guid.NewGuid().ToString();
             _factory = factory;
-            _client = factory.CreateClient();
-            _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, _instanceName);
+            Output = output;
+            InstanceName = Guid.NewGuid().ToString();
+            HttpClient = factory.CreateClient();
+            HttpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, InstanceName);
         }
 
 
@@ -29,7 +31,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    _client.SendResetAsync(Interceptor.HDR_DROP_INMEMORY,_instanceName);
+                    HttpClient.SendResetAsync(Interceptor.HDR_DROP_INMEMORY,InstanceName);
                 }
                 disposedValue = true;
             }

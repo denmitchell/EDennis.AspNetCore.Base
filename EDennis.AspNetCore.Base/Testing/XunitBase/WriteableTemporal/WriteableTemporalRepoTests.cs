@@ -13,34 +13,38 @@ namespace EDennis.AspNetCore.Base.Testing {
         where THistoryContext : DbContext
         where TRepo : WriteableTemporalRepo<TEntity, TContext, THistoryContext> {
 
-        protected readonly ITestOutputHelper _output;
-        protected readonly string _dbName;
-        protected readonly string _dbHistName;
-        protected readonly TContext _context;
-        protected readonly THistoryContext _histContext;
-        protected readonly TRepo _repo;
-        protected readonly string _instanceName;
-        protected readonly string _histInstanceName;
+        protected readonly ConfigurationClassFixture _fixture;
 
-        public WriteableTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture configFixture) {
+        protected ITestOutputHelper Output { get; }
+        protected string DatabaseName { get; }
+        protected string HistoryDatabaseName { get; }
+        protected TContext Context { get; }
+        protected THistoryContext HistoryContext { get; }
+        protected TRepo Repo { get; }
+        protected string InstanceName { get; }
+        protected string HistoryInstanceName { get; }
 
-            _output = output;
-            _dbName = configFixture.Configuration.GetDatabaseName<TContext>(); 
-            _instanceName = Guid.NewGuid().ToString();
+        public WriteableTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
 
-            _context = TestDbContextManager<TContext>
-                .CreateInMemoryDatabase(_dbName,_instanceName);
+            _fixture = fixture;
 
-            _dbHistName = configFixture.Configuration.GetDatabaseName<THistoryContext>();
-            _histInstanceName = _instanceName + "-hist";
+            Output = output;
+            DatabaseName = fixture.Configuration.GetDatabaseName<TContext>(); 
+            InstanceName = Guid.NewGuid().ToString();
 
-            _histContext = TestDbContextManager<THistoryContext>
-                .CreateInMemoryDatabase(_dbHistName, _histInstanceName);
+            Context = TestDbContextManager<TContext>
+                .CreateInMemoryDatabase(DatabaseName, InstanceName);
+
+            HistoryDatabaseName = fixture.Configuration.GetDatabaseName<THistoryContext>();
+            HistoryInstanceName = InstanceName + "-hist";
+
+            HistoryContext = TestDbContextManager<THistoryContext>
+                .CreateInMemoryDatabase(HistoryDatabaseName, HistoryInstanceName);
 
 
             //using reflection, instantiate the repo
-            _repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { _context, _histContext }) as TRepo;
+            Repo = Activator.CreateInstance(typeof(TRepo),
+                new object[] { Context, HistoryContext }) as TRepo;
 
         }
 
@@ -52,7 +56,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    TestDbContextManager<TContext>.DropInMemoryDatabase(_context);
+                    TestDbContextManager<TContext>.DropInMemoryDatabase(Context);
+                    TestDbContextManager<THistoryContext>.DropInMemoryDatabase(HistoryContext);
                 }
                 disposedValue = true;
             }

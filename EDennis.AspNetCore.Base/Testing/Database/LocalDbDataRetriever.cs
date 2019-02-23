@@ -3,10 +3,35 @@ using Dapper;
 using System.Data.SqlClient;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public static class LocalDbDataRetriever {
+    public static class DataRetriever {
+
         public static TEntity[] Retrieve<TEntity>(string dbName, string tableName) {
-            var sqlCols =
-$@"
+            var server = "(localdb)\\mssqllocaldb";
+            return Retrieve<TEntity>(dbName, tableName, server);
+        }
+
+        public static TEntity[] Retrieve<TEntity>(string dbName, string tableName, string server) {
+            var sqlCols = GetColumnSql(tableName);
+            var sql = $"select * from {tableName}";
+            using (var cxn = new SqlConnection($"Server={server};Database={dbName};Trusted_Connection=True;")) {
+                var cols = cxn.Query<string>(sqlCols).AsList().ToArray();
+                sql = sql.Replace("*", string.Join(',', cols));
+                var data = cxn.Query<TEntity>(sql).AsList().ToArray();
+                return data;
+            }
+        }
+
+        public static TEntity[] Retrieve<TEntity>(string dbName, string tableName, string server, string sql) {
+            using (var cxn = new SqlConnection($"Server={server};Database={dbName};Trusted_Connection=True;")) {
+                var data = cxn.Query<TEntity>(sql).AsList().ToArray();
+                return data;
+            }
+        }
+
+
+
+        private static string GetColumnSql(string tableName) =>
+    $@"
 select c.name 
 	from sys.columns c 
 	inner join sys.objects o
@@ -21,14 +46,9 @@ select c.name
 		and is_computed = 0 
 		and generated_always_type_desc = 'NOT_APPLICABLE'	
 	order by ic.ordinal_position;
-"; 
-            var sql = $"select * from {tableName}";
-            using (var cxn = new SqlConnection($"Server=(localdb)\\mssqllocaldb;Database={dbName};Trusted_Connection=True;")) {
-                var cols = cxn.Query<string>(sqlCols).AsList().ToArray();
-                sql = sql.Replace("*", string.Join(',', cols));
-                var data = cxn.Query<TEntity>(sql).AsList().ToArray();
-                return data;
-            }
-        }
+";
+
     }
+
+
 }

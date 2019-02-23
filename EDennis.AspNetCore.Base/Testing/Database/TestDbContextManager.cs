@@ -34,25 +34,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        public static TContext GetReadonlyDatabase(string databaseName) {
-
-            var cxnString = MssqlLocalDbConnectionString(databaseName);
-
-            var options = new DbContextOptionsBuilder<TContext>()
-                .UseSqlServer(cxnString)
-                .Options;
-
-            //using reflection, instantiate the DbContextBase subclass
-            var context = Activator.CreateInstance(typeof(TContext),
-                new object[] { options }) as TContext;
-
-            return context;
-        }
-
         public static TContext GetReadonlyDatabase(IConfiguration config) {
 
-            var databaseName = config.GetDatabaseName<TContext>();
-            var cxnString = MssqlLocalDbConnectionString(databaseName);
+            var contextName = typeof(TContext).Name;
+
+            var cxnString = config[$"ConnectionStrings:{contextName}"];
 
             var options = new DbContextOptionsBuilder<TContext>()
                 .UseSqlServer(cxnString)
@@ -72,6 +58,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+
         public static string DatabaseName(string connectionString) {
             var builder = new SqlConnectionStringBuilder {
                 ConnectionString = connectionString
@@ -80,9 +67,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        public static string MssqlLocalDbConnectionString(string databaseName) {
-            return $@"Server=(localdb)\mssqllocaldb;Database={databaseName};Trusted_Connection=True;MultipleActiveResultSets=true";
-        }
     }
 
 }

@@ -9,19 +9,20 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class ReadonlyIntegrationTests<TStartup> : IClassFixture<WebApplicationFactory<TStartup>>
         where TStartup: class {
 
-        protected readonly ITestOutputHelper _output;
-        protected readonly string _instanceName;
-        protected readonly WebApplicationFactory<TStartup> _factory;
-        protected readonly HttpClient _client;
+        private WebApplicationFactory<TStartup> _factory;
+
+        protected ITestOutputHelper Output { get; }
+        protected HttpClient HttpClient { get; }
+        protected string InstanceName { get; } = "readonly";
 
         public ReadonlyIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory) {
-            _output = output;
+            Output = output;
             _factory = factory;
-            _client = factory.CreateClient();
+            HttpClient = factory.CreateClient();
             //needed?
             //var port = PortInspector.GetRandomAvailablePorts(1)[0];
             //_client.BaseAddress = new Uri($"http://localhost:{port}");
-            _client.DefaultRequestHeaders.Add(Interceptor.HDR_USE_READONLY, Interceptor.DEFAULT_NAMED_INSTANCE);
+            HttpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_READONLY, "");
         }
 
     }

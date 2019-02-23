@@ -21,7 +21,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         public EmployeeControllerUnitTests_InMemory(ITestOutputHelper output,
             WriteableClassFixture fixture) : base(output, fixture) {
 
-            _controller = new EmployeeController(_repo);
+            _controller = new EmployeeController(Repo);
 
         }
 
@@ -36,7 +36,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
             _controller.CreateEmployee(new Employee { FirstName = firstName });
 
-            var employees = _repo.Query.ToList()
+            var employees = Repo.Query.ToList()
                 .OrderBy(e => e.Id);
 
             Assert.Collection(employees,

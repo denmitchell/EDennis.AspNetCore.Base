@@ -30,16 +30,16 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
         [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
         [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
         public void CreateEmployee(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
-            _output.WriteLine($"Db instance name: {_instanceName}");
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
 
             var input = jsonTestCase.GetObject<Employee>("Input");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected").OrderBy(x=>x.Id);
 
-            _client.Post("api/employee", input);
-            var actual = _client.Get<List<Employee>>("api/employee").Value.OrderBy(x => x.Id);
+            HttpClient.Post("api/employee", input);
+            var actual = HttpClient.Get<List<Employee>>("api/employee").Value.OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,_output));
+            Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,Output));
         }
 
 
@@ -49,17 +49,17 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
         [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
         [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
         public void CreateChecks(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
-            _output.WriteLine($"Db instance name: {_instanceName}");
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
 
             var input = jsonTestCase.GetObject<Employee>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<dynamic>("Expected");
 
-            _client.Post("api/employee",input);
-            var actual = _client.Get<dynamic>($"preemployment/{id}").Value;
+            HttpClient.Post("api/employee",input);
+            var actual = HttpClient.Get<dynamic>($"preemployment/{id}").Value;
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
     }

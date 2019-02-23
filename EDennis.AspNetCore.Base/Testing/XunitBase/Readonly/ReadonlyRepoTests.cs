@@ -14,19 +14,25 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TContext : DbContext
         where TRepo : ReadonlyRepo<TEntity, TContext> {
 
-        protected readonly ITestOutputHelper _output;
-        protected readonly TContext _context;
-        protected readonly TRepo _repo;
+        protected ConfigurationClassFixture _fixture;
 
-        public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationClassFixture configFixture) {
-            _output = output;
+        protected ITestOutputHelper Output { get; }
+        protected TContext Context { get; }
+        protected TRepo Repo { get; }
+        protected string InstanceName { get; } = "readonly";
 
-            _context = TestDbContextManager<TContext>.GetReadonlyDatabase(
-                configFixture.Configuration);
+        public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
+
+            _fixture = fixture;
+
+            Output = output;
+
+            Context = TestDbContextManager<TContext>.GetReadonlyDatabase(
+                fixture.Configuration);
 
             //using reflection, instantiate the repo
-            _repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { _context }) as TRepo;
+            Repo = Activator.CreateInstance(typeof(TRepo),
+                new object[] { Context }) as TRepo;
 
         }
     }

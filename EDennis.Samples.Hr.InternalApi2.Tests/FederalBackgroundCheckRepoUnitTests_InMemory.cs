@@ -20,9 +20,9 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(3, "2018-03-03", "Fail")]
         [InlineData(4, "2018-04-04", "Pass")]
         public void GetFederalBackgroundCheck(int employeeId, string strDateCompleted, string status) {
-            var preCount = _repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var preCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
 
-            var check = _repo.GetLastCheck(employeeId);
+            var check = Repo.GetLastCheck(employeeId);
 
             Assert.Equal(DateTime.Parse(strDateCompleted), check.DateCompleted);
             Assert.Equal(status, check.Status);

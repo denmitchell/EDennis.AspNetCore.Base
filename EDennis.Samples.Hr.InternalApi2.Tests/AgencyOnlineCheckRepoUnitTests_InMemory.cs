@@ -22,19 +22,19 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            var preCount = _repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var preCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
 
-            _repo.Create(new AgencyOnlineCheck {
+            Repo.Create(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
                 DateCompleted = DateTime.Parse(strDateCompleted),
                 Status = status
             });
 
-            var postCount = _repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var postCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
 
             Assert.Equal(preCount + 1, postCount);
 
-            var targetRec = _repo.Query
+            var targetRec = Repo.Query
                 .OrderBy(e => e.Id)
                 .LastOrDefault();
 

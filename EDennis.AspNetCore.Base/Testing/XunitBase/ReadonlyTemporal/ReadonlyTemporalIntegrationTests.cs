@@ -9,9 +9,11 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class ReadonlyTemporalIntegrationTests<TStartup> : ReadonlyIntegrationTests<TStartup>
         where TStartup: class {
 
+        protected new string InstanceName { get; } = "readonly-temporal";
 
         public ReadonlyTemporalIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory)
-            : base(output, factory) { }
+            : base(output, factory) {
+        }
 
     }
 }

@@ -15,24 +15,30 @@ namespace EDennis.AspNetCore.Base.Testing {
         where THistoryContext : DbContext
         where TRepo : ReadonlyTemporalRepo<TEntity, TContext, THistoryContext> {
 
-        protected readonly ITestOutputHelper _output;
-        protected readonly TContext _context;
-        protected readonly THistoryContext _histContext;
-        protected readonly TRepo _repo;
+        protected readonly ConfigurationClassFixture _fixture;
 
-        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture configFixture) {
-            _output = output;
+        protected ITestOutputHelper Output { get; }
+        protected TContext Context { get; }
+        protected THistoryContext HistoryContext { get; }
+        protected TRepo Repo { get; }
+        protected string InstanceName { get; } = "readonly-temporal";
 
-            _context = TestDbContextManager<TContext>.GetReadonlyDatabase(
-                configFixture.Configuration);
+        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
 
-            _histContext = TestDbContextManager<THistoryContext>.GetReadonlyDatabase(
-                configFixture.Configuration);
+            _fixture = fixture;
+
+            Output = output;
+
+            Context = TestDbContextManager<TContext>.GetReadonlyDatabase(
+                fixture.Configuration);
+
+            HistoryContext = TestDbContextManager<THistoryContext>.GetReadonlyDatabase(
+                fixture.Configuration);
 
 
             //using reflection, instantiate the repo
-            _repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { _context, _histContext }) as TRepo;
+            Repo = Activator.CreateInstance(typeof(TRepo),
+                new object[] { Context, HistoryContext }) as TRepo;
 
         }
     }

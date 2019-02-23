@@ -33,7 +33,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
             var input = new AgencyOnlineCheck {
                 EmployeeId = employeeId,
@@ -41,16 +41,16 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
                 Status = status
             };
 
-            _client.Post(AGENCY_ONLINE_URL, input);
+            HttpClient.Post(AGENCY_ONLINE_URL, input);
 
 
-            var allRecs = _client.Get<List<AgencyInvestigatorCheck>>(AGENCY_ONLINE_URL).Value;
+            var allRecs = HttpClient.Get<List<AgencyInvestigatorCheck>>(AGENCY_ONLINE_URL).Value;
 
             var targetRec = allRecs
                 .OrderBy(e => e.Id)
                 .LastOrDefault();
 
-            Assert.True(input.IsEqualOrWrite(targetRec, PROPS_FILTER_WITH_ID, _output));
+            Assert.True(input.IsEqualOrWrite(targetRec, PROPS_FILTER_WITH_ID, Output));
 
             Assert.Equal(employeeId, targetRec.EmployeeId);
             Assert.Equal(DateTime.Parse(strDateCompleted), targetRec.DateCompleted);

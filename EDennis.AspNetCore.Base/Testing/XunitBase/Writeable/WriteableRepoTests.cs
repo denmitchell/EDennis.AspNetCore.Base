@@ -11,23 +11,28 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TContext : DbContext
         where TRepo : WriteableRepo<TEntity, TContext> {
 
-        protected readonly ITestOutputHelper _output;
-        protected readonly string _dbName;
-        protected readonly TContext _context;
-        protected readonly TRepo _repo;
+        protected ConfigurationClassFixture _fixture;
 
-        public WriteableRepoTests(ITestOutputHelper output, ConfigurationClassFixture configFixture) {
+        protected ITestOutputHelper Output { get; }
+        protected TContext Context { get; }
+        protected TRepo Repo { get; }
+        protected string DatabaseName { get; }
+        protected string InstanceName { get; }
 
-            _output = output;
-            var dbName = configFixture.Configuration.GetDatabaseName<TContext>(); 
-            var instanceName = Guid.NewGuid().ToString();
+        public WriteableRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
 
-            _context = TestDbContextManager<TContext>
-                .CreateInMemoryDatabase(dbName,instanceName);
+            _fixture = fixture;
+
+            Output = output;
+            DatabaseName = fixture.Configuration.GetDatabaseName<TContext>(); 
+            InstanceName = Guid.NewGuid().ToString();
+
+            Context = TestDbContextManager<TContext>
+                .CreateInMemoryDatabase(DatabaseName,InstanceName);
 
             //using reflection, instantiate the repo
-            _repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { _context }) as TRepo;
+            Repo = Activator.CreateInstance(typeof(TRepo),
+                new object[] { Context }) as TRepo;
 
         }
 
@@ -39,7 +44,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    TestDbContextManager<TContext>.DropInMemoryDatabase(_context);
+                    TestDbContextManager<TContext>.DropInMemoryDatabase(Context);
                 }
                 disposedValue = true;
             }

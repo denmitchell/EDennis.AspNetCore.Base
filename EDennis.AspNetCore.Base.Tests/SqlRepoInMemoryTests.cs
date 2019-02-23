@@ -33,17 +33,17 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Create", "SqlRepo", "brown")]
         [TestJsonSpecific("Create", "SqlRepo", "orange")]
         public void Create(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            _repo.Create(input);
-            var actual = _repo.Query.ToPagedList()
+            Repo.Create(input);
+            var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
 
@@ -52,17 +52,17 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Create", "SqlRepo", "brown")]
         [TestJsonSpecific("Create", "SqlRepo", "orange")]
         public async Task CreateAsync(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            await _repo.CreateAsync(input);
-            var actual = _repo.Query.ToPagedList()
+            await Repo.CreateAsync(input);
+            var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
 
@@ -70,88 +70,88 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("GetById", "SqlRepo", "1")]
         [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public void GetById(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<Color>("Expected");
 
-            var actual = _repo.GetById(input);
+            var actual = Repo.GetById(input);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
         [Theory]
         [TestJsonSpecific("GetById", "SqlRepo", "1")]
         [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<Color>("Expected");
 
-            var actual = await _repo.GetByIdAsync(input);
+            var actual = await Repo.GetByIdAsync(input);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
         [Theory]
         [TestJsonSpecific("Query", "SqlRepo", "A")]
         [TestJsonSpecific("Query", "SqlRepo", "B")]
         public void Query(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var alpha = jsonTestCase.GetObject<string>("Alpha");
             var pageNumber = jsonTestCase.GetObject<int>("PageNumber");
             var pageSize = jsonTestCase.GetObject<int>("PageSize");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected");
 
-            var actual = _repo.Query.Where(c => c.Name.Contains(alpha)).ToPagedList(pageNumber, pageSize);
+            var actual = Repo.Query.Where(c => c.Name.Contains(alpha)).ToPagedList(pageNumber, pageSize);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
         [Theory]
         [TestJsonSpecific("Query", "SqlRepo", "A")]
         [TestJsonSpecific("Query", "SqlRepo", "B")]
         public async Task QueryAsync(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var alpha = jsonTestCase.GetObject<string>("Alpha");
             var pageNumber = jsonTestCase.GetObject<int>("PageNumber");
             var pageSize = jsonTestCase.GetObject<int>("PageSize");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected");
 
-            var actual = await _repo.Query.Where(c => c.Name.Contains(alpha)).ToPagedListAsync(pageNumber, pageSize);
+            var actual = await Repo.Query.Where(c => c.Name.Contains(alpha)).ToPagedListAsync(pageNumber, pageSize);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
         [Theory]
         [TestJsonSpecific("Exists", "SqlRepo", "4")]
         [TestJsonSpecific("Exists", "SqlRepo", "999")]
         public void Exists(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<bool>("Expected");
 
-            var actual = _repo.Exists(id);
+            var actual = Repo.Exists(id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
         [Theory]
         [TestJsonSpecific("Exists", "SqlRepo", "4")]
         [TestJsonSpecific("Exists", "SqlRepo", "999")]
         public async Task ExistsAsync(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<bool>("Expected");
 
-            var actual = await _repo.ExistsAsync(id);
+            var actual = await Repo.ExistsAsync(id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
 
@@ -159,17 +159,17 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Update", "SqlRepo", "1")]
         [TestJsonSpecific("Update", "SqlRepo", "2")]
         public void Update(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            _repo.Update(input);
-            var actual = _repo.Query.ToPagedList()
+            Repo.Update(input);
+            var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
 
@@ -177,17 +177,17 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Update", "SqlRepo", "1")]
         [TestJsonSpecific("Update", "SqlRepo", "2")]
         public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            await _repo.UpdateAsync(input);
-            var actual = _repo.Query.ToPagedList()
+            await Repo.UpdateAsync(input);
+            var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
 
@@ -195,34 +195,34 @@ namespace EDennis.AspNetCore.Base.Testing {
         [TestJsonSpecific("Delete", "SqlRepo", "3")]
         [TestJsonSpecific("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            _repo.Delete(input);
-            var actual = _repo.Query.ToPagedList()
+            Repo.Delete(input);
+            var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
         [Theory]
         [TestJsonSpecific("Delete", "SqlRepo", "3")]
         [TestJsonSpecific("Delete", "SqlRepo", "4")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
-            _output.WriteLine(t);
+            Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<int>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            await _repo.DeleteAsync(input);
-            var actual = _repo.Query.ToPagedList()
+            await Repo.DeleteAsync(input);
+            var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output));
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
     }
 }

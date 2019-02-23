@@ -31,10 +31,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         [InlineData("Curly")]
         public void TestCreateAndGetEmployee(string firstName) {
 
-            _output.WriteLine($"Instance Name:{_instanceName}");
+            Output.WriteLine($"Instance Name:{InstanceName}");
 
-            _client.Post("iapi/employee", new Employee { FirstName = firstName });
-            var employee = _client.Get<Employee>("iapi/employee/5").Value;
+            HttpClient.Post("iapi/employee", new Employee { FirstName = firstName });
+            var employee = HttpClient.Get<Employee>("iapi/employee/5").Value;
 
             Assert.Equal(firstName, employee.FirstName);
 
