@@ -28,6 +28,10 @@ namespace EDennis.AspNetCore.Base.Testing {
                 string instanceName = header.Value;
 
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
+                var testHeader = provider.GetRequiredService(typeof(TestHeader)) as TestHeader;
+
+                testHeader.Operation = operation;
+                testHeader.InstanceName = instanceName;
 
                 if (operation == HDR_DROP_INMEMORY ) {
                     client.HttpClient.SendResetAsync(operation,instanceName);

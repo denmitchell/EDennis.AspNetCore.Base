@@ -4,12 +4,15 @@ using System.Linq;
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
     public class AgencyInvestigatorCheckRepo 
-        : SqlRepo<AgencyInvestigatorCheck,
-            AgencyInvestigatorCheckContext>{
+        : WriteableTemporalRepo<AgencyInvestigatorCheck,
+            AgencyInvestigatorCheckContext,
+            AgencyInvestigatorCheckHistoryContext>{
 
         public AgencyInvestigatorCheckRepo(
-            AgencyInvestigatorCheckContext context) 
-            : base(context) { }
+            AgencyInvestigatorCheckContext context,
+            AgencyInvestigatorCheckHistoryContext historyContext,
+            ScopeProperties scopeProperties) 
+            : base(context,historyContext, scopeProperties) { }
 
         public AgencyInvestigatorCheck GetLastCheck(int employeeId) {
             return Context.AgencyInvestigatorChecks

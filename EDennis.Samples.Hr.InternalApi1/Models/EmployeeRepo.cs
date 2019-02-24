@@ -3,16 +3,12 @@ using System.Linq;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
-    public class EmployeeRepo 
-        : SqlRepo<Employee,HrContext>{
+    public class EmployeeRepo
+        : WriteableTemporalRepo<Position, HrContext, HrHistoryContext> {
 
-        public EmployeeRepo(HrContext context) 
-            : base(context) { }
+        public EmployeeRepo(HrContext context, HrHistoryContext historyContext,
+            ScopeProperties scopeProperties)
+            : base(context, historyContext, scopeProperties) { }
 
-        public Employee GetByEmployeeId(int employeeId) {
-            return Context.Employees
-                .Where(e => e.Id == employeeId)
-                .FirstOrDefault();
-        }
     }
 }

@@ -26,8 +26,8 @@ namespace EDennis.Samples.Colors.InternalApi.Migrations
                 {
                     table.PrimaryKey("PK_Colors", x => x.Id);
                 });
-
-            migrationBuilder.DoInserts("MigrationsInserts\\Initial_Insert.sql");
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

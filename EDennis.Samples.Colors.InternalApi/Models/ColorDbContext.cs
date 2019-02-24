@@ -10,34 +10,47 @@ namespace EDennis.Samples.Colors.InternalApi.Models {
 
     
     public class ColorDbContextDesignTimeFactory :
-        SqlTemporalContextDesignTimeFactory<ColorDbContext> { }
+        MigrationsExtensionsDbContextDesignTimeFactory<ColorDbContext> { }
+
+    public class ColorHistoryDbContextDesignTimeFactory :
+        MigrationsExtensionsDbContextDesignTimeFactory<ColorHistoryDbContext> { }
 
 
-    public partial class ColorDbContext : DbContext {
+    public class ColorHistoryDbContext : ColorDbContextBase {
+        public ColorHistoryDbContext(DbContextOptions<ColorHistoryDbContext> options)
+            : base(options) { }
 
-        //AspNetCore.Base config
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Color>()
+                .ToTable("Color", "dbo_history")
+                .HasKey(e=> new { e.Id, e.SysStart });
+
+
+            if (Database.IsInMemory()) {
+
+                modelBuilder.Entity<Color>()
+                    //.HasData(ColorDbContextDataFactory.ColorHistoryRecords);
+                    .HasData(ColorHistoryDbContextDataFactory.ColorHistoryRecordsFromRetriever);
+            }
+
+        }
+
+    }
+
+    public class ColorDbContext : ColorDbContextBase {
         public ColorDbContext(DbContextOptions<ColorDbContext> options)
             : base(options) { }
 
-        public virtual DbSet<Color> Colors { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Color>(entity => {
-                entity.Property(e => e.Name)
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-            });
+            modelBuilder.Entity<Color>()
+                .ToTable("Color", "dbo")
+                .HasKey(e => e.Id);
+            
 
-            modelBuilder.Entity<Color>().Property(e => e.SysStart)
-                .HasDefaultValueSql("(getdate())")
-                .ValueGeneratedOnAddOrUpdate();
-
-            modelBuilder.Entity<Color>().Property(e => e.SysEnd)
-                .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
-                .ValueGeneratedOnAddOrUpdate();
-
-            //AspNetCore.Base config
             if (Database.IsInMemory()) {
 
                 modelBuilder.Entity<Color>()
@@ -48,6 +61,26 @@ namespace EDennis.Samples.Colors.InternalApi.Models {
                     //.HasData(ColorDbContextDataFactory.ColorRecords);
                     .HasData(ColorDbContextDataFactory.ColorRecordsFromRetriever);
             }
+
+        }
+
+    }
+
+    public abstract class ColorDbContextBase : DbContext {
+
+
+        public ColorDbContextBase(DbContextOptions options)
+            : base(options) { }
+
+        public virtual DbSet<Color> Colors { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            modelBuilder.Entity<Color>()
+                .Property(e => e.Name)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+
 
         }
     }

@@ -6,114 +6,33 @@ using System.Linq;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
-    //AspNetCore.Base config
     public class HrContextDesignTimeFactory :
-        SqlTemporalContextDesignTimeFactory<HrContext> { }
+        MigrationsExtensionsDbContextDesignTimeFactory<HrContext> { }
 
-    public class HrContext : DbContext {
+    public class HrHistoryContextDesignTimeFactory :
+        MigrationsExtensionsDbContextDesignTimeFactory<HrHistoryContext> { }
+
+
+    public class HrContext : HrContextBase {
 
         public HrContext(DbContextOptions<HrContext> options) : base(options) { }
 
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Position> Positions { get; set; }
-        public DbSet<EmployeePosition> EmployeePositions { get; set; }
-        public DbQuery<ManagerPosition> ManagerPositions { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
-
-            #region Employee
-            modelBuilder.Entity<Employee>()
-                .ToTable("Employee")
-                .HasKey(e => e.Id);
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Employee>()
-                .Property(e => e.Id)
-                .UseSqlServerIdentityColumn();
-
-            modelBuilder.Entity<Employee>()
-                .Property(e => e.FirstName)
-                .HasMaxLength(30);
-
-            modelBuilder.Entity<Employee>()
-                .Property(e => e.SysStart)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(getdate())")
-                .ValueGeneratedOnAddOrUpdate();
-
-            modelBuilder.Entity<Employee>()
-                .Property(e => e.SysEnd)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
-                .ValueGeneratedOnAddOrUpdate();
-
-
-            //AspNetCore.Base config
-            if (Database.IsInMemory()) {
-
-                modelBuilder.Entity<Employee>()
-                    .Property(e => e.Id)
-                    .HasValueGenerator<MaxPlusOneValueGenerator<Employee>>();
-
-                modelBuilder.Entity<Employee>()
-                    .HasData(HrContextDataFactory.EmployeeRecordsFromRetriever);
-            }
-
-            #endregion
-            #region Position
-
-            modelBuilder.Entity<Position>()
-                .ToTable("Position")
+                .ToTable("Employee", "dbo")
                 .HasKey(e => e.Id);
 
             modelBuilder.Entity<Position>()
-                .Property(e => e.Id)
-                .UseSqlServerIdentityColumn();
-
-            modelBuilder.Entity<Position>()
-                .Property(e => e.Title)
-                .HasMaxLength(60);
-
-            modelBuilder.Entity<Position>()
-                .Property(e => e.SysStart)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(getdate())")
-                .ValueGeneratedOnAddOrUpdate();
-
-            modelBuilder.Entity<Position>()
-                .Property(e => e.SysEnd)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
-                .ValueGeneratedOnAddOrUpdate();
-
-            //AspNetCore.Base config
-            if (Database.IsInMemory()) {
-
-                modelBuilder.Entity<Position>()
-                    .Property(e => e.Id)
-                    .HasValueGenerator<MaxPlusOneValueGenerator<Position>>();
-
-                modelBuilder.Entity<Position>()
-                    .HasData(HrContextDataFactory.PositionRecordsFromRetriever);
-            }
-
-            #endregion
-            #region EmployeePosition
+                .ToTable("Position", "dbo")
+                .HasKey(e => e.Id);
 
             modelBuilder.Entity<EmployeePosition>()
-                .ToTable("EmployeePosition")
+                .ToTable("EmployeePosition", "dbo_history")
                 .HasKey(e => new { e.EmployeeId, e.PositionId });
 
-            modelBuilder.Entity<EmployeePosition>()
-                .Property(e => e.SysStart)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(getdate())")
-                .ValueGeneratedOnAddOrUpdate();
 
-            modelBuilder.Entity<EmployeePosition>()
-                .Property(e => e.SysEnd)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
-                .ValueGeneratedOnAddOrUpdate();
 
             modelBuilder.Entity<EmployeePosition>()
                 .HasOne(e => e.Employee)
@@ -131,15 +50,78 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            //AspNetCore.Base config
             if (Database.IsInMemory()) {
 
+                modelBuilder.Entity<Employee>()
+                    .Property(e => e.Id)
+                    .HasValueGenerator<MaxPlusOneValueGenerator<Employee>>();
+                modelBuilder.Entity<Position>()
+                    .Property(e => e.Id)
+                    .HasValueGenerator<MaxPlusOneValueGenerator<Position>>();
+
+                modelBuilder.Entity<Employee>()
+                    .HasData(HrContextDataFactory.EmployeeRecordsFromRetriever);
+                modelBuilder.Entity<Position>()
+                    .HasData(HrContextDataFactory.PositionRecordsFromRetriever);
                 modelBuilder.Entity<EmployeePosition>()
                     .HasData(HrContextDataFactory.EmployeePositionRecordsFromRetriever);
             }
+        }
+    }
 
-            #endregion
-            #region ManagerPosition
+
+    public class HrHistoryContext : HrContextBase {
+
+        public HrHistoryContext(DbContextOptions<HrHistoryContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Employee>()
+                .ToTable("Employee", "dbo_history")
+                .HasKey(e => new { e.Id, e.SysStart });
+
+            modelBuilder.Entity<Position>()
+                .ToTable("Position", "dbo_history")
+                .HasKey(e => new { e.Id, e.SysStart });
+
+            modelBuilder.Entity<EmployeePosition>()
+                .ToTable("EmployeePosition", "dbo_history")
+                .HasKey(e => new { e.EmployeeId, e.PositionId, e.SysStart });
+
+            if (Database.IsInMemory()) {
+
+                modelBuilder.Entity<Employee>()
+                    .HasData(HrContextDataFactory.EmployeeHistoryRecordsFromRetriever);
+                modelBuilder.Entity<Position>()
+                    .HasData(HrContextDataFactory.PositionHistoryRecordsFromRetriever);
+                modelBuilder.Entity<EmployeePosition>()
+                    .HasData(HrContextDataFactory.EmployeePositionHistoryRecordsFromRetriever);
+            }
+        }
+    }
+
+
+
+    public abstract class HrContextBase : DbContext {
+
+        public HrContextBase(DbContextOptions options) : base(options) { }
+
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Position> Positions { get; set; }
+        public DbSet<EmployeePosition> EmployeePositions { get; set; }
+        public DbQuery<ManagerPosition> ManagerPositions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.FirstName)
+                .HasMaxLength(30);
+
+            modelBuilder.Entity<Position>()
+                .Property(e => e.Title)
+                .HasMaxLength(60);
 
 
             modelBuilder.Query<ManagerPosition>()
@@ -154,7 +136,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                         PositionTitle = p.Title
                     }
                 );
-            #endregion
 
         }
     }

@@ -3,16 +3,16 @@ using System.Linq;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
-    public class StateBackgroundCheckRepo 
-        : SqlRepo<StateBackgroundCheckView,
-            StateBackgroundCheckContext>{
+    public class StateBackgroundCheckRepo
+        : ReadonlyRepo<StateBackgroundCheck,
+            StateBackgroundCheckContext> {
 
         public StateBackgroundCheckRepo(
-            StateBackgroundCheckContext context) 
+            StateBackgroundCheckContext context)
             : base(context) { }
 
-        public StateBackgroundCheckView GetLastCheck(int employeeId) {
-            return Context.StateBackgroundCheckViewRecords
+        public StateBackgroundCheck GetLastCheck(int employeeId) {
+            return Context.StateBackgroundChecks
                 .Where(e => e.EmployeeId == employeeId)
                 .OrderByDescending(e => e.DateCompleted)
                 .FirstOrDefault();

@@ -1,55 +1,27 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Diagnostics;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
-    //AspNetCore.Base config
     public class AgencyInvestigatorCheckContextDesignTimeFactory :
-        SqlTemporalContextDesignTimeFactory<AgencyInvestigatorCheckContext> { }
+        MigrationsExtensionsDbContextDesignTimeFactory<AgencyInvestigatorCheckContext> { }
 
-    public class AgencyInvestigatorCheckContext : DbContext {
 
-        public AgencyInvestigatorCheckContext(DbContextOptions options) : base(options) { }
+    public class AgencyInvestigatorCheckHistoryContextDesignTimeFactory :
+        MigrationsExtensionsDbContextDesignTimeFactory<AgencyInvestigatorCheckHistoryContext> { }
 
-        public DbSet<AgencyInvestigatorCheck> AgencyInvestigatorChecks { get; set; }
 
+    public class AgencyInvestigatorCheckContext : AgencyInvestigatorCheckContextBase {
+        public AgencyInvestigatorCheckContext(
+            DbContextOptions<AgencyInvestigatorCheckContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
-
-            #region AgencyInvestigatorCheck
 
             modelBuilder.Entity<AgencyInvestigatorCheck>()
                 .ToTable("AgencyInvestigatorCheck")
                 .HasKey(e => e.Id);
 
-            modelBuilder.Entity<AgencyInvestigatorCheck>()
-                .Property(e => e.Id)
-                .UseSqlServerIdentityColumn();
-
-            modelBuilder.Entity<AgencyInvestigatorCheck>()
-                .Property(e => e.DateCompleted)
-                .HasColumnType("date");
-
-            modelBuilder.Entity<AgencyInvestigatorCheck>()
-                .Property(e => e.Status)
-                .HasMaxLength(100);
-
-            modelBuilder.Entity<AgencyInvestigatorCheck>()
-                .Property(e => e.SysStart)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(getdate())")
-                .ValueGeneratedOnAddOrUpdate();
-
-            modelBuilder.Entity<AgencyInvestigatorCheck>()
-                .Property(e => e.SysEnd)
-                .HasColumnType("datetime2")
-                .HasDefaultValueSql("(convert(datetime2,'9999-12-31 23:59:59.9999999'))")
-                .ValueGeneratedOnAddOrUpdate();
-
-            //AspNetCore.Base config
             if (Database.IsInMemory()) {
                 modelBuilder.Entity<AgencyInvestigatorCheck>()
                     .Property(e => e.Id)
@@ -58,9 +30,46 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
                 modelBuilder.Entity<AgencyInvestigatorCheck>()
                     .HasData(AgencyInvestigatorCheckContextDataFactory.AgencyInvestigatorCheckRecordsFromRetriever);
             }
+        }
+    }
 
 
-            #endregion
+    public class AgencyInvestigatorCheckHistoryContext : AgencyInvestigatorCheckContextBase {
+        public AgencyInvestigatorCheckHistoryContext(
+            DbContextOptions<AgencyInvestigatorCheckHistoryContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            modelBuilder.Entity<AgencyInvestigatorCheck>()
+                .ToTable("AgencyInvestigatorCheck","dbo_history")
+                .HasKey(e => new { e.Id, e.SysStart } );
+
+            if (Database.IsInMemory()) {
+
+                modelBuilder.Entity<AgencyInvestigatorCheck>()
+                    .HasData(AgencyInvestigatorCheckHistoryContextDataFactory.AgencyInvestigatorCheckHistoryRecordsFromRetriever);
+            }
+        }
+    }
+
+
+    public abstract class AgencyInvestigatorCheckContextBase : DbContext {
+
+        public AgencyInvestigatorCheckContextBase(DbContextOptions options) : base(options) { }
+
+        public DbSet<AgencyInvestigatorCheck> AgencyInvestigatorChecks { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+
+            modelBuilder.Entity<AgencyInvestigatorCheck>()
+                .Property(e => e.DateCompleted)
+                .HasColumnType("date");
+
+            modelBuilder.Entity<AgencyInvestigatorCheck>()
+                .Property(e => e.Status)
+                .HasMaxLength(100);
 
         }
     }

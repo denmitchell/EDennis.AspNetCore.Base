@@ -3,13 +3,16 @@ using System.Linq;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
-    public class AgencyOnlineCheckRepo 
-        : SqlRepo<AgencyOnlineCheck,
-            AgencyOnlineCheckContext>{
+    public class AgencyOnlineCheckRepo
+        : WriteableTemporalRepo<AgencyOnlineCheck,
+            AgencyOnlineCheckContext,
+            AgencyOnlineCheckHistoryContext> {
 
         public AgencyOnlineCheckRepo(
-            AgencyOnlineCheckContext context) 
-            : base(context) { }
+            AgencyOnlineCheckContext context,
+            AgencyOnlineCheckHistoryContext historyContext,
+            ScopeProperties scopeProperties)
+            : base(context, historyContext, scopeProperties) { }
 
         public AgencyOnlineCheck GetLastCheck(int employeeId) {
             return Context.AgencyOnlineChecks

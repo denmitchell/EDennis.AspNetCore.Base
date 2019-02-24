@@ -11,16 +11,10 @@ namespace EDennis.AspNetCore.Base.Web {
         public static IApplicationBuilder UseLaunchers<TStartup1>(this IApplicationBuilder app, 
             IServiceProvider provider, IConfiguration config )
             where TStartup1 : class {
-            if (!(provider.GetService<CloneConnections>() is CloneConnections cloneConnections)) {
-                cloneConnections = new CloneConnections();
-            }
-            if (!(provider.GetService<TestInfo>() is TestInfo testInfo)) {
-                testInfo = new TestInfo();
-            }
             if (!(provider.GetService<ILogger<ApiLauncher>>() is ILogger<ApiLauncher> logger)) {
                 logger = new Logger<ApiLauncher>(new LoggerFactory());
             }
-            var launcher = new ApiLauncher(config, cloneConnections, testInfo, logger);
+            var launcher = new ApiLauncher(config, logger);
             launcher.StartAsync<TStartup1>().Wait();
             return app;
         }

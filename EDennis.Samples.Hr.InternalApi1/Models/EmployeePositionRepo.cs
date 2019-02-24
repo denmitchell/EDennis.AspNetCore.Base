@@ -4,9 +4,10 @@ using System.Linq;
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
     public class EmployeePositionRepo 
-        : SqlRepo<EmployeePosition,HrContext>{
+        : WriteableTemporalRepo<EmployeePosition,HrContext,HrHistoryContext>{
 
-        public EmployeePositionRepo(HrContext context) 
-            : base(context) { }
+        public EmployeePositionRepo(HrContext context, HrHistoryContext historyContext,
+            ScopeProperties scopeProperties) 
+            : base(context,historyContext,scopeProperties) { }
     }
 }

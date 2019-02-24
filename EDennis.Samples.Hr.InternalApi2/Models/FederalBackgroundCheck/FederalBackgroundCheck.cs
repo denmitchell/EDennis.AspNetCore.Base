@@ -2,7 +2,7 @@
 using System;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
-    public class FederalBackgroundCheck : IHasIntegerId {
+    public class FederalBackgroundCheck {
         public int Id { get; set; }
         public int EmployeeId { get; set; }
         public DateTime DateCompleted { get; set; }
