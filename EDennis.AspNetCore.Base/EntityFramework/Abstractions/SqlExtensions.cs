@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
-    public static class RepoSqlExtensions {
+    public static class SqlExtensions {
         /// <summary>
         /// Retrieves a page of all records defined by the provided SQL and parameters
         /// </summary>
@@ -54,15 +54,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static List<TEntity> GetFromDapper<TEntity, TContext>
-                    (this ReadonlyRepo<TEntity, TContext> repo, string sql)
-                        where TEntity : class, new()
-            where TContext : DbContext {
-            var cxn = repo.Context.Database.GetDbConnection();
+        public static List<TEntity> GetFromDapper<TEntity>
+                    (this DbContext context, string sql)
+                        where TEntity : class, new() {
+            var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
             List<TEntity> result;
-            if (repo.Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
                 result = cxn.Query<TEntity>(sql, transaction: dbTrans).AsList();
             } else {
@@ -72,15 +71,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static async Task<List<TEntity>> GetFromDapperAsync<TEntity, TContext>
-                    (this ReadonlyRepo<TEntity, TContext> repo, string sql)
-                        where TEntity : class, new()
-            where TContext : DbContext {
-            var cxn = repo.Context.Database.GetDbConnection();
+        public static async Task<List<TEntity>> GetFromDapperAsync<TEntity>
+                    (this DbContext context, string sql)
+                        where TEntity : class, new() {
+            var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
             List<TEntity> result;
-            if (repo.Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
                 result = (await cxn.QueryAsync<TEntity>(sql, transaction: dbTrans)).AsList();
             } else {
@@ -90,54 +88,48 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static TEntity GetScalarFromDapper<TEntity, TContext>
-                    (this ReadonlyRepo<TEntity, TContext> repo, string sql)
-                        where TEntity : class, new()
-            where TContext : DbContext {
-            var cxn = repo.Context.Database.GetDbConnection();
+        public static T GetScalarFromDapper<T>
+                    (this DbContext context, string sql) {
+            var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            TEntity result;
-            if (repo.Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+            T result;
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = cxn.ExecuteScalar<TEntity>(sql, transaction: dbTrans);
+                result = cxn.ExecuteScalar<T>(sql, transaction: dbTrans);
             } else {
-                result = cxn.ExecuteScalar<TEntity>(sql);
+                result = cxn.ExecuteScalar<T>(sql);
             }
             return result;
         }
 
 
-        public static async Task<TEntity> GetScalarFromDapperAsync<TEntity, TContext>
-                    (this ReadonlyRepo<TEntity, TContext> repo, string sql)
-                        where TEntity : class, new()
-            where TContext : DbContext {
-            var cxn = repo.Context.Database.GetDbConnection();
+        public static async Task<T> GetScalarFromDapperAsync<T>
+                    (this DbContext context, string sql) {
+            var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            TEntity result;
-            if (repo.Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+            T result;
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = await cxn.ExecuteScalarAsync<TEntity>(sql, transaction: dbTrans);
+                result = await cxn.ExecuteScalarAsync<T>(sql, transaction: dbTrans);
             } else {
-                result = await cxn.ExecuteScalarAsync<TEntity>(sql);
+                result = await cxn.ExecuteScalarAsync<T>(sql);
             }
             return result;
         }
 
 
 
-        public static string GetFromJsonSql<TEntity, TContext>
-                    (this ReadonlyRepo<TEntity, TContext> repo, string fromJsonSql)
-                        where TEntity : class, new()
-            where TContext : DbContext {
+        public static string GetFromJsonSql
+                    (this DbContext context, string fromJsonSql){
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
-            var cxn = repo.Context.Database.GetDbConnection();
+            var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
             string result;
-            if (repo.Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
                 result = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
             } else {
@@ -147,17 +139,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static async Task<string> GetFromJsonSqlAsync<TEntity, TContext>
-                    (this ReadonlyRepo<TEntity, TContext> repo, string fromJsonSql)
-                        where TEntity : class, new()
-            where TContext : DbContext {
+        public static async Task<string> GetFromJsonSqlAsync
+                    (this DbContext context, string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
-            var cxn = repo.Context.Database.GetDbConnection();
+            var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
             string result;
-            if (repo.Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
                 result = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
             } else {

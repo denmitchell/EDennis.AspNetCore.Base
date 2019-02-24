@@ -10,11 +10,11 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class SqlRepoInMemoryTests : WriteableRepoTests<ColorRepo, Color, ColorDbContext> {
+    public class RepoTests : WriteableTemporalRepoTests<ColorRepo, Color, ColorDbContext, ColorHistoryDbContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public SqlRepoInMemoryTests(ITestOutputHelper output, WriteableClassFixture fixture)
+        public RepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture)
             : base(output, fixture) { }
 
 

@@ -6,7 +6,7 @@
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.7" />
-    <PackageReference Include="EDennis.MigrationsExtensions" Version="3.0.0" />
+    <PackageReference Include="EDennis.MigrationsExtensions" Version="3.1.0" />
     <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.2.2" />
     <PackageReference Include="Flurl" Version="2.8.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -14,7 +14,6 @@
     <PackageReference Include="IdentityServer4.Storage" Version="2.3.1" />
     <PackageReference Include="IdentityModel" Version="4.0.0-bruichladdich" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Build" Version="15.3.409" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="140.17283.0" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />

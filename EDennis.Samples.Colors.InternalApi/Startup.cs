@@ -31,8 +31,8 @@ namespace EDennis.Samples.Colors.InternalApi {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //AspNetCore.Base config
-            services.AddSqlContexts<ColorDbContext>(Configuration, Environment);
-            services.AddSqlRepos<ColorRepo>();
+            services.AddDbContexts<ColorDbContext,ColorHistoryDbContext>(Configuration, Environment);
+            services.AddRepos<ColorRepo>();
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "Color API", Version = "v1" });
@@ -50,7 +50,7 @@ namespace EDennis.Samples.Colors.InternalApi {
                 app.UseDeveloperExceptionPage();
 
                 //AspNetCore.Base config 
-                app.UseRepoInterceptor<ColorRepo, Color, ColorDbContext>();
+                app.UseTemporalRepoInterceptor<ColorRepo, Color, ColorDbContext, ColorHistoryDbContext>();
             }
 
             app.UseStaticFiles();

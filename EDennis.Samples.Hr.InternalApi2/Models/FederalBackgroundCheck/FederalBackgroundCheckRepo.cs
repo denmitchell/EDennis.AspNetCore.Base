@@ -4,15 +4,15 @@ using System.Linq;
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
     public class FederalBackgroundCheckRepo
-        : ReadonlyRepo<FederalBackgroundCheck,
+        : ReadonlyRepo<FederalBackgroundCheckView,
             FederalBackgroundCheckContext> {
 
         public FederalBackgroundCheckRepo(
             FederalBackgroundCheckContext context)
             : base(context) { }
 
-        public FederalBackgroundCheck GetLastCheck(int employeeId) {
-            return Context.FederalBackgroundChecks
+        public FederalBackgroundCheckView GetLastCheck(int employeeId) {
+            return Context.FederalBackgroundCheckViewRecords
                 .Where(e => e.EmployeeId == employeeId)
                 .OrderByDescending(e => e.DateCompleted)
                 .FirstOrDefault();

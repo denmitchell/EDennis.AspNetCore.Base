@@ -29,8 +29,8 @@ namespace EDennis.Samples.Hr.InternalApi1 {
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //AspNetCore.Base config
-            services.AddSqlContexts<HrContext>(Configuration, Environment);
-            services.AddSqlRepos<EmployeeRepo,PositionRepo,EmployeePositionRepo>();
+            services.AddDbContexts<HrContext,HrHistoryContext>(Configuration, Environment);
+            services.AddRepos<EmployeeRepo,PositionRepo,EmployeePositionRepo>();
 
 
         }
@@ -41,9 +41,9 @@ namespace EDennis.Samples.Hr.InternalApi1 {
                 app.UseDeveloperExceptionPage();
 
                 //AspNetCore.Base config 
-                app.UseRepoInterceptor<EmployeeRepo, Employee, HrContext>();
-                app.UseRepoInterceptor<PositionRepo, Position, HrContext>();
-                app.UseRepoInterceptor<EmployeePositionRepo, EmployeePosition, HrContext>();
+                app.UseTemporalRepoInterceptor<EmployeeRepo, Employee, HrContext, HrHistoryContext>();
+                app.UseTemporalRepoInterceptor<PositionRepo, Position, HrContext, HrHistoryContext>();
+                app.UseTemporalRepoInterceptor<EmployeePositionRepo, EmployeePosition, HrContext, HrHistoryContext>();
             }
 
             app.UseMvc();

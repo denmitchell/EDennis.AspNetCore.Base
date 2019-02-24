@@ -5,18 +5,19 @@ using System;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
+using EDennis.AspNetCore.Base.EntityFramework.Sql;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
-    public class AgencyOnlineCheckControllerUnitTests_InMemory :
+    public class AgencyOnlineCheckControllerUnitTests :
         WriteableRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         private AgencyOnlineCheckController _controller;
 
-        public AgencyOnlineCheckControllerUnitTests_InMemory(
-                ITestOutputHelper output, WriteableClassFixture fixture) 
+        public AgencyOnlineCheckControllerUnitTests(
+                ITestOutputHelper output, ConfigurationClassFixture fixture) 
             : base (output,fixture){
             _controller = new AgencyOnlineCheckController(Repo);
         }
@@ -28,7 +29,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            var preCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var preCount = Context.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
 
             _controller.Post(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
@@ -36,7 +37,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
                 Status = status
             });
 
-            var postCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var postCount = Context.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
 
             Assert.Equal(preCount + 1, postCount);
 

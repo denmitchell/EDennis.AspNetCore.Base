@@ -13,6 +13,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             DbContextOptions<FederalBackgroundCheckContext> options) : base(options) { }
 
         public DbSet<FederalBackgroundCheck> FederalBackgroundChecks { get; set; }
+        public DbQuery<FederalBackgroundCheckView> FederalBackgroundCheckViewRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 

@@ -11,14 +11,14 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
-    public class EmployeeControllerIntegrationTests_InMemory
-        : WriteableIntegrationTests<Startup> {
+    public class EmployeeControllerIntegrationTests
+        : WriteableTemporalIntegrationTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public EmployeeControllerIntegrationTests_InMemory(
-            ITestOutputHelper output, WriteableWebApplicationFactory<Startup> factory)
+        public EmployeeControllerIntegrationTests(
+            ITestOutputHelper output, WebApplicationFactory<Startup> factory)
             : base(output, factory) { }
 
 

@@ -10,16 +10,16 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
-    public class EmployeeControllerUnitTests_InMemory :
-        WriteableRepoTests<EmployeeRepo, Employee, HrContext> {
+    public class EmployeeControllerUnitTests :
+        WriteableTemporalRepoTests<EmployeeRepo, Employee, HrContext, HrHistoryContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
 
         private EmployeeController _controller;
 
-        public EmployeeControllerUnitTests_InMemory(ITestOutputHelper output,
-            WriteableClassFixture fixture) : base(output, fixture) {
+        public EmployeeControllerUnitTests(ITestOutputHelper output,
+            ConfigurationClassFixture fixture) : base(output, fixture) {
 
             _controller = new EmployeeController(Repo);
 

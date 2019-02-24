@@ -32,6 +32,8 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
 
+                services.AddScoped<TestHeader>();
+
                 services.AddSwaggerGen(c => {
                     c.SwaggerDoc("v1", new Info { Title = "HR API", Version = "v1" });
                 });

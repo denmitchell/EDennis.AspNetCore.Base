@@ -23,12 +23,12 @@ namespace EDennis.Samples.Hr.InternalApi2 {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //AspNetCore.Base config
-            services.AddSqlContexts<
+            services.AddDbContexts<
                 AgencyInvestigatorCheckContext,
                 AgencyOnlineCheckContext,
                 FederalBackgroundCheckContext,
                 StateBackgroundCheckContext>(Configuration, Environment);
-            services.AddSqlRepos<
+            services.AddRepos<
                 AgencyInvestigatorCheckRepo,
                 AgencyOnlineCheckRepo,
                 FederalBackgroundCheckRepo,
@@ -41,13 +41,11 @@ namespace EDennis.Samples.Hr.InternalApi2 {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
 
-                //AspNetCore.Base config 
-                app.UseRepoInterceptor<AgencyInvestigatorCheckRepo, AgencyInvestigatorCheck, AgencyInvestigatorCheckContext>();
-                app.UseRepoInterceptor<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext>();
-                app.UseRepoInterceptor<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext>();
-                app.UseRepoInterceptor<StateBackgroundCheckRepo, StateBackgroundCheckView, StateBackgroundCheckContext>();
-
-
+                //READONLY -- NOT NEEDED 
+                //app.UseRepoInterceptor<AgencyInvestigatorCheckRepo, AgencyInvestigatorCheck, AgencyInvestigatorCheckContext>();
+                //app.UseRepoInterceptor<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext>();
+                //app.UseRepoInterceptor<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext>();
+                //app.UseRepoInterceptor<StateBackgroundCheckRepo, StateBackgroundCheckView, StateBackgroundCheckContext>();
             }
 
             app.UseMvc();

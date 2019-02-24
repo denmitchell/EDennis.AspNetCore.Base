@@ -77,7 +77,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     }
 
     public static partial class IApplicationBuilderExtensions_RepoInterceptorMiddleware {
-        public static IApplicationBuilder UseWriteableRepoInterceptor<TRepo, TEntity, TContext>(this IApplicationBuilder app)
+        public static IApplicationBuilder UseRepoInterceptor<TRepo, TEntity, TContext>(this IApplicationBuilder app)
                 where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
         where TRepo : WriteableRepo<TEntity, TContext> {

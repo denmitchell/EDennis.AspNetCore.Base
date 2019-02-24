@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
-    public class AgencyOnlineCheckControllerIntegrationTests_InMemory : WriteableIntegrationTests<Startup> {
+    public class AgencyOnlineCheckControllerIntegrationTests_InMemory : WriteableTemporalIntegrationTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
@@ -22,7 +22,8 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
         private const string AGENCY_ONLINE_URL = "iapi/agencyonlinecheck";
 
-        public AgencyOnlineCheckControllerIntegrationTests_InMemory(ITestOutputHelper output, WriteableWebApplicationFactory<Startup> factory)
+        public AgencyOnlineCheckControllerIntegrationTests_InMemory(ITestOutputHelper output, 
+            WebApplicationFactory<Startup> factory)
             : base(output, factory) { }
 
 

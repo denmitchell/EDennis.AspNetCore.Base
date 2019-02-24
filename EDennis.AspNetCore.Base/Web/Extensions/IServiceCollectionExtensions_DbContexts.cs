@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
 namespace EDennis.AspNetCore.Base.Web {
-    public static class IServiceCollectionExtensions_SqlContexts {
+    public static class IServiceCollectionExtensions_DbContexts {
 
-        public static IServiceCollection AddSqlContexts<TContext>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
             where TContext : DbContext {
 
             var cxnStrings = new Dictionary<string, string>();
@@ -27,52 +27,52 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static IServiceCollection AddSqlContexts<TContext1, TContext2>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
             where TContext1 : DbContext 
             where TContext2 : DbContext {
 
-            services.AddSqlContexts<TContext1>(config, env);
-            services.AddSqlContexts<TContext2>(config, env);
+            services.AddDbContexts<TContext1>(config, env);
+            services.AddDbContexts<TContext2>(config, env);
 
             return services;
         }
 
 
-        public static IServiceCollection AddSqlContexts<TContext1, TContext2, TContext3>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
             where TContext1 : DbContext
             where TContext2 : DbContext
             where TContext3 : DbContext {
 
-            services.AddSqlContexts<TContext1,TContext2>(config, env);
-            services.AddSqlContexts<TContext3>(config, env);
+            services.AddDbContexts<TContext1,TContext2>(config, env);
+            services.AddDbContexts<TContext3>(config, env);
 
             return services;
         }
 
 
-        public static IServiceCollection AddSqlContexts<TContext1, TContext2, TContext3, TContext4>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3, TContext4>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
             where TContext1 : DbContext
             where TContext2 : DbContext
             where TContext3 : DbContext
             where TContext4 : DbContext {
 
-            services.AddSqlContexts<TContext1, TContext2, TContext3>(config, env);
-            services.AddSqlContexts<TContext4>(config, env);
+            services.AddDbContexts<TContext1, TContext2, TContext3>(config, env);
+            services.AddDbContexts<TContext4>(config, env);
 
             return services;
         }
 
 
 
-        public static IServiceCollection AddSqlContexts<TContext1, TContext2, TContext3, TContext4, TContext5>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3, TContext4, TContext5>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
             where TContext1 : DbContext
             where TContext2 : DbContext
             where TContext3 : DbContext
             where TContext4 : DbContext
             where TContext5 : DbContext {
 
-            services.AddSqlContexts<TContext1, TContext2, TContext3, TContext4>(config, env);
-            services.AddSqlContexts<TContext5>(config, env);
+            services.AddDbContexts<TContext1, TContext2, TContext3, TContext4>(config, env);
+            services.AddDbContexts<TContext5>(config, env);
 
             return services;
         }
