@@ -3,8 +3,9 @@ declare @Id int = 1;
 
 declare @Expected varchar(max) = (
 	select * from (
-		select * from Colors 
-			for system_time all
+		select * from Color 
+			where Id = @id
+		union select * from dbo_history.Color
 			where Id = @id
 	) a
 	for json path, include_null_values

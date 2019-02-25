@@ -115,6 +115,23 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+        [Theory]
+        [TestJsonSpecific("GetByIdHistory", "SqlRepo", "1")]
+        [TestJsonSpecific("GetByIdHistory", "SqlRepo", "3")]
+        public void GetByIdHistory(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x=>x.Id)
+                .ThenByDescending(x=>x.SysStart);
+
+            var actual = Repo.GetByIdHistory(id)
+                .OrderBy(x => x.Id)
+                .ThenByDescending(x => x.SysStart);
+
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
+        }
 
         [Theory]
         [TestJsonSpecific("Query", "SqlRepo", "A")]
