@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -169,29 +170,81 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
+        public List<TEntity> QueryAsOf(DateTime from,
+                DateTime to, Expression<Func<TEntity, bool>> predicate,
+                int pageNumber = 1, int pageSize = 10000,
+                params Expression<Func<TEntity, dynamic>>[] orderSelectors
+                ) {
+
+            var asOfPredicate = GetAsOfRangePredicate(from,to);
+
+            var current = Context.Set<TEntity>()
+                .Where(predicate)
+                .Where(asOfPredicate)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
+                .AsNoTracking();
+
+            var history = HistoryContext.Set<TEntity>()
+                .Where(predicate)
+                .Where(asOfPredicate)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
+                .AsNoTracking();
+
+            if (orderSelectors.Length > 0) {
+                var currentOrdered = OrderByUtils
+                    .BuildOrderedQueryable(current, orderSelectors)
+                    .ToList();
+                var historyOrdered = OrderByUtils
+                    .BuildOrderedQueryable(history, orderSelectors)
+                    .ToList();
+                var orderedUnion = currentOrdered.Union(historyOrdered).ToList();
+                return orderedUnion;
+            }
+
+
+            var union = current.ToList().Union(history.ToList()).ToList();
+
+            return union;
+        }
+
 
         public List<TEntity> QueryAsOf(DateTime asOf,
-                IQueryable<TEntity> CurrentQuery,
-                IQueryable<TEntity> HistoryQuery,
-                int pageNumber = 1, int pageSize = 10000) {
+                Expression<Func<TEntity,bool>> predicate,
+                int pageNumber = 1, int pageSize = 10000,
+                params Expression<Func<TEntity, dynamic>>[] orderSelectors
+                ) {
 
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);
 
             var current = Context.Set<TEntity>()
+                .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
-                .AsNoTracking()
-                .ToList();
+                .AsNoTracking();
 
             var history = HistoryContext.Set<TEntity>()
+                .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
-                .AsNoTracking()
-                .ToList();
+                .AsNoTracking();
 
-            var union = current.Union(history).ToList();
+            if (orderSelectors.Length > 0) {
+                var currentOrdered = OrderByUtils
+                    .BuildOrderedQueryable(current, orderSelectors)
+                    .ToList();
+                var historyOrdered = OrderByUtils
+                    .BuildOrderedQueryable(history, orderSelectors)
+                    .ToList();
+                var orderedUnion = currentOrdered.Union(historyOrdered).ToList();
+                return orderedUnion;
+            }
+
+
+            var union = current.ToList().Union(history.ToList()).ToList();
 
             return union;
         }
@@ -270,11 +323,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var left1 = Expression.Property(pe, type.GetProperty("SysStart"));
             var right1 = Expression.Constant(asOf);
-            var ge = Expression.GreaterThanOrEqual(left1, right1);
+            var ge = Expression.LessThanOrEqual(left1, right1);
 
             var left2 = Expression.Property(pe, type.GetProperty("SysEnd"));
             var right2 = Expression.Constant(asOf);
-            var le = Expression.LessThanOrEqual(left1, right1);
+            var le = Expression.GreaterThanOrEqual(left2, right2);
+
 
             var between = Expression.AndAlso(ge, le);
 
@@ -283,6 +337,28 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             return expr;
         }
 
+
+        private Expression<Func<TEntity, bool>> GetAsOfRangePredicate(DateTime from, DateTime to) {
+
+            var type = typeof(TEntity);
+
+            var pe = Expression.Parameter(type, "e");
+
+
+            var left1 = Expression.Property(pe, type.GetProperty("SysStart"));
+            var right1 = Expression.Constant(to);
+            var ge = Expression.LessThanOrEqual(left1, right1);
+
+            var left2 = Expression.Property(pe, type.GetProperty("SysEnd"));
+            var right2 = Expression.Constant(from);
+            var le = Expression.GreaterThanOrEqual(left2, right2);
+
+            var between = Expression.AndAlso(ge, le);
+
+            var expr = Expression.Lambda<Func<TEntity, bool>>(between, pe);
+
+            return expr;
+        }
 
 
 

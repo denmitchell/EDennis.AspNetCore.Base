@@ -175,6 +175,15 @@ namespace EDennis.AspNetCore.Base.Testing {
             var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
+            /*
+            var wholeHistory = Repo.QueryAsOf(
+                new System.DateTime(2015, 7, 1),
+                new System.DateTime(2017, 7, 1),
+                x => x.Name.Contains("e"),
+                1, 10000,
+                asc=>asc.Id, desc=>desc.SysStart).ToList();
+
+            */
             var actualHistory = Repo.GetByIdHistory(id)
                 .OrderByDescending(x => x.SysStart);
 
