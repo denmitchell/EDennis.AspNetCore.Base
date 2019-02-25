@@ -1,26 +1,18 @@
 [
   {
-    "Id": 1,
-    "Name": "black",
-    "SysStart": "2019-02-20T02:55:15.6233333",
-    "SysEnd": "9999-12-31T23:59:59.9999999"
+    "Id": 3,
+    "SysStart": "2016-03-03T00:00:00",
+    "Name": "charcoal",
+    "SysEnd": "2017-03-02T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
   },
   {
-    "Id": 1,
-    "Name": "beige",
-    "SysStart": "2017-01-01T00:00:00",
-    "SysEnd": "2019-02-20T02:55:15.6223333"
-  },
-  {
-    "Id": 1,
-    "Name": "brown",
-    "SysStart": "2016-01-01T00:00:00",
-    "SysEnd": "2016-12-31T23:59:59.9990000"
-  },
-  {
-    "Id": 1,
-    "Name": "tan",
-    "SysStart": "2015-01-01T00:00:00",
-    "SysEnd": "2015-12-31T23:59:59.9990000"
+    "Id": 5,
+    "SysStart": "2016-05-05T00:00:00",
+    "Name": "sage",
+    "SysEnd": "2017-05-04T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
   }
 ]

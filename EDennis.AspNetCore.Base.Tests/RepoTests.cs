@@ -133,6 +133,56 @@ namespace EDennis.AspNetCore.Base.Testing {
             Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
 
+
+        [Theory]
+        [TestJsonSpecific("QueryAsOf", "SqlRepo", "A")]
+        [TestJsonSpecific("QueryAsOf", "SqlRepo", "B")]
+        public void QueryAsOf(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var asOf = jsonTestCase.GetObject<DateTime>("AsOf");
+            var alpha = jsonTestCase.GetObject<string>("Alpha");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x => x.Id)
+                .ThenByDescending(x => x.SysStart);
+
+            var actual = Repo.QueryAsOf(asOf,
+                x=>x.Name.Contains(alpha),
+                1,1000,
+                asc=>asc.Id,desc=>desc.SysStart
+                )
+                .OrderBy(x => x.Id)
+                .ThenByDescending(x => x.SysStart);
+
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
+        }
+
+
+        [Theory]
+        [TestJsonSpecific("QueryAsOfRange", "SqlRepo", "A")]
+        [TestJsonSpecific("QueryAsOfRange", "SqlRepo", "B")]
+        public void QueryAsOfRange(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var from = jsonTestCase.GetObject<DateTime>("From");
+            var to = jsonTestCase.GetObject<DateTime>("To");
+            var alpha = jsonTestCase.GetObject<string>("Alpha");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected")
+                .OrderBy(x => x.Id)
+                .ThenByDescending(x => x.SysStart);
+
+            var actual = Repo.QueryAsOf(from,to,
+                x => x.Name.Contains(alpha),
+                1, 1000,
+                asc => asc.Id, desc => desc.SysStart
+                )
+                .OrderBy(x => x.Id)
+                .ThenByDescending(x => x.SysStart);
+
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
+        }
+
+
         [Theory]
         [TestJsonSpecific("Query", "SqlRepo", "A")]
         [TestJsonSpecific("Query", "SqlRepo", "B")]
