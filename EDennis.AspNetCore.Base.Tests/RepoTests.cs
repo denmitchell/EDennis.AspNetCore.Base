@@ -168,12 +168,19 @@ namespace EDennis.AspNetCore.Base.Testing {
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
+            var expectedHistory = jsonTestCase.GetObject<List<Color>>("ExpectedHistory")
+                .OrderByDescending(x => x.SysStart);
 
             Repo.Update(input,id);
             var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
+            var actualHistory = Repo.GetByIdHistory(id)
+                .OrderByDescending(x => x.SysStart);
+
+
             Assert.True(actual.IsEqualOrWrite(expected, Output));
+            Assert.True(actualHistory.IsEqualOrWrite(expectedHistory, Output));
         }
 
 

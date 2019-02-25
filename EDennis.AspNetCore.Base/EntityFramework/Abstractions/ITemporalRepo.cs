@@ -98,7 +98,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             Expression finalExpression = Expression.Constant(true);
 
             foreach (var pkProperty in primaryKey.Properties) {
-                var type = pkProperty.ClrType;
+                var type = typeof(TEntity);
                 var left = Expression.Property(pe, type.GetProperty(pkProperty.Name));
                 var right = Expression.Constant(pkProperty.GetGetter().GetClrValue(entity));
                 var eq = Expression.Equal(left, right);
@@ -108,7 +108,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (expressionToAdd != null)
                 finalExpression = Expression.AndAlso(finalExpression, expressionToAdd);
 
-            return finalExpression as Expression<Func<TEntity, bool>>;
+            var expr = Expression.Lambda<Func<TEntity, bool>>(finalExpression, pe);
+
+            return expr;
         }
 
 

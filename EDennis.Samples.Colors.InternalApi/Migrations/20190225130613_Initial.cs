@@ -23,8 +23,8 @@ namespace EDennis.Samples.Colors.InternalApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(unicode: false, maxLength: 30, nullable: true),
                     SysStart = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(unicode: false, maxLength: 30, nullable: true),
                     SysEnd = table.Column<DateTime>(nullable: false),
                     SysUser = table.Column<string>(nullable: true),
                     SysUserNext = table.Column<string>(nullable: true)

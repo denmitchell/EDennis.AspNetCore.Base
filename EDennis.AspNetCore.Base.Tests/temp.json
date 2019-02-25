@@ -1,0 +1,114 @@
+[
+  {
+    "Id": 1,
+    "SysStart": "2015-01-01T00:00:00",
+    "Name": "tan",
+    "SysEnd": "2015-12-31T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 1,
+    "SysStart": "2016-01-01T00:00:00",
+    "Name": "brown",
+    "SysEnd": "2016-12-31T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
+  },
+  {
+    "Id": 1,
+    "SysStart": "2017-01-01T00:00:00",
+    "Name": "beige",
+    "SysEnd": "2017-12-31T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 1,
+    "SysStart": "2018-01-01T00:00:00",
+    "Name": "black",
+    "SysEnd": "9999-12-31T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "moe@stooges.net"
+  },
+  {
+    "Id": 2,
+    "SysStart": "2015-02-02T00:00:00",
+    "Name": "chiffon",
+    "SysEnd": "2016-02-01T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 2,
+    "SysStart": "2016-02-02T00:00:00",
+    "Name": "ivory",
+    "SysEnd": "2017-02-01T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
+  },
+  {
+    "Id": 2,
+    "SysStart": "2017-02-02T00:00:00",
+    "Name": "pearl",
+    "SysEnd": "2018-02-01T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 3,
+    "SysStart": "2014-03-03T00:00:00",
+    "Name": "smoke",
+    "SysEnd": "2015-03-02T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
+  },
+  {
+    "Id": 3,
+    "SysStart": "2015-03-03T00:00:00",
+    "Name": "pewter",
+    "SysEnd": "2016-03-02T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 3,
+    "SysStart": "2016-03-03T00:00:00",
+    "Name": "charcoal",
+    "SysEnd": "2017-03-02T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
+  },
+  {
+    "Id": 3,
+    "SysStart": "2017-03-03T00:00:00",
+    "Name": "slate",
+    "SysEnd": "2018-03-02T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 4,
+    "SysStart": "2017-04-04T00:00:00",
+    "Name": "crimson",
+    "SysEnd": "2018-04-03T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
+  },
+  {
+    "Id": 5,
+    "SysStart": "2016-05-05T00:00:00",
+    "Name": "sage",
+    "SysEnd": "2017-05-04T23:59:59.9999999",
+    "SysUser": "jill@hill.org",
+    "SysUserNext": "jack@hill.org"
+  },
+  {
+    "Id": 5,
+    "SysStart": "2017-05-05T00:00:00",
+    "Name": "chartreuse",
+    "SysEnd": "2018-05-04T23:59:59.9999999",
+    "SysUser": "jack@hill.org",
+    "SysUserNext": "jill@hill.org"
+  }
+]

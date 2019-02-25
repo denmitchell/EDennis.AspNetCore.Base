@@ -8,6 +8,11 @@ select @id Id, @Color Name, getdate() SysStart,
 		_.MaxDateTime2() SysEnd, @SysUser SysUser
 	for json path, without_array_wrapper
 );
+if object_id('tempdb..#color') is not null
+	drop table #color;
+select * into #color from color where Id = @Id
+update #color set SysUserNext = @SysUser;
+
 update Color set 
 		Name = @Color,
 		SysStart = getdate(),
@@ -19,8 +24,19 @@ declare @Expected varchar(max) = (
 		from Color
 		for json path
 );
-rollback transaction
+
+declare @ExpectedHistory varchar(max) = (
+	select * from (
+		select * from dbo_history.Color
+		union select * from #color			
+	) a	for json path
+);
+
+drop table #color;
+rollback transaction;
+
 exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Id',@Id
 exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Input',@Input
 exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Expected',@Expected
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'ExpectedHistory',@ExpectedHistory
 exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id
