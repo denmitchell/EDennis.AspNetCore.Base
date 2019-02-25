@@ -1,18 +1,26 @@
 ﻿use colordb;
-declare @id int = 1;
+declare @Id int = 1;
 declare @Color varchar(30) = 'brown'
+declare @SysUser varchar(255) = 'moe@stooges.net'
 begin transaction
 declare @Input varchar(max) = (
-select @id Id, @Color Name
+select @id Id, @Color Name, getdate() SysStart, 
+		_.MaxDateTime2() SysEnd, @SysUser SysUser
 	for json path, without_array_wrapper
 );
-update Colors set Name = @Color where Id = @id;
+update Color set 
+		Name = @Color,
+		SysStart = getdate(),
+		SysEnd = _.MaxDateTime2(),
+		SysUser = @SysUser
+	where Id = @id;
 declare @Expected varchar(max) = (
-	select Id, Name
-		from Colors
+	select *
+		from Color
 		for json path
 );
 rollback transaction
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Id',@Id
 exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Input',@Input
 exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Expected',@Expected
 exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id

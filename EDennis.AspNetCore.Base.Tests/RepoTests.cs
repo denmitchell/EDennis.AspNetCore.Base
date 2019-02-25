@@ -164,11 +164,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         public void Update(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
+            var id = jsonTestCase.GetObject<int>("Id");
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            Repo.Update(input);
+            Repo.Update(input,id);
             var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
@@ -182,11 +183,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
+            var id = jsonTestCase.GetObject<int>("Id");
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
 
-            await Repo.UpdateAsync(input);
+            await Repo.UpdateAsync(input,id);
             var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
