@@ -4,10 +4,12 @@ declare @AsOf datetime2 = '2017-07-01';
 
 declare @Expected varchar(max) = (
 	select * from (
-		select * from Colors 
-			for system_time as of @asOf
+		select * from Color 
+			where Id = @id
+		union select * from dbo_history.Color
 			where Id = @id
 	) a
+	where @AsOf between a.SysStart and a.SysEnd
 	for json path, without_array_wrapper, include_null_values
 );
 

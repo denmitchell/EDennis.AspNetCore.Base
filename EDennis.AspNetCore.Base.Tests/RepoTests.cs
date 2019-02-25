@@ -2,6 +2,7 @@
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Colors.InternalApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -96,6 +97,24 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
+
+
+        [Theory]
+        [TestJsonSpecific("GetByIdAsOf", "SqlRepo", "1")]
+        [TestJsonSpecific("GetByIdAsOf", "SqlRepo", "3")]
+        public void GetByIdAsOf(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var asOf = jsonTestCase.GetObject<DateTime>("AsOf");
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Color>("Expected");
+
+            var actual = Repo.GetByIdAsOf(asOf,id);
+
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
+        }
+
+
 
         [Theory]
         [TestJsonSpecific("Query", "SqlRepo", "A")]

@@ -265,7 +265,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public List<TEntity> GetByIdAsOf(DateTime asOf, params object[] key) {
+        public TEntity GetByIdAsOf(DateTime asOf, params object[] key) {
             var current = Context.Find<TEntity>(key);
             var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);
@@ -282,7 +282,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .AsNoTracking()
                 .ToList();
 
-            var all = curr.Union(history).ToList();
+            var all = curr.Union(history).FirstOrDefault();
             return all;
         }
 
