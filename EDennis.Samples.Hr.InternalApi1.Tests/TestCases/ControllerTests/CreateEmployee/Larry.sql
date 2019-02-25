@@ -18,7 +18,7 @@ declare @Expected varchar(max) =
 	for json path, include_null_values
 );
 rollback transaction
-exec _maintenance.ResetIdentities
+exec _.ResetIdentities
 
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'CreateEmployee','CreateAndGetAll',@firstName,'Input', @input
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'CreateEmployee','CreateAndGetAll',@firstName,'Expected', @expected

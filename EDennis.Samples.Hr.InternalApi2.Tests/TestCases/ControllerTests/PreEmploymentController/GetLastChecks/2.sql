@@ -65,7 +65,7 @@ declare @Expected varchar(max) = (
 		for json path);
 
 rollback transaction
-exec _maintenance.ResetIdentities
+exec _.ResetIdentities
 
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'PreEmploymentController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'AgencyOnlineInput', @AgencyOnlineInput
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'PreEmploymentController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'FederalBackgroundInput', @FederalBackgroundInput

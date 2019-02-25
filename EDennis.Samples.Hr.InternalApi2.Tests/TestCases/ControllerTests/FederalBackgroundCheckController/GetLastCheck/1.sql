@@ -29,7 +29,7 @@ declare
 );
 
 rollback transaction
-exec _maintenance.ResetIdentities
+exec _.ResetIdentities
 
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'Input', @Input
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'EmployeeId', @EmployeeId

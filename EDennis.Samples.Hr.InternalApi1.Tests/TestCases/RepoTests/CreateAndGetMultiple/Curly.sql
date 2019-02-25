@@ -22,7 +22,7 @@ declare @Expected varchar(max) =
 );
 
 rollback transaction
-exec _maintenance.ResetIdentities
+exec _.ResetIdentities
 
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Create','CreateAndGetMultiple',@FirstName,'Id', @Id
 exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Create','CreateAndGetMultiple',@FirstName,'Input', @Input
