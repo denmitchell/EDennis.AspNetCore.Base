@@ -31,9 +31,9 @@ declare
 rollback transaction
 exec _maintenance.ResetIdentities
 
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'Input', @Input
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'EmployeeId', @EmployeeId
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'Input', @Input
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'EmployeeId', @EmployeeId
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId, 'Expected', @Expected
 
-exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId
+exec  _.GetTestJson 'EDennis.Samples.Hr.InternalApi2', 'FederalBackgroundController', 'GetLastCheck', 'PostAndGet', @EmployeeId
 		

@@ -19,6 +19,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected string DatabaseName { get; }
         protected string InstanceName { get; }
 
+        protected ScopeProperties ScopeProperties { get; }
+
         public WriteableRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
 
             _fixture = fixture;
@@ -30,9 +32,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             Context = TestDbContextManager<TContext>
                 .CreateInMemoryDatabase(DatabaseName,InstanceName);
 
+            ScopeProperties = new ScopeProperties {
+                User = "tester@tester.org"
+            };
+
             //using reflection, instantiate the repo
             Repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { Context }) as TRepo;
+                new object[] { Context, ScopeProperties }) as TRepo;
 
         }
 

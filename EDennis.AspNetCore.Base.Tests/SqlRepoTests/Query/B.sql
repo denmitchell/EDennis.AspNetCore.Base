@@ -16,9 +16,9 @@ declare @expected varchar(max) = (
 		for json path, include_null_values
 );
 
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'Alpha', @alpha
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'PageNumber', @pageNumber
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'PageSize', @pageSize
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'Expected', @expected
-exec  _maintenance.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'Alpha', @alpha
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'PageNumber', @pageNumber
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'PageSize', @pageSize
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase,'Expected', @expected
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Query','SqlRepo',@TestCase
 

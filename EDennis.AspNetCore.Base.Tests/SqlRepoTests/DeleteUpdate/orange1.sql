@@ -20,7 +20,7 @@ declare @ExpectedHistory varchar(max) = (
 		for json path
 );
 rollback transaction
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase,'Input',@Input
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase,'Expected',@Expected
-exec _maintenance.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase,'ExpectedHistory',@ExpectedHistory
-exec  _maintenance.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase,'Input',@Input
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase,'Expected',@Expected
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase,'ExpectedHistory',@ExpectedHistory
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','DeleteUpdate','SqlRepo',@TestCase

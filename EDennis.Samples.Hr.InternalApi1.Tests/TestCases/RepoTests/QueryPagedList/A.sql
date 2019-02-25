@@ -17,10 +17,10 @@ declare @Expected varchar(max) =
 );
 
 
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'Alpha', @Alpha
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'PageNumber', @PageNumber
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'PageSize', @PageSize
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'Alpha', @Alpha
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'PageNumber', @PageNumber
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'PageSize', @PageSize
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase,'Expected', @Expected
 
-exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase
+exec  _.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Query','PagedList',@TestCase
 

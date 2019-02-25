@@ -14,7 +14,7 @@ declare
 );
 
 rollback transaction
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Delete','DeleteAndGetMultiple',@Id,'Id', @Id
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Delete','DeleteAndGetMultiple',@Id,'Expected', @expected
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Delete','DeleteAndGetMultiple',@Id,'Id', @Id
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Delete','DeleteAndGetMultiple',@Id,'Expected', @expected
 
-exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Delete','DeleteAndGetMultiple',@Id
+exec  _.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeRepo', 'Delete','DeleteAndGetMultiple',@Id

@@ -12,8 +12,8 @@ declare @Expected varchar(max) =
 	for json path, include_null_values
 );
 
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2','PageNumber', @pageNumber
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2','PageSize', @pageSize
-exec _maintenance.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2','Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2','PageNumber', @pageNumber
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2','PageSize', @pageSize
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2','Expected', @Expected
 
-exec  _maintenance.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2'
+exec  _.GetTestJson 'EDennis.Samples.Hr.InternalApi1', 'EmployeeController', 'GetEmployees','Paging','Page1PageSize2'

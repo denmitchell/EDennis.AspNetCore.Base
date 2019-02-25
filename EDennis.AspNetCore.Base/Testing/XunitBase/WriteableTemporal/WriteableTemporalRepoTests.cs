@@ -23,6 +23,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected TRepo Repo { get; }
         protected string InstanceName { get; }
         protected string HistoryInstanceName { get; }
+        protected ScopeProperties ScopeProperties { get; }
 
         public WriteableTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
 
@@ -41,10 +42,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             HistoryContext = TestDbContextManager<THistoryContext>
                 .CreateInMemoryDatabase(HistoryDatabaseName, HistoryInstanceName);
 
+            ScopeProperties = new ScopeProperties {
+                User = "tester@tester.org"
+            };
 
             //using reflection, instantiate the repo
             Repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { Context, HistoryContext }) as TRepo;
+                new object[] { Context, HistoryContext, ScopeProperties }) as TRepo;
 
         }
 
