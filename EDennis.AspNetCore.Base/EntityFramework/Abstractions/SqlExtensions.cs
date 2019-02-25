@@ -54,7 +54,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static List<TEntity> GetFromDapper<TEntity>
+        public static List<TEntity> GetFromSql<TEntity>
                     (this DbContext context, string sql)
                         where TEntity : class, new() {
             var cxn = context.Database.GetDbConnection();
@@ -71,7 +71,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static async Task<List<TEntity>> GetFromDapperAsync<TEntity>
+        public static async Task<List<TEntity>> GetFromSqlAsync<TEntity>
                     (this DbContext context, string sql)
                         where TEntity : class, new() {
             var cxn = context.Database.GetDbConnection();
@@ -88,7 +88,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static T GetScalarFromDapper<T>
+        public static T GetScalarFromSql<T>
                     (this DbContext context, string sql) {
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -104,7 +104,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework.Sql {
         }
 
 
-        public static async Task<T> GetScalarFromDapperAsync<T>
+        public static async Task<T> GetScalarFromSqlAsync<T>
                     (this DbContext context, string sql) {
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)

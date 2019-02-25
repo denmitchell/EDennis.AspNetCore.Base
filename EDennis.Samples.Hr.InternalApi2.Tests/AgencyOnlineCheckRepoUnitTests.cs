@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.EntityFramework.Sql;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            var preCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
 
             Repo.Create(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
@@ -30,7 +31,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
                 Status = status
             });
 
-            var postCount = Repo.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var postCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
 
             Assert.Equal(preCount + 1, postCount);
 

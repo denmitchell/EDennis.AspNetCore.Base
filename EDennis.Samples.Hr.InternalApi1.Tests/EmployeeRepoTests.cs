@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.EntityFramework.Sql;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
@@ -343,11 +344,11 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         [InlineData("Curly")]
         public void TestCreateEmployee(string firstName) {
 
-            var preCount = Repo.GetScalarFromDapper<int>("select count(*) recs from employee");
+            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from employee");
 
             Repo.Create(new Employee { FirstName = firstName });
 
-            var postCount = Repo.GetScalarFromDapper<int>("select count(*) recs from employee");
+            var postCount = Context.GetScalarFromSql<int>("select count(*) recs from employee");
 
             Assert.Equal(preCount + 1, postCount);
 

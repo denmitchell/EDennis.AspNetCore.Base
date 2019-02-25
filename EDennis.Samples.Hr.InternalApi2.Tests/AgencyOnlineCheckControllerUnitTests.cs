@@ -29,7 +29,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            var preCount = Context.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
 
             _controller.Post(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
@@ -37,7 +37,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
                 Status = status
             });
 
-            var postCount = Context.GetScalarFromDapper<int>("select count(*) recs from AgencyOnlineCheck");
+            var postCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
 
             Assert.Equal(preCount + 1, postCount);
 
