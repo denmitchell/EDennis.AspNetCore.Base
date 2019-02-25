@@ -7,41 +7,39 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EDennis.Samples.Colors.InternalApi.Migrations
+namespace EDennis.Samples.Colors.InternalApi.Migrations.ColorHistoryDb
 {
-    [DbContext(typeof(ColorDbContext))]
-    [Migration("20190207215117_Initial")]
+    [DbContext(typeof(ColorHistoryDbContext))]
+    [Migration("20190225130648_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("EDennis.Samples.Colors.InternalApi.Models.Color", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
+
+                    b.Property<DateTime>("SysStart");
 
                     b.Property<string>("Name")
                         .HasMaxLength(30)
                         .IsUnicode(false);
 
-                    b.Property<DateTime>("SysEnd")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))");
+                    b.Property<DateTime>("SysEnd");
 
-                    b.Property<DateTime>("SysStart")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("(getdate())");
+                    b.Property<string>("SysUser");
 
-                    b.HasKey("Id");
+                    b.Property<string>("SysUserNext");
 
-                    b.ToTable("Colors");
+                    b.HasKey("Id", "SysStart");
+
+                    b.ToTable("Color","dbo_history");
                 });
 #pragma warning restore 612, 618
         }

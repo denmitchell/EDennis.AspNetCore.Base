@@ -12,30 +12,41 @@ namespace EDennis.Samples.Colors.InternalApi.Migrations
         {
             migrationBuilder.CreateMaintenanceProcedures();
             migrationBuilder.CreateTestJsonTableSupport();
+
+            migrationBuilder.EnsureSchema(
+                name: "dbo");
+
             migrationBuilder.CreateTable(
-                name: "Colors",
+                name: "Color",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(unicode: false, maxLength: 30, nullable: true),
-                    SysStart = table.Column<DateTime>(nullable: false, defaultValueSql: "(getdate())"),
-                    SysEnd = table.Column<DateTime>(nullable: false, defaultValueSql: "(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
+                    SysStart = table.Column<DateTime>(nullable: false),
+                    SysEnd = table.Column<DateTime>(nullable: false),
+                    SysUser = table.Column<string>(nullable: true),
+                    SysUserNext = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Colors", x => x.Id);
+                    table.PrimaryKey("PK_Color", x => x.Id);
                 });
+
             migrationBuilder.SaveMappings();
             migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Colors");
-            migrationBuilder.DropMaintenanceProcedures();
+                name: "Color",
+                schema: "dbo");
+
             migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
         }
     }
 }

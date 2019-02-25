@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EDennis.Samples.Colors.InternalApi.Migrations
+namespace EDennis.Samples.Colors.InternalApi.Migrations.ColorHistoryDb
 {
-    [DbContext(typeof(ColorDbContext))]
-    partial class ColorDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ColorHistoryDbContext))]
+    partial class ColorHistoryDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -21,9 +21,9 @@ namespace EDennis.Samples.Colors.InternalApi.Migrations
 
             modelBuilder.Entity("EDennis.Samples.Colors.InternalApi.Models.Color", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
+
+                    b.Property<DateTime>("SysStart");
 
                     b.Property<string>("Name")
                         .HasMaxLength(30)
@@ -31,15 +31,13 @@ namespace EDennis.Samples.Colors.InternalApi.Migrations
 
                     b.Property<DateTime>("SysEnd");
 
-                    b.Property<DateTime>("SysStart");
-
                     b.Property<string>("SysUser");
 
                     b.Property<string>("SysUserNext");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SysStart");
 
-                    b.ToTable("Color","dbo");
+                    b.ToTable("Color","dbo_history");
                 });
 #pragma warning restore 612, 618
         }
