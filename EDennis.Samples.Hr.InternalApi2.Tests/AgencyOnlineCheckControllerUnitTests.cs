@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
-using EDennis.AspNetCore.Base.EntityFramework.Sql;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
@@ -29,17 +28,11 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
-
             _controller.Post(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
                 DateCompleted = DateTime.Parse(strDateCompleted),
                 Status = status
             });
-
-            var postCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
-
-            Assert.Equal(preCount + 1, postCount);
 
             var targetRec = Repo.Query
                 .OrderBy(e => e.Id)

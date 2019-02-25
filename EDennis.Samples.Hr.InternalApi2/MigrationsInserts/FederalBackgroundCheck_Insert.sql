@@ -10,4 +10,4 @@ insert into FederalBackgroundCheck(Id, SysStart, EmployeeId, DateCompleted, Stat
 	(2,'2018-02-02',2,'2018-02-02','Pass',@end,@jack),
 	(3,'2018-03-03',3,'2018-03-03','Fail',@end,@jill),
 	(4,'2018-04-04',4,'2018-04-04','Pass',@end,@jill);
-set identity_insert FederalBackgroundCheck off
+set identity_insert FederalBackgroundCheck off 

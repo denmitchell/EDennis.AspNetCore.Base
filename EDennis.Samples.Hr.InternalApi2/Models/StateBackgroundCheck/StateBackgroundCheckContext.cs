@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
+//for ReadonlyRepo
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
@@ -12,22 +13,12 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         public StateBackgroundCheckContext(
             DbContextOptions<StateBackgroundCheckContext> options) : base(options) { }
 
-        public DbSet<StateBackgroundCheck> StateBackgroundChecks { get; set; }
-        public DbQuery<StateBackgroundCheckView> StateBackgroundCheckViewRecords { get; set; }
+        public DbQuery<StateBackgroundCheckView> StateBackgroundChecks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
-            modelBuilder.Entity<StateBackgroundCheck>()
-                .ToTable("StateBackgroundCheck")
-                .HasKey(e => e.Id);
-
-            modelBuilder.Entity<StateBackgroundCheck>()
-                .Property(e => e.DateCompleted)
-                .HasColumnType("date");
-
-            modelBuilder.Entity<StateBackgroundCheck>()
-                .Property(e => e.Status)
-                .HasMaxLength(100);
+            modelBuilder.Query<StateBackgroundCheckView>()
+                .ToView("StateBackgroundCheckView");
         }
     }
 

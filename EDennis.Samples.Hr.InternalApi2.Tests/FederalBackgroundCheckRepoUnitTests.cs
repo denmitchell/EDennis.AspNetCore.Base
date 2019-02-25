@@ -1,5 +1,4 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework.Sql;
-using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
 using Xunit;
@@ -21,7 +20,6 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(3, "2018-03-03", "Fail")]
         [InlineData(4, "2018-04-04", "Pass")]
         public void GetFederalBackgroundCheck(int employeeId, string strDateCompleted, string status) {
-            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
 
             var check = Repo.GetLastCheck(employeeId);
 

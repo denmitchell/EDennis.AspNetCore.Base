@@ -1,5 +1,4 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework.Sql;
-using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
 using System.Linq;
@@ -8,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
     public class AgencyOnlineCheckRepoUnitTests :
-        WriteableTemporalRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext, AgencyOnlineCheckHistoryContext> {
+        WriteableRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
@@ -23,17 +22,11 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         [InlineData(4, "2018-12-04", "Fail")]
         public void TestCreateAgencyOnlineCheck(int employeeId, string strDateCompleted, string status) {
 
-            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
-
             Repo.Create(new AgencyOnlineCheck {
                 EmployeeId = employeeId,
                 DateCompleted = DateTime.Parse(strDateCompleted),
                 Status = status
             });
-
-            var postCount = Context.GetScalarFromSql<int>("select count(*) recs from AgencyOnlineCheck");
-
-            Assert.Equal(preCount + 1, postCount);
 
             var targetRec = Repo.Query
                 .OrderBy(e => e.Id)

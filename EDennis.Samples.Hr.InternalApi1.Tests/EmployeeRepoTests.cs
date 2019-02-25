@@ -1,5 +1,4 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.EntityFramework.Sql;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
@@ -232,38 +231,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
         }
 
-        [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "GetFromSql", testScenario: "GetFromSql", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "GetFromSql", testScenario: "GetFromSql", testCase: "B")]
-        public void TestGetFromSqlEmployee(string t, JsonTestCase jsonTestCase) {
-            Output.WriteLine(t);
-
-            var firstName = jsonTestCase.GetObject<string>("FirstName");
-            var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
-
-            var sql = "select * from Employee where FirstName = {0}";
-            var actual = Repo.GetFromSql(sql, 1, 1000, true, firstName);
-
-            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
-
-        }
-
-
-        [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "GetFromSql", testScenario: "GetFromSql", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "GetFromSql", testScenario: "GetFromSql", testCase: "B")]
-        public async Task TestGetFromSqlAsyncEmployee(string t, JsonTestCase jsonTestCase) {
-            Output.WriteLine(t);
-
-            var firstName = jsonTestCase.GetObject<string>("FirstName");
-            var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
-
-            var sql = "select * from Employee where FirstName = {0}";
-            var actual = await Repo.GetFromSqlAsync(sql, 1, 1000, true, firstName);
-
-            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
-
-        }
 
 
         [Theory]
@@ -336,34 +303,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
 
-        [Theory]
-        [InlineData("Regis")]
-        [InlineData("Wink")]
-        [InlineData("Moe")]
-        [InlineData("Larry")]
-        [InlineData("Curly")]
-        public void TestCreateEmployee(string firstName) {
-
-            var preCount = Context.GetScalarFromSql<int>("select count(*) recs from employee");
-
-            Repo.Create(new Employee { FirstName = firstName });
-
-            var postCount = Context.GetScalarFromSql<int>("select count(*) recs from employee");
-
-            Assert.Equal(preCount + 1, postCount);
-
-            var employees = Repo.Query.ToList()
-                .OrderBy(e => e.Id);
-
-            Assert.Collection(employees,
-                new Action<Employee>[] {
-                    item=>Assert.Contains("Bob",item.FirstName),
-                    item=>Assert.Contains("Monty",item.FirstName),
-                    item=>Assert.Contains("Drew",item.FirstName),
-                    item=>Assert.Contains("Wayne",item.FirstName),
-                    item=>Assert.Contains(firstName,item.FirstName),
-                });
-        }
 
     }
 }

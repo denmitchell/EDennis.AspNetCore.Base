@@ -2,6 +2,9 @@
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
 
+
+//for WriteableTemporalRepo
+
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
     public class AgencyInvestigatorCheckContextDesignTimeFactory :

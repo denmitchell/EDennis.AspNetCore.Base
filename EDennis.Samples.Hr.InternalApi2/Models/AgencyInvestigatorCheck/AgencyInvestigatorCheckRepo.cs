@@ -1,6 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using System.Linq;
 
+//WriteableTemporalRepo
+
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
     public class AgencyInvestigatorCheckRepo 

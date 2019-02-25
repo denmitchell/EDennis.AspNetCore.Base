@@ -1,6 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using System.Linq;
 
+//ReadonlyRepo
+
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
     public class StateBackgroundCheckRepo
@@ -12,7 +14,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             : base(context) { }
 
         public StateBackgroundCheckView GetLastCheck(int employeeId) {
-            return Context.StateBackgroundCheckViewRecords
+            return Context.StateBackgroundChecks
                 .Where(e => e.EmployeeId == employeeId)
                 .OrderByDescending(e => e.DateCompleted)
                 .FirstOrDefault();

@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.AspNetCore.Http;
-using System;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
@@ -39,7 +38,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
         public virtual TEntity GetById(params object[] keyValues) {
-            return Context.Find<TEntity>(keyValues);
+            var entity = Context.Find<TEntity>(keyValues);
+            Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
 
@@ -49,28 +50,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
         public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
-            return await Context.FindAsync<TEntity>(keyValues);
+            var entity = await Context.FindAsync<TEntity>(keyValues);
+            Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
 
         public IQueryable<TEntity> Query {
             get {
-                return Context.Set<TEntity>()
-                    .AsNoTracking();
+                return Context.Query<TEntity>();
             }
-        }
-
-
-        /// <summary>
-        /// Determines if an object with the given primary key values
-        /// exists in the context.
-        /// </summary>
-        /// <param name="keyValues">primary key values</param>
-        /// <returns></returns>
-        public async Task<bool> ExistsAsync(params object[] keyValues) {
-            var x = await Context.FindAsync<TEntity>(keyValues);
-            var exists = (x != null);
-            return exists;
         }
 
 
@@ -81,11 +70,128 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key values</param>
         /// <returns>true if an entity with the provided keys exists</returns>
         public bool Exists(params object[] keyValues) {
-            var x = Context.Find<TEntity>(keyValues);
-            var exists = (x != null);
+            var entity = Context.Find<TEntity>(keyValues);
+            Context.Entry(entity).State = EntityState.Detached;
+            var exists = (entity != null);
             return exists;
         }
 
+        
+        /// <summary>
+        /// Determines if an object with the given primary key values
+        /// exists in the context.
+        /// </summary>
+        /// <param name="keyValues">primary key values</param>
+        /// <returns></returns>
+        public async Task<bool> ExistsAsync(params object[] keyValues) {
+            var entity = await Context.FindAsync<TEntity>(keyValues);
+            Context.Entry(entity).State = EntityState.Detached;
+            var exists = (entity != null);
+            return exists;
+        }
+
+
+
+
+        public List<TEntity> GetFromSql(string sql){
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            List<TEntity> result;
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                result = cxn.Query<TEntity>(sql, transaction: dbTrans).AsList();
+            } else {
+                result = cxn.Query<TEntity>(sql).AsList();
+            }
+            return result;
+        }
+
+
+        public async Task<List<TEntity>> GetFromSqlAsync(string sql){
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            List<TEntity> result;
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                result = (await cxn.QueryAsync<TEntity>(sql, transaction: dbTrans)).AsList();
+            } else {
+                result = (await cxn.QueryAsync<TEntity>(sql)).AsList();
+            }
+            return result;
+        }
+
+
+        public T GetScalarFromSql<T>(string sql) {
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            T result;
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                result = cxn.ExecuteScalar<T>(sql, transaction: dbTrans);
+            } else {
+                result = cxn.ExecuteScalar<T>(sql);
+            }
+            return result;
+        }
+
+
+        public async Task<T> GetScalarFromSqlAsync<T>(string sql) {
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            T result;
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                result = await cxn.ExecuteScalarAsync<T>(sql, transaction: dbTrans);
+            } else {
+                result = await cxn.ExecuteScalarAsync<T>(sql);
+            }
+            return result;
+        }
+
+
+
+        public string GetFromJsonSql(string fromJsonSql) {
+
+            var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string result;
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                result = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
+            } else {
+                result = cxn.ExecuteScalar<string>(sql);
+            }
+            return result;
+        }
+
+
+        public async Task<string> GetFromJsonSqlAsync(string fromJsonSql) {
+
+            var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string result;
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                result = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
+            } else {
+                result = await cxn.ExecuteScalarAsync<string>(sql);
+            }
+            return result;
+        }
+
+
+
+        protected string PrintKeys(params object[] keyValues) {
+            return "[" + string.Join(",", keyValues) + "]";
+        }
 
 
     }

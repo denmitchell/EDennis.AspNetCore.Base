@@ -1,34 +1,46 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
+//for ReadonlyTemporalRepo
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
 
     public class FederalBackgroundCheckContextDesignTimeFactory :
         MigrationsExtensionsDbContextDesignTimeFactory<FederalBackgroundCheckContext> { }
 
+    public class FederalBackgroundCheckHistoryContextDesignTimeFactory :
+        MigrationsExtensionsDbContextDesignTimeFactory<FederalBackgroundCheckHistoryContext> { }
 
-    public class FederalBackgroundCheckContext : DbContext {
+
+    public class FederalBackgroundCheckContext : FederalBackgroundCheckContextBase {
         public FederalBackgroundCheckContext(
             DbContextOptions<FederalBackgroundCheckContext> options) : base(options) { }
 
-        public DbSet<FederalBackgroundCheck> FederalBackgroundChecks { get; set; }
-        public DbQuery<FederalBackgroundCheckView> FederalBackgroundCheckViewRecords { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
-            modelBuilder.Entity<FederalBackgroundCheck>()
-                .ToTable("FederalBackgroundCheck")
-                .HasKey(e => e.Id);
-
-            modelBuilder.Entity<FederalBackgroundCheck>()
-                .Property(e => e.DateCompleted)
-                .HasColumnType("date");
-
-            modelBuilder.Entity<FederalBackgroundCheck>()
-                .Property(e => e.Status)
-                .HasMaxLength(100);
+            modelBuilder.Query<FederalBackgroundCheckView>()
+                .ToView("FederalBackgroundCheckView");
         }
     }
 
+
+    public class FederalBackgroundCheckHistoryContext : FederalBackgroundCheckContextBase {
+        public FederalBackgroundCheckHistoryContext(
+            DbContextOptions<FederalBackgroundCheckHistoryContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            modelBuilder.Query<FederalBackgroundCheckView>()
+                .ToView("FederalBackgroundCheckHistoryView");
+        }
+    }
+
+
+    public abstract class FederalBackgroundCheckContextBase : DbContext {
+
+        public FederalBackgroundCheckContextBase(DbContextOptions options)
+            : base(options) { }
+
+        public DbQuery<FederalBackgroundCheckView> FederalBackgroundChecks { get; set; }
+    }
 }
