@@ -70,7 +70,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>true if an entity with the provided keys exists</returns>
         public bool Exists(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
-            Context.Entry(entity).State = EntityState.Detached;
+            if(entity != null)
+                Context.Entry(entity).State = EntityState.Detached;
             var exists = (entity != null);
             return exists;
         }
@@ -84,7 +85,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns></returns>
         public async Task<bool> ExistsAsync(params object[] keyValues) {
             var entity = await Context.FindAsync<TEntity>(keyValues);
-            Context.Entry(entity).State = EntityState.Detached;
+            if (entity != null)
+                Context.Entry(entity).State = EntityState.Detached;
             var exists = (entity != null);
             return exists;
         }

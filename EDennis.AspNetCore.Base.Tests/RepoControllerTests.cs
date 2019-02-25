@@ -32,9 +32,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        [Theory]
-        [TestJsonSpecific("GetById", "SqlRepo", "1")]
-        [TestJsonSpecific("GetById", "SqlRepo", "2")]
+        //[Theory]
+        //[TestJsonSpecific("GetById", "SqlRepo", "1")]
+        //[TestJsonSpecific("GetById", "SqlRepo", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Instance Name:{InstanceName}");
@@ -49,9 +49,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        [Theory]
-        [TestJsonSpecific("Post", "SqlRepo", "brown")]
-        [TestJsonSpecific("Post", "SqlRepo", "orange")]
+        //[Theory]
+        //[TestJsonSpecific("Post", "SqlRepo", "brown")]
+        //[TestJsonSpecific("Post", "SqlRepo", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -68,9 +68,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        [Theory]
-        [TestJsonSpecific("Update", "SqlRepo", "1")]
-        [TestJsonSpecific("Update", "SqlRepo", "2")]
+        //[Theory]
+        //[TestJsonSpecific("Update", "SqlRepo", "1")]
+        //[TestJsonSpecific("Update", "SqlRepo", "2")]
         public void Put(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -89,9 +89,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        [Theory]
-        [TestJsonSpecific("Delete", "SqlRepo", "3")]
-        [TestJsonSpecific("Delete", "SqlRepo", "4")]
+        //[Theory]
+        //[TestJsonSpecific("Delete", "SqlRepo", "3")]
+        //[TestJsonSpecific("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 

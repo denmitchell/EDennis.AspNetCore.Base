@@ -3,8 +3,8 @@ declare @Id int = 4;
 
 declare @expected bit = CAST(
    CASE WHEN EXISTS (
-	select Id, Name
-		from Colors
+	select *
+		from Color
 		where Id = @Id
 ) THEN 1 ELSE 0 END AS BIT);
 

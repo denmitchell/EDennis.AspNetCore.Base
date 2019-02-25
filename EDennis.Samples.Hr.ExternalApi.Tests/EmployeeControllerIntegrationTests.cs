@@ -25,10 +25,10 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
             : base(output, factory) { }
 
 
-        [Theory]
-        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Moe", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[Theory]
+        //[TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Moe", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
         public void CreateEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
@@ -43,11 +43,11 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
         }
 
 
-        [Theory]
-        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "1", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        [TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[Theory]
+        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "1", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
         public void CreateChecks(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");

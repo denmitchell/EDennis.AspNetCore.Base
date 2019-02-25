@@ -27,7 +27,7 @@ declare @Expected varchar(max) = (
 
 declare @ExpectedHistory varchar(max) = (
 	select * from (
-		select * from dbo_history.Color
+		select * from dbo_history.Color where Id = @Id
 		union select * from #color			
 	) a	for json path
 );

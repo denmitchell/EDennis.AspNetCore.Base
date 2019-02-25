@@ -7,8 +7,8 @@ declare @pageSize int = 1
 declare @alpha varchar(max) = 'bl';
 
 declare @expected varchar(max) = (
-	select Id, Name
-		from Colors
+	select *
+		from Color
 		where Name Like '%' + @alpha + '%'
 		order by id
 		offset @pageSize * (@pageNumber - 1) rows

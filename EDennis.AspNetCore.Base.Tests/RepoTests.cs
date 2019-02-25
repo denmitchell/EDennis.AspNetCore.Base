@@ -203,6 +203,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
+            var expectedHistory = jsonTestCase.GetObject<List<Color>>("ExpectedHistory")
+                .OrderByDescending(x => x.SysStart);
 
             await Repo.UpdateAsync(input,id);
             var actual = Repo.Query.ToPagedList()
