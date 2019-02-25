@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.EntityFramework;
 using System.Collections.Generic;
 using System.Linq;
 

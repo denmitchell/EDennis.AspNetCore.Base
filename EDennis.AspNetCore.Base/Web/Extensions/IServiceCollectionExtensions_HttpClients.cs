@@ -11,13 +11,14 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
         public static IServiceCollection AddApiClients<TClient1>(this IServiceCollection services)
             where TClient1 : ApiClient {
             services.AddHttpClient<TClient1>();
+            services.AddScoped<ScopeProperties>();
             return services;
         }
 
         public static IServiceCollection AddApiClients<TClient1, TClient2>(this IServiceCollection services)
             where TClient1 : ApiClient
             where TClient2 : ApiClient {
-            services.AddHttpClient<TClient1>();
+            services.AddApiClients<TClient1>();
             services.AddHttpClient<TClient2>();
             return services;
         }

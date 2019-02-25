@@ -7,7 +7,11 @@ using System.Linq.Expressions;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
+
+    public interface ITemporalRepo : IRepo { }
+
     public interface ITemporalRepo<TEntity, TContext,THistoryContext>
+        : ITemporalRepo
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
         where THistoryContext : DbContext {

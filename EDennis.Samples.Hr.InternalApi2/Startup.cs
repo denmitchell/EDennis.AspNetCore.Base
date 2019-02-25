@@ -41,11 +41,20 @@ namespace EDennis.Samples.Hr.InternalApi2 {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
 
-                //READONLY -- NOT NEEDED 
-                //app.UseRepoInterceptor<AgencyInvestigatorCheckRepo, AgencyInvestigatorCheck, AgencyInvestigatorCheckContext>();
-                //app.UseRepoInterceptor<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext>();
-                //app.UseRepoInterceptor<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext>();
-                //app.UseRepoInterceptor<StateBackgroundCheckRepo, StateBackgroundCheckView, StateBackgroundCheckContext>();
+                app.UseTemporalRepoInterceptor<
+                    AgencyInvestigatorCheckRepo, 
+                    AgencyInvestigatorCheck, 
+                    AgencyInvestigatorCheckContext,
+                    AgencyInvestigatorCheckHistoryContext>();
+                app.UseRepoInterceptor<
+                    AgencyOnlineCheckRepo, 
+                    AgencyOnlineCheck, 
+                    AgencyOnlineCheckContext>();
+
+                //NOTE: Interceptors not needed for 
+                //         FederalBackgroundCheckRepo and
+                //         StateBackgroundCheckRepo.
+                //      These repos are readonly. 
             }
 
             app.UseMvc();

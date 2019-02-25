@@ -11,7 +11,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public abstract class WriteableRepo<TEntity, TContext>
+    public abstract class WriteableRepo<TEntity, TContext> : IRepo
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
 

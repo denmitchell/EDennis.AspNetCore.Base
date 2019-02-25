@@ -1,5 +1,5 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
-using System.Linq;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.EntityFramework;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 

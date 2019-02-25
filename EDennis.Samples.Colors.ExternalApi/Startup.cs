@@ -28,10 +28,6 @@ namespace EDennis.Samples.Colors.ExternalApi {
             //AspNetCore.Base config
             services.AddApiClients<InternalApi>();
 
-            if(Environment.EnvironmentName == EnvironmentName.Development) {
-                services.AddScoped<TestHeader>();
-            }
-
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "Color API", Version = "v1" });
             });
