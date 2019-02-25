@@ -248,7 +248,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 var left = Expression.Property(pe, type.GetProperty(pkProperty.Name));
                 var right = Expression.Constant(pkProperty.GetGetter().GetClrValue(entity));
                 var eq = Expression.Equal(left, right);
-                if (finalExpression == null)
+                if (finalExpression != null)
                     finalExpression = Expression.AndAlso(finalExpression, eq);
                 else
                     finalExpression = eq;
