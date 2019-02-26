@@ -140,6 +140,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                 else {
                     tokenRequestData = GetClientCredentialsTokenRequestData(defaultMockClient.Key, defaultMockClient.Value, appName);
                 }
+
+
             }
             if (tokenRequestData.Authority == null) {
 

@@ -114,8 +114,8 @@ namespace IdentityServer {
         }
 
         public static IEnumerable<Client> GetClients() {
-                return new List<Client>
-                {
+            return new List<Client>
+            {
                 new Client
                 {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client1",
@@ -128,10 +128,12 @@ namespace IdentityServer {
                     {
                         new Secret("secret".Sha256())
                     },
-
                     // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","moe@stooges.net")
                     }
                 },
                 new Client
@@ -150,6 +152,9 @@ namespace IdentityServer {
                     // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.Person"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","larry@stooges.net")
                     }
                 },
                 new Client
@@ -169,6 +174,9 @@ namespace IdentityServer {
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.Person.Get",
                         "EDennis.Samples.DefaultPoliciesApi.Position.Post"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","curly@stooges.net")
                     }
                 },
                 // resource owner password grant client

@@ -1,4 +1,5 @@
-﻿using EDennis.Samples.DefaultPoliciesApi.Models;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.Samples.DefaultPoliciesApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
     public class PersonController : ControllerBase
     {
         private readonly PersonRepo _repo;
+        private readonly ScopeProperties _scopeProperties;
 
-        public PersonController(PersonRepo repo) {
+        public PersonController(PersonRepo repo, ScopeProperties scopeProperties) {
             _repo = repo;
+            _scopeProperties = scopeProperties;
         }
 
         [HttpGet]

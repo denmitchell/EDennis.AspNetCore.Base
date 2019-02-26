@@ -86,12 +86,6 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 });
             }
 
-
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie();
-            //services.AddAuthorization();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,11 +94,8 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseCookiePolicy();
-
             if (env.EnvironmentName == EnvironmentName.Development) {
                 app.UseMockClientAuthorization();
-                //app.UseAutoLogin();
             }
 
             app.UseAuthentication();
