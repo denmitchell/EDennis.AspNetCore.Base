@@ -1,15 +1,21 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EDennis.AspNetCore.Base.Testing;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -24,17 +30,25 @@ namespace EDennis.AspNetCore.Base.Web {
             var config = provider.GetRequiredService<IConfiguration>();
             var env = provider.GetRequiredService<IHostingEnvironment>();
 
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a=>a.FullName.Contains(env.ApplicationName + ",")).FirstOrDefault();
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains(env.ApplicationName + ",")).FirstOrDefault();
 
-            var authority = config["IdentityServer:Authority"];
-            if (authority == null)
-                throw new ArgumentException("AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the following configuration key: IdentityServer:Authority" );
+            string authority = "";
+
+            var apiDict = new Dictionary<string, ApiConfig>();
+            config.GetSection("Apis").Bind(apiDict);
+
+            var identityServerApi = apiDict.Where(x => x.Value.IsIdentityServer).FirstOrDefault().Value;
+            if (identityServerApi == null)
+                throw new ApplicationException("AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server. No Api having property IsIdentityServer=true appears in appsettings.Development.json.");
+
+            authority = identityServerApi.BaseAddress;
+            if (authority == "")
+                throw new ApplicationException("Identity Server BaseAddress is null.  If you are using ApiLauncher in a development environment, ensure that the launcher is launched at the beginning of ConfigureServices, and ensure that you call services.AwaitLaunchers().");
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options => {
                     options.Authority = authority;
                     options.RequireHttpsMetadata = false;
-
                     options.Audience = env.ApplicationName;
                 });
 
@@ -64,11 +78,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
             services.AddAuthorization(options => {
 
-            //create application(api-level) policy
-            var applicationName = env.ApplicationName;
-            CreatePolicy(options, applicationName, applicationName, null);
+                //create application(api-level) policy
+                var applicationName = env.ApplicationName;
+                CreatePolicy(options, applicationName, applicationName, null);
 
-            var controllers = GetControllerTypes(assembly);
+                var controllers = GetControllerTypes(assembly);
                 foreach (var controller in controllers) {
 
                     var controllerPath = applicationName + "." + Regex.Replace(controller.Name, "Controller$", "");
@@ -110,11 +124,11 @@ namespace EDennis.AspNetCore.Base.Web {
             var scopes = new List<string>() { policyName };
 
             //add all action-level scopes to controller-level scope
-            if(actionScopes != null) {
+            if (actionScopes != null) {
                 scopes.AddRange(actionScopes);
             }
 
-            if(policyName != applicationName) { 
+            if (policyName != applicationName) {
                 var parentScope = policyName.DropLastSegment();
                 if (parentScope != null)
                     scopes.Add(parentScope);
@@ -126,7 +140,7 @@ namespace EDennis.AspNetCore.Base.Web {
             }
             //add the policy
             options.AddPolicy(policyName, builder => {
-                builder.RequireClaim("Scope",scopes);
+                builder.RequireClaim("Scope", scopes);
             });
 
         }
@@ -146,7 +160,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns>all controller types</returns>
         private static IEnumerable<Type> GetControllerTypes(Assembly assembly) {
             var controllerTypes = assembly.GetTypes()
-                .Where(t => 
+                .Where(t =>
                     t.IsSubclassOf(typeof(ControllerBase)) ||
                     t.IsSubclassOf(typeof(Controller)) ||
                     t.GetCustomAttribute<ApiControllerAttribute>() != null ||

@@ -53,12 +53,13 @@ namespace EDennis.Samples.Colors.InternalApi {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
 
-                app.UseCookiePolicy();
                 app.UseAutoLogin();
-                app.UseAuthentication();
 
                 app.UseTemporalRepoInterceptor<ColorRepo, Color, ColorDbContext, ColorHistoryDbContext>();
-            } 
+            }
+
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseUser();
 
             app.UseStaticFiles();

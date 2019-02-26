@@ -1,18 +1,23 @@
 ﻿using EDennis.AspNetCore.Base.Web;
+using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Security;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Testing{
+namespace EDennis.AspNetCore.Base.Testing {
 
     /// <summary>
     /// Creates a mock client with specified client id,
@@ -52,44 +57,48 @@ namespace EDennis.AspNetCore.Base.Testing{
         /// <returns></returns>
         public async Task InvokeAsync(HttpContext context, IConfiguration config, IHostingEnvironment env) {
 
-            //get a reference to the request headers
-            var headers = context.Request.Headers;
+            if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+                //get a reference to the request headers
+                var headers = context.Request.Headers;
 
-            //only create mock client, if no authorization header
-            //already exists
-            if (!headers.ContainsKey("Authorization")) {
+                //only create mock client, if no authorization header
+                //already exists
+                if (!headers.ContainsKey("Authorization")) {
 
-                //instantiate a new HttpClient for communicating
-                //with Identity Server
-                var client = new HttpClient();
+                    //instantiate a new HttpClient for communicating
+                    //with Identity Server
+                    var client = new HttpClient();
 
-                //get parameters for building the token request
-                var tokenRequestData = GetClientCredentialsTokenRequestData(config, env.ApplicationName);
+                    //get parameters for building the token request
+                    var tokenRequestData = GetClientCredentialsTokenRequestData(config, env.ApplicationName);
 
-                //get the discovery document from Identity Server
-                var disco = await client.GetDiscoveryDocumentAsync(tokenRequestData.Authority as string);
-                if (disco.IsError) {
-                    throw new SecurityException(disco.Error);
+                    //get the discovery document from Identity Server
+                    var disco = await client.GetDiscoveryDocumentAsync(tokenRequestData.Authority as string);
+                    if (disco.IsError) {
+                        throw new SecurityException(disco.Error);
+                    }
+
+                    //send a token request and receive back the response
+                    var tokenResponse = await client.RequestClientCredentialsTokenAsync(
+                        new ClientCredentialsTokenRequest {
+                            Address = disco.TokenEndpoint,
+                            ClientId = tokenRequestData.ClientId,
+                            ClientSecret = tokenRequestData.ClientSecret,
+                            Scope = string.Join(' ', tokenRequestData.Scopes),                             
+                        });
+
+                    //handle errors
+                    if (tokenResponse.IsError) {
+                        throw new SecurityException(tokenResponse.Error);
+                    }
+
+                    //ValidateJwt(disco, tokenResponse);
+
+                    //build the authorization header with bearer token
+                    //and add it to the current request headers
+                    headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
+
                 }
-
-                //send a token request and receive back the response
-                var tokenResponse = await client.RequestClientCredentialsTokenAsync(
-                    new ClientCredentialsTokenRequest {
-                        Address = disco.TokenEndpoint,
-                        ClientId = tokenRequestData.ClientId,
-                        ClientSecret = tokenRequestData.ClientSecret,
-                        Scope = string.Join(' ', tokenRequestData.Scopes)
-                    });
-
-                //handle errors
-                if (tokenResponse.IsError) {
-                    throw new SecurityException(tokenResponse.Error);
-                }
-
-                //build the authorization header with bearer token
-                //and add it to the current request headers
-                headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
-
             }
 
 
@@ -123,7 +132,7 @@ namespace EDennis.AspNetCore.Base.Testing{
                 var mockClientDictionary = new MockClientDictionary();
                 config.GetSection("MockClient").Bind(mockClientDictionary);
                 var defaultMockClient = mockClientDictionary
-                    .OrderByDescending(x=>x.Value.Default)
+                    .OrderByDescending(x => x.Value.Default)
                     .ThenBy(x => x.Key)
                     .FirstOrDefault();
                 if (defaultMockClient.Key == null)
@@ -133,13 +142,15 @@ namespace EDennis.AspNetCore.Base.Testing{
                 }
             }
             if (tokenRequestData.Authority == null) {
-                if(config["IdentityServer:Authority"] != null) {
-                    authority = config["IdentityServer:Authority"];
-                } else if (config["IdentityServer"] != null && config["IdentityServer"].StartsWith("http")) {
-                    authority = config["IdentityServer"];
-                } else {
-                    throw new ArgumentException("MockClientAuthorizationMiddleware requires 'IdentityServer:Authority' configuration key, which is missing.");
-                }
+
+                var apiDict = new Dictionary<string, ApiConfig>();
+                config.GetSection("Apis").Bind(apiDict);
+
+                var identityServerApi = apiDict.Where(x => x.Value.IsIdentityServer).FirstOrDefault().Value;
+                if (identityServerApi == null)
+                    throw new ApplicationException("MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having property IsIdentityServer=true appears in appsettings.Development.json.");
+
+                authority = identityServerApi.BaseAddress;
             } else {
                 authority = tokenRequestData.Authority;
             }
@@ -155,7 +166,7 @@ namespace EDennis.AspNetCore.Base.Testing{
 
 
 
-        private dynamic GetClientCredentialsTokenRequestData(string mockClientId, 
+        private dynamic GetClientCredentialsTokenRequestData(string mockClientId,
             MockClientProperties mockClientProperties, string appName) {
 
             string authority = null;
@@ -186,6 +197,45 @@ namespace EDennis.AspNetCore.Base.Testing{
             };
 
         }
+
+
+        //private static void ValidateJwt(
+        //    DiscoveryDocumentResponse disco, TokenResponse tokenResponse) {
+        //    // read discovery document to find issuer and key material
+
+        //    var keys = new List<SecurityKey>();
+        //    foreach (var webKey in disco.KeySet.Keys) {
+        //        var e = Base64Url.Decode(webKey.E);
+        //        var n = Base64Url.Decode(webKey.N);
+
+        //        var key = new RsaSecurityKey(new RSAParameters { Exponent = e, Modulus = n }) {
+        //            KeyId = webKey.Kid
+        //        };
+
+        //        keys.Add(key);
+        //    }
+
+        //    var parameters = new TokenValidationParameters {
+        //        ValidIssuer = disco.Issuer,
+        //        ValidAudience = "mvc.manual",
+        //        IssuerSigningKeys = keys,
+
+        //        NameClaimType = JwtClaimTypes.Name,
+        //        RoleClaimType = JwtClaimTypes.Role,
+
+        //        RequireSignedTokens = true
+        //    };
+
+        //    var handler = new JwtSecurityTokenHandler();
+        //    handler.InboundClaimTypeMap.Clear();
+
+        //    var jwt = tokenResponse.AccessToken;
+
+        //    var user = handler.ValidateToken(jwt, parameters, out var _);
+        //}
+
+
+
 
     }
 

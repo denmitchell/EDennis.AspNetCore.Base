@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,36 +10,30 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class ApiLauncher<TStartup> : IDisposable
-        where TStartup : class {
+    public class ApiLauncherOld {
+        readonly ILogger _logger;
 
-        public ApiLauncher(IConfiguration config, ILogger logger) {
+        public ApiLauncherOld(IConfiguration config,
+            ILogger<ApiLauncherOld> logger) {
             _config = config;
             _apis = config.GetApiConfig();
-            _args = config.GetCommandLineArguments()
-                .Select(x=>$"{x.Key}={x.Value}")
-                .ToArray();
             _logger = logger;
         }
 
         private IConfiguration _config { get; }
         private Dictionary<string,ApiConfig> _apis { get; }
-        private string[] _args { get; }
-        private string _projectName { get; set; }
-        private int _port { get; set; }
-        private ILogger _logger { get; }
 
-        public async Task StartAsync() {
+        public async Task StartAsync<TStartup>(params string[] args) 
+            where TStartup : class {
  
 
-            _projectName = Assembly.GetAssembly(typeof(TStartup)).FullName;
-            _projectName = _projectName.Substring(0, _projectName.IndexOf(',')).TrimEnd();
+            var projectName = Assembly.GetAssembly(typeof(TStartup)).FullName;
+            projectName = projectName.Substring(0, projectName.IndexOf(',')).TrimEnd();
 
-            var apiEntry = _apis.Where(x => x.Value.ProjectName == _projectName).FirstOrDefault();
+            var apiEntry = _apis.Where(x => x.Value.ProjectName == projectName).FirstOrDefault();
             var api = apiEntry.Value;
 
             if (api.BaseAddress != null && api.BaseAddress != "")
@@ -53,32 +46,32 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Random rand = new Random();
             int startingPort = rand.Next(10000, 63000); 
-            _port = PortInspector.GetAvailablePorts(startingPort, 1).FirstOrDefault();
-
+            var port = PortInspector.GetAvailablePorts(startingPort, 1).FirstOrDefault();
 
             var host = new WebHostBuilder()
             .UseKestrel()
             .UseIISIntegration()
             .UseStartup<TStartup>()
             .UseContentRoot(dir)
-            .UseUrls($"http://localhost:{_port}")
-            .ConfigureAppConfiguration(options => {
-
+            .UseUrls($"http://localhost:{port}")
+            .ConfigureAppConfiguration(options => {                
                 options.SetBasePath(dir);
-                if (_args != null)
-                    options.AddCommandLine(_args);
-                options.AddJsonFile(dir + "/appsettings.Development.json", true);
+                if (args != null)
+                    options.AddCommandLine(args);
+                options.AddJsonFile(dir + "/appsettings.Development.json");
             })
                 .Build();
 
             var serverAddresses = host.ServerFeatures.Get<IServerAddressesFeature>();
             var urls = serverAddresses.Addresses.ToArray();
 
-            _logger.LogInformation($"ApiLauncher starting {_projectName} @ {_port}");
+            _logger.LogInformation($"ApiLauncher starting {projectName} @ {port}");
             await Task.Run(() => {
                 host.WaitForShutdownAsync();
                 host.RunAsync();
             });
+
+
 
             _config[$"{configKey}:BaseAddress"] = urls[0];
 
@@ -90,29 +83,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             string path = Uri.UnescapeDataString(uri.Path);
             return Path.GetDirectoryName(path);
         }
-
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing) {
-            if (!disposedValue) {
-                if (disposing) {
-                    _logger.LogInformation($"ApiLauncher stopping {_projectName} @ {_port}");
-                    // TODO: dispose managed state (managed objects).
-                }
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose() {
-            Dispose(true);
-        }
-        #endregion
-
-
-
 
     }
 }

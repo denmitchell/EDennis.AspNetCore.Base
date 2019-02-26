@@ -118,7 +118,7 @@ namespace IdentityServer {
                 {
                 new Client
                 {
-                    ClientId = "Client1",
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client1",
 
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials, 
@@ -136,7 +136,7 @@ namespace IdentityServer {
                 },
                 new Client
                 {
-                    ClientId = "Client2",
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client2",
 
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials, 
@@ -154,7 +154,7 @@ namespace IdentityServer {
                 },
                 new Client
                 {
-                    ClientId = "Client3",
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client3",
 
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials, 
@@ -174,7 +174,7 @@ namespace IdentityServer {
                 // resource owner password grant client
                 new Client
                 {
-                    ClientId = "ro.client",
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.ro.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
                     ClientSecrets =

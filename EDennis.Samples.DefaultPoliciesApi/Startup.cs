@@ -1,44 +1,83 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.DefaultPoliciesApi.Models;
+using IdentityModel;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using H = Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using A = IdentityServer;
+using EDennis.AspNetCore.Base;
 
 namespace EDennis.Samples.DefaultPoliciesApi {
     public class Startup {
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env) {
+        public Startup(ILogger<Startup> logger,
+            IConfiguration configuration,
+            IHostingEnvironment env, IServiceProvider provider) {
             Configuration = configuration;
             HostingEnvironment = env;
+            ServiceProvider = provider;
+            Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
         public IHostingEnvironment HostingEnvironment { get; }
+        public IServiceProvider ServiceProvider { get; set; }
+        public ILogger Logger { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
 
+            //****************************************************
+            //Important: ApiLaunchers must be added to the service
+            //collection before any dependent services are added
+            //(e.g., if you are launching IdentityServer with 
+            //ApiLauncher, it must be launched before calls 
+            //to AddAuthentication("Bearer") -- where the 
+            //address of IdentityServer must be known)
+            //****************************************************
+
+            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+                services
+                    .AddLauncher<A.Startup>(Configuration, Logger)
+                    //.AddLauncher<B.Startup>()
+                    //... etc.
+                    .AwaitApis(); 
+                //note: you must call AwaitApis() after adding all launchers
+                //AwaitApis() blocks the main thread until the Apis are ready
+            }
+
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
 
             services.AddMvc(options => {
-                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment,Configuration));
+                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
-            services.AddTransient<PersonRepo, PersonRepo>();
-            services.AddTransient<PositionRepo, PositionRepo>();
+            services.AddScoped<ScopeProperties>();
+
+            services.AddScoped<PersonRepo, PersonRepo>();
+            services.AddScoped<PositionRepo, PositionRepo>();
 
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
@@ -47,9 +86,11 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 });
             }
 
-            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-            //    var launcher = new ApiLauncher(Configuration);
-            //}
+
+
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie();
+            //services.AddAuthorization();
 
         }
 
@@ -59,11 +100,16 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseCookiePolicy();
 
-            if (env.EnvironmentName == EnvironmentName.Development)
+            if (env.EnvironmentName == EnvironmentName.Development) {
                 app.UseMockClientAuthorization();
+                //app.UseAutoLogin();
+            }
 
             app.UseAuthentication();
+            app.UseUser();
+
 
             if (env.EnvironmentName == EnvironmentName.Development) {
                 app.UseSwagger();
@@ -75,5 +121,8 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
             app.UseMvc();
         }
+
+
+
     }
 }
