@@ -3,6 +3,7 @@ using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.MigrationsExtensions;
 using EDennis.Samples.Colors.InternalApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,9 @@ namespace EDennis.Samples.Colors.InternalApi {
                 options.CustomSchemaIds(x => x.FullName);
             });
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,9 +53,13 @@ namespace EDennis.Samples.Colors.InternalApi {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
 
-                //AspNetCore.Base config 
+                app.UseCookiePolicy();
+                app.UseAutoLogin();
+                app.UseAuthentication();
+
                 app.UseTemporalRepoInterceptor<ColorRepo, Color, ColorDbContext, ColorHistoryDbContext>();
-            }
+            } 
+            app.UseUser();
 
             app.UseStaticFiles();
 

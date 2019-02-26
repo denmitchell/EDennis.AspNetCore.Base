@@ -58,18 +58,23 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="httpContext">The HttpContext of the Request/Response</param>
         /// <param name="config">The config object, which gathers information from appsettings.json, environment vars ... etc.</param>
         /// <returns></returns>
-        public async Task Invoke(HttpContext httpContext, IConfiguration config, CommandLineConfigurationSource cmdSource) {
+        public async Task Invoke(HttpContext httpContext, IConfiguration config) {
+
+
+            //CommandLineConfigurationSource cmdSource
 
             //get command-line arguments
-            var args = config.GetCommandLineArguments();
+            var args = config.GetCommandLineArguments().ToDictionary(
+                d=>d.Key.ToLower(),d=>d.Value);
 
             //get AutoLogin entry, if it exists
-            var autologinArg = config.GetCommandLineArguments()
-                .FirstOrDefault(a => a.Key.ToLower() == "autologin")
-                .Value;
+            var autologinArg = (!args.ContainsKey("autologin") ? null : args["autologin"]);
 
             if (autologinArg == null)
-                return;
+                autologinArg = config.GetSection("AutoLogin").GetChildren().FirstOrDefault()?.Key;
+
+            if (autologinArg == null)
+                throw new ArgumentException($"Missing configuration for AutoLogin");
 
             //get the configuration for the autologin
             var autologinConfig = config.GetSection($"AutoLogin:{autologinArg}");

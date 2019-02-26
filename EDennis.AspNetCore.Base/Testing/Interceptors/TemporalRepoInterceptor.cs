@@ -41,10 +41,11 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(config);
                 var histDatabaseName = TestDbContextManager<THistoryContext>.BaseDatabaseName(config);
 
-                var dbDict = new Dictionary<string, string> {
-                    { baseDatabaseName, baseInstanceName },
-                    { histDatabaseName, histInstanceName }
-                };
+                var dbDict = new Dictionary<string, string>();
+                dbDict.Add(baseDatabaseName, baseInstanceName);
+                if (histDatabaseName != baseDatabaseName)
+                    dbDict.Add(histDatabaseName, histInstanceName);
+
 
                 if (operation == HDR_USE_READONLY)
                     throw new ApplicationException("HDR_USE_READONLY not appropriate for Writeable Repo.");

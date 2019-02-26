@@ -14,8 +14,8 @@ declare @Expected varchar(max) = (
 );
 
 
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id,'Id', @Id
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id,'AsOf', @AsOf
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id,'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id,'Id', @Id
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id,'AsOf', @AsOf
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id,'Expected', @Expected
 
-exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id
+exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdAsOf','SqlRepo',@Id

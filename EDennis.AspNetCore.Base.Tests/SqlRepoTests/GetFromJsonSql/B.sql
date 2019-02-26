@@ -5,12 +5,12 @@ declare @alpha varchar(10) = 'bl';
 
 declare @expected varchar(max) = (
 	select * 
-		from Colors 
+		from Color 
 		where Name Like '%' + @alpha + '%' 
 	for json path, include_null_values
 );
 
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromJsonSql','SqlRepo',@TestCase,'Alpha', @alpha
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromJsonSql','SqlRepo',@TestCase,'Expected', @expected
-exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromJsonSql','SqlRepo',@TestCase
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromJsonSql','SqlRepo',@TestCase,'Alpha', @alpha
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromJsonSql','SqlRepo',@TestCase,'Expected', @expected
+exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromJsonSql','SqlRepo',@TestCase
 

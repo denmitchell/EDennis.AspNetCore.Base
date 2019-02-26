@@ -7,6 +7,6 @@ declare @Expected varchar(max) = (
 		where Id = @Id
 		for json path, without_array_wrapper
 );
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetById','SqlRepo',@Id,'Input',@Input
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetById','SqlRepo',@Id,'Expected',@Expected
-exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetById','SqlRepo',@Id
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetById','SqlRepo',@Id,'Input',@Input
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetById','SqlRepo',@Id,'Expected',@Expected
+exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetById','SqlRepo',@Id

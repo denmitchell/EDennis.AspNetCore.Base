@@ -17,7 +17,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public RepoControllerTests(ITestOutputHelper output, WebApplicationFactory<Startup> factory)
-            :base(output,factory){}
+            :base(output,factory){
+
+        }
 
 
         /// <summary>

@@ -17,9 +17,9 @@ declare @Expected varchar(max) = (
 );
 
 
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'Alpha', @Alpha
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'From', @From
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'To', @To
-exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'Alpha', @Alpha
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'From', @From
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'To', @To
+exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase,'Expected', @Expected
 
-exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase
+exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','QueryAsOfRange','SqlRepo',@TestCase

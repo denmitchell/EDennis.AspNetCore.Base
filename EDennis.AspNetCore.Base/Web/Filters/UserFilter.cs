@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 
-namespace ExploringEFHistory.Web {
+namespace EDennis.AspNetCore.Base.Web {
 
     public class UserFilter {
 

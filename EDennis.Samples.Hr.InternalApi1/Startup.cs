@@ -3,6 +3,7 @@ using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.JsonUtils;
 using EDennis.Samples.Hr.InternalApi1.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,6 @@ namespace EDennis.Samples.Hr.InternalApi1 {
             //AspNetCore.Base config
             services.AddDbContexts<HrContext,HrHistoryContext>(Configuration, Environment);
             services.AddRepos<EmployeeRepo,PositionRepo,EmployeePositionRepo>();
-
 
         }
 
