@@ -10,6 +10,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         public const string HDR_PREFIX = "X-Testing-";
         public const string DEFAULT_NAMED_INSTANCE = "default";
 
+        public const string HISTORY_INSTANCE_SUFFIX = "-hist";
+
         public const string HDR_USE_READONLY = HDR_PREFIX + "UseReadonly";
 
         public const string HDR_USE_INMEMORY = HDR_PREFIX + "UseInMemory";

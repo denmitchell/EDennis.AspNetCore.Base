@@ -15,6 +15,6 @@ declare @Expected varchar(max) = (
 );
 rollback transaction
 exec _.ResetIdentities;
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Create','SqlRepo',@Color,'Input',@Input
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Create','SqlRepo',@Color,'Expected',@Expected
-exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Create','SqlRepo',@Color
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Create','SqlRepo',@Color,'Input',@Input
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Create','SqlRepo',@Color,'Expected',@Expected
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Create','SqlRepo',@Color

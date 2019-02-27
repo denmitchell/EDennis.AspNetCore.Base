@@ -1,9 +1,11 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using Divergic.Logging.Xunit;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Colors.InternalApi;
 using EDennis.Samples.Colors.InternalApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Build.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +17,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
+        private readonly ICacheLogger _logger;
 
         public RepoControllerTests(ITestOutputHelper output, WebApplicationFactory<Startup> factory)
             :base(output,factory){
-
+            _logger = Output.BuildLogger();
         }
 
 
@@ -34,9 +37,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        //[Theory]
-        //[TestJsonSpecific("GetById", "SqlRepo", "1")]
-        //[TestJsonSpecific("GetById", "SqlRepo", "2")]
+        [Theory]
+        [TestJsonSpecific("GetById", "SqlRepo", "1")]
+        [TestJsonSpecific("GetById", "SqlRepo", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Instance Name:{InstanceName}");
@@ -51,9 +54,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        //[Theory]
-        //[TestJsonSpecific("Post", "SqlRepo", "brown")]
-        //[TestJsonSpecific("Post", "SqlRepo", "orange")]
+        [Theory]
+        [TestJsonSpecific("Create", "SqlRepo", "brown")]
+        [TestJsonSpecific("Create", "SqlRepo", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -70,9 +73,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        //[Theory]
-        //[TestJsonSpecific("Update", "SqlRepo", "1")]
-        //[TestJsonSpecific("Update", "SqlRepo", "2")]
+        [Theory]
+        [TestJsonSpecific("Update", "SqlRepo", "1")]
+        [TestJsonSpecific("Update", "SqlRepo", "2")]
         public void Put(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -91,9 +94,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        //[Theory]
-        //[TestJsonSpecific("Delete", "SqlRepo", "3")]
-        //[TestJsonSpecific("Delete", "SqlRepo", "4")]
+        [Theory]
+        [TestJsonSpecific("Delete", "SqlRepo", "3")]
+        [TestJsonSpecific("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -153,7 +156,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             HttpClient.Put("iapi/color/1", new Color { Id = 1, Name = "burgundy" });
-            var colors = HttpClient.Get<List<Color>>("iapi/color").Value;
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Value
+                .OrderBy(x=>x.Name);
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 1).Name);
 

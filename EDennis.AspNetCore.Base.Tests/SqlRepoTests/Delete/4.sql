@@ -26,7 +26,7 @@ declare @ExpectedHistory varchar(max) = (
 
 drop table #color;
 rollback transaction
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Delete','SqlRepo',@Id,'Input',@Input
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Delete','SqlRepo',@Id,'Expected',@Expected
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Delete','SqlRepo',@Id,'ExpectedHistory',@ExpectedHistory
-exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Delete','SqlRepo',@Id
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Delete','SqlRepo',@Id,'Input',@Input
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Delete','SqlRepo',@Id,'Expected',@Expected
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Delete','SqlRepo',@Id,'ExpectedHistory',@ExpectedHistory
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Delete','SqlRepo',@Id

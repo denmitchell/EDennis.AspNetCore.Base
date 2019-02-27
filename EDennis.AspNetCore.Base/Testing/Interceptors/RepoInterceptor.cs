@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -18,7 +19,16 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public RepoInterceptor(RequestDelegate next) : base(next) { }
 
-        public async Task InvokeAsync(HttpContext context, IServiceProvider provider, IConfiguration config) {
+        ILogger _logger;
+
+        public async Task InvokeAsync(HttpContext context, IServiceProvider provider, 
+            IConfiguration config,
+            ILogger<RepoInterceptor<TRepo, TEntity, TContext>> logger) {
+
+            _logger = logger;
+
+            _logger.LogInformation($"RepoInterceptor handling request: {context.Request.Path}");
+
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
@@ -28,6 +38,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                     context.Request.Headers.Add(HDR_USE_INMEMORY, DEFAULT_NAMED_INSTANCE);
                     header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, DEFAULT_NAMED_INSTANCE);
                 }
+
+                _logger.LogInformation($"RepoInterceptor processing header {header.Key}: {header.Value}");
 
                 var operation = header.Key;
                 var baseInstanceName = header.Value;
@@ -53,9 +65,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         private void GetOrAddInMemoryDatabase(TRepo repo, TestDbContextCache<TContext> cache,
             string baseDatabaseName, string instanceName) {
-            if (cache.ContainsKey(instanceName))
+            if (cache.ContainsKey(instanceName)) {
                 repo.Context = cache[instanceName];
-            else {
+                _logger.LogInformation($"Using existing in-memory database {baseDatabaseName}, instance = {instanceName}");
+            } else {
+                _logger.LogInformation($"Creating in-memory database {baseDatabaseName}, instance = {instanceName}");
                 var dbContext = TestDbContextManager<TContext>.CreateInMemoryDatabase(baseDatabaseName, instanceName);
                 repo.Context = dbContext;
                 repo.Context.Database.EnsureCreated();
@@ -65,6 +79,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         private void DropInMemory(TestDbContextCache<TContext> cache, string instanceName) {
             if (cache.ContainsKey(instanceName)) {
+                _logger.LogInformation($"Dropping in-memory history instance {instanceName} for {typeof(TContext).Name}");
                 var context = cache[instanceName];
                 TestDbContextManager<TContext>.DropInMemoryDatabase(context);
                 cache.Remove(instanceName);

@@ -16,8 +16,8 @@ declare @expected varchar(max) = (
 	for json path, include_null_values
 );
 
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase,'Alpha', @alpha
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase,'Id', @id
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase,'Expected', @expected
-exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase,'Alpha', @alpha
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase,'Id', @id
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase,'Expected', @expected
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetFromSql','SqlRepo',@TestCase
 

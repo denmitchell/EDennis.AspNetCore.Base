@@ -44,7 +44,7 @@ namespace EDennis.Samples.Colors.InternalApi.Controllers {
             if (color.Id != id)
                 return BadRequest($"Id of Color ({color.Id}) not equal to route parameter ({id})");
             try {
-                _repo.Update(color);
+                _repo.Update(color, id);
             } catch (MissingEntityException) {
                 return NotFound();
             }

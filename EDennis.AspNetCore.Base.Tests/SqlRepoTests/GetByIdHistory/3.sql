@@ -12,7 +12,7 @@ declare @Expected varchar(max) = (
 );
 
 
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdHistory','SqlRepo',@Id,'Id', @Id
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdHistory','SqlRepo',@Id,'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdHistory','SqlRepo',@Id,'Id', @Id
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdHistory','SqlRepo',@Id,'Expected', @Expected
 
-exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','GetByIdHistory','SqlRepo',@Id
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','GetByIdHistory','SqlRepo',@Id

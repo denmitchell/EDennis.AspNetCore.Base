@@ -35,8 +35,8 @@ declare @ExpectedHistory varchar(max) = (
 drop table #color;
 rollback transaction;
 
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Id',@Id
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Input',@Input
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Expected',@Expected
-exec _.SaveTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Update','SqlRepo',@Id,'ExpectedHistory',@ExpectedHistory
-exec  _.GetTestJson 'EDennis.Samples.Color.InternalApi','ColorRepo','Update','SqlRepo',@Id
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Id',@Id
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Input',@Input
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'Expected',@Expected
+exec _.SaveTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id,'ExpectedHistory',@ExpectedHistory
+exec  _.GetTestJson 'EDennis.Samples.Colors.InternalApi','ColorRepo','Update','SqlRepo',@Id
