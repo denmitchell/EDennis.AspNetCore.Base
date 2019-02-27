@@ -56,15 +56,12 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var dir = api.ProjectDirectory.Replace("{Environment.UserName}", Environment.UserName);
 
-            lock(_lockobj){
-                if (_projectPorts.ContainsKey(_projectName)) {
-                    _port = _projectPorts[_projectName];
-                    _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
-                    return;
-                }
-                else {
-                    _port = PortInspector.GetRandomAvailablePort(_projectPorts.Values.ToArray());
-                }
+            var projectPortAssignment = _projectPorts.GetProjectPortAssignment(_projectName);
+            _port = projectPortAssignment.Port;
+
+            if (projectPortAssignment.AlreadyAssigned) {
+                _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
+                return;
             }
 
             var host = new WebHostBuilder()

@@ -41,17 +41,22 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static class IServiceCollectionExtensions_Launcher {
 
-
         public static ApiLauncherService AddLauncher<TStartup>(this IServiceCollection services, 
             IConfiguration config, 
             ILogger logger)
             where TStartup : class {
 
+            //generate a new ProjectPorts object, if it doesn't exist
+            //use EventWaitHandle to prevent multiple threads/processes
+            //from trying to simultaneously create the singleton.
+            EventWaitHandle ewh = new EventWaitHandle(
+                true, EventResetMode.AutoReset, ProjectPorts.WAIT_HANDLE_NAME);
+            ewh.WaitOne();
             var provider = services.BuildServiceProvider();
             if (!(provider.GetService(typeof(ProjectPorts)) is ProjectPorts projectPorts)) {
-                projectPorts = new ProjectPorts();
+                projectPorts = new ProjectPorts(config);
             }
-
+            ewh.Set();
 
             var launcherService =  new ApiLauncherService {
                  Services = services,
