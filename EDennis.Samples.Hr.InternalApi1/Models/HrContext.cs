@@ -29,7 +29,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .HasKey(e => e.Id);
 
             modelBuilder.Entity<EmployeePosition>()
-                .ToTable("EmployeePosition", "dbo_history")
+                .ToTable("EmployeePosition", "dbo")
                 .HasKey(e => new { e.EmployeeId, e.PositionId });
 
 
@@ -88,6 +88,15 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
             modelBuilder.Entity<EmployeePosition>()
                 .ToTable("EmployeePosition", "dbo_history")
                 .HasKey(e => new { e.EmployeeId, e.PositionId, e.SysStart });
+
+            foreach(var entityType in modelBuilder.Model.GetEntityTypes()) {
+                foreach(var fk in entityType.GetForeignKeys()) {
+                    entityType.RemoveForeignKey(
+                        fk.Properties,
+                        fk.PrincipalKey,
+                        entityType);
+                }
+            }
 
             if (Database.IsInMemory()) {
 

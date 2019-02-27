@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EDennis.Samples.Hr.InternalApi1.Migrations
+namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
 {
-    [DbContext(typeof(HrContext))]
-    partial class HrContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(HrHistoryContext))]
+    partial class HrHistoryContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -21,24 +21,22 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
 
             modelBuilder.Entity("EDennis.Samples.Hr.InternalApi1.Models.Employee", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
+
+                    b.Property<DateTime>("SysStart");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(30);
 
                     b.Property<DateTime>("SysEnd");
 
-                    b.Property<DateTime>("SysStart");
-
                     b.Property<string>("SysUser");
 
                     b.Property<string>("SysUserNext");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SysStart");
 
-                    b.ToTable("Employee","dbo");
+                    b.ToTable("Employee","dbo_history");
                 });
 
             modelBuilder.Entity("EDennis.Samples.Hr.InternalApi1.Models.EmployeePosition", b =>
@@ -47,32 +45,40 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
 
                     b.Property<int>("PositionId");
 
-                    b.Property<DateTime>("SysEnd");
-
                     b.Property<DateTime>("SysStart");
+
+                    b.Property<int?>("EmployeeId1");
+
+                    b.Property<DateTime?>("EmployeeSysStart");
+
+                    b.Property<int?>("PositionId1");
+
+                    b.Property<DateTime?>("PositionSysStart");
+
+                    b.Property<DateTime>("SysEnd");
 
                     b.Property<string>("SysUser");
 
                     b.Property<string>("SysUserNext");
 
-                    b.HasKey("EmployeeId", "PositionId");
+                    b.HasKey("EmployeeId", "PositionId", "SysStart");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex("EmployeeId1", "EmployeeSysStart");
 
-                    b.ToTable("EmployeePosition","dbo");
+                    b.HasIndex("PositionId1", "PositionSysStart");
+
+                    b.ToTable("EmployeePosition","dbo_history");
                 });
 
             modelBuilder.Entity("EDennis.Samples.Hr.InternalApi1.Models.Position", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
+
+                    b.Property<DateTime>("SysStart");
 
                     b.Property<bool>("IsManager");
 
                     b.Property<DateTime>("SysEnd");
-
-                    b.Property<DateTime>("SysStart");
 
                     b.Property<string>("SysUser");
 
@@ -81,24 +87,20 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
                     b.Property<string>("Title")
                         .HasMaxLength(60);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SysStart");
 
-                    b.ToTable("Position","dbo");
+                    b.ToTable("Position","dbo_history");
                 });
 
             modelBuilder.Entity("EDennis.Samples.Hr.InternalApi1.Models.EmployeePosition", b =>
                 {
                     b.HasOne("EDennis.Samples.Hr.InternalApi1.Models.Employee", "Employee")
                         .WithMany("EmployeePositions")
-                        .HasForeignKey("EmployeeId")
-                        .HasConstraintName("fk_EmployeePosition_Employee")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("EmployeeId1", "EmployeeSysStart");
 
                     b.HasOne("EDennis.Samples.Hr.InternalApi1.Models.Position", "Position")
                         .WithMany("EmployeePositions")
-                        .HasForeignKey("PositionId")
-                        .HasConstraintName("fk_EmployeePosition_Position")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("PositionId1", "PositionSysStart");
                 });
 #pragma warning restore 612, 618
         }

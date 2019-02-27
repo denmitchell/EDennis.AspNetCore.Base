@@ -15,16 +15,39 @@ using B = EDennis.Samples.Hr.InternalApi2;
 namespace EDennis.Samples.Hr.ExternalApi {
     public class Startup {
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env) {
+        public Startup(IConfiguration configuration, IHostingEnvironment env, ILogger<Startup> logger) {
             Configuration = configuration;
             HostingEnvironment = env;
+            Logger = logger;
         }
 
         public static IConfiguration Configuration { get; set; }
         public static IHostingEnvironment HostingEnvironment { get; set; }
+        public ILogger Logger { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+
+            //****************************************************
+            //Important: ApiLaunchers must be added to the service
+            //collection before any dependent services are added
+            //(e.g., if you are launching IdentityServer with 
+            //ApiLauncher, it must be launched before calls 
+            //to AddAuthentication("Bearer") -- where the 
+            //address of IdentityServer must be known)
+            //****************************************************
+
+            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+                services
+                    .AddLauncher<A.Startup>(Configuration, Logger)
+                    .AddLauncher<B.Startup>()
+                    //... etc.
+                    .AwaitApis();
+                //note: you must call AwaitApis() after adding all launchers
+                //AwaitApis() blocks the main thread until the Apis are ready
+            }
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //AspNetCore.Base config
@@ -55,9 +78,6 @@ namespace EDennis.Samples.Hr.ExternalApi {
                 //AspNetCore.Base config
                 app.UseApiClientInterceptor<InternalApi1>();
                 app.UseApiClientInterceptor<InternalApi2>();
-                app.UseLaunchers<A.Startup>(provider, Configuration);
-                app.UseLaunchers<B.Startup>(provider, Configuration);
-
 
             }
 

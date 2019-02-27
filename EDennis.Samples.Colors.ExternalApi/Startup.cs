@@ -47,7 +47,6 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            //AspNetCore.Base config
             services.AddApiClients<InternalApi>();
 
             services.AddSwaggerGen(c => {
