@@ -33,16 +33,14 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
         public Startup(ILogger<Startup> logger,
             IConfiguration configuration,
-            IHostingEnvironment env, IServiceProvider provider) {
+            IHostingEnvironment env) {
             Configuration = configuration;
             HostingEnvironment = env;
-            ServiceProvider = provider;
             Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
         public IHostingEnvironment HostingEnvironment { get; }
-        public IServiceProvider ServiceProvider { get; set; }
         public ILogger Logger { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.

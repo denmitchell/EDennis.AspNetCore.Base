@@ -27,15 +27,15 @@ namespace EDennis.AspNetCore.Base.Testing {
                 string operation = header.Key;
                 string instanceName = header.Value;
 
+                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
+                scopeProperties.OtherProperties.Add(operation, instanceName);
+
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
                 if (operation == HDR_DROP_INMEMORY ) {
                     client.HttpClient.SendResetAsync(operation,instanceName);
                     return;
                 }
-
-                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
-                scopeProperties.OtherProperties.Add(operation, instanceName);
 
             }
 

@@ -10,8 +10,8 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
 
         public static IServiceCollection AddApiClients<TClient1>(this IServiceCollection services)
             where TClient1 : ApiClient {
-            services.AddHttpClient<TClient1>();
             services.AddScoped<ScopeProperties>();
+            services.AddHttpClient<TClient1>();
             return services;
         }
 
