@@ -15,10 +15,11 @@ namespace EDennis.AspNetCore.Base.Web {
         public IServiceCollection Services { get; set; }
         public ILogger Logger { get; set; }
         public IConfiguration Configuration { get; set; }
+        public ProjectPorts ProjectPorts { get; set; }
 
         public ApiLauncherService AddLauncher<TStartup>()
             where TStartup : class {
-            var launcher = new ApiLauncher<TStartup>(Configuration, Logger);
+            var launcher = new ApiLauncher<TStartup>(Configuration, Logger, ProjectPorts);
             Services.AddSingleton(launcher);
             launcher.StartAsync().Wait();
             return this;
@@ -41,13 +42,24 @@ namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_Launcher {
 
 
-        public static ApiLauncherService AddLauncher<TStartup>(this IServiceCollection services, IConfiguration config, ILogger logger)
+        public static ApiLauncherService AddLauncher<TStartup>(this IServiceCollection services, 
+            IConfiguration config, 
+            ILogger logger)
             where TStartup : class {
+
+            var provider = services.BuildServiceProvider();
+            if (!(provider.GetService(typeof(ProjectPorts)) is ProjectPorts projectPorts)) {
+                projectPorts = new ProjectPorts();
+            }
+
+
             var launcherService =  new ApiLauncherService {
                  Services = services,
                  Configuration = config,
-                 Logger = logger
+                 Logger = logger,
+                 ProjectPorts = projectPorts
             };
+
             return launcherService.AddLauncher<TStartup>();
         }
     }

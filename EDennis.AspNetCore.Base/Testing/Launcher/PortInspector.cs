@@ -13,11 +13,24 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class PortInspector {
 
         public static List<int> GetRandomAvailablePorts(int portCount) {
-            Random _rand = new Random();
+            Random rand = new Random();
             var startingPorts = Enumerable.Range(0, portCount)
-                                    .Select(r => _rand.Next(10001,63000)).ToList();
+                                    .Select(r => rand.Next(10001,63000)).ToList();
             return GetAvailablePorts(startingPorts, portCount);
         }
+
+
+        public static int GetRandomAvailablePort(int[] portsToExclude) {
+            Random rand = new Random();
+            while (true) {
+                int startingPort = rand.Next(10000, 63000);
+                var availablePorts = GetAvailablePorts(startingPort, 3);
+                var ports = availablePorts.Except(portsToExclude).ToList();
+                if (ports.Count() > 0)
+                    return ports[0];
+            }
+        }
+
 
 
         /// <summary>

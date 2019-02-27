@@ -18,13 +18,17 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class ApiLauncher<TStartup> : IDisposable
         where TStartup : class {
 
-        public ApiLauncher(IConfiguration config, ILogger logger) {
+        private static readonly object _lockobj = new object();
+
+
+        public ApiLauncher(IConfiguration config, ILogger logger, ProjectPorts projectPorts) {
             _config = config;
             _apis = config.GetApiConfig();
             _args = config.GetCommandLineArguments()
                 .Select(x=>$"{x.Key}={x.Value}")
                 .ToArray();
             _logger = logger;
+            _projectPorts = projectPorts;
         }
 
         private IConfiguration _config { get; }
@@ -33,6 +37,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         private string _projectName { get; set; }
         private int _port { get; set; }
         private ILogger _logger { get; }
+        private ProjectPorts _projectPorts { get; }
 
         public async Task StartAsync() {
  
@@ -51,10 +56,16 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var dir = api.ProjectDirectory.Replace("{Environment.UserName}", Environment.UserName);
 
-            Random rand = new Random();
-            int startingPort = rand.Next(10000, 63000); 
-            _port = PortInspector.GetAvailablePorts(startingPort, 1).FirstOrDefault();
-
+            lock(_lockobj){
+                if (_projectPorts.ContainsKey(_projectName)) {
+                    _port = _projectPorts[_projectName];
+                    _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
+                    return;
+                }
+                else {
+                    _port = PortInspector.GetRandomAvailablePort(_projectPorts.Values.ToArray());
+                }
+            }
 
             var host = new WebHostBuilder()
             .UseKestrel()
@@ -62,8 +73,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             .UseStartup<TStartup>()
             .UseContentRoot(dir)
             .UseUrls($"http://localhost:{_port}")
-            .ConfigureAppConfiguration(options => {
-
+            .ConfigureServices(services => {
+                services.AddSingleton(_projectPorts);
+            })
+            .ConfigureAppConfiguration(options => {                
                 options.SetBasePath(dir);
                 if (_args != null)
                     options.AddCommandLine(_args);
