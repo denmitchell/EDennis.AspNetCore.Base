@@ -33,13 +33,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
                     b.Property<string>("Status")
                         .HasMaxLength(100);
 
-                    b.Property<DateTime>("SysEnd");
-
-                    b.Property<DateTime>("SysStart");
-
                     b.Property<string>("SysUser");
-
-                    b.Property<string>("SysUserNext");
 
                     b.HasKey("Id");
 

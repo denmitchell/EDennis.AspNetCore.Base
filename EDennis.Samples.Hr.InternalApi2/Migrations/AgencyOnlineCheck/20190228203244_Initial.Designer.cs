@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
 {
     [DbContext(typeof(AgencyOnlineCheckContext))]
-    [Migration("20190228183453_Initial")]
+    [Migration("20190228203244_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,13 +35,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
                     b.Property<string>("Status")
                         .HasMaxLength(100);
 
-                    b.Property<DateTime>("SysEnd");
-
-                    b.Property<DateTime>("SysStart");
-
                     b.Property<string>("SysUser");
-
-                    b.Property<string>("SysUserNext");
 
                     b.HasKey("Id");
 

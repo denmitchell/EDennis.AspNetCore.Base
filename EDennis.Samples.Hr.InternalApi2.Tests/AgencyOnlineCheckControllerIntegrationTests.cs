@@ -44,18 +44,10 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
             HttpClient.Post(AGENCY_ONLINE_URL, input);
 
+            var actual = HttpClient.Get<AgencyOnlineCheck>($"{AGENCY_ONLINE_URL}/{employeeId}" ).Value;
 
-            var allRecs = HttpClient.Get<List<AgencyInvestigatorCheck>>(AGENCY_ONLINE_URL).Value;
-
-            var targetRec = allRecs
-                .OrderBy(e => e.Id)
-                .LastOrDefault();
-
-            Assert.True(input.IsEqualOrWrite(targetRec, PROPS_FILTER_WITH_ID, Output));
-
-            Assert.Equal(employeeId, targetRec.EmployeeId);
-            Assert.Equal(DateTime.Parse(strDateCompleted), targetRec.DateCompleted);
-            Assert.Equal(status, targetRec.Status);
+            Assert.Equal(DateTime.Parse(strDateCompleted), actual.DateCompleted);
+            Assert.Equal(status, actual.Status);
 
 
         }

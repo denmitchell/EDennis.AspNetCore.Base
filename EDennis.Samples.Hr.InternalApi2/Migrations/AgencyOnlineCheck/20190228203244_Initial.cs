@@ -19,13 +19,10 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    SysStart = table.Column<DateTime>(nullable: false),
                     EmployeeId = table.Column<int>(nullable: false),
                     DateCompleted = table.Column<DateTime>(type: "date", nullable: false),
                     Status = table.Column<string>(maxLength: 100, nullable: true),
-                    SysEnd = table.Column<DateTime>(nullable: false),
-                    SysUser = table.Column<string>(nullable: true),
-                    SysUserNext = table.Column<string>(nullable: true)
+                    SysUser = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -39,7 +36,6 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
         {
             migrationBuilder.DropTable(
                 name: "AgencyOnlineCheck");
-
             migrationBuilder.DropTestJsonTableSupport();
             migrationBuilder.DropMaintenanceProcedures();
         }
