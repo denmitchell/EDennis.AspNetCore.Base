@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDennis.Samples.Hr.InternalApi2.Migrations.StateBackgroundCheck
 {
     [DbContext(typeof(StateBackgroundCheckContext))]
-    [Migration("20190228183550_Initial")]
+    [Migration("20190228201822_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,23 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.StateBackgroundCheck
                 .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.StateBackgroundCheck", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateCompleted");
+
+                    b.Property<int>("EmployeeId");
+
+                    b.Property<string>("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StateBackgroundCheck");
+                });
 #pragma warning restore 612, 618
         }
     }

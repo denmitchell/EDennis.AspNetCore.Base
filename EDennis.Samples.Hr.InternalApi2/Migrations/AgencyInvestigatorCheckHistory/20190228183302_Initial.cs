@@ -9,8 +9,6 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyInvestigatorCheckHist
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateMaintenanceProcedures();
-            migrationBuilder.CreateTestJsonTableSupport();
 
             migrationBuilder.EnsureSchema(
                 name: "dbo_history");
@@ -34,7 +32,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyInvestigatorCheckHist
                     table.PrimaryKey("PK_AgencyInvestigatorCheck", x => new { x.Id, x.SysStart });
                 });
             migrationBuilder.SaveMappings();
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\AgencyInvestigatorCheck_Insert.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\AgencyInvestigatorCheckHistory_Insert.sql"));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -4,7 +4,6 @@ using System;
 namespace EDennis.Samples.Hr.InternalApi2.Models {
     public class StateBackgroundCheck  {
         public int Id { get; set; }
-        public DateTime SysStart { get; set; }
         public int EmployeeId { get; set; }
         public DateTime DateCompleted { get; set; }
         public string Status { get; set; }
