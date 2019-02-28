@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -28,7 +29,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 string instanceName = header.Value;
 
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
-                scopeProperties.OtherProperties.Add(operation, instanceName);
+
+                if(scopeProperties.OtherProperties.Where(x=>x.Key.StartsWith(Interceptor.HDR_PREFIX)).Count()==0)                    
+                    scopeProperties.OtherProperties.Add(operation, instanceName);
 
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
