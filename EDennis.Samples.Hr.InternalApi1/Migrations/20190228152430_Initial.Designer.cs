@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDennis.Samples.Hr.InternalApi1.Migrations
 {
     [DbContext(typeof(HrContext))]
-    [Migration("20190227191341_Initial")]
+    [Migration("20190228152430_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

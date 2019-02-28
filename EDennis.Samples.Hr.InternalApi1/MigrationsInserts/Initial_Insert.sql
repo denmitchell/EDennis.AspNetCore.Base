@@ -27,4 +27,7 @@ insert into EmployeePosition(EmployeeId, PositionId, SysStart, SysEnd, SysUser)
 	(3,2,'2018-03-03',@end,@jack),
 	(4,2,'2018-04-04',@end,@jill);
 
+insert into EmployeePosition(EmployeeId, PositionId, SysStart, SysEnd, SysUser)
+	values 
+	(1,2,'2015-01-01',_.RightBefore('2018-01-01'),@jack)
 

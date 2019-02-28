@@ -1,8 +1,13 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using C = Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using CD = Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
@@ -33,14 +38,12 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .HasKey(e => new { e.EmployeeId, e.PositionId });
 
 
-
             modelBuilder.Entity<EmployeePosition>()
                 .HasOne(e => e.Employee)
                 .WithMany(r => r.EmployeePositions)
                 .HasForeignKey(e => e.EmployeeId)
                 .HasConstraintName("fk_EmployeePosition_Employee")
                 .OnDelete(DeleteBehavior.Restrict);
-
 
             modelBuilder.Entity<EmployeePosition>()
                 .HasOne(e => e.Position)
@@ -89,14 +92,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .ToTable("EmployeePosition", "dbo_history")
                 .HasKey(e => new { e.EmployeeId, e.PositionId, e.SysStart });
 
-            foreach(var entityType in modelBuilder.Model.GetEntityTypes()) {
-                foreach(var fk in entityType.GetForeignKeys()) {
-                    entityType.RemoveForeignKey(
-                        fk.Properties,
-                        fk.PrincipalKey,
-                        entityType);
-                }
-            }
+            modelBuilder.RemoveNavigationProperties();
+
 
             if (Database.IsInMemory()) {
 
@@ -109,6 +106,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
             }
         }
     }
+
 
 
 
@@ -148,4 +146,5 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
 
         }
     }
+
 }

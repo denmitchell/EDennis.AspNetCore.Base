@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
 {
     [DbContext(typeof(HrHistoryContext))]
-    [Migration("20190227201457_Initial")]
+    [Migration("20190228152459_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,14 +49,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
 
                     b.Property<DateTime>("SysStart");
 
-                    b.Property<int?>("EmployeeId1");
-
-                    b.Property<DateTime?>("EmployeeSysStart");
-
-                    b.Property<int?>("PositionId1");
-
-                    b.Property<DateTime?>("PositionSysStart");
-
                     b.Property<DateTime>("SysEnd");
 
                     b.Property<string>("SysUser");
@@ -64,10 +56,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
                     b.Property<string>("SysUserNext");
 
                     b.HasKey("EmployeeId", "PositionId", "SysStart");
-
-                    b.HasIndex("EmployeeId1", "EmployeeSysStart");
-
-                    b.HasIndex("PositionId1", "PositionSysStart");
 
                     b.ToTable("EmployeePosition","dbo_history");
                 });
@@ -92,17 +80,6 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
                     b.HasKey("Id", "SysStart");
 
                     b.ToTable("Position","dbo_history");
-                });
-
-            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi1.Models.EmployeePosition", b =>
-                {
-                    b.HasOne("EDennis.Samples.Hr.InternalApi1.Models.Employee", "Employee")
-                        .WithMany("EmployeePositions")
-                        .HasForeignKey("EmployeeId1", "EmployeeSysStart");
-
-                    b.HasOne("EDennis.Samples.Hr.InternalApi1.Models.Position", "Position")
-                        .WithMany("EmployeePositions")
-                        .HasForeignKey("PositionId1", "PositionSysStart");
                 });
 #pragma warning restore 612, 618
         }
