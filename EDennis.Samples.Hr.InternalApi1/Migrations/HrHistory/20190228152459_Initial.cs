@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using EDennis.MigrationsExtensions;
+using System.IO;
 
 namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
 {
@@ -61,6 +63,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations.HrHistory
                 {
                     table.PrimaryKey("PK_Position", x => new { x.Id, x.SysStart });
                 });
+
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert_History.sql"));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

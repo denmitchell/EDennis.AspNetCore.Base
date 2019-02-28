@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using EDennis.MigrationsExtensions;
+using System.IO;
 
 namespace EDennis.Samples.Hr.InternalApi1.Migrations
 {
@@ -8,6 +10,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
             migrationBuilder.EnsureSchema(
                 name: "dbo");
 
@@ -84,6 +88,11 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
                 schema: "dbo",
                 table: "EmployeePosition",
                 column: "PositionId");
+
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
+
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -99,6 +108,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Migrations
             migrationBuilder.DropTable(
                 name: "Position",
                 schema: "dbo");
+
+            migrationBuilder.DropMaintenanceProcedures();
+            migrationBuilder.DropTestJsonTableSupport();
         }
     }
 }
