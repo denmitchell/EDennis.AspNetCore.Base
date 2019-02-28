@@ -7,7 +7,7 @@ using System.Text;
 namespace EDennis.AspNetCore.Base.EntityFramework {
     public static class MigrationBuilderExtensions {
 
-        public static ModelBuilder RemoveNavigationProperties(this ModelBuilder modelBuilder) {
+        public static ModelBuilder IgnoreNavigationProperties(this ModelBuilder modelBuilder) {
 
             var entityTypes = modelBuilder.Model.GetEntityTypes().ToList();
             for (int i = 0; i < entityTypes.Count(); i++) {

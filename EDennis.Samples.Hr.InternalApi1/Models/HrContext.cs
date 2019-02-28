@@ -92,7 +92,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .ToTable("EmployeePosition", "dbo_history")
                 .HasKey(e => new { e.EmployeeId, e.PositionId, e.SysStart });
 
-            modelBuilder.RemoveNavigationProperties();
+            modelBuilder.IgnoreNavigationProperties();
 
 
             if (Database.IsInMemory()) {
