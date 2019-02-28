@@ -54,12 +54,14 @@ namespace EDennis.Samples.Hr.InternalApi2 {
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
-            //AspNetCore.Base config
-            services.AddDbContexts<
+            services.AddDbContexts<         //you can add 5 at a time.
                 AgencyInvestigatorCheckContext,
                 AgencyOnlineCheckContext,
                 FederalBackgroundCheckContext,
                 StateBackgroundCheckContext>(Configuration, HostingEnvironment);
+            services.AddDbContexts<
+                AgencyInvestigatorCheckHistoryContext,
+                FederalBackgroundCheckHistoryContext>(Configuration, HostingEnvironment);
             services.AddRepos<
                 AgencyInvestigatorCheckRepo,
                 AgencyOnlineCheckRepo,

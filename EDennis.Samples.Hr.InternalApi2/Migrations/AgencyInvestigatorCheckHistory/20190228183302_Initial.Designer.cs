@@ -4,14 +4,16 @@ using EDennis.Samples.Hr.InternalApi2.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyInvestigatorCheckHistory
 {
-    [DbContext(typeof(FederalBackgroundCheckContext))]
-    partial class FederalBackgroundCheckContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AgencyInvestigatorCheckHistoryContext))]
+    [Migration("20190228183302_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,11 +21,11 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.FederalBackgroundCheck", b =>
+            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.AgencyInvestigatorCheck", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
+
+                    b.Property<DateTime>("SysStart");
 
                     b.Property<DateTime>("DateCompleted");
 
@@ -33,15 +35,13 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
 
                     b.Property<DateTime>("SysEnd");
 
-                    b.Property<DateTime>("SysStart");
-
                     b.Property<string>("SysUser");
 
                     b.Property<string>("SysUserNext");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SysStart");
 
-                    b.ToTable("FederalBackgroundCheck");
+                    b.ToTable("AgencyInvestigatorCheck","dbo_history");
                 });
 #pragma warning restore 612, 618
         }

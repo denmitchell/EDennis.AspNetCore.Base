@@ -6,7 +6,10 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
     public class FederalBackgroundCheckRepoUnitTests :
-        ReadonlyRepoTests<FederalBackgroundCheckRepo, FederalBackgroundCheckView, FederalBackgroundCheckContext> {
+        ReadonlyTemporalRepoTests<FederalBackgroundCheckRepo, 
+            FederalBackgroundCheckView, 
+            FederalBackgroundCheckContext, 
+            FederalBackgroundCheckHistoryContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 

@@ -4,14 +4,16 @@ using EDennis.Samples.Hr.InternalApi2.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
+namespace EDennis.Samples.Hr.InternalApi2.Migrations
 {
-    [DbContext(typeof(FederalBackgroundCheckContext))]
-    partial class FederalBackgroundCheckContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AgencyInvestigatorCheckContext))]
+    [Migration("20190228183225_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.FederalBackgroundCheck", b =>
+            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.AgencyInvestigatorCheck", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +43,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
 
                     b.HasKey("Id");
 
-                    b.ToTable("FederalBackgroundCheck");
+                    b.ToTable("AgencyInvestigatorCheck");
                 });
 #pragma warning restore 612, 618
         }

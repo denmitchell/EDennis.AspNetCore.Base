@@ -4,14 +4,16 @@ using EDennis.Samples.Hr.InternalApi2.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
 {
-    [DbContext(typeof(FederalBackgroundCheckContext))]
-    partial class FederalBackgroundCheckContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AgencyOnlineCheckContext))]
+    [Migration("20190228183453_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,17 +21,19 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.FederalBackgroundCheck", b =>
+            modelBuilder.Entity("EDennis.Samples.Hr.InternalApi2.Models.AgencyOnlineCheck", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateCompleted");
+                    b.Property<DateTime>("DateCompleted")
+                        .HasColumnType("date");
 
                     b.Property<int>("EmployeeId");
 
-                    b.Property<string>("Status");
+                    b.Property<string>("Status")
+                        .HasMaxLength(100);
 
                     b.Property<DateTime>("SysEnd");
 
@@ -41,7 +45,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
 
                     b.HasKey("Id");
 
-                    b.ToTable("FederalBackgroundCheck");
+                    b.ToTable("AgencyOnlineCheck");
                 });
 #pragma warning restore 612, 618
         }

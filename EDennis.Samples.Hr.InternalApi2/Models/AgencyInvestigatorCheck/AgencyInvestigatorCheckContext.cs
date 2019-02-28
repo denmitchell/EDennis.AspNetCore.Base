@@ -47,6 +47,10 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
                 .ToTable("AgencyInvestigatorCheck","dbo_history")
                 .HasKey(e => new { e.Id, e.SysStart } );
 
+            //not need in this project, but included for documentation purposes 
+            modelBuilder.IgnoreNavigationProperties();
+
+
             if (Database.IsInMemory()) {
 
                 modelBuilder.Entity<AgencyInvestigatorCheck>()

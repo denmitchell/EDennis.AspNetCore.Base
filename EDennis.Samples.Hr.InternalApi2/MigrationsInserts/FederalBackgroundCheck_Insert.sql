@@ -1,5 +1,5 @@
 ﻿--set identity_insert some_other_table off
-declare @end datetime2 = _MaxDateTime2()
+declare @end datetime2 = _.MaxDateTime2()
 declare @jack varchar(255) = 'jack@hill.org'
 declare @jill varchar(255) = 'jill@hill.org'
 

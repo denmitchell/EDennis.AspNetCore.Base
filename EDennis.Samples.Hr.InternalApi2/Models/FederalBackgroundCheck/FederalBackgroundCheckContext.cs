@@ -18,6 +18,12 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
+            modelBuilder.Entity<FederalBackgroundCheck>()
+                .HasKey(x => new { x.Id });
+
+            modelBuilder.Entity<FederalBackgroundCheck>()
+                .ToTable("FederalBackgroundCheck");
+
             modelBuilder.Query<FederalBackgroundCheckView>()
                 .ToView("FederalBackgroundCheckView");
         }
@@ -30,8 +36,17 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
+            modelBuilder.Entity<FederalBackgroundCheck>()
+                .HasKey(x => new { x.Id, x.SysStart });
+
+            modelBuilder.Entity<FederalBackgroundCheck>()
+                .ToTable("FederalBackgroundCheck", "dbo_history");
+
             modelBuilder.Query<FederalBackgroundCheckView>()
-                .ToView("FederalBackgroundCheckHistoryView");
+                .ToView("FederalBackgroundCheckView", "dbo_history");
+
+            //not need in this project, but included for documentation purposes 
+            modelBuilder.IgnoreNavigationProperties();
         }
     }
 
@@ -41,6 +56,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         public FederalBackgroundCheckContextBase(DbContextOptions options)
             : base(options) { }
 
+        public DbSet<FederalBackgroundCheck> FederalBackgroundCheckBaseRecs { get; set; }
         public DbQuery<FederalBackgroundCheckView> FederalBackgroundChecks { get; set; }
     }
 }
