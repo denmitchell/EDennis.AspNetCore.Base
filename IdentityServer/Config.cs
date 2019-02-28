@@ -53,6 +53,70 @@ namespace IdentityServer {
             return new List<ApiResource>
             {
                 new ApiResource{
+                    Name ="EDennis.Samples.Hr.InternalApi2",
+                    DisplayName="EDennis.Samples.Hr.InternalApi2",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.GetLastCheck",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.GetLastCheck"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.GetLastCheck",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.GetLastCheck"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi2.PreEmployment.GetLastChecks",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.PreEmployment.GetLastChecks"
+                        }
+                    }
+                },
+                new ApiResource{
+                    Name ="EDennis.Samples.Hr.InternalApi1",
+                    DisplayName="EDennis.Samples.Hr.InternalApi1",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee"
+                        }
+                    }
+                },
+                new ApiResource{
                     Name ="EDennis.Samples.DefaultPoliciesApi",
                     DisplayName="EDennis.Samples.DefaultPoliciesApi",
                     Scopes={
@@ -118,6 +182,134 @@ namespace IdentityServer {
             {
                 new Client
                 {
+                    ClientId = "EDennis.Samples.Hr.InternalApi2.Client1",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi2"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","moe@stooges.net")
+                    }
+                },
+                new Client
+                {
+                    ClientId = "EDennis.Samples.InternalApi2.Client2",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck",
+                        "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","larry@stooges.net")
+                    }
+                },
+                new Client
+                {
+                    ClientId = "EDennis.Samples.Hr.InternalApi2.Client3",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.GetLastCheck",
+                        "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.GetLastCheck",
+                        "EDennis.Samples.Hr.InternalApi2.PreEmployment.GetLastChecks"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","curly@stooges.net")
+                    }
+                },
+                new Client
+                {
+                    ClientId = "EDennis.Samples.Hr.InternalApi1.Client1",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi1"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","moe@stooges.net")
+                    }
+                },
+                new Client
+                {
+                    ClientId = "EDennis.Samples.InternalApi1.Client2",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi1.Employee"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","larry@stooges.net")
+                    }
+                },
+                new Client
+                {
+                    ClientId = "EDennis.Samples.Hr.InternalApi1.Client3",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("name","curly@stooges.net")
+                    }
+                },
+                new Client
+                {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client1",
 
                     // no interactive user, use the clientid/secret for authentication
@@ -130,7 +322,8 @@ namespace IdentityServer {
                     },
                     // scopes that client has access to
                     AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi"
+                        "EDennis.Samples.DefaultPoliciesApi",
+                        "EDennis.Samples.Hr.InternalApi"
                     },
                     Claims = {
                         new System.Security.Claims.Claim("name","moe@stooges.net")
@@ -151,7 +344,8 @@ namespace IdentityServer {
 
                     // scopes that client has access to
                     AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi.Person"
+                        "EDennis.Samples.DefaultPoliciesApi.Person",
+                        "EDennis.Samples.Hr.InternalApi.Employee"
                     },
                     Claims = {
                         new System.Security.Claims.Claim("name","larry@stooges.net")
@@ -173,7 +367,9 @@ namespace IdentityServer {
                     // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.Person.Get",
-                        "EDennis.Samples.DefaultPoliciesApi.Position.Post"
+                        "EDennis.Samples.DefaultPoliciesApi.Position.Post",
+                        "EDennis.Samples.Hr.InternalApi.Employee.GetEmployee",
+                        "EDennis.Samples.Hr.InternalApi.Employee.GetEmployees"
                     },
                     Claims = {
                         new System.Security.Claims.Claim("name","curly@stooges.net")

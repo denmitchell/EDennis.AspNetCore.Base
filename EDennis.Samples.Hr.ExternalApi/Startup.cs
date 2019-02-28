@@ -57,7 +57,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
 
                 services.AddSwaggerGen(c => {
-                    c.SwaggerDoc("v1", new Info { Title = "HR API", Version = "v1" });
+                    c.SwaggerDoc("v1", new Info { Title = "HR External API", Version = "v1" });
                 });
 
                 services.ConfigureSwaggerGen(options => {
@@ -87,7 +87,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR External API V1");
                     //c.RoutePrefix = string.Empty;
                 });
             }

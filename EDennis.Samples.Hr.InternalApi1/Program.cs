@@ -16,14 +16,6 @@ namespace EDennis.Samples.Hr.InternalApi1 {
     public class Program {
         public static void Main(string[] args) {
 
-            using (var ctx = new HrHistoryContext(
-                new DbContextOptionsBuilder<HrHistoryContext>()
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Hr;Trusted_Connection=True;")
-                .Options
-                )) {
-                ctx.Database.Migrate();
-            }
-
             BuildWebHost(args).Run();
         }
 

@@ -1,4 +1,4 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
+﻿using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Hr.InternalApi2.Models;
@@ -7,32 +7,77 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Swagger;
+using A = IdentityServer;
 
 namespace EDennis.Samples.Hr.InternalApi2 {
     public class Startup {
-        public Startup(IConfiguration configuration, IHostingEnvironment environment) {
+        public Startup(ILogger<Startup> logger, 
+            IConfiguration configuration, IHostingEnvironment environment) {
             Configuration = configuration;
-            Environment = environment;
+            HostingEnvironment = environment;
+            Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; set; }
+        public IHostingEnvironment HostingEnvironment { get; set; }
+        public ILogger Logger { get; set; }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //****************************************************
+            //Important: ApiLaunchers must be added to the service
+            //collection before any dependent services are added
+            //(e.g., if you are launching IdentityServer with 
+            //ApiLauncher, it must be launched before calls 
+            //to AddAuthentication("Bearer") -- where the 
+            //address of IdentityServer must be known)
+            //****************************************************
+
+            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+                services
+                    .AddLauncher<A.Startup>(Configuration, Logger)
+                    //.AddLauncher<B.Startup>()
+                    //... etc.
+                    .AwaitApis();
+                //note: you must call AwaitApis() after adding all launchers
+                //AwaitApis() blocks the main thread until the Apis are ready
+            }
+
+            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
+
+
+            services.AddMvc(options => {
+                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
 
             //AspNetCore.Base config
             services.AddDbContexts<
                 AgencyInvestigatorCheckContext,
                 AgencyOnlineCheckContext,
                 FederalBackgroundCheckContext,
-                StateBackgroundCheckContext>(Configuration, Environment);
+                StateBackgroundCheckContext>(Configuration, HostingEnvironment);
             services.AddRepos<
                 AgencyInvestigatorCheckRepo,
                 AgencyOnlineCheckRepo,
                 FederalBackgroundCheckRepo,
                 StateBackgroundCheckRepo> ();
+
+
+            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+
+                services.AddSwaggerGen(c => {
+                    c.SwaggerDoc("v1", new Info { Title = "HR Internal API 2", Version = "v1" });
+                });
+
+                services.ConfigureSwaggerGen(options => {
+                    // UseFullTypeNameInSchemaIds replacement for .NET Core
+                    options.CustomSchemaIds(x => x.FullName);
+                });
+            }
 
         }
 
@@ -40,6 +85,8 @@ namespace EDennis.Samples.Hr.InternalApi2 {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+
+                app.UseMockClientAuthorization();
 
                 app.UseTemporalRepoInterceptor<
                     AgencyInvestigatorCheckRepo, 
@@ -57,7 +104,19 @@ namespace EDennis.Samples.Hr.InternalApi2 {
                 //      These repos are readonly. 
             }
 
+            app.UseAuthentication();
+            app.UseUser();
+
             app.UseMvc();
+
+
+            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Internal API 2 V1");
+                });
+            }
+
         }
     }
 }
