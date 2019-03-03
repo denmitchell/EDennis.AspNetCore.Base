@@ -9,7 +9,8 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class WriteableTemporalIntegrationTests<TStartup> : WriteableIntegrationTests<TStartup>
         where TStartup : class {
 
-        public WriteableTemporalIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory) 
+        public WriteableTemporalIntegrationTests(ITestOutputHelper output, 
+                ConfiguringWebApplicationFactory<TStartup> factory) 
             : base(output,factory) { }
 
     }

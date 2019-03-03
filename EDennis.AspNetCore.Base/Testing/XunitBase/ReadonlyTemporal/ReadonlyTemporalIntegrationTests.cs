@@ -11,7 +11,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected new string InstanceName { get; } = "readonly-temporal";
 
-        public ReadonlyTemporalIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory)
+        public ReadonlyTemporalIntegrationTests(ITestOutputHelper output, 
+                ConfiguringWebApplicationFactory<TStartup> factory)
             : base(output, factory) {
         }
 

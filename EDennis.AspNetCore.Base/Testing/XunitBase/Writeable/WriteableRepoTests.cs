@@ -6,12 +6,12 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class WriteableRepoTests<TRepo, TEntity, TContext> : IClassFixture<ConfigurationClassFixture>, IDisposable
+    public class WriteableRepoTests<TRepo, TEntity, TContext> : IClassFixture<ConfigurationClassFixture<TRepo>>, IDisposable
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
         where TRepo : WriteableRepo<TEntity, TContext> {
 
-        protected ConfigurationClassFixture _fixture;
+        protected ConfigurationClassFixture<TRepo> _fixture;
 
         protected ITestOutputHelper Output { get; }
         protected TContext Context { get; }
@@ -21,7 +21,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected ScopeProperties ScopeProperties { get; }
 
-        public WriteableRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
+        public WriteableRepoTests(ITestOutputHelper output, 
+            ConfigurationClassFixture<TRepo> fixture,
+            string testUser = "moe@stooges.org") {
 
             _fixture = fixture;
 
@@ -33,7 +35,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .CreateInMemoryDatabase(DatabaseName,InstanceName);
 
             ScopeProperties = new ScopeProperties {
-                User = "tester@tester.org"
+                User = testUser
             };
 
             //using reflection, instantiate the repo

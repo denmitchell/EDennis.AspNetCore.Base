@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
@@ -68,7 +69,6 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var host = new WebHostBuilder()
             .UseKestrel()
-            .UseIISIntegration()
             .UseStartup<TStartup>()
             .UseContentRoot(dir)
             .UseUrls($"http://localhost:{_port}")
@@ -77,9 +77,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             })
             .ConfigureAppConfiguration(options => {                
                 options.SetBasePath(dir);
+                options.AddJsonFile("appsettings.Development.json", true);
                 if (_args != null)
                     options.AddCommandLine(_args);
-                options.AddJsonFile(dir + "/appsettings.Development.json", true);
             })
                 .Build();
 
@@ -92,7 +92,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 host.RunAsync();
             });
 
-            _config[$"{configKey}:BaseAddress"] = urls[0];
+            _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
 
         }
 

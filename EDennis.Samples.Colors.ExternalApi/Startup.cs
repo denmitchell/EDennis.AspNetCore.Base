@@ -1,6 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.AspNetCore.Base.Web.Extensions;
+using EDennis.Samples.Colors.ExternalApi.Controllers;
+using EDennis.Samples.Colors.InternalApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Linq;
 using A = EDennis.Samples.Colors.InternalApi;
 
 namespace EDennis.Samples.Colors.ExternalApi {
@@ -45,7 +48,11 @@ namespace EDennis.Samples.Colors.ExternalApi {
                 //AwaitApis() blocks the main thread until the Apis are ready
             }
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .ExcludeReferencedProjectControllers<A.Startup>();  //IMPORTANT!
+
+
 
             services.AddApiClients<InternalApi>();
 

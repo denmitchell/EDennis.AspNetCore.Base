@@ -16,12 +16,13 @@ using Xunit.Abstractions;
 namespace EDennis.Samples.Hr.ExternalApi.Tests {
 
     public class EmployeeControllerIntegrationTests
-        : WriteableTemporalIntegrationTests<EDennis.Samples.Hr.ExternalApi.Startup> {
+        : WriteableTemporalIntegrationTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public EmployeeControllerIntegrationTests(ITestOutputHelper output, WebApplicationFactory<EDennis.Samples.Hr.ExternalApi.Startup> factory)
+        public EmployeeControllerIntegrationTests(ITestOutputHelper output, 
+                ConfiguringWebApplicationFactory<Startup> factory)
             : base(output, factory) { }
 
 

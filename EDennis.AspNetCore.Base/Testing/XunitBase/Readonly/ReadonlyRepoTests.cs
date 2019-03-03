@@ -9,19 +9,19 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class ReadonlyRepoTests<TRepo, TEntity, TContext> : IClassFixture<ConfigurationClassFixture>
+    public class ReadonlyRepoTests<TRepo, TEntity, TContext> : IClassFixture<ConfigurationClassFixture<TRepo>>
         where TEntity : class, new()
         where TContext : DbContext
         where TRepo : ReadonlyRepo<TEntity, TContext> {
 
-        protected ConfigurationClassFixture _fixture;
+        protected ConfigurationClassFixture<TRepo> _fixture;
 
         protected ITestOutputHelper Output { get; }
         protected TContext Context { get; }
         protected TRepo Repo { get; }
         protected string InstanceName { get; } = "readonly";
 
-        public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
+        public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationClassFixture<TRepo> fixture) {
 
             _fixture = fixture;
 

@@ -1,8 +1,9 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
+using EDennis.Samples.Colors.ExternalApi;
 using EDennis.Samples.Colors.InternalApi;
-using EDennis.Samples.Colors.InternalApi.Models;
+using EDennis.Samples.Colors.ExternalApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,15 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class MultitierIntegrationTests_InMemory : 
-        WriteableTemporalIntegrationTests<EDennis.Samples.Colors.ExternalApi.Startup> {
+    public class ApiClientTests : 
+        ApiClientTest<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public MultitierIntegrationTests_InMemory(ITestOutputHelper output, 
-            ConfiguringWebApplicationFactory<EDennis.Samples.Colors.ExternalApi.Startup> factory)
-            :base(output,factory){}
+        public ApiClientTests(ITestOutputHelper output, 
+            ApiLauncherFixture<EDennis.Samples.Colors.InternalApi.Startup> fixture)
+            :base(output,fixture){}
 
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<Color>("Expected");
             
-            var actual = HttpClient.Get<Color>($"api/color/{id}").Value;
+            var actual = ApiClient.GetColor(id);
 
             Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,Output));
         }
@@ -61,8 +62,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x=>x.Id);
 
-            HttpClient.Post("api/color", input);
-            var actual = HttpClient.Get<List<Color>>("api/color").Value
+            ApiClient.Create(new Color { Name = "burgundy" });
+            var actual = ApiClient.GetColors()
                 .OrderBy(x => x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
@@ -80,7 +81,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public void Get_InlineData(int id, string expectedName) {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
-            var color = HttpClient.Get<Color>($"api/color/{id}").Value;
+            var color = ApiClient.GetColor(id);
 
             Assert.Equal(expectedName, color.Name);
 
@@ -91,8 +92,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         public void Post_Fact() {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
-            HttpClient.Post("api/color", new Color { Name = "burgundy" });
-            var colors = HttpClient.Get<List<Color>>("api/color").Value;
+            ApiClient.Create(new Color { Name = "burgundy" });
+            var colors = ApiClient.GetColors();
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 7).Name);
 

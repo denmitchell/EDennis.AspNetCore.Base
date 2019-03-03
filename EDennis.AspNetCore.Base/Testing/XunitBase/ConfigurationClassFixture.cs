@@ -2,14 +2,21 @@
 using System;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class ConfigurationClassFixture : IDisposable {
+    public class ConfigurationClassFixture<TClass> : IDisposable 
+        where TClass : class {
 
         public IConfiguration Configuration { get; }
 
         public ConfigurationClassFixture() {
+
+            var classInfo = new ClassInfo<TClass>();
+            var dir = classInfo.ProjectDirectory;
+
             Configuration = new ConfigurationBuilder()
+                .SetBasePath(dir)
                 .AddJsonFile("appsettings.Development.json")
                 .AddEnvironmentVariables()
+                .AddCommandLine(new string[] { "ASPNETCORE_ENVIRONMENT=Development" })
                 .Build();
         }
 

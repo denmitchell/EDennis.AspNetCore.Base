@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace EDennis.Samples.Colors.InternalApi.Controllers {
-    [Route("iapi/[controller]")]
+    [Route("iapi/Color")]
     [ApiController]
     public class ColorController : ControllerBase {
 

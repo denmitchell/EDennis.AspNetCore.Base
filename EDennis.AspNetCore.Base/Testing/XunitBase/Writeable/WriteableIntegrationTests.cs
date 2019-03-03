@@ -6,17 +6,19 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class WriteableIntegrationTests<TStartup> : IClassFixture<WebApplicationFactory<TStartup>>, IDisposable 
+    public class WriteableIntegrationTests<TStartup> : 
+            IClassFixture<ConfiguringWebApplicationFactory<TStartup>>, IDisposable 
         where TStartup: class {
 
-        protected readonly WebApplicationFactory<TStartup> _factory;
+        protected readonly ConfiguringWebApplicationFactory<TStartup> _factory;
 
         protected ITestOutputHelper Output { get; }
         protected HttpClient HttpClient { get; }
         protected string InstanceName { get; }
 
 
-        public WriteableIntegrationTests(ITestOutputHelper output, WebApplicationFactory<TStartup> factory) {
+        public WriteableIntegrationTests(ITestOutputHelper output, 
+                ConfiguringWebApplicationFactory<TStartup> factory) {
             _factory = factory;
             Output = output;
             InstanceName = Guid.NewGuid().ToString();

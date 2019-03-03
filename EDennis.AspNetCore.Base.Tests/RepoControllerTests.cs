@@ -19,7 +19,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
         private readonly ICacheLogger _logger;
 
-        public RepoControllerTests(ITestOutputHelper output, WebApplicationFactory<Startup> factory)
+        public RepoControllerTests(ITestOutputHelper output, ConfiguringWebApplicationFactory<Startup> factory)
             :base(output,factory){
             _logger = Output.BuildLogger();
         }

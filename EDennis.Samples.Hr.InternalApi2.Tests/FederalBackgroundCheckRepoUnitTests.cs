@@ -14,7 +14,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public FederalBackgroundCheckRepoUnitTests(ITestOutputHelper output,
-            ConfigurationClassFixture fixture) : base(output, fixture) { }
+            ConfigurationClassFixture<FederalBackgroundCheckRepo> fixture) : base(output, fixture) { }
 
 
         [Theory]

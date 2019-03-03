@@ -18,7 +18,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public EmployeeControllerIntegrationTests(
-            ITestOutputHelper output, WebApplicationFactory<Startup> factory)
+            ITestOutputHelper output, ConfiguringWebApplicationFactory<Startup> factory)
             : base(output, factory) { }
 
 

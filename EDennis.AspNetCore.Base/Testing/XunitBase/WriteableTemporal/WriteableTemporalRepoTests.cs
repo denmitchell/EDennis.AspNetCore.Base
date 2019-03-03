@@ -7,13 +7,13 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationClassFixture>, IDisposable
+    public class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationClassFixture<TRepo>>, IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
         where THistoryContext : DbContext
         where TRepo : WriteableTemporalRepo<TEntity, TContext, THistoryContext> {
 
-        protected readonly ConfigurationClassFixture _fixture;
+        protected readonly ConfigurationClassFixture<TRepo> _fixture;
 
         protected ITestOutputHelper Output { get; }
         protected string DatabaseName { get; }
@@ -25,7 +25,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected string HistoryInstanceName { get; }
         protected ScopeProperties ScopeProperties { get; }
 
-        public WriteableTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
+        public WriteableTemporalRepoTests(ITestOutputHelper output, 
+            ConfigurationClassFixture<TRepo> fixture,
+            string testUser = "moe@stooges.org"
+            ) {
 
             _fixture = fixture;
 
@@ -43,7 +46,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .CreateInMemoryDatabase(HistoryDatabaseName, HistoryInstanceName);
 
             ScopeProperties = new ScopeProperties {
-                User = "tester@tester.org"
+                User = testUser
             };
 
             //using reflection, instantiate the repo

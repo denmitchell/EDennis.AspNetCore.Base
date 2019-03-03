@@ -23,7 +23,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         private const string AGENCY_ONLINE_URL = "iapi/agencyonlinecheck";
 
         public AgencyOnlineCheckControllerIntegrationTests_InMemory(ITestOutputHelper output, 
-            WebApplicationFactory<Startup> factory)
+            ConfiguringWebApplicationFactory<Startup> factory)
             : base(output, factory) { }
 
 

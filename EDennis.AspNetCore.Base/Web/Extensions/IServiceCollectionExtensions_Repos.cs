@@ -8,8 +8,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public static IServiceCollection AddRepos<TRepo>(this IServiceCollection services)
             where TRepo : class, IRepo {
-            services.AddScoped<TRepo, TRepo>();
             services.AddScoped<ScopeProperties>();
+            services.AddScoped<TRepo, TRepo>();
             return services;
         }
 

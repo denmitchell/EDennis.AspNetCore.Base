@@ -48,7 +48,10 @@ namespace EDennis.Samples.Hr.ExternalApi {
             }
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .ExcludeReferencedProjectControllers<A.Startup>()
+                .ExcludeReferencedProjectControllers<B.Startup>();
 
             //AspNetCore.Base config
             services.AddApiClients<InternalApi1,InternalApi2>();

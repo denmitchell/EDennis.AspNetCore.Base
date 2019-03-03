@@ -9,13 +9,13 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class ReadonlyTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationClassFixture>
+    public class ReadonlyTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationClassFixture<TRepo>>
         where TEntity : class, IEFCoreTemporalModel , new()
         where TContext : DbContext
         where THistoryContext : DbContext
         where TRepo : ReadonlyTemporalRepo<TEntity, TContext, THistoryContext> {
 
-        protected readonly ConfigurationClassFixture _fixture;
+        protected readonly ConfigurationClassFixture<TRepo> _fixture;
 
         protected ITestOutputHelper Output { get; }
         protected TContext Context { get; }
@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected TRepo Repo { get; }
         protected string InstanceName { get; } = "readonly-temporal";
 
-        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture fixture) {
+        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationClassFixture<TRepo> fixture) {
 
             _fixture = fixture;
 

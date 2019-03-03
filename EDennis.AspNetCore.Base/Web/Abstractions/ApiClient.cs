@@ -12,11 +12,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public HttpClient HttpClient { get; set; }
         public ScopeProperties ScopeProperties { get; set; }
+        public IConfiguration Configuration { get; set; }
 
         public ApiClient(HttpClient httpClient, IConfiguration config, ScopeProperties scopeProperties) {
 
             HttpClient = httpClient;
             ScopeProperties = scopeProperties;
+            Configuration = config;
 
             //copy headers
             foreach(var prop in scopeProperties.OtherProperties.Where(x => x.Key.StartsWith(Interceptor.HDR_PREFIX))) {
