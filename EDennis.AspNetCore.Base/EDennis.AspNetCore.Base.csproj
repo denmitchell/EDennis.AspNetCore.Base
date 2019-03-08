@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>1.3.2</Version>
+    <Version>1.3.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>

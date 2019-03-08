@@ -29,8 +29,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public virtual bool WriteDelete(TEntity current)
-            => (DateTime.Now > current.SysStart.AddHours(8)
-                || SysUser != current.SysUser);
+            => true;
+            //=> (DateTime.Now > current.SysStart.AddHours(8)
+            //    || SysUser != current.SysUser);
 
 
         public THistoryContext HistoryContext { get; set; }
