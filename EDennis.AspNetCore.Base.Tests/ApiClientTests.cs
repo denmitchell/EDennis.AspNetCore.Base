@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class ApiClientTests : 
-        ApiClientTest<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
+        ApiClientTests<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };

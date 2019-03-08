@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public class ApiClientTest<TClient,TStartup> :
+    public class ApiClientTests<TClient,TStartup> :
             IClassFixture<ApiLauncherFixture<TStartup>>, IDisposable
         where TStartup : class
         where TClient: ApiClient {
@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected TClient ApiClient { get; }
 
-        public ApiClientTest(ITestOutputHelper output,
+        public ApiClientTests(ITestOutputHelper output,
                 ApiLauncherFixture<TStartup> fixture,
                 string testUser = "moe@stooges.org"
                 ) {
