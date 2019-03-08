@@ -95,12 +95,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = Context.Find<TEntity>(keyValues);
 
-            if (WriteUpdate(entity, existing))
-                WriteToHistory(existing);
-
             entity.SysStart = DateTime.Now;
             entity.SysEnd = DateTime.MaxValue;
             entity.SysUser = ScopeProperties.User;
+
+            if (WriteUpdate(entity, existing))
+                WriteToHistory(existing);
+
             Context.Update(entity);
             Context.SaveChanges();
 
@@ -121,12 +122,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = await Context.FindAsync<TEntity>(keyValues);
 
-            if (WriteUpdate(entity, existing))
-                await WriteToHistoryAsync(existing);
-
             entity.SysStart = DateTime.Now;
             entity.SysEnd = DateTime.MaxValue;
             entity.SysUser = ScopeProperties.User;
+
+            if (WriteUpdate(entity, existing))
+                await WriteToHistoryAsync(existing);
+
             Context.Update(entity);
             await Context.SaveChangesAsync();
 
