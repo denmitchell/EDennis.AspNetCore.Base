@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -8,7 +9,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public static IServiceCollection AddRepos<TRepo>(this IServiceCollection services)
             where TRepo : class, IRepo {
-            services.AddScoped<ScopeProperties>();
+            services.TryAddScoped<ScopeProperties>();
             services.AddScoped<TRepo, TRepo>();
             return services;
         }

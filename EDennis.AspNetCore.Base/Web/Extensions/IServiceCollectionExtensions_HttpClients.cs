@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,7 +11,7 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
 
         public static IServiceCollection AddApiClients<TClient1>(this IServiceCollection services)
             where TClient1 : ApiClient {
-            services.AddScoped<ScopeProperties>();
+            services.TryAddScoped<ScopeProperties>();
             services.AddHttpClient<TClient1>();
             return services;
         }
