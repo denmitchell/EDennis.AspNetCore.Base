@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		ExecuteTestSqlPowerShellScript.docx = ExecuteTestSqlPowerShellScript.docx
 		README.md = README.md
+		TemporalEntities.png = TemporalEntities.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DefaultPoliciesApi", "EDennis.Samples.DefaultPoliciesApi\EDennis.Samples.DefaultPoliciesApi.csproj", "{D70C000D-FC4D-415E-A09A-09370E2A8D0E}"
