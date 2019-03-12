@@ -24,8 +24,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public virtual bool WriteUpdate(TEntity next, TEntity current)
-            => (DateTime.Now > current.SysStart.AddHours(8)
-                || SysUser != current.SysUser);
+            => true;
+            //=> (DateTime.Now > current.SysStart.AddHours(8)
+            //    || SysUser != current.SysUser);
 
 
         public virtual bool WriteDelete(TEntity current)
