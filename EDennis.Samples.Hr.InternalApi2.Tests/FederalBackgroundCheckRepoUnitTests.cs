@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
             Assert.Equal(status,history.Status);
         }
+
 
 
         [Theory]
