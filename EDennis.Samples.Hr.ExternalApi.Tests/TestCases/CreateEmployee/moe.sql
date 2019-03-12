@@ -5,8 +5,8 @@ declare @Input varchar(max) = (
 select @FirstName FirstName
 	for json path, without_array_wrapper
 );
-insert into Employee(FirstName) 
-	values (@FirstName);
+insert into Employee(FirstName,SysStart,SysEnd) 
+	values (@FirstName,'2018-01-01',_.MaxDateTime2());
 declare @Expected varchar(max) = (
 	select * from Employee
 		for json path);

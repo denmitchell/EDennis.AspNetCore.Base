@@ -12,8 +12,8 @@ declare @Input varchar(max) =
 );
 
 begin transaction
-insert into Employee(FirstName)
-	select @FirstName;
+insert into Employee(FirstName,SysStart,SysEnd) 
+	values (@FirstName,'2018-01-01',_.MaxDateTime2());
 
 declare @Expected varchar(max) = 
 (

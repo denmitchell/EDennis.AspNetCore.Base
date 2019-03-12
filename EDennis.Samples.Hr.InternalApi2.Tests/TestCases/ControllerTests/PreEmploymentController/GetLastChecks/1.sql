@@ -19,14 +19,20 @@ declare @FederalBackgroundInput varchar(max) =
 );
 
 begin transaction
-insert into AgencyOnlineCheck..AgencyOnlineCheck(EmployeeId, Status, DateCompleted)
+insert into AgencyOnlineCheck..AgencyOnlineCheck(
+	EmployeeId, 
+	Status, DateCompleted)
 	select
 	@EmployeeId EmployeeId,
 	'Fail' Status,
 	'2018-12-01' DateCompleted
-insert into FederalBackgroundCheck..FederalBackgroundCheck(EmployeeId, Status, DateCompleted)
+insert into FederalBackgroundCheck..FederalBackgroundCheck(
+	EmployeeId, 
+	SysStart, SysEnd, SysUser,
+	Status, DateCompleted)
 	select
 	@EmployeeId EmployeeId,
+	'2018-01-01',_.MaxDateTime2(),'moe@tester.org',
 	'Pass' Status,
 	'2019-01-01' DateCompleted
 

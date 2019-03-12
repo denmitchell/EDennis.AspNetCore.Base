@@ -5,8 +5,9 @@ declare @Input varchar(max) = (
 select 2 EmployeeId, '2018-12-02' DateCompleted, 'Fail' Status
 	for json path, without_array_wrapper
 );
-insert into AgencyInvestigatorCheck(EmployeeId,DateCompleted,Status) 
-	values (2,'2018-12-02','Fail');
+insert into AgencyInvestigatorCheck(
+	EmployeeId,SysStart,DateCompleted,Status,SysEnd,SysUser) 
+	values (2,'2018-12-02','2018-12-02','Fail',_.MaxDateTime2(),'moe@tester.org');
 declare @Expected varchar(max) = (
 	select 
 		a.DateCompleted as [AgencyInvestigatorCheck.DateCompleted],
