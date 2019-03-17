@@ -31,7 +31,11 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
 
                 if(scopeProperties.OtherProperties.Where(x=>x.Key.StartsWith(Interceptor.HDR_PREFIX)).Count()==0)                    
-                    scopeProperties.OtherProperties.Add(operation, instanceName);
+                    scopeProperties.OtherProperties.Add(
+                        Web.ApiClient.HEADER_KEY,
+                        new Dictionary<string, string> {
+                            { operation, instanceName }
+                    });
 
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 

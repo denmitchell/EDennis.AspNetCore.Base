@@ -47,7 +47,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             ScopeProperties = new ScopeProperties {
                 User = testUser
             };
-            ScopeProperties.OtherProperties.Add(Interceptor.HDR_USE_INMEMORY, InstanceName);
+            ScopeProperties.OtherProperties.Add(
+                Web.ApiClient.HEADER_KEY,
+                new Dictionary<string, string> {
+                    { Interceptor.HDR_USE_INMEMORY, InstanceName }
+                });
+                
 
             ApiClient = Activator.CreateInstance(typeof(TClient),
                     HttpClient, ApiConfiguration, ScopeProperties 

@@ -17,8 +17,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public TContext Context { get; set; }
-        public string SysUser { get; set; }
-
         public ScopeProperties ScopeProperties { get; set; }
 
 

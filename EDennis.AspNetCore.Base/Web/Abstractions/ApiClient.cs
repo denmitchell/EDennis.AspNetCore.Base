@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Web {
     public class ApiClient {
 
+        public const string HEADER_KEY = "ApiClientHeaders";
+
         public HttpClient HttpClient { get; set; }
         public ScopeProperties ScopeProperties { get; set; }
         public IConfiguration Configuration { get; set; }
@@ -20,9 +22,10 @@ namespace EDennis.AspNetCore.Base.Web {
             ScopeProperties = scopeProperties;
             Configuration = config;
 
-            //copy headers
-            foreach(var prop in scopeProperties.OtherProperties.Where(x => x.Key.StartsWith(Interceptor.HDR_PREFIX))) {
-                httpClient.DefaultRequestHeaders.Add(prop.Key, prop.Value.ToString());
+            foreach(var prop in scopeProperties.OtherProperties.Where(x => x.Key == HEADER_KEY)) {
+                var headers = prop.Value as Dictionary<string, string>;
+                foreach(var header in headers)
+                    httpClient.DefaultRequestHeaders.Add(header.Key, header.Value.ToString());
             }
 
             var baseAddress = config[$"Apis:{GetType().Name}:BaseAddress"];

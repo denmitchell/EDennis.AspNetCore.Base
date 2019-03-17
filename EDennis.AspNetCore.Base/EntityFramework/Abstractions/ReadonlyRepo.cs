@@ -36,11 +36,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Provides direct access to the Query property of the context,
         /// allowing any query to be constructed via Linq expression
         /// </summary>
-        public IQueryable<TEntity> Query {
-            get {
-                return Context.Query<TEntity>();
-            }
-        }
+        public IQueryable<TEntity> Query { get => Context.Query<TEntity>(); }
 
 
 
@@ -53,7 +49,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public List<TEntity> GetFromSql(string sql){
+        public virtual List<TEntity> GetFromSql(string sql){
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -77,7 +73,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public async Task<List<TEntity>> GetFromSqlAsync(string sql){
+        public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql){
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -99,7 +95,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <typeparam name="T">The type of object to return</typeparam>
         /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
         /// <returns></returns>
-        public T GetScalarFromSql<T>(string sql) {
+        public virtual T GetScalarFromSql<T>(string sql) {
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -121,7 +117,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <typeparam name="T">The type of object to return</typeparam>
         /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
         /// <returns></returns>
-        public async Task<T> GetScalarFromSqlAsync<T>(string sql) {
+        public virtual async Task<T> GetScalarFromSqlAsync<T>(string sql) {
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -143,7 +139,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public string GetFromJsonSql(string fromJsonSql) {
+        public virtual string GetFromJsonSql(string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
             var cxn = Context.Database.GetDbConnection();
@@ -166,7 +162,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public async Task<string> GetFromJsonSqlAsync(string fromJsonSql) {
+        public virtual async Task<string> GetFromJsonSqlAsync(string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
             var cxn = Context.Database.GetDbConnection();
