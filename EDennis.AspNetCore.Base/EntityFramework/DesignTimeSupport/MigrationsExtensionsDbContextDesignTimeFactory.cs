@@ -15,7 +15,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// either appsettings.json or appsettings.Development.json
     /// </summary>
     /// <typeparam name="TContext">The DbContextBase type</typeparam>
-    /// <seealso cref="SqlTemporalContextDesignTimeFactory{TContext}"/>
     public class MigrationsExtensionsDbContextDesignTimeFactory<TContext> 
         : IDesignTimeDbContextFactory<TContext> 
         where TContext : DbContext {
