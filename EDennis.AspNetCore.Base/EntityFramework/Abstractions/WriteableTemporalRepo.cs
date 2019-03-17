@@ -17,7 +17,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     public abstract class WriteableTemporalRepo<TEntity, TContext, THistoryContext> 
-                : WriteableRepo<TEntity,TContext>, ITemporalRepo<TEntity, TContext, THistoryContext>
+                : WriteableRepo<TEntity,TContext>
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext {

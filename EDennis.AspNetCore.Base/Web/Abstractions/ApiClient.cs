@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
-    public class ApiClient {
+    public abstract class ApiClient {
 
         public const string HEADER_KEY = "ApiClientHeaders";
 
