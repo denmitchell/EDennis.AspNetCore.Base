@@ -1,6 +1,7 @@
 ﻿use hr;
 
 declare @FirstName varchar(30) = 'Curly'
+declare @User varchar(30) = 'moe@stooges.org'
 
 declare @Id int
 select @Id = max(id) + 1 from Employee
@@ -12,8 +13,8 @@ declare @Input varchar(max) =
 );
 
 begin transaction
-insert into Employee(FirstName,SysStart,SysEnd) 
-	values (@FirstName,'2018-01-01',_.MaxDateTime2());
+insert into Employee(FirstName,SysStart,SysEnd,SysUser) 
+	values (@FirstName,'2018-01-01',_.MaxDateTime2(),@User);
 
 declare @Expected varchar(max) = 
 (

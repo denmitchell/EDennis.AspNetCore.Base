@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         WriteableTemporalIntegrationTests<EDennis.Samples.Colors.ExternalApi.Startup> {
 
 
-        private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
+        private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd", "SysUser", "SysUserNext" };
 
         public MultitierIntegrationTests_InMemory(ITestOutputHelper output, 
             ConfiguringWebApplicationFactory<EDennis.Samples.Colors.ExternalApi.Startup> factory)

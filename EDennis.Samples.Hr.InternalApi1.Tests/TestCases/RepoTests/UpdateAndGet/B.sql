@@ -1,8 +1,9 @@
 ﻿use hr;
 
 declare @TestCase varchar(1) = 'B'
-declare @Id int = 1
+declare @Id int = 2
 declare @FirstName varchar(30) = 'Curly'
+declare @User varchar(255) = 'moe@stooges.org'
 
 declare 
 	@Input varchar(max) = 
@@ -15,7 +16,8 @@ declare
 
 begin transaction
 update Employee
-	set FirstName = @FirstName
+	set FirstName = @FirstName,
+	SysUser = @User
 	where Id = @Id
 
 declare @Expected varchar(max) = 
