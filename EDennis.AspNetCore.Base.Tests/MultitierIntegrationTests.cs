@@ -34,9 +34,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        //[Theory]
-        //[TestJsonSpecific("Get", "HttpClientExtensions", "1")]
-        //[TestJsonSpecific("Get", "HttpClientExtensions", "2")]
+        [Theory]
+        [TestJsonSpecific("Get", "HttpClientExtensions", "1")]
+        [TestJsonSpecific("Get", "HttpClientExtensions", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);
@@ -50,9 +50,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        //[Theory]
-        //[TestJsonSpecific("Post", "HttpClientExtensions", "brown")]
-        //[TestJsonSpecific("Post", "HttpClientExtensions", "orange")]
+        [Theory]
+        [TestJsonSpecific("Post", "HttpClientExtensions", "brown")]
+        [TestJsonSpecific("Post", "HttpClientExtensions", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);
