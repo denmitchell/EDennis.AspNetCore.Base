@@ -28,8 +28,8 @@ declare
 rollback transaction
 exec _.ResetIdentities
 
-exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'Create', 'CreateAndGetMultiple',@EmployeeId,'Input', @Input
-exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'Create', 'CreateAndGetMultiple',@EmployeeId,'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'Create', 'CreateAndGetMultiple',@EmployeeId,'Input', @Input
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'Create', 'CreateAndGetMultiple',@EmployeeId,'Expected', @Expected
 
-exec _.GetTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'Create', 'CreateAndGetMultiple', @EmployeeId
+exec _.GetTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'Create', 'CreateAndGetMultiple', @EmployeeId
 		
