@@ -1,17 +1,24 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Hr.InternalApi2.Models;
+using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
+    public class AgencyInvestigatorCheckRepoUnitTests :
+        WriteableTemporalRepoTests<AgencyInvestigatorCheckRepo,
+            AgencyInvestigatorCheck,
+            AgencyInvestigatorCheckContext,
+            AgencyInvestigatorCheckHistoryContext> {
 
-    public class StateBackgroundCheckRepoTests :
-        ReadonlyRepoTests<StateBackgroundCheckRepo, StateBackgroundCheckView, StateBackgroundCheckContext> {
-        public StateBackgroundCheckRepoTests(ITestOutputHelper output, ConfigurationClassFixture<StateBackgroundCheckRepo> fixture)
-            : base(output, fixture) { }
+        private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
+        public AgencyInvestigatorCheckRepoUnitTests(ITestOutputHelper output,
+            ConfigurationClassFixture<AgencyInvestigatorCheckRepo> fixture) : base(output, fixture) { }
 
         /// <summary>
         /// Optional internal class ... reduced the number of parameters in TestJson attribute
@@ -19,10 +26,9 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         /// </summary>
         internal class TestJsonSpecific : TestJsonAttribute {
             public TestJsonSpecific(string methodName, string testScenario, string testCase)
-                : base("StateBackgroundCheckRepo", methodName, testScenario, testCase, "TestJsonConfigs\\StateBackgroundCheck.json") {
+                : base("AgencyInvestigatorCheckRepo", methodName, testScenario, testCase, "TestJsonConfigs\\AgencyInvestigatorCheck.json") {
             }
         }
-
 
         [Theory]
         [TestJsonSpecific("GetLastCheck", "CreateAndGet", "1")]
@@ -31,7 +37,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
             Output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<int>("Input");
-            var expected = jsonTestCase.GetObject<StateBackgroundCheckView>("Expected");
+            var expected = jsonTestCase.GetObject<AgencyInvestigatorCheck>("Expected");
 
             var actual = Repo.GetLastCheck(input);
 
@@ -39,5 +45,8 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
             Assert.True(actual.IsEqualOrWrite(expected, Output));
 
         }
+
+
+
     }
 }
