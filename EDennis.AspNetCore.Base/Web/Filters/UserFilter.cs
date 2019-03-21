@@ -27,9 +27,9 @@ namespace EDennis.AspNetCore.Base.Web {
                 context.Request.Headers.TryGetValue("User", out StringValues userHeader);
                 var userName = context.User.Identity.Name;
 
-                //try to get user name from header first
-                if (scopeProperties.User == null && userHeader.Count == 1) {
-                    scopeProperties.User = userHeader[0];
+                //first, try to get user name from header
+                if (scopeProperties.User == null && !StringValues.IsNullOrEmpty(userHeader)) { 
+                    scopeProperties.User = userHeader.LastOrDefault();
 
                 //next, try to get user name from user principal
                 } else if (userName != null && userName != "") {
