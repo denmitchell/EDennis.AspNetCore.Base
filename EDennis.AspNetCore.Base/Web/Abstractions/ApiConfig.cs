@@ -1,9 +1,10 @@
-﻿namespace EDennis.AspNetCore.Base.Testing {
+﻿namespace EDennis.AspNetCore.Base.Web {
     public class ApiConfig {
         public string ProjectName { get; set; }
         public string SolutionName { get; set; }
         public string ProjectDirectory { get; set; }
         public string BaseAddress { get; set; }
-        public bool IsIdentityServer { get; set; }
+        public string IdentityServerSecret { get; set; }
+        public string[] Scopes { get; set; }
     }
 }
