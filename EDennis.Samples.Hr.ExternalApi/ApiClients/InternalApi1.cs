@@ -1,18 +1,29 @@
 ﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.AspNetCore.Base.Web.Abstractions;
 using EDennis.Samples.Hr.ExternalApi.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Net.Http;
 
 namespace EDennis.Samples.Hr.ExternalApi {
 
-    public class InternalApi1 : ApiClient {
+    public class InternalApi1 : SecureApiClient {
 
         private const string EMPLOYEE_URL = "iapi/employee";
 
-        public InternalApi1(HttpClient client, IConfiguration config, ScopeProperties scopeProperties) :
-            base(client, config, scopeProperties) {
+        public InternalApi1(
+            HttpClient client, 
+            IdentityServer identityServer, 
+            IConfiguration config, 
+            ScopeProperties scopeProperties,
+            SecureTokenCache tokenCache,
+            IHostingEnvironment env
+            ) :
+            base(client, identityServer, 
+                config, scopeProperties,
+                tokenCache, env) {
         }
 
         public void CreateEmployee(Employee employee) {

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base.Testing;
+using Flurl;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +41,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             config.GetSection("Apis").Bind(apis);
 
             var targetApi = apis
-                .Where(x => x.BaseAddress == HttpClient.BaseAddress.ToString())
+                .Where(x => CleanUrl(x.BaseAddress) == CleanUrl(HttpClient.BaseAddress))
                 .FirstOrDefault();
 
             TokenResponse tokenResponse = null;
@@ -51,7 +53,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             }
             else {
                 var identityServerApi = apis
-                    .Where(x => x.BaseAddress == _identityServerApiClient.HttpClient.BaseAddress.ToString())
+                    .Where(x => CleanUrl(x.BaseAddress) == CleanUrl(_identityServerApiClient.HttpClient.BaseAddress))
                     .FirstOrDefault();
 
                 //get a new token
@@ -73,6 +75,13 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
         }
 
+        private string CleanUrl(string url) {
+            return Regex.Replace(Regex.Replace(url, "/$", ""), "\\$", "");
+        }
+        private string CleanUrl(Uri uri) {
+            return Regex.Replace(Regex.Replace(uri.ToString(), "/$", ""), "\\$", "");
+        }
+
 
 
         private async Task<TokenResponse> GetTokenResponse(ApiConfig targetApi, ApiConfig identityServerApi) {
@@ -88,7 +97,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
                 Address = disco.TokenEndpoint,
 
                 ClientId = _hostingEnvironment.ApplicationName,
-                ClientSecret = targetApi.IdentityServerSecret,
+                ClientSecret = identityServerApi.IdentityServerSecret,
                 Scope = string.Join(' ', targetApi.Scopes)
             });
 
