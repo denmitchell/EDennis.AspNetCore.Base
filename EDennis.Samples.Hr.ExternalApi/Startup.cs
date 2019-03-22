@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using I = IdentityServer;
 using A = EDennis.Samples.Hr.InternalApi1;
 using B = EDennis.Samples.Hr.InternalApi2;
 
@@ -39,7 +40,8 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
                 services
-                    .AddLauncher<A.Startup>(Configuration, Logger)
+                    .AddLauncher<I.Startup>(Configuration, Logger)
+                    .AddLauncher<A.Startup>()
                     .AddLauncher<B.Startup>()
                     //... etc.
                     .AwaitApis();

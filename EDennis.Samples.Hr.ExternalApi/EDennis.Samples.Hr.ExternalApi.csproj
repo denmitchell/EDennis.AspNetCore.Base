@@ -21,6 +21,7 @@
     <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\EDennis.Samples.Hr.InternalApi1\EDennis.Samples.Hr.InternalApi1.csproj" />
     <ProjectReference Include="..\EDennis.Samples.Hr.InternalApi2\EDennis.Samples.Hr.InternalApi2.csproj" />
+    <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
