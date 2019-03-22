@@ -1,15 +1,17 @@
 ﻿using Flurl;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using EDennis.AspNetCore.Base.Testing;
 
 namespace EDennis.AspNetCore.Base.Web {
     public static class HttpClientExtensions {
@@ -32,8 +34,10 @@ namespace EDennis.AspNetCore.Base.Web {
             if (so.StatusCodeValue > 299)
                 return so;
 
-            var json = await response.Content.ReadAsStringAsync();
-            so.Value = JToken.Parse(json).ToObject<T>();
+            if (response.Content.Headers.ContentLength > 0) {
+                var json = await response.Content.ReadAsStringAsync();
+                so.Value = JToken.Parse(json).ToObject<T>();
+            }
 
             return so;
 
@@ -66,7 +70,7 @@ namespace EDennis.AspNetCore.Base.Web {
             if (so.StatusCodeValue > 299)
                 return so;
 
-            if (response.Content != null) {
+            if (response.Content.Headers.ContentLength > 0) {
                 var json = await response.Content.ReadAsStringAsync();
                 if (json != null && json != "")
                     so.Value = JToken.Parse(json).ToObject<T>();
@@ -103,7 +107,7 @@ namespace EDennis.AspNetCore.Base.Web {
             if (so.StatusCodeValue > 299)
                 return so;
 
-            if (response.Content != null) {
+            if (response.Content.Headers.ContentLength > 0) {
                 var json = await response.Content.ReadAsStringAsync();
                 if (json != null && json != "")
                     so.Value = JToken.Parse(json).ToObject<T>();
@@ -167,18 +171,33 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
+
+        public static ObjectResult<T> Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
+            var msg = request.ToHttpRequestMessage(client);
+            return ForwardRequest<T>(client, msg, relativeUrlFromBase);
+        }
+
+
+        public static ObjectResult<T> Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
+            var msg = request.ToHttpRequestMessage(client, body);
+            return ForwardRequest<T>(client, msg, relativeUrlFromBase);
+        }
+
+
+
+
         public static void SendReset(this HttpClient client, string operationName,
             string instanceName) {
             client.SendResetAsync(operationName, instanceName);
         }
 
-        public static async void SendResetAsync(this HttpClient client, string operationName, 
+        public static async void SendResetAsync(this HttpClient client, string operationName,
             string instanceName) {
             var msg = new HttpRequestMessage {
                 Method = HttpMethod.Options,
                 RequestUri = client.BaseAddress
             };
-            var xTestingHeaders = client.DefaultRequestHeaders.Where(h => h.Key.StartsWith(Interceptor.HDR_PREFIX)).Select(h=>h.Key).ToArray();
+            var xTestingHeaders = client.DefaultRequestHeaders.Where(h => h.Key.StartsWith("X-Testing")).Select(h => h.Key).ToArray();
             for (int i = 0; i < xTestingHeaders.Count(); i++)
                 client.DefaultRequestHeaders.Remove(xTestingHeaders[i]);
 
@@ -223,5 +242,143 @@ namespace EDennis.AspNetCore.Base.Web {
             return pingable;
         }
 
+
+
+
+
+        private static ObjectResult<T> ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
+
+            msg.RequestUri = new Url(client.BaseAddress)
+                .AppendPathSegment(relativeUrlFromBase)
+                .ToUri();
+
+            var response = client.SendAsync(msg).Result;
+
+            var so = new ObjectResult<T> {
+                StatusCode = response.StatusCode
+            };
+
+            if (so.StatusCodeValue > 299)
+                return so;
+
+            if (response.Content.Headers.ContentLength > 0) {
+                var json = response.Content.ReadAsStringAsync().Result;
+                so.Value = JToken.Parse(json).ToObject<T>();
+            }
+
+            return so;
+
+        }
+
+
+
+        private static HttpRequestMessage ToHttpRequestMessage(this HttpRequest httpRequest, HttpClient client) {
+            var msg = new HttpRequestMessage();
+            msg
+                .CopyMethod(httpRequest)
+                .CopyHeaders(httpRequest, client)
+                .CopyQueryString(httpRequest)
+                .CopyCookies(httpRequest);
+
+            return msg;
+        }
+
+
+        private static HttpRequestMessage ToHttpRequestMessage<T>(this HttpRequest httpRequest, HttpClient client, T body) {
+            var msg = new HttpRequestMessage();
+            msg
+                .CopyMethod(httpRequest)
+                .CopyHeaders(httpRequest, client)
+                .CopyQueryString(httpRequest)
+                .CopyCookies(httpRequest);
+
+            var json = JToken.FromObject(body).ToString();
+            msg.Content = new StringContent(json,
+                    Encoding.UTF8, "application/json");
+
+            return msg;
+        }
+
+
+        private static HttpRequestMessage CopyMethod(this HttpRequestMessage msg, HttpRequest req) {
+            if (req.Method.ToUpper() == "POST")
+                msg.Method = HttpMethod.Post;
+            else if (req.Method.ToUpper() == "PUT")
+                msg.Method = HttpMethod.Put;
+            else if (req.Method.ToUpper() == "DELETE")
+                msg.Method = HttpMethod.Delete;
+            else if (req.Method.ToUpper() == "GET")
+                msg.Method = HttpMethod.Get;
+            else if (req.Method.ToUpper() == "HEAD")
+                msg.Method = HttpMethod.Head;
+
+            return msg;
+        }
+
+
+        private static HttpRequestMessage CopyHeaders(this HttpRequestMessage msg, HttpRequest req, HttpClient client) {
+            var currentHeaders = client.DefaultRequestHeaders.Select(x => x.Key);
+            var requestHeaders = req.Headers.Where(h => !h.Key.StartsWith("Content-"));
+            var headers = requestHeaders.Where(h => !currentHeaders.Contains(h.Key));
+            foreach (var header in headers)
+                msg.Headers.Add(header.Key, header.Value.AsEnumerable());
+
+            return msg;
+        }
+
+
+        private static HttpRequestMessage CopyQueryString(this HttpRequestMessage msg, HttpRequest req) {
+            msg.Properties.Add("QueryString", req.QueryString);
+            return msg;
+        }
+
+
+        //assumes that HttpClientHandler is set as such:
+        //services.AddHttpClient<ColorApiClient>(options => {
+        //    options.BaseAddress = new Uri("http://localhost:61006");
+        //}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler {
+        //    UseCookies = false
+        //});        
+        private static HttpRequestMessage CopyCookies(this HttpRequestMessage msg, HttpRequest req) {
+            if (req.Cookies != null && req.Cookies.Count > 0) {
+                var cookieContainer = new CookieContainer();
+                var sb = new StringBuilder();
+                foreach (var cookie in req.Cookies) {
+                    sb.Append(cookie.Key);
+                    sb.Append("=");
+                    sb.Append(cookie.Value);
+                    sb.Append("; ");
+                }
+                msg.Headers.Add("Cookie", sb.ToString().TrimEnd());
+            }
+            return msg;
+        }
+
+
+
+        //note: this works, but it isn't needed.
+        private static HttpRequestMessage CopyContent(this HttpRequestMessage msg, HttpRequest req) {
+
+            var injectedRequestStream = new MemoryStream();
+
+            req.EnableRewind();
+
+            using (var bodyReader = new StreamReader(req.Body)) {
+                var bodyAsText = bodyReader.ReadToEnd();
+                var msgContent = new StringContent(JToken.FromObject(bodyAsText).ToString(), Encoding.UTF8, "application/json");
+                msg.Content = msgContent;
+
+                var bytesToWrite = Encoding.UTF8.GetBytes(bodyAsText);
+                injectedRequestStream.Write(bytesToWrite, 0, bytesToWrite.Length);
+                injectedRequestStream.Seek(0, SeekOrigin.Begin);
+                req.Body = injectedRequestStream;
+            }
+
+            return msg;
+        }
+
+
+
     }
 }
+
