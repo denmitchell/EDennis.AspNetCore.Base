@@ -22,8 +22,8 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
         [HttpPost]
         public ActionResult CreateEmployee(
             [FromBody] Employee employee){
-            _api1.CreateEmployee(employee);
-            return NoContent();
+            var response = _api1.CreateEmployee(employee);
+            return new StatusCodeResult(response.StatusCodeValue);
         }
 
 

@@ -26,14 +26,14 @@ namespace EDennis.AspNetCore.Base.Web {
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
 
-                context.Request.Headers.TryGetValue("ClientTrace", out StringValues clientTraceEntries);
+                context.Request.Headers.TryGetValue("X-ClientTrace", out StringValues clientTraceEntries);
 
                 if (!StringValues.IsNullOrEmpty(clientTraceEntries))
                     clientTraceEntries = StringValues.Concat(clientTraceEntries, hostingEnvironment.ApplicationName);
                 else
                     clientTraceEntries = new StringValues(hostingEnvironment.ApplicationName);
 
-                scopeProperties.OtherProperties.Add("ClientTrace", clientTraceEntries);
+                scopeProperties.OtherProperties.Add("X-ClientTrace", clientTraceEntries);
 
             }
             await _next(context);

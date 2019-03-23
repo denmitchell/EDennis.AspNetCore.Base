@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -24,19 +25,15 @@ namespace EDennis.AspNetCore.Base.Web {
             Configuration = config;
 
             //build headers from ApiClientHeaders entry in scopeProperties
-            foreach (var prop in scopeProperties.OtherProperties.Where(x => x.Key == HEADER_KEY)) {
-                var headers = prop.Value as Dictionary<string, StringValues>;
-                foreach (var header in headers)
-                    foreach(var value in headers.Values)
-                        httpClient.DefaultRequestHeaders.Add(header.Key, value.ToString());
-            }
+            foreach (var targetProp in scopeProperties.OtherProperties.Where(x => x.Key == this.GetType().Name)) {
+                var dict = targetProp.Value as Dictionary<string, object>;
+                foreach (var prop in dict) {
+                    var headers = prop.Value as List<KeyValuePair<string, StringValues>>;
+                    foreach (var header in headers)
+                        foreach (var value in header.Value)
+                            httpClient.DefaultRequestHeaders.Add(header.Key, value.ToString());
+                }
 
-            //copy ClientTrace from ClientTrace entry in scopeProperties
-            foreach (var prop in scopeProperties.OtherProperties.Where(x => x.Key == "ClientTrace")) {
-                var headers = prop.Value as Dictionary<string, StringValues>;
-                foreach (var header in headers)
-                    foreach (var value in headers.Values)
-                        httpClient.DefaultRequestHeaders.Add(header.Key, value.ToString());
             }
 
             var baseAddress = config[$"Apis:{GetType().Name}:BaseAddress"];

@@ -24,17 +24,16 @@ namespace EDennis.AspNetCore.Base.Web {
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
 
-                context.Request.Headers.TryGetValue("User", out StringValues userHeader);
+                context.Request.Headers.TryGetValue("X-User", out StringValues userHeader);
                 var userName = context.User.Identity.Name;
 
                 //first, try to get user name from header
                 if (scopeProperties.User == null && !StringValues.IsNullOrEmpty(userHeader)) { 
                     scopeProperties.User = userHeader.LastOrDefault();
-
                 //next, try to get user name from user principal
                 } else if (userName != null && userName != "") {
                     scopeProperties.User = userName;
-
+                    context.Request.Headers.Add("X-User", scopeProperties.User);
                 //finally, try to get user name from user claims
                 } else {
                     scopeProperties.User = context.User.Claims.Where(x =>
@@ -42,8 +41,8 @@ namespace EDennis.AspNetCore.Base.Web {
                         x.Type == "client_name" ||
                         x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
                         .FirstOrDefault()?.Value;
+                    context.Request.Headers.Add("X-User", scopeProperties.User);
                 }
-
             }
             await _next(context);
 

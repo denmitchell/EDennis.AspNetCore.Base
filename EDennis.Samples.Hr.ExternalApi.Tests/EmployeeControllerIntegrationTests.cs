@@ -36,7 +36,7 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
 
             var input = jsonTestCase.GetObject<Employee>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
-            var expected = jsonTestCase.GetObject<List<Employee>>("Expected").OrderBy(x=>x.Id);
+            var expected = jsonTestCase.GetObject<Employee>("Expected");
 
             HttpClient.Post("api/employee", input);
             var actual = HttpClient.Get<Employee>($"api/employee/{id}").Value;
@@ -50,7 +50,7 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
         [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
         [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
         [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
-        public void CreateChecks(string t, JsonTestCase jsonTestCase) {
+        public void GetEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
 
