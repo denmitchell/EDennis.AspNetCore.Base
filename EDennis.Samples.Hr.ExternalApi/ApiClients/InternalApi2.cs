@@ -29,15 +29,15 @@ namespace EDennis.Samples.Hr.ExternalApi {
                 config, scopeProperties,
                 tokenCache, env) {
         }
-    
 
-    public void CreateAgencyOnlineCheck(AgencyOnlineCheck check) 
-            => HttpClient.Post(AGENCY_ONLINE_URL, check);
 
-        public void CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check) 
+        public ObjectResult<AgencyOnlineCheck> CreateAgencyOnlineCheck(AgencyOnlineCheck check)
+                => HttpClient.Post(AGENCY_ONLINE_URL, check);
+
+        public ObjectResult<AgencyInvestigatorCheck> CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check)
             => HttpClient.Post(AGENCY_INVESTIGATOR_URL, check);
 
-        public dynamic GetPreEmploymentChecks(int employeeId)
+        public ObjectResult<dynamic> GetPreEmploymentChecks(int employeeId)
             => HttpClient.Get<dynamic>($"{AGENCY_ONLINE_URL}/{employeeId}");
 
     }
