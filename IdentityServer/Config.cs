@@ -182,6 +182,30 @@ namespace IdentityServer {
             {
                 new Client
                 {
+                    ClientId = "EDennis.Samples.Hr.ExternalApi",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    // scopes that client has access to
+                    AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
+                        "EDennis.Samples.Hr.InternalApi2"
+                    }
+                    //},
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
+                    //}
+                },
+                new Client
+                {
                     ClientId = "EDennis.Samples.Hr.InternalApi2.Client1",
 
                     // no interactive user, use the clientid/secret for authentication
@@ -195,10 +219,11 @@ namespace IdentityServer {
                     // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.Hr.InternalApi2"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","moe@stooges.net")
                     }
+                    //},
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -217,10 +242,11 @@ namespace IdentityServer {
                     AllowedScopes = {
                         "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck",
                         "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","larry@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","larry@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -240,10 +266,11 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.GetLastCheck",
                         "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.GetLastCheck",
                         "EDennis.Samples.Hr.InternalApi2.PreEmployment.GetLastChecks"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","curly@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","curly@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -260,10 +287,11 @@ namespace IdentityServer {
                     // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.Hr.InternalApi1"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","moe@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -281,10 +309,11 @@ namespace IdentityServer {
                     // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.Hr.InternalApi1.Employee"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","larry@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","larry@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -303,10 +332,11 @@ namespace IdentityServer {
                     AllowedScopes = {
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","curly@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","curly@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -324,10 +354,11 @@ namespace IdentityServer {
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi",
                         "EDennis.Samples.Hr.InternalApi"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","moe@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -346,10 +377,11 @@ namespace IdentityServer {
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.Person",
                         "EDennis.Samples.Hr.InternalApi.Employee"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","larry@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","larry@stooges.net")
+                    //}
                 },
                 new Client
                 {
@@ -370,10 +402,11 @@ namespace IdentityServer {
                         "EDennis.Samples.DefaultPoliciesApi.Position.Post",
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployees"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","curly@stooges.net")
                     }
+                    //,
+                    //Claims = {
+                    //    new System.Security.Claims.Claim("name","curly@stooges.net")
+                    //}
                 },
                 // resource owner password grant client
                 new Client

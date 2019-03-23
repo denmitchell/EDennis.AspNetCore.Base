@@ -1,21 +1,30 @@
 ﻿use Hr;
-begin transaction
+declare @Id int;
 declare @FirstName varchar(30) = 'Moe'
+declare @SysStart datetime2 = '2019-03-03'
+declare @SysEnd datetime2 = _.MaxDateTime2()
+declare @SysUser varchar(255) = 'joe@hill.org'
 declare @Input varchar(max) = (
-select @FirstName FirstName
+select @SysStart SysStart, @FirstName FirstName, @SysEnd SysEnd, @SysUser SysUser
 	for json path, without_array_wrapper
 );
-insert into Employee(FirstName,SysStart,SysEnd) 
-	values (@FirstName,'2018-01-01',_.MaxDateTime2());
+
+begin transaction
+insert into Employee(SysStart,FirstName,SysEnd,SysUser) 
+	values (@SysStart,@FirstName,@SysEnd,@SysUser);
+
+select top 1 @Id = Id from Employee order by Id desc;
+
 declare @Expected varchar(max) = (
 	select * from Employee
-		for json path);
-
-select @Expected
+	where Id = @Id
+	for json path, include_null_values, without_array_wrapper);
 
 rollback transaction
 exec _.ResetIdentities;
+
 exec _.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName,'Input',@Input
+exec _.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName,'Id',@Id
 exec _.SaveTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName,'Expected',@Expected
 
 exec  _.GetTestJson 'EDennis.Samples.Hr.ExternalApi','EmployeeController','CreateEmployee','IntegrationTests',@FirstName

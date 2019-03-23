@@ -1,12 +1,15 @@
 ﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.AspNetCore.Base.Web.Abstractions;
 using EDennis.Samples.Hr.ExternalApi.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 
 namespace EDennis.Samples.Hr.ExternalApi {
 
-    public class InternalApi2 : ApiClient {
+    public class InternalApi2 : SecureApiClient {
+
 
         private const string AGENCY_INVESTIGATOR_URL = "iapi/AgencyInvestigatorCheck";
         private const string AGENCY_ONLINE_URL = "iapi/AgencyOnlineCheck";
@@ -15,17 +18,26 @@ namespace EDennis.Samples.Hr.ExternalApi {
         private const string PREEMPLOYMENT_URL = "iapi/PreEmployment";
 
 
-        public InternalApi2(HttpClient client, IConfiguration config, ScopeProperties scopeProperties) :
-            base(client, config, scopeProperties) {
+        public InternalApi2(HttpClient client,
+            IdentityServer identityServer,
+            IConfiguration config,
+            ScopeProperties scopeProperties,
+            SecureTokenCache tokenCache,
+            IHostingEnvironment env
+            ) :
+            base(client, identityServer,
+                config, scopeProperties,
+                tokenCache, env) {
         }
 
-        public void CreateAgencyOnlineCheck(AgencyOnlineCheck check) 
-            => HttpClient.Post(AGENCY_ONLINE_URL, check);
 
-        public void CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check) 
+        public ObjectResult<AgencyOnlineCheck> CreateAgencyOnlineCheck(AgencyOnlineCheck check)
+                => HttpClient.Post(AGENCY_ONLINE_URL, check);
+
+        public ObjectResult<AgencyInvestigatorCheck> CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check)
             => HttpClient.Post(AGENCY_INVESTIGATOR_URL, check);
 
-        public dynamic GetPreEmploymentChecks(int employeeId)
+        public ObjectResult<dynamic> GetPreEmploymentChecks(int employeeId)
             => HttpClient.Get<dynamic>($"{AGENCY_ONLINE_URL}/{employeeId}");
 
     }

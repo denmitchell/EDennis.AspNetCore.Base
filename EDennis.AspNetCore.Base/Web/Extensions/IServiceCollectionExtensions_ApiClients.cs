@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using EDennis.AspNetCore.Base.Web.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,7 +11,8 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
 
         public static IServiceCollection AddApiClients<TClient1>(this IServiceCollection services)
             where TClient1 : ApiClient {
-            services.TryAddScoped<ScopeProperties>();
+            services.AddSingleton<SecureTokenCache,SecureTokenCache>();
+            services.AddScoped<ScopeProperties,ScopeProperties>();
             services.AddHttpClient<TClient1>();
             return services;
         }
