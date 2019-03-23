@@ -194,7 +194,9 @@ namespace IdentityServer {
                     },
                     // scopes that client has access to
                     AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi1",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
                         "EDennis.Samples.Hr.InternalApi2"
                     }
                     //},

@@ -52,6 +52,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .ExcludeReferencedProjectControllers<I.Startup>()
                 .ExcludeReferencedProjectControllers<A.Startup>()
                 .ExcludeReferencedProjectControllers<B.Startup>();
 

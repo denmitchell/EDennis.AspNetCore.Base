@@ -26,39 +26,38 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
             : base(output, factory) { }
 
 
-        //[Theory]
-        //[TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Moe", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        //[TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        //[TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [Theory]
+        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Moe", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
         public void CreateEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
 
             var input = jsonTestCase.GetObject<Employee>("Input");
+            var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Employee>>("Expected").OrderBy(x=>x.Id);
 
             HttpClient.Post("api/employee", input);
-            var actual = HttpClient.Get<List<Employee>>("api/employee").Value.OrderBy(x => x.Id);
+            var actual = HttpClient.Get<Employee>($"api/employee/{id}").Value;
 
             Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,Output));
         }
 
 
-        //[Theory]
-        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "1", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
-        //[TestJson("EmployeeController", "CreateChecks", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\AgencyInvestigator.json")]
+        [Theory]
+        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "1", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
         public void CreateChecks(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
 
-            var input = jsonTestCase.GetObject<Employee>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
-            var expected = jsonTestCase.GetObject<dynamic>("Expected");
+            var expected = jsonTestCase.GetObject<Employee>("Expected");
 
-            HttpClient.Post("api/employee",input);
-            var actual = HttpClient.Get<dynamic>($"preemployment/{id}").Value;
+            var actual = HttpClient.Get<Employee>($"api/employee/{id}").Value;
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
