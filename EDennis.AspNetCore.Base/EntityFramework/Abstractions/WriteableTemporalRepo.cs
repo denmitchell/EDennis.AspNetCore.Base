@@ -56,9 +56,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            entity.SysStart = DateTime.Now;
-            entity.SysEnd = DateTime.MaxValue;
-            entity.SysUser = ScopeProperties.User;
+            if (entity.SysStart == default(DateTime))
+                entity.SysStart = DateTime.Now;
+            if (entity.SysEnd == default(DateTime))
+                entity.SysEnd = DateTime.MaxValue;
+            if (entity.SysUser == null)
+                entity.SysUser = ScopeProperties.User;
             Context.Add(entity);
             Context.SaveChanges();
             return entity;
@@ -75,9 +78,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            entity.SysStart = DateTime.Now;
-            entity.SysEnd = DateTime.MaxValue;
-            entity.SysUser = ScopeProperties.User;
+            if (entity.SysStart == default(DateTime))
+                entity.SysStart = DateTime.Now;
+            if (entity.SysEnd == default(DateTime))
+                entity.SysEnd = DateTime.MaxValue;
+            if (entity.SysUser == null)
+                entity.SysUser = ScopeProperties.User;
             Context.Update(entity);
             await Context.SaveChangesAsync();
             return entity;
@@ -98,9 +104,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (WriteUpdate(entity, existing))
                 WriteToHistory(existing);
 
-            entity.SysStart = DateTime.Now;
-            entity.SysEnd = DateTime.MaxValue;
-            entity.SysUser = ScopeProperties.User;
+            if (entity.SysStart == default(DateTime))
+                entity.SysStart = DateTime.Now;
+            if (entity.SysEnd == default(DateTime))
+                entity.SysEnd = DateTime.MaxValue;
+            if (entity.SysUser == null)
+                entity.SysUser = ScopeProperties.User;
             Context.Update(entity);
             Context.SaveChanges();
 
@@ -124,9 +133,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (WriteUpdate(entity, existing))
                 await WriteToHistoryAsync(existing);
 
-            entity.SysStart = DateTime.Now;
-            entity.SysEnd = DateTime.MaxValue;
-            entity.SysUser = ScopeProperties.User;
+            if (entity.SysStart == default(DateTime))
+                entity.SysStart = DateTime.Now;
+            if (entity.SysEnd == default(DateTime))
+                entity.SysEnd = DateTime.MaxValue;
+            if (entity.SysUser == null)
+                entity.SysUser = ScopeProperties.User;
             Context.Update(entity);
             await Context.SaveChangesAsync();
 

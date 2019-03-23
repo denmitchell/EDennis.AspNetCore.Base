@@ -1,6 +1,6 @@
 ﻿{
   "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=Hr;Trusted_Connection=True;MultipleActiveResultSets=True;",
-  "TestJsonSchema": "_maintenance",
+  "TestJsonSchema": "_",
   "TestJsonTable": "TestJson",
   "ProjectName": "EDennis.Samples.Hr.ExternalApi"
 }

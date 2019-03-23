@@ -19,6 +19,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
+
                 var header = GetTestingHeader(context);
 
                 if (header.Key == null) {
@@ -30,8 +31,14 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
 
-                if(scopeProperties.OtherProperties.Where(x=>x.Key.StartsWith(Interceptor.HDR_PREFIX)).Count()==0)                    
-                    scopeProperties.OtherProperties.Add(operation, instanceName);
+                var apiClientHeaders = context.Request.Headers.Where(x => x.Key.StartsWith("X-")).ToList();
+                var dict = new Dictionary<string, object>();
+                dict.Add(ApiClient.HEADER_KEY, apiClientHeaders);
+
+                scopeProperties.OtherProperties.Add(typeof(TClient).Name, dict);
+
+                //if(scopeProperties.OtherProperties.Where(x=>x.Key.StartsWith(Interceptor.HDR_PREFIX)).Count()==0)                    
+                //    scopeProperties.OtherProperties.Add(operation, instanceName);
 
                 var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 

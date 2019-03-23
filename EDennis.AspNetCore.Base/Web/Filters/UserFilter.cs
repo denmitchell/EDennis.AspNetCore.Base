@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,15 +23,25 @@ namespace EDennis.AspNetCore.Base.Web {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
+
+                context.Request.Headers.TryGetValue("X-User", out StringValues userHeader);
                 var userName = context.User.Identity.Name;
-                if (userName != null && userName != "")
+
+                //first, try to get user name from header
+                if (scopeProperties.User == null && !StringValues.IsNullOrEmpty(userHeader)) { 
+                    scopeProperties.User = userHeader.LastOrDefault();
+                //next, try to get user name from user principal
+                } else if (userName != null && userName != "") {
                     scopeProperties.User = userName;
-                else {
+                    context.Request.Headers.Add("X-User", scopeProperties.User);
+                //finally, try to get user name from user claims
+                } else {
                     scopeProperties.User = context.User.Claims.Where(x =>
                         x.Type == "name" ||
                         x.Type == "client_name" ||
                         x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
                         .FirstOrDefault()?.Value;
+                    context.Request.Headers.Add("X-User", scopeProperties.User);
                 }
             }
             await _next(context);

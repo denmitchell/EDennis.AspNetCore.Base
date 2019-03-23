@@ -22,19 +22,20 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
         [HttpPost]
         public ActionResult CreateEmployee(
             [FromBody] Employee employee){
-            _api1.CreateEmployee(employee);
-            return NoContent();
+            var response = _api1.CreateEmployee(employee);
+            return new StatusCodeResult(response.StatusCodeValue);
         }
 
 
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployee(
             [FromRoute] int id) {
-            var employee = _api1.GetEmployee(id);
-            if (employee == null)
-                return NotFound();
-            else
-                return employee;
+            var response = _api1.GetEmployee(id);
+            if (response.StatusCodeValue > 299)
+                return new StatusCodeResult(response.StatusCodeValue);
+            else {
+                return response.Value;
+            }
         }
 
 
@@ -42,32 +43,39 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
         public ActionResult<List<Employee>> GetEmployees(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 1000) {
-            var employees = _api1.GetEmployees(pageNumber,pageSize);
-            return employees;
+            var response = _api1.GetEmployees(pageNumber, pageSize);
+            if (response.StatusCodeValue > 299)
+                return new StatusCodeResult(response.StatusCodeValue);
+            else {
+                return response.Value;
+            }
         }
-
 
 
         [HttpPost("agencyonlinecheck")]
         public ActionResult CreateAgencyOnlineCheck(
             [FromBody] AgencyOnlineCheck check) {
-            _api2.CreateAgencyOnlineCheck(check);
-            return Ok();
+            var response = _api2.CreateAgencyOnlineCheck(check);
+            return new StatusCodeResult(response.StatusCodeValue);
         }
 
 
         [HttpPost("agencyinvestigatorcheck")]
         public ActionResult CreateAgencyInvestigatorCheck(
             [FromBody] AgencyInvestigatorCheck check) {
-            _api2.CreateAgencyInvestigatorCheck(check);
-            return Ok();
+            var response = _api2.CreateAgencyInvestigatorCheck(check);
+            return new StatusCodeResult(response.StatusCodeValue);
         }
 
         [HttpGet("preemployment/{id}")]
         public ActionResult<dynamic> GetPreEmploymentChecks(
             [FromRoute] int id) {
-            var checks = _api2.GetPreEmploymentChecks(id);
-            return Ok(checks);
+            var response = _api2.GetPreEmploymentChecks(id);
+            if (response.StatusCodeValue > 299)
+                return new StatusCodeResult(response.StatusCodeValue);
+            else {
+                return response.Value;
+            }
         }
 
     }
