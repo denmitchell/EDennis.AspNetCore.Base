@@ -8,7 +8,7 @@ using System.Net.Http;
 
 namespace EDennis.Samples.Hr.ExternalApi {
 
-    public class InternalApi2 : SecureApiClient {
+    public class InternalApi2 : PrivilegedApiClient {
 
 
         private const string AGENCY_INVESTIGATOR_URL = "iapi/AgencyInvestigatorCheck";
