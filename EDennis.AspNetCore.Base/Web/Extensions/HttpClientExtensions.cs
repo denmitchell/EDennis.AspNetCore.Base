@@ -1,6 +1,7 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -14,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
+
     public static class HttpClientExtensions {
 
         public static ObjectResult<T> Get<T>(this HttpClient client, string relativeUrlFromBase) {
@@ -28,10 +30,10 @@ namespace EDennis.AspNetCore.Base.Web {
             var response = await client.GetAsync(url);
 
             var so = new ObjectResult<T> {
-                StatusCode = response.StatusCode
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {
@@ -63,11 +65,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            var so = new ObjectResult<T>() {
-                StatusCode = response.StatusCode
+            var so = new ObjectResult<T> {
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {
@@ -101,10 +103,10 @@ namespace EDennis.AspNetCore.Base.Web {
             var response = await client.SendAsync(msg);
 
             var so = new ObjectResult<T> {
-                StatusCode = response.StatusCode
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {
@@ -117,13 +119,13 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static HttpStatusCode Delete<T>(this HttpClient client, string relativeUrlFromBase, T obj,
+        public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase, T obj,
             bool flagAsUpdateFirst = false) {
             return client.DeleteAsync(relativeUrlFromBase, obj, flagAsUpdateFirst).Result;
         }
 
 
-        public static async Task<HttpStatusCode> DeleteAsync<T>(
+        public static async Task<StatusCodeResult> DeleteAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj,
                 bool flagAsUpdateFirst = false) {
 
@@ -140,18 +142,18 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            return response.StatusCode;
+            return new StatusCodeResult((int)response.StatusCode);
 
         }
 
 
-        public static HttpStatusCode Delete<T>(this HttpClient client, string relativeUrlFromBase,
+        public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase,
                 bool flagAsUpdateFirst = false) {
             return client.DeleteAsync<T>(relativeUrlFromBase, flagAsUpdateFirst).Result;
         }
 
 
-        public static async Task<HttpStatusCode> DeleteAsync<T>(
+        public static async Task<StatusCodeResult> DeleteAsync<T>(
                 this HttpClient client, string relativeUrlFromBase,
                 bool flagAsUpdateFirst = false) {
 
@@ -167,7 +169,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            return response.StatusCode;
+            return new StatusCodeResult((int)response.StatusCode);
 
         }
 
@@ -255,10 +257,10 @@ namespace EDennis.AspNetCore.Base.Web {
             var response = client.SendAsync(msg).Result;
 
             var so = new ObjectResult<T> {
-                StatusCode = response.StatusCode
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {

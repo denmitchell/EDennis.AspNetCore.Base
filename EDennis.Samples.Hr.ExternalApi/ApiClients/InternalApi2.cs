@@ -19,15 +19,14 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
 
         public InternalApi2(HttpClient client,
-            IdentityServer identityServer,
             IConfiguration config,
             ScopeProperties scopeProperties,
+            IdentityServer identityServer,
             SecureTokenCache tokenCache,
             IHostingEnvironment env
             ) :
-            base(client, identityServer,
-                config, scopeProperties,
-                tokenCache, env) {
+            base(client, config, scopeProperties,
+                identityServer, tokenCache, env) {
         }
 
 
