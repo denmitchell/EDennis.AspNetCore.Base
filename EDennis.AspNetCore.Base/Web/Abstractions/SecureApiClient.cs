@@ -13,13 +13,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
-    public class PrivilegedApiClient : ApiClient {
+    public class SecureApiClient : ApiClient {
 
         SecureTokenCache _secureTokenCache;
         ApiClient _identityServerApiClient;
         IHostingEnvironment _hostingEnvironment;
 
-        public PrivilegedApiClient(HttpClient httpClient,
+        public SecureApiClient(HttpClient httpClient,
             ApiClient identityServerApiClient,
             IConfiguration config,
             ScopeProperties scopeProperties,

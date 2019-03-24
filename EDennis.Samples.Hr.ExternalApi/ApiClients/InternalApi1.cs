@@ -11,7 +11,7 @@ using System.Net.Http;
 
 namespace EDennis.Samples.Hr.ExternalApi {
 
-    public class InternalApi1 : PrivilegedApiClient {
+    public class InternalApi1 : SecureApiClient {
 
         private const string EMPLOYEE_URL = "iapi/employee";
 
