@@ -31,9 +31,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        //[Theory]
-        //[TestJsonSpecific("Get", "HttpClientExtensions", "1")]
-        //[TestJsonSpecific("Get", "HttpClientExtensions", "2")]
+        [Theory]
+        [TestJson_("Get", "HttpClientExtensions", "1")]
+        [TestJson_("Get", "HttpClientExtensions", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);
@@ -47,9 +47,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        //[Theory]
-        //[TestJsonSpecific("Post", "HttpClientExtensions", "brown")]
-        //[TestJsonSpecific("Post", "HttpClientExtensions", "orange")]
+        [Theory]
+        [TestJson_("Post", "HttpClientExtensions", "brown")]
+        [TestJson_("Post", "HttpClientExtensions", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);
@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x=>x.Id);
 
-            ApiClient.Create(new Color { Name = "burgundy" });
+            ApiClient.Create(input);
             var actual = ApiClient.GetColors()
                 .OrderBy(x => x.Id);
 

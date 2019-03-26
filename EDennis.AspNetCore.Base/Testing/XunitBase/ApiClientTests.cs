@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -47,11 +48,18 @@ namespace EDennis.AspNetCore.Base.Testing {
             ScopeProperties = new ScopeProperties {
                 User = testUser
             };
+
+            var apiClientHeaders = new List<KeyValuePair<string, StringValues>>();
+            apiClientHeaders.Add(
+                new KeyValuePair<string, StringValues>(
+                    Interceptor.HDR_USE_INMEMORY, InstanceName));
+
+            var dict = new Dictionary<string, object> {
+                { Web.ApiClient.HEADER_KEY, apiClientHeaders }
+            };
+
             ScopeProperties.OtherProperties.Add(
-                Web.ApiClient.HEADER_KEY,
-                new Dictionary<string, string> {
-                    { Interceptor.HDR_USE_INMEMORY, InstanceName }
-                });
+                typeof(TClient).Name, dict);
                 
 
             ApiClient = Activator.CreateInstance(typeof(TClient),
