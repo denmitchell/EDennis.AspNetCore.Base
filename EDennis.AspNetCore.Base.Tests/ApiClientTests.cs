@@ -23,13 +23,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             :base(output,fixture){}
 
 
-        /// <summary>
-        /// Optional internal class ... reduced the number of parameters in TestJson attribute
-        /// by specifying constant parameter values for className and testJsonConfigPath here
-        /// </summary>
-        internal class TestJsonSpecific : TestJsonAttribute {
-            public TestJsonSpecific(string methodName, string testScenario, string testCase) 
-                : base("ColorController", methodName, testScenario, testCase, "TestJsonConfigs\\InternalApi.json") {
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase) 
+                : base("ColorDb","EDennis.Samples.Colors.InternalApi","ColorController", methodName, testScenario, testCase) {
             }
         }
 

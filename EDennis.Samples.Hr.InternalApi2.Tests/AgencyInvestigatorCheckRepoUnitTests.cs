@@ -20,19 +20,15 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         public AgencyInvestigatorCheckRepoUnitTests(ITestOutputHelper output,
             ConfigurationClassFixture<AgencyInvestigatorCheckRepo> fixture) : base(output, fixture) { }
 
-        /// <summary>
-        /// Optional internal class ... reduced the number of parameters in TestJson attribute
-        /// by specifying constant parameter values for className and testJsonConfigPath here
-        /// </summary>
-        internal class TestJsonSpecific : TestJsonAttribute {
-            public TestJsonSpecific(string methodName, string testScenario, string testCase)
-                : base("AgencyInvestigatorCheckRepo", methodName, testScenario, testCase, "TestJsonConfigs\\AgencyInvestigatorCheck.json") {
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
+                : base("AgencyInvestigatorCheck","EDennis.Samples.Hr.InternalApi2","AgencyInvestigatorCheckRepo", methodName, testScenario, testCase) {
             }
         }
 
         [Theory]
-        [TestJsonSpecific("GetLastCheck", "CreateAndGet", "1")]
-        [TestJsonSpecific("GetLastCheck", "CreateAndGet", "2")]
+        [TestJson_("GetLastCheck", "CreateAndGet", "1")]
+        [TestJson_("GetLastCheck", "CreateAndGet", "2")]
         public void GetLastCheck(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 

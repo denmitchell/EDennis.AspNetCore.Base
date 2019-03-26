@@ -22,20 +22,16 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        /// <summary>
-        /// Optional internal class ... reduced the number of parameters in TestJson attribute
-        /// by specifying constant parameter values for className and testJsonConfigPath here
-        /// </summary>
-        internal class TestJsonSpecific : TestJsonAttribute {
-            public TestJsonSpecific(string methodName, string testScenario, string testCase)
-                : base("ColorRepo", methodName, testScenario, testCase, "TestJsonConfigs\\InternalApi.json") {
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
+                : base("ColorDb", "EDennis.Samples.Colors.InternalApi","ColorRepo", methodName, testScenario, testCase) {
             }
         }
 
 
         [Theory]
-        [TestJsonSpecific("Create", "SqlRepo", "brown")]
-        [TestJsonSpecific("Create", "SqlRepo", "orange")]
+        [TestJson_("Create", "SqlRepo", "brown")]
+        [TestJson_("Create", "SqlRepo", "orange")]
         public void Create(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -53,8 +49,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Create", "SqlRepo", "brown")]
-        [TestJsonSpecific("Create", "SqlRepo", "orange")]
+        [TestJson_("Create", "SqlRepo", "brown")]
+        [TestJson_("Create", "SqlRepo", "orange")]
         public async Task CreateAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -71,8 +67,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("GetById", "SqlRepo", "1")]
-        [TestJsonSpecific("GetById", "SqlRepo", "2")]
+        [TestJson_("GetById", "SqlRepo", "1")]
+        [TestJson_("GetById", "SqlRepo", "2")]
         public void GetById(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -85,8 +81,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJsonSpecific("GetById", "SqlRepo", "1")]
-        [TestJsonSpecific("GetById", "SqlRepo", "2")]
+        [TestJson_("GetById", "SqlRepo", "1")]
+        [TestJson_("GetById", "SqlRepo", "2")]
         public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -100,8 +96,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("GetByIdAsOf", "SqlRepo", "1")]
-        [TestJsonSpecific("GetByIdAsOf", "SqlRepo", "3")]
+        [TestJson_("GetByIdAsOf", "SqlRepo", "1")]
+        [TestJson_("GetByIdAsOf", "SqlRepo", "3")]
         public void GetByIdAsOf(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -116,8 +112,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("GetByIdHistory", "SqlRepo", "1")]
-        [TestJsonSpecific("GetByIdHistory", "SqlRepo", "3")]
+        [TestJson_("GetByIdHistory", "SqlRepo", "1")]
+        [TestJson_("GetByIdHistory", "SqlRepo", "3")]
         public void GetByIdHistory(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -135,8 +131,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("QueryAsOf", "SqlRepo", "A")]
-        [TestJsonSpecific("QueryAsOf", "SqlRepo", "B")]
+        [TestJson_("QueryAsOf", "SqlRepo", "A")]
+        [TestJson_("QueryAsOf", "SqlRepo", "B")]
         public void QueryAsOf(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -159,8 +155,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("QueryAsOfRange", "SqlRepo", "A")]
-        [TestJsonSpecific("QueryAsOfRange", "SqlRepo", "B")]
+        [TestJson_("QueryAsOfRange", "SqlRepo", "A")]
+        [TestJson_("QueryAsOfRange", "SqlRepo", "B")]
         public void QueryAsOfRange(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -184,8 +180,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Query", "SqlRepo", "A")]
-        [TestJsonSpecific("Query", "SqlRepo", "B")]
+        [TestJson_("Query", "SqlRepo", "A")]
+        [TestJson_("Query", "SqlRepo", "B")]
         public void Query(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -200,8 +196,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJsonSpecific("Query", "SqlRepo", "A")]
-        [TestJsonSpecific("Query", "SqlRepo", "B")]
+        [TestJson_("Query", "SqlRepo", "A")]
+        [TestJson_("Query", "SqlRepo", "B")]
         public async Task QueryAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -216,8 +212,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJsonSpecific("Exists", "SqlRepo", "4")]
-        [TestJsonSpecific("Exists", "SqlRepo", "999")]
+        [TestJson_("Exists", "SqlRepo", "4")]
+        [TestJson_("Exists", "SqlRepo", "999")]
         public void Exists(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -230,8 +226,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJsonSpecific("Exists", "SqlRepo", "4")]
-        [TestJsonSpecific("Exists", "SqlRepo", "999")]
+        [TestJson_("Exists", "SqlRepo", "4")]
+        [TestJson_("Exists", "SqlRepo", "999")]
         public async Task ExistsAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -245,8 +241,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Update", "SqlRepo", "1")]
-        [TestJsonSpecific("Update", "SqlRepo", "2")]
+        [TestJson_("Update", "SqlRepo", "1")]
+        [TestJson_("Update", "SqlRepo", "2")]
         public void Update(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -280,8 +276,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Update", "SqlRepo", "1")]
-        [TestJsonSpecific("Update", "SqlRepo", "2")]
+        [TestJson_("Update", "SqlRepo", "1")]
+        [TestJson_("Update", "SqlRepo", "2")]
         public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -301,8 +297,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Delete", "SqlRepo", "3")]
-        [TestJsonSpecific("Delete", "SqlRepo", "4")]
+        [TestJson_("Delete", "SqlRepo", "3")]
+        [TestJson_("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -318,8 +314,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         [Theory]
-        [TestJsonSpecific("Delete", "SqlRepo", "3")]
-        [TestJsonSpecific("Delete", "SqlRepo", "4")]
+        [TestJson_("Delete", "SqlRepo", "3")]
+        [TestJson_("Delete", "SqlRepo", "4")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 

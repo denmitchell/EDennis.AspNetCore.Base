@@ -4,7 +4,6 @@ using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Hr.InternalApi1.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,10 +20,15 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             ConfigurationClassFixture<EmployeeRepo> fixture) : base(output, fixture) {
         }
 
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
+                : base("Hr", "EDennis.Samples.Hr.InternalApi1", "EmployeeRepo", methodName, testScenario, testCase) {
+            }
+        }
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGet", testCase: "Larry")]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGet", testCase: "Curly")]
+        [TestJson_("Create", "CreateAndGet", "Larry")]
+        [TestJson_("Create", "CreateAndGet", "Curly")]
         public void CreateAndGetEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -38,8 +42,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGet", testCase: "Larry")]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGet", testCase: "Curly")]
+        [TestJson_("Create", "CreateAndGet", "Larry")]
+        [TestJson_("Create", "CreateAndGet", "Curly")]
         public async Task CreateAndGetAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -55,8 +59,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGetMultiple", testCase: "Larry")]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGetMultiple", testCase: "Curly")]
+        [TestJson_("Create", "CreateAndGetMultiple", "Larry")]
+        [TestJson_("Create", "CreateAndGetMultiple", "Curly")]
         public void CreateAndGetMultipleEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -72,8 +76,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGetMultiple", testCase: "Larry")]
-        [TestJson(className: "EmployeeRepo", methodName: "Create", testScenario: "CreateAndGetMultiple", testCase: "Curly")]
+        [TestJson_("Create", "CreateAndGetMultiple", "Larry")]
+        [TestJson_("Create", "CreateAndGetMultiple", "Curly")]
         public async Task CreateAndGetMultipleAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -89,8 +93,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "1")]
-        [TestJson(className: "EmployeeRepo", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "2")]
+        [TestJson_("Delete", "DeleteAndGetMultiple", "1")]
+        [TestJson_("Delete", "DeleteAndGetMultiple", "2")]
         public void DeleteAndGetMultipleEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -105,8 +109,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "1")]
-        [TestJson(className: "EmployeeRepo", methodName: "Delete", testScenario: "DeleteAndGetMultiple", testCase: "2")]
+        [TestJson_("Delete", "DeleteAndGetMultiple", "1")]
+        [TestJson_("Delete", "DeleteAndGetMultiple", "2")]
         public async Task DeleteAndGetMultipleAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -120,8 +124,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         }
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "GetById", testScenario: "GetById", testCase: "1")]
-        [TestJson(className: "EmployeeRepo", methodName: "GetById", testScenario: "GetById", testCase: "2")]
+        [TestJson_("GetById", "GetById", "1")]
+        [TestJson_("GetById", "GetById", "2")]
         public void GetByIdEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -135,8 +139,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "GetById", testScenario: "GetById", testCase: "1")]
-        [TestJson(className: "EmployeeRepo", methodName: "GetById", testScenario: "GetById", testCase: "2")]
+        [TestJson_("GetById", "GetById", "1")]
+        [TestJson_("GetById", "GetById", "2")]
         public async Task GetByIdAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -149,10 +153,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         }
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "B")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "C")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "D")]
+        [TestJson_("Query", "Query", "A")]
+        [TestJson_("Query", "Query", "B")]
+        [TestJson_("Query", "Query", "C")]
+        [TestJson_("Query", "Query", "D")]
         public void QueryEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -169,10 +173,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "B")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "C")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "Query", testCase: "D")]
+        [TestJson_("Query", "Query", "A")]
+        [TestJson_("Query", "Query", "B")]
+        [TestJson_("Query", "Query", "C")]
+        [TestJson_("Query", "Query", "D")]
         public async Task QueryAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -190,10 +194,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "B")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "C")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "D")]
+        [TestJson_("Query", "PagedList", "A")]
+        [TestJson_("Query", "PagedList", "B")]
+        [TestJson_("Query", "PagedList", "C")]
+        [TestJson_("Query", "PagedList", "D")]
         public void PagedListEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -212,10 +216,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "B")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "C")]
-        [TestJson(className: "EmployeeRepo", methodName: "Query", testScenario: "PagedList", testCase: "D")]
+        [TestJson_("Query", "PagedList", "A")]
+        [TestJson_("Query", "PagedList", "B")]
+        [TestJson_("Query", "PagedList", "C")]
+        [TestJson_("Query", "PagedList", "D")]
         public async Task PagedListAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -235,9 +239,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGet", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGet", testCase: "B")]
-        public void TestUpdateAndGetEmployee(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Update","UpdateAndGet","A")]
+        [TestJson_("Update","UpdateAndGet","B")]
+        public void UpdateAndGetEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
@@ -253,9 +257,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGet", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGet", testCase: "B")]
-        public async Task TestUpdateAndGetAsyncEmployee(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Update","UpdateAndGet","A")]
+        [TestJson_("Update","UpdateAndGet","B")]
+        public async Task UpdateAndGetAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
@@ -269,9 +273,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         }
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGetMultiple", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGetMultiple", testCase: "B")]
-        public void TestUpdateAndGetMultipleEmployee(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Update", "UpdateAndGetMultiple","A")]
+        [TestJson_("Update", "UpdateAndGetMultiple","B")]
+        public void UpdateAndGetMultipleEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
@@ -286,9 +290,9 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGetMultiple", testCase: "A")]
-        [TestJson(className: "EmployeeRepo", methodName: "Update", testScenario: "UpdateAndGetMultiple", testCase: "B")]
-        public async Task TestUpdateAndGetMultipleAsyncEmployee(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Update","UpdateAndGetMultiple","A")]
+        [TestJson_("Update","UpdateAndGetMultiple","B")]
+        public async Task UpdateAndGetMultipleAsyncEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
