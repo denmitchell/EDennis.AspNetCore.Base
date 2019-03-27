@@ -32,6 +32,16 @@ namespace EDennis.Samples.Colors.InternalApi.Controllers {
                 return color;
         }
 
+
+        [HttpGet("forward")]
+        public ActionResult<Color> Get_Forward([FromQuery] int id) {
+            var color = _repo.GetById(id);
+            if (color == null)
+                return NotFound();
+            else
+                return color;
+        }
+
         [HttpPost]
         public ActionResult Post(Color color) {
             _repo.Create(color);

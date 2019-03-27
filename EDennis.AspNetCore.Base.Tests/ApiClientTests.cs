@@ -59,7 +59,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .OrderBy(x=>x.Id);
 
             ApiClient.Create(input);
-            var actual = ApiClient.GetColors()
+            var actual = ApiClient
+                .GetColors()
+                .Value
                 .OrderBy(x => x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
@@ -77,7 +79,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         public void Get_InlineData(int id, string expectedName) {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
-            var color = ApiClient.GetColor(id);
+            var color = ApiClient
+                .GetColor(id)
+                .Value;
 
             Assert.Equal(expectedName, color.Name);
 
@@ -89,7 +93,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             ApiClient.Create(new Color { Name = "burgundy" });
-            var colors = ApiClient.GetColors();
+            var colors = ApiClient
+                .GetColors()
+                .Value;
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 7).Name);
 

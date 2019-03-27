@@ -22,8 +22,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             :base(output,factory){}
 
 
-        internal class TestJsonSpecific : TestJsonAttribute {
-            public TestJsonSpecific(string methodName, string testScenario, string testCase) 
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase) 
                 : base("ColorDb", "EDennis.Samples.Colors.InternalApi","ColorController", methodName, testScenario, testCase) {
             }
         }
@@ -31,8 +31,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Get", "HttpClientExtensions", "1")]
-        [TestJsonSpecific("Get", "HttpClientExtensions", "2")]
+        [TestJson_("Get", "HttpClientExtensions", "1")]
+        [TestJson_("Get", "HttpClientExtensions", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);
@@ -47,8 +47,25 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Post", "HttpClientExtensions", "brown")]
-        [TestJsonSpecific("Post", "HttpClientExtensions", "orange")]
+        [TestJson_("Get", "HttpClientExtensions", "1")]
+        [TestJson_("Get", "HttpClientExtensions", "2")]
+        public void Get_Forward(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine($"Instance Name:{InstanceName}");
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Color>("Expected");
+
+            var actual = HttpClient.Get<Color>($"api/color/forward?id={id}").Value;
+
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
+        }
+
+
+
+        [Theory]
+        [TestJson_("Post", "HttpClientExtensions", "brown")]
+        [TestJson_("Post", "HttpClientExtensions", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);

@@ -176,13 +176,15 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public static HttpClientResult<T> Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client);
-            return ForwardRequest<T>(client, msg, relativeUrlFromBase);
+            var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            return ForwardRequest<T>(client, msg, url);
         }
 
 
         public static HttpClientResult<T> Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client, body);
-            return ForwardRequest<T>(client, msg, relativeUrlFromBase);
+            var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            return ForwardRequest<T>(client, msg, url);
         }
 
 
@@ -250,9 +252,20 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private static HttpClientResult<T> ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
 
-            msg.RequestUri = new Url(client.BaseAddress)
-                .AppendPathSegment(relativeUrlFromBase)
-                .ToUri();
+            string[] uri = relativeUrlFromBase.Split('?');
+
+            var url = new Url(client.BaseAddress)
+                .AppendPathSegment(uri[0]);
+                       
+            if (uri.Length > 1) {
+                string[] qsegs = uri[1].Split('&');
+                foreach(var qseg in qsegs) {
+                    string[] q = qseg.Split('=');
+                    url.SetQueryParam(q[0], q[1]);
+                }
+            }
+
+            msg.RequestUri = url.ToUri();
 
             var response = client.SendAsync(msg).Result;
 

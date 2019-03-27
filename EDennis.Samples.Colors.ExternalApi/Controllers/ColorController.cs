@@ -16,18 +16,23 @@ namespace EDennis.Samples.Colors.ExternalApi.Controllers {
 
         [HttpGet]
         public ActionResult<List<Color>> Get() {
-            return _api.GetColors();
+            return _api.GetColors().ObjectResult();
         }
 
 
         [HttpGet("{id}")]
         public ActionResult<Color> Get([FromRoute]int id) {
-            return _api.GetColor(id);
+            return _api.GetColor(id).ObjectResult();
         }
 
         [HttpPost]
-        public void Post(Color color) {
-            _api.Create(color);
+        public ActionResult Post(Color color) {
+            return _api.Create(color).StatusCodeResult();
+        }
+
+        [HttpGet("forward")]
+        public ActionResult Get_Forward() {
+            return _api.Forward(HttpContext.Request).ObjectResult();
         }
 
     }
