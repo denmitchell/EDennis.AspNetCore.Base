@@ -67,7 +67,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                     _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
                     return;
                 }
-            } 
+            } else {
+                _port = int.Parse(api.BaseAddress.Replace("https", "http").Replace("http://localhost:", ""));
+            }
 
             var host = new WebHostBuilder()
             .UseKestrel()
