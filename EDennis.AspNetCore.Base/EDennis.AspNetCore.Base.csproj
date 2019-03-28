@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>1.4.3</Version>
+    <Version>1.4.4</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -14,9 +14,9 @@
     <RepositoryType>github</RepositoryType>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
     <PackageTags>ASP.NET Core, MVC, Testing</PackageTags>
-    <PackageReleaseNotes>Now, ApiLauncher will launch APIs that have a hard-coded localhost URL in configuration</PackageReleaseNotes>
+    <PackageReleaseNotes>Added exception handling for missing/incorrect Configuration keys for ConnectionStrings and Apis</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>1.4.3.0</AssemblyVersion>
+    <AssemblyVersion>1.4.4.0</AssemblyVersion>
 
   </PropertyGroup>
   
