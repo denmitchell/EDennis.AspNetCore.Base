@@ -49,7 +49,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var apiEntry = _apis.Where(x => x.Value.ProjectName == _projectName).FirstOrDefault();
             var api = apiEntry.Value;
 
-            if (api.BaseAddress != null && api.BaseAddress != "")
+            if (api.BaseAddress != null && api.BaseAddress != "" && !api.BaseAddress.Contains("localhost"))
                 return;
 
             var configKey = $"Apis:{apiEntry.Key}";
@@ -57,15 +57,17 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var dir = api.ProjectDirectory.Replace("{Environment.UserName}", Environment.UserName);
 
-            //assign a new port to the project or get the current port assignment
-            var projectPortAssignment = _projectPorts.GetProjectPortAssignment(_projectName);
-            _port = projectPortAssignment.Port;
+            if (!api.BaseAddress.Contains("localhost")) {
+                //assign a new port to the project or get the current port assignment
+                var projectPortAssignment = _projectPorts.GetProjectPortAssignment(_projectName);
+                _port = projectPortAssignment.Port;
 
-            //short-circuit if the project has been assigned a port, already
-            if (projectPortAssignment.AlreadyAssigned) {
-                _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
-                return;
-            }
+                //short-circuit if the project has been assigned a port, already
+                if (projectPortAssignment.AlreadyAssigned) {
+                    _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
+                    return;
+                }
+            } 
 
             var host = new WebHostBuilder()
             .UseKestrel()
