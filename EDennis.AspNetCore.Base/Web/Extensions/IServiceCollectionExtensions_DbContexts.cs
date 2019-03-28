@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -13,6 +14,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var cxnStrings = new Dictionary<string, string>();
             config.GetSection("ConnectionStrings").Bind(cxnStrings);
+
+            if (!cxnStrings.ContainsKey(typeof(TContext).Name))
+                throw new ApplicationException($"Cannot find required entry 'ConnectionStrings:{typeof(TContext).Name}' in the Configuration (e.g., appsettings.Development.json)");
 
             services.AddDbContext<TContext>(
                     options => {

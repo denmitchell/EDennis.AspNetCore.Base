@@ -47,6 +47,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             _projectName = _projectName.Substring(0, _projectName.IndexOf(',')).TrimEnd();
 
             var apiEntry = _apis.Where(x => x.Value.ProjectName == _projectName).FirstOrDefault();
+
+            if (apiEntry.Equals(default(KeyValuePair<string, ApiConfig>)))
+                throw new ApplicationException($"Cannot find configuration entry (e.g., in appsettings.Development.json) for an Api whose project name is '{_projectName}'");
+
+
             var api = apiEntry.Value;
 
             if (api.BaseAddress != null && api.BaseAddress != "" && !api.BaseAddress.Contains("localhost"))
