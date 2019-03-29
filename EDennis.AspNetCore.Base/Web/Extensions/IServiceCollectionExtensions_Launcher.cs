@@ -30,7 +30,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 while (true) {
                     var apiDict = new Dictionary<string, ApiConfig>();
                     Configuration.GetSection("Apis").Bind(apiDict);
-                    var cnt = apiDict.Where(x => x.Value.BaseAddress == "").Count();
+                    var cnt = apiDict.Where(
+                        x => !x.Value.Pingable).Count();
                     if (cnt == 0)
                         break;
                     Thread.Sleep(1000);

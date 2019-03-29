@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using Microsoft.AspNetCore.Server.HttpSys;
+using System.Diagnostics;
+using System.Net.Sockets;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
@@ -26,14 +28,14 @@ namespace EDennis.AspNetCore.Base.Testing {
             _config = config;
             _apis = config.GetApiConfig();
             _args = config.GetCommandLineArguments()
-                .Select(x=>$"{x.Key}={x.Value}")
+                .Select(x => $"{x.Key}={x.Value}")
                 .ToArray();
             _logger = logger;
             _projectPorts = projectPorts;
         }
 
         private IConfiguration _config { get; }
-        private Dictionary<string,ApiConfig> _apis { get; }
+        private Dictionary<string, ApiConfig> _apis { get; }
         private string[] _args { get; }
         private string _projectName { get; set; }
         private int _port { get; set; }
@@ -41,7 +43,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         private ProjectPorts _projectPorts { get; }
 
         public async Task StartAsync() {
- 
+
 
             _projectName = Assembly.GetAssembly(typeof(TStartup)).FullName;
             _projectName = _projectName.Substring(0, _projectName.IndexOf(',')).TrimEnd();
@@ -84,7 +86,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             .ConfigureServices(services => {
                 services.AddSingleton(_projectPorts);
             })
-            .ConfigureAppConfiguration(options => {                
+            .ConfigureAppConfiguration(options => {
                 options.SetBasePath(dir);
                 options.AddJsonFile("appsettings.Development.json", true);
                 if (_args != null)
@@ -103,6 +105,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
 
+            await Task.Run(() => {
+                Ping(configKey,"localhost", _port);
+            });
+
+
         }
 
         private static string AssemblyDirectory(Assembly assembly) {
@@ -111,6 +118,35 @@ namespace EDennis.AspNetCore.Base.Testing {
             string path = Uri.UnescapeDataString(uri.Path);
             return Path.GetDirectoryName(path);
         }
+
+
+        private void Ping(string configKey, string host, int port, int timeoutSeconds = 5) {
+
+            _config[$"configKey:Pingable"] = "false";
+
+            var sw = new Stopwatch();
+
+            sw.Start();
+            while (sw.ElapsedMilliseconds < (timeoutSeconds * 1000)) {
+                try {
+                    using (var tcp = new TcpClient(host, port)) {
+                        var connected = tcp.Connected;
+                        _config[$"configKey:Pingable"] = "true";
+                        break;
+                    }
+                } catch (Exception ex) {
+                    if (!ex.Message.Contains("No connection could be made because the target machine actively refused it"))
+                        throw new ApplicationException($"Could not ping http:\\localhost:{port}",ex);
+                    else
+                        Thread.Sleep(1000);
+                }
+
+            }
+
+        }
+
+
+
 
 
         #region IDisposable Support

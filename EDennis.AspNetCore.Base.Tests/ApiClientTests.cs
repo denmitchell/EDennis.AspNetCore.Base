@@ -41,7 +41,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<Color>("Expected");
             
-            var actual = ApiClient.GetColor(id);
+            var actual = ApiClient.GetColor(id).Value;
 
             Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,Output));
         }
