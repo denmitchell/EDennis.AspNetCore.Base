@@ -13,48 +13,21 @@ namespace EDennis.AspNetCore.Base.Testing {
         where THistoryContext : DbContext
         where TRepo : WriteableTemporalRepo<TEntity, TContext, THistoryContext> {
 
-        protected readonly ConfigurationClassFixture<TRepo> _fixture;
-
         protected ITestOutputHelper Output { get; }
-        protected string DatabaseName { get; }
-        protected string HistoryDatabaseName { get; }
-        protected TContext Context { get; }
-        protected THistoryContext HistoryContext { get; }
         protected TRepo Repo { get; }
         protected string InstanceName { get; }
         protected string HistoryInstanceName { get; }
-        protected ScopeProperties ScopeProperties { get; }
 
         public WriteableTemporalRepoTests(ITestOutputHelper output, 
             ConfigurationClassFixture<TRepo> fixture,
-            string testUser = "moe@stooges.org"
-            ) {
-
-            _fixture = fixture;
+            string testUser = "moe@stooges.org") {
 
             Output = output;
-            DatabaseName = fixture.Configuration.GetDatabaseName<TContext>(); 
-            InstanceName = Guid.NewGuid().ToString();
-
-            Context = TestDbContextManager<TContext>
-                .CreateInMemoryDatabase(DatabaseName, InstanceName);
-
-            HistoryDatabaseName = fixture.Configuration.GetDatabaseName<THistoryContext>();
-            HistoryInstanceName = InstanceName + "-hist";
-
-            HistoryContext = TestDbContextManager<THistoryContext>
-                .CreateInMemoryDatabase(HistoryDatabaseName, HistoryInstanceName);
-
-            ScopeProperties = new ScopeProperties {
-                User = testUser
-            };
-
-            //using reflection, instantiate the repo
-            Repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { Context, HistoryContext, ScopeProperties }) as TRepo;
+            Repo = TestRepoFactory.CreateWriteableRepo<TRepo, TEntity, TContext>(fixture, testUser) as TRepo;
+            InstanceName = Repo.ScopeProperties.OtherProperties["InstanceName"].ToString();
+            HistoryInstanceName = Repo.ScopeProperties.OtherProperties["HistoryInstanceName"].ToString();
 
         }
-
 
 
         #region IDisposable Support
@@ -63,8 +36,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    TestDbContextManager<TContext>.DropInMemoryDatabase(Context);
-                    TestDbContextManager<THistoryContext>.DropInMemoryDatabase(HistoryContext);
+                    TestDbContextManager<TContext>.DropInMemoryDatabase(Repo.Context);
+                    TestDbContextManager<THistoryContext>.DropInMemoryDatabase(Repo.HistoryContext);
                 }
                 disposedValue = true;
             }

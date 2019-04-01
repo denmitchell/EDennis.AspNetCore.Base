@@ -6,24 +6,20 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class WriteableIntegrationTests<TStartup> : 
-            IClassFixture<ConfiguringWebApplicationFactory<TStartup>>, IDisposable 
-        where TStartup: class {
-
-        protected readonly ConfiguringWebApplicationFactory<TStartup> _factory;
+    public class WriteableIntegrationTests<TStartup> :
+            IClassFixture<ConfiguringWebApplicationFactory<TStartup>>, IDisposable
+        where TStartup : class {
 
         protected ITestOutputHelper Output { get; }
         protected HttpClient HttpClient { get; }
         protected string InstanceName { get; }
 
 
-        public WriteableIntegrationTests(ITestOutputHelper output, 
+        public WriteableIntegrationTests(ITestOutputHelper output,
                 ConfiguringWebApplicationFactory<TStartup> factory) {
-            _factory = factory;
             Output = output;
-            InstanceName = Guid.NewGuid().ToString();
-            HttpClient = factory.CreateClient();
-            HttpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, InstanceName);
+            HttpClient = TestHttpClientFactory.CreateWriteableClient(factory);
+            InstanceName = HttpClient.GetInstanceName();
         }
 
 
@@ -33,7 +29,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    HttpClient.SendResetAsync(Interceptor.HDR_DROP_INMEMORY,InstanceName);
+                    HttpClient.SendResetAsync(Interceptor.HDR_DROP_INMEMORY, InstanceName);
                 }
                 disposedValue = true;
             }
@@ -44,9 +40,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             Dispose(true);
         }
         #endregion
-
-
-
 
     }
 }
