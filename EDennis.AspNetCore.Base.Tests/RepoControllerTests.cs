@@ -25,21 +25,17 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        /// <summary>
-        /// Optional internal class ... reduced the number of parameters in TestJson attribute
-        /// by specifying constant parameter values for className and testJsonConfigPath here
-        /// </summary>
-        internal class TestJsonSpecific : TestJsonAttribute {
-            public TestJsonSpecific(string methodName, string testScenario, string testCase)
-                : base("ColorRepo", methodName, testScenario, testCase, "TestJsonConfigs\\InternalApi.json") {
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
+                : base("ColorDb", "EDennis.Samples.Colors.InternalApi", "ColorRepo",  methodName, testScenario, testCase) {
             }
         }
 
 
 
         [Theory]
-        [TestJsonSpecific("GetById", "SqlRepo", "1")]
-        [TestJsonSpecific("GetById", "SqlRepo", "2")]
+        [TestJson_("GetById", "SqlRepo", "1")]
+        [TestJson_("GetById", "SqlRepo", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Instance Name:{InstanceName}");
@@ -55,8 +51,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Create", "SqlRepo", "brown")]
-        [TestJsonSpecific("Create", "SqlRepo", "orange")]
+        [TestJson_("Create", "SqlRepo", "brown")]
+        [TestJson_("Create", "SqlRepo", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -74,8 +70,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Update", "SqlRepo", "1")]
-        [TestJsonSpecific("Update", "SqlRepo", "2")]
+        [TestJson_("Update", "SqlRepo", "1")]
+        [TestJson_("Update", "SqlRepo", "2")]
         public void Put(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -95,8 +91,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         [Theory]
-        [TestJsonSpecific("Delete", "SqlRepo", "3")]
-        [TestJsonSpecific("Delete", "SqlRepo", "4")]
+        [TestJson_("Delete", "SqlRepo", "3")]
+        [TestJson_("Delete", "SqlRepo", "4")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 

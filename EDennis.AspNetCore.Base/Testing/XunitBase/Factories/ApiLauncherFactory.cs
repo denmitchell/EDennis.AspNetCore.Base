@@ -17,13 +17,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
     }
 
-    public class ApiLauncherFixture<TStartup> : IDisposable
+    public class ApiLauncherFactory<TStartup> : IDisposable
         where TStartup : class {
 
         public int Port { get; private set; }
         public IWebHost Host { get; set; }
 
-        public ApiLauncherFixture() {
+        public ApiLauncherFactory() {
 
             Port = PortInspector.GetRandomAvailablePorts(1)[0];
             var classInfo = new ClassInfo<TStartup>();

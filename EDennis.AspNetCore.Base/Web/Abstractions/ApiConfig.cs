@@ -6,5 +6,6 @@
         public string BaseAddress { get; set; }
         public string IdentityServerSecret { get; set; }
         public string[] Scopes { get; set; }
+        public bool Pingable { get; set; }
     }
 }

@@ -19,25 +19,24 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
 
         public InternalApi2(HttpClient client,
-            IdentityServer identityServer,
             IConfiguration config,
             ScopeProperties scopeProperties,
+            IdentityServer identityServer,
             SecureTokenCache tokenCache,
             IHostingEnvironment env
             ) :
-            base(client, identityServer,
-                config, scopeProperties,
-                tokenCache, env) {
+            base(client, config, scopeProperties,
+                identityServer, tokenCache, env) {
         }
 
 
-        public ObjectResult<AgencyOnlineCheck> CreateAgencyOnlineCheck(AgencyOnlineCheck check)
+        public HttpClientResult<AgencyOnlineCheck> CreateAgencyOnlineCheck(AgencyOnlineCheck check)
                 => HttpClient.Post(AGENCY_ONLINE_URL, check);
 
-        public ObjectResult<AgencyInvestigatorCheck> CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check)
+        public HttpClientResult<AgencyInvestigatorCheck> CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check)
             => HttpClient.Post(AGENCY_INVESTIGATOR_URL, check);
 
-        public ObjectResult<dynamic> GetPreEmploymentChecks(int employeeId)
+        public HttpClientResult<dynamic> GetPreEmploymentChecks(int employeeId)
             => HttpClient.Get<dynamic>($"{AGENCY_ONLINE_URL}/{employeeId}");
 
     }

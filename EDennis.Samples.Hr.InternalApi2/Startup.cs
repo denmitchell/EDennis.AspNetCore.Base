@@ -64,9 +64,10 @@ namespace EDennis.Samples.Hr.InternalApi2 {
                 FederalBackgroundCheckHistoryContext>(Configuration, HostingEnvironment);
             services.AddRepos<
                 AgencyInvestigatorCheckRepo,
-                AgencyOnlineCheckRepo,
+                AgencyOnlineCheckRepo> ();
+            services.AddRepos<
                 FederalBackgroundCheckRepo,
-                StateBackgroundCheckRepo> ();
+                StateBackgroundCheckRepo>();
 
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {

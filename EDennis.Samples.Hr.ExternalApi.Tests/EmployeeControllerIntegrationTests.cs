@@ -1,14 +1,8 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Hr.ExternalApi.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,10 +20,17 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
             : base(output, factory) { }
 
 
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
+                : base("Hr", "EDennis.Samples.Hr.ExternalApi", "EmployeeController", methodName, testScenario, testCase) {
+            }
+        }
+
+
         [Theory]
-        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Moe", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
-        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Larry", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
-        [TestJson("EmployeeController", "CreateEmployee", "IntegrationTests", "Curly", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson_("CreateEmployee", "IntegrationTests", "Moe")]
+        [TestJson_("CreateEmployee", "IntegrationTests", "Larry")]
+        [TestJson_("CreateEmployee", "IntegrationTests", "Curly")]
         public void CreateEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
@@ -46,10 +47,10 @@ namespace EDennis.Samples.Hr.ExternalApi.Tests {
 
 
         [Theory]
-        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "1", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
-        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "2", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
-        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "3", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
-        [TestJson("EmployeeController", "GetEmployee", "IntegrationTests", "4", testJsonConfigPath: "TestJsonConfigs\\Hr.json")]
+        [TestJson_("GetEmployee", "IntegrationTests", "1")]
+        [TestJson_("GetEmployee", "IntegrationTests", "2")]
+        [TestJson_("GetEmployee", "IntegrationTests", "3")]
+        [TestJson_("GetEmployee", "IntegrationTests", "4")]
         public void GetEmployee(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");

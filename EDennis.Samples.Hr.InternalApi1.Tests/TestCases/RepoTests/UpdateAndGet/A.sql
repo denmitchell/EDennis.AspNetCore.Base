@@ -3,6 +3,7 @@
 declare @TestCase varchar(1) = 'A'
 declare @Id int = 1
 declare @FirstName varchar(30) = 'Larry'
+declare @User varchar(255) = 'tester@example.org'
 
 declare 
 	@Input varchar(max) = 
@@ -15,7 +16,8 @@ declare
 
 begin transaction
 update Employee
-	set FirstName = @FirstName
+	set FirstName = @FirstName,
+	SysUser = @User
 	where Id = @Id
 
 declare @Expected varchar(max) = 

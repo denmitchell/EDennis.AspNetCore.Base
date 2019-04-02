@@ -15,28 +15,24 @@ namespace EDennis.AspNetCore.Base.Testing {
         WriteableTemporalIntegrationTests<EDennis.Samples.Colors.ExternalApi.Startup> {
 
 
-        private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
+        private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd", "SysUser", "SysUserNext" };
 
         public MultitierIntegrationTests_InMemory(ITestOutputHelper output, 
             ConfiguringWebApplicationFactory<EDennis.Samples.Colors.ExternalApi.Startup> factory)
             :base(output,factory){}
 
 
-        /// <summary>
-        /// Optional internal class ... reduced the number of parameters in TestJson attribute
-        /// by specifying constant parameter values for className and testJsonConfigPath here
-        /// </summary>
-        internal class TestJsonSpecific : TestJsonAttribute {
-            public TestJsonSpecific(string methodName, string testScenario, string testCase) 
-                : base("ColorController", methodName, testScenario, testCase, "TestJsonConfigs\\InternalApi.json") {
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase) 
+                : base("ColorDb", "EDennis.Samples.Colors.InternalApi","ColorController", methodName, testScenario, testCase) {
             }
         }
 
 
 
-        //[Theory]
-        //[TestJsonSpecific("Get", "HttpClientExtensions", "1")]
-        //[TestJsonSpecific("Get", "HttpClientExtensions", "2")]
+        [Theory]
+        [TestJson_("Get", "HttpClientExtensions", "1")]
+        [TestJson_("Get", "HttpClientExtensions", "2")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);
@@ -50,9 +46,26 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        //[Theory]
-        //[TestJsonSpecific("Post", "HttpClientExtensions", "brown")]
-        //[TestJsonSpecific("Post", "HttpClientExtensions", "orange")]
+        [Theory]
+        [TestJson_("Get", "HttpClientExtensions", "1")]
+        [TestJson_("Get", "HttpClientExtensions", "2")]
+        public void Get_Forward(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine($"Instance Name:{InstanceName}");
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Color>("Expected");
+
+            var actual = HttpClient.Get<Color>($"api/color/forward?id={id}").Value;
+
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
+        }
+
+
+
+        [Theory]
+        [TestJson_("Post", "HttpClientExtensions", "brown")]
+        [TestJson_("Post", "HttpClientExtensions", "orange")]
         public void Post(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Instance Name:{InstanceName}");
             Output.WriteLine(t);

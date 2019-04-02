@@ -9,8 +9,8 @@ declare @Input varchar(max) =
 
 
 begin transaction
-insert into Employee(FirstName)
-	values (@firstName);
+insert into Employee(FirstName,SysStart,SysEnd) 
+	values (@FirstName,'2018-01-01',_.MaxDateTime2());
 
 declare @Expected varchar(max) = 
 (

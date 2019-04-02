@@ -1,6 +1,8 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.Samples.Hr.InternalApi2.Models;
 using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,7 +16,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public FederalBackgroundCheckRepoUnitTests(ITestOutputHelper output,
-            ConfigurationClassFixture<FederalBackgroundCheckRepo> fixture) : base(output, fixture) { }
+            ConfigurationFactory<FederalBackgroundCheckRepo> fixture) : base(output, fixture) { }
 
 
         [Theory]
@@ -31,6 +33,34 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
         }
 
+        [Theory]
+        [InlineData(1,2016,6,1, "Pass")]
+        public void GetFederalBackgroundCheckAsOf(int id, int year, int month, int day, string status) {
+
+            var history = Repo.QueryAsOf(
+                new DateTime(year,month,day),
+                e=>e.Id == id
+                ).FirstOrDefault();
+
+            Assert.Equal(status,history.Status);
+        }
+
+
+
+        [Theory]
+        [InlineData(1,4)]
+        public void GetFederalBackgroundHistory(int id, int count) {
+
+            var history = Repo.QueryAsOf(
+                DateTime.MinValue,
+                DateTime.MaxValue,
+                e => e.Id == id,
+                1,100,
+                desc=>desc.SysStart
+                );
+
+            Assert.Equal(count,history.Count);
+        }
 
     }
 }

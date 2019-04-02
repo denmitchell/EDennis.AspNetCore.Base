@@ -1,6 +1,7 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -14,24 +15,25 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
+
     public static class HttpClientExtensions {
 
-        public static ObjectResult<T> Get<T>(this HttpClient client, string relativeUrlFromBase) {
+        public static HttpClientResult<T> Get<T>(this HttpClient client, string relativeUrlFromBase) {
             return client.GetAsync<T>(relativeUrlFromBase).Result;
         }
 
-        public static async Task<ObjectResult<T>> GetAsync<T>(
+        public static async Task<HttpClientResult<T>> GetAsync<T>(
                 this HttpClient client, string relativeUrlFromBase) {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
             var response = await client.GetAsync(url);
 
-            var so = new ObjectResult<T> {
-                StatusCode = response.StatusCode
+            var so = new HttpClientResult<T> {
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {
@@ -44,11 +46,11 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static ObjectResult<T> Post<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static HttpClientResult<T> Post<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
             return client.PostAsync(relativeUrlFromBase, obj).Result;
         }
 
-        public static async Task<ObjectResult<T>> PostAsync<T>(
+        public static async Task<HttpClientResult<T>> PostAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj) {
 
 
@@ -63,11 +65,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            var so = new ObjectResult<T>() {
-                StatusCode = response.StatusCode
+            var so = new HttpClientResult<T> {
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {
@@ -80,12 +82,12 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static ObjectResult<T> Put<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static HttpClientResult<T> Put<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
             return client.PutAsync(relativeUrlFromBase, obj).Result;
         }
 
 
-        public static async Task<ObjectResult<T>> PutAsync<T>(
+        public static async Task<HttpClientResult<T>> PutAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj) {
 
 
@@ -100,11 +102,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            var so = new ObjectResult<T> {
-                StatusCode = response.StatusCode
+            var so = new HttpClientResult<T> {
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {
@@ -117,13 +119,13 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static HttpStatusCode Delete<T>(this HttpClient client, string relativeUrlFromBase, T obj,
+        public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase, T obj,
             bool flagAsUpdateFirst = false) {
             return client.DeleteAsync(relativeUrlFromBase, obj, flagAsUpdateFirst).Result;
         }
 
 
-        public static async Task<HttpStatusCode> DeleteAsync<T>(
+        public static async Task<StatusCodeResult> DeleteAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj,
                 bool flagAsUpdateFirst = false) {
 
@@ -140,18 +142,18 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            return response.StatusCode;
+            return new StatusCodeResult((int)response.StatusCode);
 
         }
 
 
-        public static HttpStatusCode Delete<T>(this HttpClient client, string relativeUrlFromBase,
+        public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase,
                 bool flagAsUpdateFirst = false) {
             return client.DeleteAsync<T>(relativeUrlFromBase, flagAsUpdateFirst).Result;
         }
 
 
-        public static async Task<HttpStatusCode> DeleteAsync<T>(
+        public static async Task<StatusCodeResult> DeleteAsync<T>(
                 this HttpClient client, string relativeUrlFromBase,
                 bool flagAsUpdateFirst = false) {
 
@@ -167,20 +169,22 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var response = await client.SendAsync(msg);
 
-            return response.StatusCode;
+            return new StatusCodeResult((int)response.StatusCode);
 
         }
 
 
-        public static ObjectResult<T> Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
+        public static HttpClientResult<T> Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client);
-            return ForwardRequest<T>(client, msg, relativeUrlFromBase);
+            var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            return ForwardRequest<T>(client, msg, url);
         }
 
 
-        public static ObjectResult<T> Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
+        public static HttpClientResult<T> Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client, body);
-            return ForwardRequest<T>(client, msg, relativeUrlFromBase);
+            var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            return ForwardRequest<T>(client, msg, url);
         }
 
 
@@ -246,19 +250,30 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        private static ObjectResult<T> ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
+        private static HttpClientResult<T> ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
 
-            msg.RequestUri = new Url(client.BaseAddress)
-                .AppendPathSegment(relativeUrlFromBase)
-                .ToUri();
+            string[] uri = relativeUrlFromBase.Split('?');
+
+            var url = new Url(client.BaseAddress)
+                .AppendPathSegment(uri[0]);
+                       
+            if (uri.Length > 1) {
+                string[] qsegs = uri[1].Split('&');
+                foreach(var qseg in qsegs) {
+                    string[] q = qseg.Split('=');
+                    url.SetQueryParam(q[0], q[1]);
+                }
+            }
+
+            msg.RequestUri = url.ToUri();
 
             var response = client.SendAsync(msg).Result;
 
-            var so = new ObjectResult<T> {
-                StatusCode = response.StatusCode
+            var so = new HttpClientResult<T> {
+                StatusCode = (int)response.StatusCode
             };
 
-            if (so.StatusCodeValue > 299)
+            if (so.StatusCode > 299)
                 return so;
 
             if (response.Content.Headers.ContentLength > 0) {

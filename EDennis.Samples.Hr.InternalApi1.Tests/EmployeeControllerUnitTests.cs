@@ -19,7 +19,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
         private EmployeeController _controller;
 
         public EmployeeControllerUnitTests(ITestOutputHelper output,
-            ConfigurationClassFixture<EmployeeRepo> fixture) : base(output, fixture) {
+            ConfigurationFactory<EmployeeRepo> fixture) : base(output, fixture) {
 
             _controller = new EmployeeController(Repo);
 

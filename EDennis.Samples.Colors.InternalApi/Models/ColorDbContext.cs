@@ -58,7 +58,7 @@ namespace EDennis.Samples.Colors.InternalApi.Models {
                     .HasValueGenerator<MaxPlusOneValueGenerator<Color>>();
 
                 modelBuilder.Entity<Color>()
-                    //.HasData(ColorDbContextDataFactory.ColorRecords);
+                    //.HasData(ColorDbContextDataFactory.dbo_ColorRecords);
                     .HasData(ColorDbContextDataFactory.ColorRecordsFromRetriever);
             }
 

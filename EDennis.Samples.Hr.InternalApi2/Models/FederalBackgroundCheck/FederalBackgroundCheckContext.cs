@@ -56,7 +56,6 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         public FederalBackgroundCheckContextBase(DbContextOptions options)
             : base(options) { }
 
-        public DbSet<FederalBackgroundCheck> FederalBackgroundCheckBaseRecs { get; set; }
         public DbQuery<FederalBackgroundCheckView> FederalBackgroundChecks { get; set; }
     }
 }

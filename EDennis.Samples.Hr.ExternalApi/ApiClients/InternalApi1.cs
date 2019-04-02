@@ -17,38 +17,37 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
         public InternalApi1(
             HttpClient client, 
-            IdentityServer identityServer, 
             IConfiguration config, 
             ScopeProperties scopeProperties,
+            IdentityServer identityServer,
             SecureTokenCache tokenCache,
             IHostingEnvironment env
             ) :
-            base(client, identityServer, 
-                config, scopeProperties,
-                tokenCache, env) {
+            base(client, config, scopeProperties,
+                identityServer,tokenCache, env) {
         }
 
-        public ObjectResult<Employee> CreateEmployee(Employee employee) {
+        public HttpClientResult<Employee> CreateEmployee(Employee employee) {
             var response = HttpClient.Post(EMPLOYEE_URL, employee);
             return response;
         }
 
-        public ObjectResult<Employee> UpdateEmployee(Employee employee, int id) {
+        public HttpClientResult<Employee> UpdateEmployee(Employee employee, int id) {
             var response = HttpClient.Put($"{EMPLOYEE_URL}/{id}", employee);
             return response;
         }
 
         public HttpStatusCode DeleteEmployee(int id) {
             var response = HttpClient.Delete<Employee>($"{EMPLOYEE_URL}/{id}");
-            return response;
+            return (HttpStatusCode)response.StatusCode;
         }
 
-        public ObjectResult<Employee> GetEmployee(int id) {
+        public HttpClientResult<Employee> GetEmployee(int id) {
             var response = HttpClient.Get<Employee>($"{EMPLOYEE_URL}/{id}");
             return response;
         }
 
-        public ObjectResult<List<Employee>> GetEmployees(int pageNumber, int pageSize) {
+        public HttpClientResult<List<Employee>> GetEmployees(int pageNumber, int pageSize) {
             var response = HttpClient.Get<List<Employee>>($"{EMPLOYEE_URL}");
             return response;
         }

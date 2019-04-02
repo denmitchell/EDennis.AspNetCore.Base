@@ -17,20 +17,22 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     public abstract class WriteableTemporalRepo<TEntity, TContext, THistoryContext> 
-                : WriteableRepo<TEntity,TContext>, ITemporalRepo<TEntity, TContext, THistoryContext>
+                : WriteableRepo<TEntity,TContext>
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext {
 
 
         public virtual bool WriteUpdate(TEntity next, TEntity current)
-            => (DateTime.Now > current.SysStart.AddHours(8)
-                || SysUser != current.SysUser);
+            => true;
+            //=> (DateTime.Now > current.SysStart.AddHours(8)
+            //    || SysUser != current.SysUser);
 
 
         public virtual bool WriteDelete(TEntity current)
-            => (DateTime.Now > current.SysStart.AddHours(8)
-                || SysUser != current.SysUser);
+            => true;
+            //=> (DateTime.Now > current.SysStart.AddHours(8)
+            //    || SysUser != current.SysUser);
 
 
         public THistoryContext HistoryContext { get; set; }
@@ -56,9 +58,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            if (entity.SysStart == default(DateTime))
+            if(entity.SysStart == null)
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == default(DateTime))
+            if (entity.SysEnd == null)
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
@@ -78,9 +80,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            if (entity.SysStart == default(DateTime))
+            if (entity.SysStart == null)
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == default(DateTime))
+            if (entity.SysEnd == null)
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
@@ -101,15 +103,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = Context.Find<TEntity>(keyValues);
 
-            if (WriteUpdate(entity, existing))
-                WriteToHistory(existing);
-
-            if (entity.SysStart == default(DateTime))
+            if (entity.SysStart == null)
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == default(DateTime))
+            if (entity.SysEnd == null)
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
+
+            if (WriteUpdate(entity, existing))
+                WriteToHistory(existing);
+
             Context.Update(entity);
             Context.SaveChanges();
 
@@ -130,15 +133,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = await Context.FindAsync<TEntity>(keyValues);
 
-            if (WriteUpdate(entity, existing))
-                await WriteToHistoryAsync(existing);
-
-            if (entity.SysStart == default(DateTime))
+            if (entity.SysStart == null)
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == default(DateTime))
+            if (entity.SysEnd == null)
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
+
+            if (WriteUpdate(entity, existing))
+                await WriteToHistoryAsync(existing);
+
             Context.Update(entity);
             await Context.SaveChangesAsync();
 

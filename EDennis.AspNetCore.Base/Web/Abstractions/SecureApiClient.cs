@@ -20,9 +20,9 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
         IHostingEnvironment _hostingEnvironment;
 
         public SecureApiClient(HttpClient httpClient,
-            ApiClient identityServerApiClient,
             IConfiguration config,
             ScopeProperties scopeProperties,
+            ApiClient identityServerApiClient,
             SecureTokenCache secureTokenCache,
             IHostingEnvironment hostingEnvironment)
             : base(httpClient, config, scopeProperties) {

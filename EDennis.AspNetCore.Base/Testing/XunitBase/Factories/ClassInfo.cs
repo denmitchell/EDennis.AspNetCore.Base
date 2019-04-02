@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics;
+using System;
+using System.Text.RegularExpressions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
@@ -21,11 +24,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             ClassName = typeof(TClass).Name;
             Namespace = typeof(TClass).Namespace;
 
+            ProjectName = GetProjectName();
+
             _solutionFile = GetSolutionFile();
             SolutionName = _solutionFile.Name.Replace(".sln", "");
             SolutionDirectory = _solutionFile.DirectoryName;
 
-            ProjectName = GetProjectName();
             ProjectDirectory = GetProjectDirectory();
         }
 
@@ -56,20 +60,32 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
+
+
         /// <summary>
         /// Gets the solution file in a parent (or ancestor) directory
         /// </summary>
         /// <param name="currentPath">optional current path</param>
         /// <returns></returns>
-        ///from https://stackoverflow.com/a/35824406/10896865
-        private FileInfo GetSolutionFile([System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "") {
+        private FileInfo GetSolutionFile(string sourceFilePath = "") {
+
+            if (sourceFilePath == "")
+                sourceFilePath = typeof(TClass).Assembly.Location;
 
             var thisFile = new FileInfo(sourceFilePath);
             var directory = thisFile.Directory;
-            while (directory != null && !directory.GetFiles("*.sln").Any()) {
+            FileInfo file = null;
+            var pattern = $"(Project)[^=]+= \"{ProjectName}\"";
+            while (directory != null) {
+                file = directory.GetFiles("*.sln").FirstOrDefault();
+                if (file != null) {
+                    var contents = File.ReadAllText(file.FullName);
+                    if (Regex.IsMatch(contents, pattern))
+                        return file;
+                }                
                 directory = directory.Parent;
             }
-            return directory.GetFiles("*.sln").FirstOrDefault();
+            return null;
         }
 
 

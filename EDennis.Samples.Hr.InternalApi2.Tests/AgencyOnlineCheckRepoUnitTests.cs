@@ -12,7 +12,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public AgencyOnlineCheckRepoUnitTests(ITestOutputHelper output,
-            ConfigurationClassFixture<AgencyOnlineCheckRepo> fixture) : base(output, fixture) { }
+            ConfigurationFactory<AgencyOnlineCheckRepo> fixture) : base(output, fixture) { }
 
 
         [Theory]

@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     public abstract class ReadonlyTemporalRepo<TEntity, TContext, THistoryContext>
-        : ReadonlyRepo<TEntity,TContext>, ITemporalRepo<TEntity,TContext,THistoryContext>
+        : ReadonlyRepo<TEntity,TContext>
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext: DbContext {
@@ -113,70 +113,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             return union;
         }
-
-
-        public List<TEntity> GetByIdHistory(params object[] key) {
-            var current = Context.Find<TEntity>(key);
-            var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
-
-            var history = HistoryContext.Query<TEntity>()
-                .Where(primaryKeyPredicate)
-                .AsNoTracking()
-                .ToList();
-
-            var all = new List<TEntity> { current }.Union(history).ToList();
-            return all;
-        }
-
-
-
-        public List<TEntity> GetByIdAsOf(DateTime asOf, params object[] key) {
-            var current = Context.Find<TEntity>(key);
-            var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
-            var asOfPredicate = GetAsOfBetweenPredicate(asOf);
-
-            var curr = Context.Query<TEntity>()
-                .Where(primaryKeyPredicate)
-                .Where(asOfPredicate)
-                .AsNoTracking()
-                .ToList();
-
-            var history = HistoryContext.Query<TEntity>()
-                .Where(primaryKeyPredicate)
-                .Where(asOfPredicate)
-                .AsNoTracking()
-                .ToList();
-
-            var all = curr.Union(history).ToList();
-            return all;
-        }
-
-
-        private Expression<Func<TEntity, bool>> GetPrimaryKeyPredicate(TEntity entity) {
-
-            var state = Context.Entry(entity);
-            var metadata = state.Metadata;
-            var primaryKey = metadata.FindPrimaryKey();
-
-            var pe = Expression.Parameter(typeof(TEntity), "e");
-            Expression finalExpression = null;
-
-            foreach (var pkProperty in primaryKey.Properties) {
-                var type = typeof(TEntity);
-                var left = Expression.Property(pe, type.GetProperty(pkProperty.Name));
-                var right = Expression.Constant(pkProperty.GetGetter().GetClrValue(entity));
-                var eq = Expression.Equal(left, right);
-                if (finalExpression != null)
-                    finalExpression = Expression.AndAlso(finalExpression, eq);
-                else
-                    finalExpression = eq;
-            }
-
-            var expr = Expression.Lambda<Func<TEntity, bool>>(finalExpression, pe);
-
-            return expr;
-        }
-
 
 
         private Expression<Func<TEntity, bool>> GetAsOfBetweenPredicate(DateTime asOf) {

@@ -1,22 +1,6 @@
 ﻿use StateBackgroundCheck;
 
 declare @EmployeeId int = 2
-declare 
-	@Input varchar(max) = 
-( 
-	select
-	@EmployeeId EmployeeId,
-	'Fail' Status,
-	'2018-12-02' DateCompleted
-		for json path, include_null_values, without_array_wrapper
-);
-
-begin transaction
-insert into StateBackgroundCheck(EmployeeId, Status, DateCompleted)
-	select
-	@EmployeeId EmployeeId,
-	'Fail' Status,
-	'2018-12-02' DateCompleted
 
 declare 
 @Expected varchar(max) = 
@@ -25,15 +9,13 @@ declare
 	from StateBackgroundCheck
 	where EmployeeId = @EmployeeId
 	order by DateCompleted desc
-	for json path, include_null_values
+	for json path, include_null_values, without_array_wrapper
 );
 
-rollback transaction
-exec _.ResetIdentities
 
-exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId, 'Input', @Input
-exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId, 'EmployeeId', @EmployeeId
-exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId, 'Expected', @Expected
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId, 'Input', @EmployeeId
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId, 'EmployeeId', @EmployeeId
+exec _.SaveTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId, 'Expected', @Expected
 
-exec  _.GetTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId
+exec  _.GetTestJson 'EDennis.Samples.Hr.InternalApi2', 'StateBackgroundCheckRepo', 'GetLastCheck', 'CreateAndGet', @EmployeeId
 		

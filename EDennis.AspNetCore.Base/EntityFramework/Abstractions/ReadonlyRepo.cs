@@ -33,67 +33,23 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         /// <summary>
-        /// Retrieves the entity with the provided primary key values
+        /// Provides direct access to the Query property of the context,
+        /// allowing any query to be constructed via Linq expression
         /// </summary>
-        /// <param name="keyValues">primary key provided as key-value object array</param>
-        /// <returns>Entity whose primary key matches the provided input</returns>
-        public virtual TEntity GetById(params object[] keyValues) {
-            var entity = Context.Find<TEntity>(keyValues);
-            Context.Entry(entity).State = EntityState.Detached;
-            return entity;
-        }
+        public IQueryable<TEntity> Query { get => Context.Query<TEntity>(); }
+
 
 
         /// <summary>
-        /// Asychronously retrieves the entity with the provided primary key values.
+        /// Gets a list of TEntity using the provided
+        /// SQL select statement.  Note: because this is
+        /// a read-only query, Entity Framework will 
+        /// throw an error if you attempt to perform
+        /// a write operation (e.g, INSERT, UPDATE, or DELETE)
         /// </summary>
-        /// <param name="keyValues">primary key provided as key-value object array</param>
-        /// <returns>Entity whose primary key matches the provided input</returns>
-        public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
-            var entity = await Context.FindAsync<TEntity>(keyValues);
-            Context.Entry(entity).State = EntityState.Detached;
-            return entity;
-        }
-
-
-        public IQueryable<TEntity> Query {
-            get {
-                return Context.Query<TEntity>();
-            }
-        }
-
-
-        /// <summary>
-        /// Determines if an object with the given primary key values
-        /// exists in the context.
-        /// </summary>
-        /// <param name="keyValues">primary key values</param>
-        /// <returns>true if an entity with the provided keys exists</returns>
-        public bool Exists(params object[] keyValues) {
-            var entity = Context.Find<TEntity>(keyValues);
-            Context.Entry(entity).State = EntityState.Detached;
-            var exists = (entity != null);
-            return exists;
-        }
-
-        
-        /// <summary>
-        /// Determines if an object with the given primary key values
-        /// exists in the context.
-        /// </summary>
-        /// <param name="keyValues">primary key values</param>
+        /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public async Task<bool> ExistsAsync(params object[] keyValues) {
-            var entity = await Context.FindAsync<TEntity>(keyValues);
-            Context.Entry(entity).State = EntityState.Detached;
-            var exists = (entity != null);
-            return exists;
-        }
-
-
-
-
-        public List<TEntity> GetFromSql(string sql){
+        public virtual List<TEntity> GetFromSql(string sql){
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -108,7 +64,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public async Task<List<TEntity>> GetFromSqlAsync(string sql){
+        /// <summary>
+        /// Asynchronously gets a list of TEntity using the provided
+        /// SQL select statement.  Note: because this is
+        /// a read-only query, Entity Framework will 
+        /// throw an error if you attempt to perform
+        /// a write operation (e.g, INSERT, UPDATE, or DELETE)
+        /// </summary>
+        /// <param name="sql">A valid SQL SELECT statement</param>
+        /// <returns></returns>
+        public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql){
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -123,7 +88,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public T GetScalarFromSql<T>(string sql) {
+        /// <summary>
+        /// Retrieves a scalar value from the database using
+        /// the provided SQL SELECT statement
+        /// </summary>
+        /// <typeparam name="T">The type of object to return</typeparam>
+        /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
+        /// <returns></returns>
+        public virtual T GetScalarFromSql<T>(string sql) {
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -138,7 +110,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public async Task<T> GetScalarFromSqlAsync<T>(string sql) {
+        /// <summary>
+        /// Asynchronouely retrieves a scalar value from the database
+        /// using the provided SQL SELECT statement
+        /// </summary>
+        /// <typeparam name="T">The type of object to return</typeparam>
+        /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
+        /// <returns></returns>
+        public virtual async Task<T> GetScalarFromSqlAsync<T>(string sql) {
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -154,7 +133,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public string GetFromJsonSql(string fromJsonSql) {
+        /// <summary>
+        /// Retrieves raw JSON from SQL Server using the
+        /// provided FOR JSON SQL SELECT statement
+        /// </summary>
+        /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
+        /// <returns></returns>
+        public virtual string GetFromJsonSql(string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
             var cxn = Context.Database.GetDbConnection();
@@ -171,7 +156,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public async Task<string> GetFromJsonSqlAsync(string fromJsonSql) {
+        /// <summary>
+        /// Asynchronously retrieves raw JSON from SQL Server 
+        /// using the provided FOR JSON SQL SELECT statement
+        /// </summary>
+        /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
+        /// <returns></returns>
+        public virtual async Task<string> GetFromJsonSqlAsync(string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
             var cxn = Context.Database.GetDbConnection();
@@ -185,12 +176,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 result = await cxn.ExecuteScalarAsync<string>(sql);
             }
             return result;
-        }
-
-
-
-        protected string PrintKeys(params object[] keyValues) {
-            return "[" + string.Join(",", keyValues) + "]";
         }
 
 
