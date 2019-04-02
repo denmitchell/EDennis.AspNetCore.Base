@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string testUser = "tester@example.org") {
 
             Output = output;
-            Repo = TestRepoFactory.CreateWriteableRepo<TRepo,TEntity,TContext>(fixture,testUser) as TRepo;
+            Repo = TestRepoFactory.CreateWriteableRepo<TRepo,TEntity,TContext,TRepo>(fixture,testUser) as TRepo;
             InstanceName = Repo.GetInstanceName();
 
         }

@@ -1,4 +1,5 @@
 ﻿using Divergic.Logging.Xunit;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
@@ -12,14 +13,14 @@ using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
-    public class RepoControllerTests : WriteableTemporalIntegrationTests<Startup> {
+namespace EDennis.AspNetCore.Base.Tests {
+    public class RepoControllerEndpointTests : WriteableTemporalEndpointTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
         private readonly ICacheLogger _logger;
 
-        public RepoControllerTests(ITestOutputHelper output, ConfiguringWebApplicationFactory<Startup> factory)
+        public RepoControllerEndpointTests(ITestOutputHelper output, ConfiguringWebApplicationFactory<Startup> factory)
             :base(output,factory){
             _logger = Output.BuildLogger();
         }

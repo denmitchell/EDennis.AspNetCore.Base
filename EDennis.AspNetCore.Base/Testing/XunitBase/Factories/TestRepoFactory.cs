@@ -15,10 +15,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateReadonlyRepo<
 
-            TRepo, TEntity, TContext>(ConfigurationFactory<TRepo> fixture)
+            TRepo, TEntity, TContext, T>(ConfigurationFactory<T> fixture)
             where TEntity : class, new()
             where TContext : DbContext
-            where TRepo : ReadonlyRepo<TEntity, TContext> {
+            where TRepo : ReadonlyRepo<TEntity, TContext>
+            where T : class {
 
 
             var context = TestDbContextManager<TContext>.GetReadonlyDatabase(
@@ -33,11 +34,12 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateReadonlyTemporalRepo<
 
-            TRepo, TEntity, TContext, THistoryContext>(ConfigurationFactory<TRepo> fixture)
+            TRepo, TEntity, TContext, THistoryContext, T>(ConfigurationFactory<T> fixture)
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext
-            where TRepo : ReadonlyTemporalRepo<TEntity, TContext, THistoryContext> {
+            where TRepo : ReadonlyTemporalRepo<TEntity, TContext, THistoryContext> 
+            where T : class {
 
 
             var context = TestDbContextManager<TContext>.GetReadonlyDatabase(
@@ -56,12 +58,13 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateWriteableRepo<
 
-            TRepo, TEntity, TContext>(ConfigurationFactory<TRepo> fixture,
+            TRepo, TEntity, TContext, T>(ConfigurationFactory<T> fixture,
             string testUser = DEFAULT_USER
             )
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext
-            where TRepo : WriteableRepo<TEntity, TContext> {
+            where TRepo : WriteableRepo<TEntity, TContext>
+            where T : class {
 
             var databaseName = fixture.Configuration.GetDatabaseName<TContext>();
             var instanceName = Guid.NewGuid().ToString();
@@ -85,14 +88,15 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public static TRepo CreateWriteableTemporalRepo<
-            TRepo, TEntity, TContext, THistoryContext>(ConfigurationFactory<TRepo> fixture,
+            TRepo, TEntity, TContext, THistoryContext, T>(ConfigurationFactory<T> fixture,
             string testUser = DEFAULT_USER
             )
 
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext
-            where TRepo : WriteableTemporalRepo<TEntity, TContext, THistoryContext> {
+            where TRepo : WriteableTemporalRepo<TEntity, TContext, THistoryContext>
+            where T : class {
 
 
             var databaseName = fixture.Configuration.GetDatabaseName<TContext>();

@@ -6,7 +6,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class WriteableIntegrationTests<TStartup> :
+    public abstract class WriteableEndpointTests<TStartup> :
             IClassFixture<ConfiguringWebApplicationFactory<TStartup>>, IDisposable
         where TStartup : class {
 
@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected string InstanceName { get; }
 
 
-        public WriteableIntegrationTests(ITestOutputHelper output,
+        public WriteableEndpointTests(ITestOutputHelper output,
                 ConfiguringWebApplicationFactory<TStartup> factory) {
             Output = output;
             HttpClient = TestHttpClientFactory.CreateWriteableClient(factory);

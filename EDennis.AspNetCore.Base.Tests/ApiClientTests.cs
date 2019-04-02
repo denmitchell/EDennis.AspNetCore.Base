@@ -10,8 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
+using EDennis.AspNetCore.Base.Testing;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Tests {
     public class ApiClientTests : 
         WriteableApiClientTests<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
 

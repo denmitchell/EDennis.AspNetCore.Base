@@ -6,10 +6,10 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class WriteableTemporalIntegrationTests<TStartup> : WriteableIntegrationTests<TStartup>
+    public abstract class WriteableTemporalEndpointTests<TStartup> : WriteableEndpointTests<TStartup>
         where TStartup : class {
 
-        public WriteableTemporalIntegrationTests(ITestOutputHelper output, 
+        public WriteableTemporalEndpointTests(ITestOutputHelper output, 
                 ConfiguringWebApplicationFactory<TStartup> factory) 
             : base(output,factory) { }
 

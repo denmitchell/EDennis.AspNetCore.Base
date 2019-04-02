@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string testUser = "tester@example.org") {
 
             Output = output;
-            Repo = TestRepoFactory.CreateWriteableTemporalRepo<TRepo, TEntity, TContext, THistoryContext>(fixture, testUser) as TRepo;
+            Repo = TestRepoFactory.CreateWriteableTemporalRepo<TRepo, TEntity, TContext, THistoryContext, TRepo>(fixture, testUser) as TRepo;
             InstanceName = Repo.ScopeProperties.OtherProperties["InstanceName"].ToString();
             HistoryInstanceName = Repo.ScopeProperties.OtherProperties["HistoryInstanceName"].ToString();
 

@@ -24,7 +24,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationFactory<TRepo> fixture) {
 
             Output = output;
-            Repo = TestRepoFactory.CreateReadonlyRepo<TRepo, TEntity, TContext>(fixture);
+            Repo = TestRepoFactory.CreateReadonlyRepo<TRepo, TEntity, TContext, TRepo>(fixture);
 
         }
 

@@ -6,7 +6,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class ReadonlyIntegrationTests<TStartup> :
+    public abstract class ReadonlyEndpointTests<TStartup> :
             IClassFixture<ConfiguringWebApplicationFactory<TStartup>>
         where TStartup : class {
 
@@ -14,7 +14,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected HttpClient HttpClient { get; }
         protected string InstanceName { get; }
 
-        public ReadonlyIntegrationTests(ITestOutputHelper output,
+        public ReadonlyEndpointTests(ITestOutputHelper output,
             ConfiguringWebApplicationFactory<TStartup> factory) {
             Output = output;
             HttpClient = TestHttpClientFactory.CreateReadonlyClient(factory);

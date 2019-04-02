@@ -14,16 +14,22 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Tests {
-    public class RepoControllerDirectTests : WriteableTemporalRepoTests<ColorRepo, Color, ColorDbContext, ColorHistoryDbContext> {
+    public class RepoControllerDirectTests : IClassFixture<ConfigurationFactory<ColorController>>{
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         private ColorController _ctlr;
+        private ColorRepo _repo;
+        private ITestOutputHelper _output;
 
-        public RepoControllerDirectTests(ITestOutputHelper output, ConfigurationFactory<ColorRepo> fixture)
-            : base(output, fixture, "tester@example.org") {
+        public RepoControllerDirectTests(ITestOutputHelper output, ConfigurationFactory<ColorController> fixture){
 
-            _ctlr = new ColorController(Repo, new Logger<ColorController>(new LoggerFactory()));
+            _output = output;
+
+            _repo = TestRepoFactory.CreateWriteableTemporalRepo<
+                ColorRepo, Color, ColorDbContext, ColorHistoryDbContext, ColorController>(fixture);
+
+            _ctlr = new ColorController(_repo, new Logger<ColorController>(new LoggerFactory()));
         }
 
 
@@ -38,7 +44,7 @@ namespace EDennis.AspNetCore.Base.Tests {
         [TestJson_("Create", "SqlRepo", "brown")]
         [TestJson_("Create", "SqlRepo", "orange")]
         public void Create(string t, JsonTestCase jsonTestCase) {
-            Output.WriteLine(t);
+            _output.WriteLine(t);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
@@ -46,10 +52,10 @@ namespace EDennis.AspNetCore.Base.Tests {
 
 
             _ctlr.Post(input);
-            var actual = Repo.Query.ToPagedList()
+            var actual = _repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
+            Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, _output));
         }
 
     }

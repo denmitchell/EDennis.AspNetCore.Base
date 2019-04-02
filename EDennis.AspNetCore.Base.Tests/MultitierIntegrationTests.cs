@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.Colors.InternalApi;
@@ -10,9 +11,9 @@ using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Tests {
     public class MultitierIntegrationTests_InMemory : 
-        WriteableTemporalIntegrationTests<EDennis.Samples.Colors.ExternalApi.Startup> {
+        WriteableTemporalEndpointTests<EDennis.Samples.Colors.ExternalApi.Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd", "SysUser", "SysUserNext" };
