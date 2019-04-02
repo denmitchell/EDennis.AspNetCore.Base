@@ -11,9 +11,9 @@ namespace EDennis.Samples.Colors.InternalApi.Controllers {
     public class ColorController : ControllerBase {
 
         public ColorRepo _repo;
-        ILogger _logger;
+        readonly ILogger _logger;
 
-        public ColorController(ColorRepo repo, ILogger<ColorRepo> logger) {
+        public ColorController(ColorRepo repo, ILogger<ColorController> logger) {
             _repo = repo;
             _logger = logger;
         }

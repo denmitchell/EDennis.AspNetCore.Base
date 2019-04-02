@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Tests;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
@@ -19,10 +20,8 @@ namespace EDennis.AspNetCore.Base.Tests {
 
         private ColorController _ctlr;
 
-        public RepoControllerDirectTests(ITestOutputHelper output, ConfigurationClassFixture<ColorRepo> fixture)
-            : base(output, fixture) {
-
-            ScopeProperties.User = "moe@stooges.org";
+        public RepoControllerDirectTests(ITestOutputHelper output, ConfigurationFactory<ColorRepo> fixture)
+            : base(output, fixture, "tester@example.org") {
 
             _ctlr = new ColorController(Repo, new Logger<ColorController>(new LoggerFactory()));
         }

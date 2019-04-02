@@ -32,8 +32,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
 
                 var apiClientHeaders = context.Request.Headers.Where(x => x.Key.StartsWith("X-")).ToList();
-                var dict = new Dictionary<string, object>();
-                dict.Add(ApiClient.HEADER_KEY, apiClientHeaders);
+                var dict = new Dictionary<string, object> {
+                    { ApiClient.HEADER_KEY, apiClientHeaders }
+                };
 
                 scopeProperties.OtherProperties.Add(typeof(TClient).Name, dict);
 
