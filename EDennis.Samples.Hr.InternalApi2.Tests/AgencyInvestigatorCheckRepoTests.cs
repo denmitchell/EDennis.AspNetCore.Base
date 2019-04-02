@@ -9,7 +9,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
-    public class AgencyInvestigatorCheckRepoUnitTests :
+    public class AgencyInvestigatorCheckRepoTests :
         WriteableTemporalRepoTests<AgencyInvestigatorCheckRepo,
             AgencyInvestigatorCheck,
             AgencyInvestigatorCheckContext,
@@ -17,7 +17,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public AgencyInvestigatorCheckRepoUnitTests(ITestOutputHelper output,
+        public AgencyInvestigatorCheckRepoTests(ITestOutputHelper output,
             ConfigurationFactory<AgencyInvestigatorCheckRepo> fixture) : base(output, fixture) { }
 
         internal class TestJson_ : TestJsonAttribute {

@@ -7,7 +7,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
-    public class FederalBackgroundCheckRepoUnitTests :
+    public class FederalBackgroundCheckRepoTests :
         ReadonlyTemporalRepoTests<FederalBackgroundCheckRepo, 
             FederalBackgroundCheckView, 
             FederalBackgroundCheckContext, 
@@ -15,7 +15,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public FederalBackgroundCheckRepoUnitTests(ITestOutputHelper output,
+        public FederalBackgroundCheckRepoTests(ITestOutputHelper output,
             ConfigurationFactory<FederalBackgroundCheckRepo> fixture) : base(output, fixture) { }
 
 

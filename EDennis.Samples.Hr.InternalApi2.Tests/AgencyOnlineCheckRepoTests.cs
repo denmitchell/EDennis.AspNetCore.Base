@@ -6,12 +6,12 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
-    public class AgencyOnlineCheckRepoUnitTests :
+    public class AgencyOnlineCheckRepoTests :
         WriteableRepoTests<AgencyOnlineCheckRepo, AgencyOnlineCheck, AgencyOnlineCheckContext> {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public AgencyOnlineCheckRepoUnitTests(ITestOutputHelper output,
+        public AgencyOnlineCheckRepoTests(ITestOutputHelper output,
             ConfigurationFactory<AgencyOnlineCheckRepo> fixture) : base(output, fixture) { }
 
 
