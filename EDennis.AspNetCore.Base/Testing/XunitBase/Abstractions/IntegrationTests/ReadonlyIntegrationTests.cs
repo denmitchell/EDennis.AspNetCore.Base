@@ -6,22 +6,19 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class ReadonlyIntegrationTests<TStartup> : 
+    public abstract class ReadonlyIntegrationTests<TStartup> :
             IClassFixture<ConfiguringWebApplicationFactory<TStartup>>
-        where TStartup: class {
-
-        private ConfiguringWebApplicationFactory<TStartup> _factory;
+        where TStartup : class {
 
         protected ITestOutputHelper Output { get; }
         protected HttpClient HttpClient { get; }
-        protected string InstanceName { get; } = "readonly";
+        protected string InstanceName { get; }
 
-        public ReadonlyIntegrationTests(ITestOutputHelper output, 
+        public ReadonlyIntegrationTests(ITestOutputHelper output,
             ConfiguringWebApplicationFactory<TStartup> factory) {
             Output = output;
-            _factory = factory;
-            HttpClient = factory.CreateClient();
-            HttpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_READONLY, "");
+            HttpClient = TestHttpClientFactory.CreateReadonlyClient(factory);
+            InstanceName = HttpClient.GetInstanceName();
         }
 
     }

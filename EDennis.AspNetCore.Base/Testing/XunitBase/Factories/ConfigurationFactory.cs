@@ -2,12 +2,12 @@
 using System;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class ConfigurationClassFixture<TClass> : IDisposable 
+    public class ConfigurationFactory<TClass> : IDisposable 
         where TClass : class {
 
         public IConfiguration Configuration { get; }
 
-        public ConfigurationClassFixture() {
+        public ConfigurationFactory() {
 
             var classInfo = new ClassInfo<TClass>();
             var dir = classInfo.ProjectDirectory;

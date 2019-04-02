@@ -9,7 +9,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
     public class StateBackgroundCheckRepoTests :
         ReadonlyRepoTests<StateBackgroundCheckRepo, StateBackgroundCheckView, StateBackgroundCheckContext> {
-        public StateBackgroundCheckRepoTests(ITestOutputHelper output, ConfigurationClassFixture<StateBackgroundCheckRepo> fixture)
+        public StateBackgroundCheckRepoTests(ITestOutputHelper output, ConfigurationFactory<StateBackgroundCheckRepo> fixture)
             : base(output, fixture) { }
 
 

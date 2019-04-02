@@ -3,7 +3,7 @@
 declare @TestCase varchar(1) = 'B'
 declare @Id int = 2
 declare @FirstName varchar(30) = 'Curly'
-declare @User varchar(255) = 'moe@stooges.org'
+declare @User varchar(255) = 'tester@example.org'
 
 declare 
 	@Input varchar(max) = 

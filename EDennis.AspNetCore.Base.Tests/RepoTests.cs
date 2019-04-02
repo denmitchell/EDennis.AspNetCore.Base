@@ -15,10 +15,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
-        public RepoTests(ITestOutputHelper output, ConfigurationClassFixture<ColorRepo> fixture)
-            : base(output, fixture) {
-
-            ScopeProperties.User = "moe@stooges.org";
+        public RepoTests(ITestOutputHelper output, 
+            ConfigurationFactory<ColorRepo> fixture)
+            : base(output, fixture, "tester@example.org") {
         }
 
 
