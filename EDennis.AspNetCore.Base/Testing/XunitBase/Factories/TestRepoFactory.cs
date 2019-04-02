@@ -10,11 +10,12 @@ using System.Linq;
 namespace EDennis.AspNetCore.Base.Testing {
     public class TestRepoFactory {
 
-        public const string DEFAULT_USER = "moe@stooges.org";
+        public const string DEFAULT_USER = "tester@example.org";
+        public const string READONLY_INSTANCE_NAME = "readonly";
 
         public static TRepo CreateReadonlyRepo<
 
-            TRepo, TEntity, TContext>(ConfigurationClassFixture<TRepo> fixture)
+            TRepo, TEntity, TContext>(ConfigurationFactory<TRepo> fixture)
             where TEntity : class, new()
             where TContext : DbContext
             where TRepo : ReadonlyRepo<TEntity, TContext> {
@@ -32,7 +33,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateReadonlyTemporalRepo<
 
-            TRepo, TEntity, TContext, THistoryContext>(ConfigurationClassFixture<TRepo> fixture)
+            TRepo, TEntity, TContext, THistoryContext>(ConfigurationFactory<TRepo> fixture)
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext
@@ -55,7 +56,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateWriteableRepo<
 
-            TRepo, TEntity, TContext>(ConfigurationClassFixture<TRepo> fixture,
+            TRepo, TEntity, TContext>(ConfigurationFactory<TRepo> fixture,
             string testUser = DEFAULT_USER
             )
             where TEntity : class, IHasSysUser, new()
@@ -76,7 +77,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             scopeProperties.OtherProperties.Add("InstanceName", instanceName);
 
             var repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { context }) as TRepo;
+                new object[] { context, scopeProperties }) as TRepo;
 
             return repo;
 
@@ -84,7 +85,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public static TRepo CreateWriteableTemporalRepo<
-            TRepo, TEntity, TContext, THistoryContext>(ConfigurationClassFixture<TRepo> fixture,
+            TRepo, TEntity, TContext, THistoryContext>(ConfigurationFactory<TRepo> fixture,
             string testUser = DEFAULT_USER
             )
 
@@ -116,7 +117,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
             var repo = Activator.CreateInstance(typeof(TRepo),
-                new object[] { context, historyContext }) as TRepo;
+                new object[] { context, historyContext, scopeProperties }) as TRepo;
 
             return repo;
 
@@ -128,7 +129,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TContext : DbContext
             where TRepo : ReadonlyRepo<TEntity, TContext> {
 
-            return "readonly";
+            return READONLY_INSTANCE_NAME;
         }
 
         public static string GetInstanceName<
@@ -137,7 +138,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TContext : DbContext
             where TRepo : ReadonlyRepo<TEntity, TContext> {
 
-            return "readonly";
+            return READONLY_INSTANCE_NAME;
         }
 
         public static string GetInstanceName<
@@ -169,7 +170,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             this ReadonlyRepo<TEntity, TContext> repo)
             where TEntity : class, new()
             where TContext : DbContext {
-            return "readonly";
+            return TestRepoFactory.READONLY_INSTANCE_NAME;
         }
 
         public static string GetInstanceName<TEntity, TContext, THistoryContext>(
@@ -177,14 +178,14 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext {
-            return "readonly";
+            return TestRepoFactory.READONLY_INSTANCE_NAME;
         }
 
         public static string GetInstanceName<TEntity, TContext>(
             this WriteableRepo<TEntity, TContext> repo)
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
-            return GetInstanceName(repo.ScopeProperties, repo.GetType());
+            return GetInstanceName(repo.ScopeProperties);
         }
 
         public static string GetInstanceName<TEntity, TContext, THistoryContext>(
@@ -193,16 +194,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TContext : DbContext
             where THistoryContext : DbContext
             {
-            return GetInstanceName(repo.ScopeProperties, repo.GetType());
+            return GetInstanceName(repo.ScopeProperties);
         }
 
-        private static string GetInstanceName(ScopeProperties scopeProperties, Type type) {
-
-            var dict = scopeProperties.OtherProperties[type.Name] as Dictionary<string,object>;
-            var headers = dict[ApiClient.HEADER_KEY] as List<KeyValuePair<string,StringValues>>;
-            var instanceName = headers.Where(h => h.Key == Interceptor.HDR_USE_INMEMORY).FirstOrDefault().Value;
-
-            return instanceName;
+        private static string GetInstanceName(ScopeProperties scopeProperties) {
+            return scopeProperties.OtherProperties["InstanceName"].ToString();
         }
 
 

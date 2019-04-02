@@ -1,7 +1,7 @@
 ﻿use hr;
 
 declare @FirstName varchar(30) = 'Larry'
-declare @User varchar(30) = 'moe@stooges.org'
+declare @User varchar(30) = 'tester@example.org'
 
 declare @Id int
 select @Id = max(id) + 1 from Employee

@@ -7,7 +7,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationClassFixture<TRepo>>, IDisposable
+    public abstract class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationFactory<TRepo>>, IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
         where THistoryContext : DbContext
@@ -19,11 +19,11 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected string HistoryInstanceName { get; }
 
         public WriteableTemporalRepoTests(ITestOutputHelper output, 
-            ConfigurationClassFixture<TRepo> fixture,
-            string testUser = "moe@stooges.org") {
+            ConfigurationFactory<TRepo> fixture,
+            string testUser = "tester@example.org") {
 
             Output = output;
-            Repo = TestRepoFactory.CreateWriteableRepo<TRepo, TEntity, TContext>(fixture, testUser) as TRepo;
+            Repo = TestRepoFactory.CreateWriteableTemporalRepo<TRepo, TEntity, TContext, THistoryContext>(fixture, testUser) as TRepo;
             InstanceName = Repo.ScopeProperties.OtherProperties["InstanceName"].ToString();
             HistoryInstanceName = Repo.ScopeProperties.OtherProperties["HistoryInstanceName"].ToString();
 

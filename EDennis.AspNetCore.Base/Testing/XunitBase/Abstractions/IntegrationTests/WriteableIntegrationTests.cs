@@ -6,7 +6,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class WriteableIntegrationTests<TStartup> :
+    public abstract class WriteableIntegrationTests<TStartup> :
             IClassFixture<ConfiguringWebApplicationFactory<TStartup>>, IDisposable
         where TStartup : class {
 

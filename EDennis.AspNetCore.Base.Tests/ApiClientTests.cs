@@ -13,13 +13,13 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class ApiClientTests : 
-        ApiClientTests<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
+        WriteableApiClientTests<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public ApiClientTests(ITestOutputHelper output, 
-            ApiLauncherFixture<EDennis.Samples.Colors.InternalApi.Startup> fixture)
+            ApiLauncherFactory<EDennis.Samples.Colors.InternalApi.Startup> fixture)
             :base(output,fixture){}
 
 

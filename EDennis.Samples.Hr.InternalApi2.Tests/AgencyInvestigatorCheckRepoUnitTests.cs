@@ -18,7 +18,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         private static readonly string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
 
         public AgencyInvestigatorCheckRepoUnitTests(ITestOutputHelper output,
-            ConfigurationClassFixture<AgencyInvestigatorCheckRepo> fixture) : base(output, fixture) { }
+            ConfigurationFactory<AgencyInvestigatorCheckRepo> fixture) : base(output, fixture) { }
 
         internal class TestJson_ : TestJsonAttribute {
             public TestJson_(string methodName, string testScenario, string testCase)

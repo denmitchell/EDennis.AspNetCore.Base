@@ -16,7 +16,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         private AgencyOnlineCheckController _controller;
 
         public AgencyOnlineCheckControllerUnitTests(
-                ITestOutputHelper output, ConfigurationClassFixture<AgencyOnlineCheckRepo> fixture) 
+                ITestOutputHelper output, ConfigurationFactory<AgencyOnlineCheckRepo> fixture) 
             : base (output,fixture){
             _controller = new AgencyOnlineCheckController(Repo);
         }
