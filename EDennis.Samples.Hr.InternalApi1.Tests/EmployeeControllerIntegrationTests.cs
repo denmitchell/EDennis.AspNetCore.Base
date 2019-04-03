@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
     public class EmployeeControllerIntegrationTests
-        : WriteableTemporalEndpointTests<Startup> {
+        : WriteableEndpointTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };

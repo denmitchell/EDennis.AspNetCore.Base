@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
-    public class AgencyOnlineCheckEndpointTests : WriteableTemporalEndpointTests<Startup> {
+    public class AgencyOnlineCheckEndpointTests : WriteableEndpointTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };

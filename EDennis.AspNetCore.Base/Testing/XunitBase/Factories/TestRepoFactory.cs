@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateReadonlyRepo<
 
-            TRepo, TEntity, TContext, T>(ConfigurationFactory<T> fixture)
+            TRepo, TEntity, TContext, T>(ConfigurationFactory<T> factory)
             where TEntity : class, new()
             where TContext : DbContext
             where TRepo : ReadonlyRepo<TEntity, TContext>
@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
             var context = TestDbContextManager<TContext>.GetReadonlyDatabase(
-                fixture.Configuration);
+                factory.Configuration);
 
             var repo = Activator.CreateInstance(typeof(TRepo),
                 new object[] { context }) as TRepo;
@@ -34,7 +34,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateReadonlyTemporalRepo<
 
-            TRepo, TEntity, TContext, THistoryContext, T>(ConfigurationFactory<T> fixture)
+            TRepo, TEntity, TContext, THistoryContext, T>(ConfigurationFactory<T> factory)
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext
@@ -43,10 +43,10 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
             var context = TestDbContextManager<TContext>.GetReadonlyDatabase(
-                fixture.Configuration);
+                factory.Configuration);
 
             var historyContext = TestDbContextManager<THistoryContext>.GetReadonlyDatabase(
-                fixture.Configuration);
+                factory.Configuration);
 
             var repo = Activator.CreateInstance(typeof(TRepo),
                 new object[] { context, historyContext }) as TRepo;
@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TRepo CreateWriteableRepo<
 
-            TRepo, TEntity, TContext, T>(ConfigurationFactory<T> fixture,
+            TRepo, TEntity, TContext, T>(ConfigurationFactory<T> factory,
             string testUser = DEFAULT_USER
             )
             where TEntity : class, IHasSysUser, new()
@@ -66,7 +66,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TRepo : WriteableRepo<TEntity, TContext>
             where T : class {
 
-            var databaseName = fixture.Configuration.GetDatabaseName<TContext>();
+            var databaseName = factory.Configuration.GetDatabaseName<TContext>();
             var instanceName = Guid.NewGuid().ToString();
 
             var context = TestDbContextManager<TContext>.CreateInMemoryDatabase(
@@ -88,7 +88,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public static TRepo CreateWriteableTemporalRepo<
-            TRepo, TEntity, TContext, THistoryContext, T>(ConfigurationFactory<T> fixture,
+            TRepo, TEntity, TContext, THistoryContext, T>(ConfigurationFactory<T> factory,
             string testUser = DEFAULT_USER
             )
 
@@ -99,10 +99,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             where T : class {
 
 
-            var databaseName = fixture.Configuration.GetDatabaseName<TContext>();
+            var databaseName = factory.Configuration.GetDatabaseName<TContext>();
             var instanceName = Guid.NewGuid().ToString();
 
-            var historyDatabaseName = fixture.Configuration.GetDatabaseName<THistoryContext>();
+            var historyDatabaseName = factory.Configuration.GetDatabaseName<THistoryContext>();
             var historyInstanceName = instanceName + Interceptor.HISTORY_INSTANCE_SUFFIX;
 
 

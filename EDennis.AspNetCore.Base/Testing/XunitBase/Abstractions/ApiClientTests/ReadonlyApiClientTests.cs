@@ -17,16 +17,14 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected ITestOutputHelper Output { get; }
         protected string InstanceName { get; }
-        protected HttpClient HttpClient { get; }
 
         protected TClient ApiClient { get; }
 
         public ReadonlyApiClientTests(ITestOutputHelper output,
-                ApiLauncherFactory<TStartup> fixture) {
+                ApiLauncherFactory<TStartup> factory) {
 
             Output = output;
-            ApiClient = TestApiClientFactory.CreateReadonlyClient<TClient, TStartup>(fixture);
-            HttpClient = ApiClient.HttpClient;
+            ApiClient = TestApiClientFactory.CreateReadonlyClient<TClient, TStartup>(factory);
             InstanceName = ApiClient.GetInstanceName();
 
         }

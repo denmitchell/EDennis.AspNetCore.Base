@@ -14,13 +14,13 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public static TClient CreateReadonlyClient<TClient, TStartup>(
-            ApiLauncherFactory<TStartup> fixture)
+            ApiLauncherFactory<TStartup> factory)
             where TClient : ApiClient
             where TStartup : class {
 
             var httpClient = HttpClientFactory.Create();
 
-            var port = fixture.Port;
+            var port = factory.Port;
             var baseAddress = $"http://localhost:{port}";
 
             var baseAddressConfig = new List<KeyValuePair<string, string>>();
@@ -62,13 +62,13 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public static TClient CreateWriteableClient<TClient, TStartup>(
-            ApiLauncherFactory<TStartup> fixture, string testUser = TestRepoFactory.DEFAULT_USER)
+            ApiLauncherFactory<TStartup> factory, string testUser = TestRepoFactory.DEFAULT_USER)
             where TClient : ApiClient
             where TStartup : class {
 
             var httpClient = HttpClientFactory.Create();
 
-            var port = fixture.Port;
+            var port = factory.Port;
             var baseAddress = $"http://localhost:{port}";
 
             var baseAddressConfig = new List<KeyValuePair<string, string>>();

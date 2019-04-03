@@ -14,7 +14,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Tests {
-    public class RepoControllerEndpointTests : WriteableTemporalEndpointTests<Startup> {
+    public class RepoControllerEndpointTests : WriteableEndpointTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };

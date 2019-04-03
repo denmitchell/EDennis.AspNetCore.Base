@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Tests {
     public class MultitierIntegrationTests_InMemory : 
-        WriteableTemporalEndpointTests<EDennis.Samples.Colors.ExternalApi.Startup> {
+        WriteableEndpointTests<EDennis.Samples.Colors.ExternalApi.Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd", "SysUser", "SysUserNext" };
