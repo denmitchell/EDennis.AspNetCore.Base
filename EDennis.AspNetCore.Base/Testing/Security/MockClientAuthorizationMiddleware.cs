@@ -150,7 +150,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var identityServerApi = apiDict.Where(x => x.Value.IdentityServerSecret != null ).FirstOrDefault().Value;
                 if (identityServerApi == null)
-                    throw new ApplicationException("MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having property IsIdentityServer=true appears in appsettings.Development.json.");
+                    throw new ApplicationException("MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having property IdentityServerSecret appears in appsettings.Development.json.");
 
                 authority = identityServerApi.BaseAddress;
             } else {
