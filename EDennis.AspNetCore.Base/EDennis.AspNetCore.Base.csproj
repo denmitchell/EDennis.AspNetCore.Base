@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -14,30 +14,21 @@
     <RepositoryType>github</RepositoryType>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Added exception message when an ApiClient or SecureApiClient does not have a corresponding Apis entry in appsettings.Development.json</PackageReleaseNotes>
+    <PackageReleaseNotes>Removed several unused dependencies from the project</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
+    <AssemblyVersion>2.1.2.0</AssemblyVersion>
+    <FileVersion>2.1.2.0</FileVersion>
 
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.60.1" />
     <PackageReference Include="EDennis.MigrationsExtensions" Version="3.1.0" />
-    <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.4.0" />
     <PackageReference Include="Flurl" Version="2.8.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="IdentityServer4.EntityFramework" Version="2.3.2" />
-    <PackageReference Include="IdentityServer4.Storage" Version="2.3.1" />
-    <PackageReference Include="IdentityModel" Version="4.0.0-bruichladdich" />
+    <PackageReference Include="IdentityModel" Version="3.10.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="140.17283.0" />
-    <PackageReference Include="Moq" Version="4.10.1" />
-    <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
-    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.10" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
