@@ -47,9 +47,30 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// {
         ///   "AutoLogin": {
         ///     "SomeUserName": {
-        ///       "SomeClaimType": "SomeClaimValue",
-        ///       "AnotherClaimType": "AnotherClaimValue"
-        ///     }
+        ///         "Default" : true,
+        ///         "Claims" : [
+        ///             {
+        ///                 "Type": "SomeClaimType",
+        ///                 "Value": "SomeClaimValue"
+        ///             },
+        ///             {
+        ///                 "Type": "AnotherClaimType",
+        ///                 "Value": "AnotherClaimValue"
+        ///             }
+        ///         ]
+        ///     },
+        ///     "AnotherUserName": {
+        ///         "Claims" : [
+        ///             {
+        ///                 "Type": "SomeClaimType",
+        ///                 "Value": "SomeClaimValue"
+        ///             },
+        ///             {
+        ///                 "Type": "AnotherClaimType",
+        ///                 "Value": "AnotherClaimValue"
+        ///             }
+        ///         ]
+        ///     }     
         ///   }
         /// }
         /// </summary>
@@ -95,8 +116,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var autologinConfig = autologinDict[autologinArg];
 
             //get the autologin claims
-            var autoLoginConfigClaims = autologinConfig.Claims as IEnumerable<MockClaim>;
-            if (autoLoginConfigClaims == null)
+            if (!(autologinConfig.Claims is IEnumerable<MockClaim> autoLoginConfigClaims) || autologinConfig.Claims.Count() == 0)
                 throw new ArgumentException($"Missing claims configuration for AutoLogin:{autologinArg}");
 
 

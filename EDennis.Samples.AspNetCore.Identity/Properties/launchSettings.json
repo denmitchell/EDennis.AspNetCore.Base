@@ -8,6 +8,24 @@
     }
   },
   "profiles": {
+    "AutoLogin=bob": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "commandLineArgs": "AutoLogin=bob",
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "AutoLogin=alice": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "commandLineArgs": "AutoLogin=alice",
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

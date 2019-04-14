@@ -87,7 +87,7 @@ namespace EDennis.Samples.AspNetCore.Identity {
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            //app.UseAutoLogin();
+            app.UseAutoLogin();
 
             app.UseAuthentication();
 
