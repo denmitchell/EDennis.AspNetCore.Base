@@ -47,9 +47,30 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// {
         ///   "AutoLogin": {
         ///     "SomeUserName": {
-        ///       "SomeClaimType": "SomeClaimValue",
-        ///       "AnotherClaimType": "AnotherClaimValue"
-        ///     }
+        ///         "Default" : true,
+        ///         "Claims" : [
+        ///             {
+        ///                 "Type": "SomeClaimType",
+        ///                 "Value": "SomeClaimValue"
+        ///             },
+        ///             {
+        ///                 "Type": "AnotherClaimType",
+        ///                 "Value": "AnotherClaimValue"
+        ///             }
+        ///         ]
+        ///     },
+        ///     "AnotherUserName": {
+        ///         "Claims" : [
+        ///             {
+        ///                 "Type": "SomeClaimType",
+        ///                 "Value": "SomeClaimValue"
+        ///             },
+        ///             {
+        ///                 "Type": "AnotherClaimType",
+        ///                 "Value": "AnotherClaimValue"
+        ///             }
+        ///         ]
+        ///     }     
         ///   }
         /// }
         /// </summary>
@@ -59,6 +80,14 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="config">The config object, which gathers information from appsettings.json, environment vars ... etc.</param>
         /// <returns></returns>
         public async Task Invoke(HttpContext httpContext, IConfiguration config) {
+
+
+            var autologinDict = new AutoLoginDictionary();
+
+            config.GetSection("AutoLogin").Bind(autologinDict);
+
+            if (autologinDict == null || autologinDict.Count == 0)
+                throw new ArgumentException($"Missing configuration for AutoLogin");
 
 
             //CommandLineConfigurationSource cmdSource
@@ -71,28 +100,33 @@ namespace EDennis.AspNetCore.Base.Testing {
             var autologinArg = (!args.ContainsKey("autologin") ? null : args["autologin"]);
 
             if (autologinArg == null)
-                autologinArg = config.GetSection("AutoLogin").GetChildren().FirstOrDefault()?.Key;
+                autologinArg = autologinDict
+                    .Where(x=>x.Value.Default)
+                    .FirstOrDefault()
+                    .Key;
 
             if (autologinArg == null)
                 throw new ArgumentException($"Missing configuration for AutoLogin");
 
-            //get the configuration for the autologin
-            var autologinConfig = config.GetSection($"AutoLogin:{autologinArg}");
-            if (autologinConfig == null)
+
+            if(!autologinDict.ContainsKey(autologinArg))
                 throw new ArgumentException($"Missing configuration for AutoLogin:{autologinArg}");
 
+            //get the configuration for the autologin
+            var autologinConfig = autologinDict[autologinArg];
+
             //get the autologin claims
-            var autoLoginConfigClaims = autologinConfig.GetChildren() as IEnumerable<dynamic>;
-            if (autoLoginConfigClaims == null)
+            if (!(autologinConfig.Claims is IEnumerable<MockClaim> autoLoginConfigClaims) || autologinConfig.Claims.Count() == 0)
                 throw new ArgumentException($"Missing claims configuration for AutoLogin:{autologinArg}");
+
 
             //add microsoft uri claims
             var claims = autoLoginConfigClaims
-                .Select(a => new Claim(GetClaimUri(a.Key), a.Value));
+                .Select(a => new Claim(GetClaimUri(a.Type), a.Value));
 
             //add simple name (jwt) claims
             claims = claims.Union( autoLoginConfigClaims
-                .Select(a => new Claim(a.Key, a.Value)));
+                .Select(a => new Claim(a.Type, a.Value)));
 
 
             //add the Name claim type, if it doesn't exist already
