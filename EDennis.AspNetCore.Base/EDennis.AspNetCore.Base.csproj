@@ -20,6 +20,11 @@
     <FileVersion>2.1.3.0</FileVersion>
 
   </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.60.1" />
