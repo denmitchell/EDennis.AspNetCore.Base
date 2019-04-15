@@ -9,6 +9,36 @@
     }
   },
   "profiles": {
+    "MockClient=Client1": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5006",
+      "commandLineArgs": "MockClient=Client1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "MockClient=Client2": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5006",
+      "commandLineArgs": "MockClient=Client2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "MockClient=Client3": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5006",
+      "commandLineArgs": "MockClient=Client3",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "EDennis.Samples.Hr.InternalApi1": {
       "commandName": "Project",
       "launchBrowser": true,
