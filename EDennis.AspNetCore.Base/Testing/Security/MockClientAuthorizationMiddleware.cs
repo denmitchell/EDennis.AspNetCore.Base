@@ -148,7 +148,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var apiDict = new Dictionary<string, ApiConfig>();
                 config.GetSection("Apis").Bind(apiDict);
 
-                var identityServerApi = apiDict.Where(x => x.Value.IdentityServerSecret != null ).FirstOrDefault().Value;
+                var identityServerApi = apiDict.Where(x => x.Value.Secret != null ).FirstOrDefault().Value;
                 if (identityServerApi == null)
                     throw new ApplicationException("MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having property IdentityServerSecret appears in appsettings.Development.json.");
 

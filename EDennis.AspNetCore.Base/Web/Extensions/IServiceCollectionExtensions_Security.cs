@@ -38,7 +38,8 @@ namespace EDennis.AspNetCore.Base.Web {
             var apiDict = new Dictionary<string, ApiConfig>();
             config.GetSection("Apis").Bind(apiDict);
 
-            var identityServerApi = apiDict.Where(x => x.Value.IdentityServerSecret != null).FirstOrDefault().Value;
+            //identify Identity Server, which is the only configured API without a secret
+            var identityServerApi = apiDict.Where(x => x.Value.Secret == null).FirstOrDefault().Value;
             if (identityServerApi == null)
                 throw new ApplicationException("AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server. No Api having property IdentityServerSecret appears in appsettings.Development.json.");
 
