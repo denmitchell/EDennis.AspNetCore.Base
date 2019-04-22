@@ -97,7 +97,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
                 Address = disco.TokenEndpoint,
 
                 ClientId = _hostingEnvironment.ApplicationName,
-                ClientSecret = identityServerApi.IdentityServerSecret,
+                ClientSecret = targetApi.Secret,
                 Scope = string.Join(' ', targetApi.Scopes)
             });
 
