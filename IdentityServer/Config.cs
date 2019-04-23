@@ -333,10 +333,10 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
                     }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","curly@stooges.net")
-                    //}
+                    ,
+                    Claims = {
+                        new System.Security.Claims.Claim("name","curly@stooges.net")
+                    }
                 },
                 new Client
                 {
@@ -355,10 +355,12 @@ namespace IdentityServer {
                         "EDennis.Samples.DefaultPoliciesApi",
                         "EDennis.Samples.Hr.InternalApi"
                     }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
-                    //}
+                    ,
+                    Claims = {
+                        new System.Security.Claims.Claim("name","moe@stooges.net"),
+                        new System.Security.Claims.Claim("Some Claim Type","Some Claim Value")
+                    },
+                    ClientClaimsPrefix=""
                 },
                 new Client
                 {
@@ -378,10 +380,10 @@ namespace IdentityServer {
                         "EDennis.Samples.DefaultPoliciesApi.Person",
                         "EDennis.Samples.Hr.InternalApi.Employee"
                     }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","larry@stooges.net")
-                    //}
+                    ,
+                    Claims = {
+                        new System.Security.Claims.Claim("name","larry@stooges.net")
+                    }
                 },
                 new Client
                 {
@@ -403,10 +405,10 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployees"
                     }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","curly@stooges.net")
-                    //}
+                    ,
+                    Claims = {
+                        new System.Security.Claims.Claim("name","curly@stooges.net")
+                    }
                 },
                 // resource owner password grant client
                 new Client

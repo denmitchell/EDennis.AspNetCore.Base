@@ -43,6 +43,11 @@ namespace EDennis.AspNetCore.Base.Web {
                         .FirstOrDefault()?.Value;
                     context.Request.Headers.Add("X-User", scopeProperties.User);
                 }
+
+                //if present, add user claims to ScopeProperties
+                if (context.User != null && context.User.Claims != null)
+                    scopeProperties.Claims = context.User.Claims.ToArray();
+
             }
             await _next(context);
 
