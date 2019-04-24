@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -25,9 +26,13 @@ namespace EDennis.AspNetCore.Base.Web {
             return this;
         }
 
-        public void AwaitApis() {
-            Task.Run(() => {
-                while (true) {
+        public void AwaitApis(int timeoutSeconds = 5) {
+
+
+            async Task r() => await Task.Run(() => {
+                var sw = new Stopwatch();
+                sw.Start();
+                while (sw.ElapsedMilliseconds < (timeoutSeconds * 1000)) {
                     var apiDict = new Dictionary<string, ApiConfig>();
                     Configuration.GetSection("Apis").Bind(apiDict);
                     var cnt = apiDict.Where(
@@ -37,13 +42,14 @@ namespace EDennis.AspNetCore.Base.Web {
                     Thread.Sleep(1000);
                 }
             });
+            r().Wait();
         }
     }
 
     public static class IServiceCollectionExtensions_Launcher {
 
-        public static ApiLauncherService AddLauncher<TStartup>(this IServiceCollection services, 
-            IConfiguration config, 
+        public static ApiLauncherService AddLauncher<TStartup>(this IServiceCollection services,
+            IConfiguration config,
             ILogger logger)
             where TStartup : class {
 
@@ -59,11 +65,11 @@ namespace EDennis.AspNetCore.Base.Web {
             }
             ewh.Set();
 
-            var launcherService =  new ApiLauncherService {
-                 Services = services,
-                 Configuration = config,
-                 Logger = logger,
-                 ProjectPorts = projectPorts
+            var launcherService = new ApiLauncherService {
+                Services = services,
+                Configuration = config,
+                Logger = logger,
+                ProjectPorts = projectPorts
             };
 
             return launcherService.AddLauncher<TStartup>();

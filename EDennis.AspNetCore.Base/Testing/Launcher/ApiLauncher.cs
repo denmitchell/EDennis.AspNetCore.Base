@@ -72,6 +72,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 //short-circuit if the project has been assigned a port, already
                 if (projectPortAssignment.AlreadyAssigned) {
                     _config[$"{configKey}:BaseAddress"] = $"http://localhost:{_port}";
+                    _config[$"{configKey}:Pingable"] = "true";
                     return;
                 }
             } else {
@@ -122,7 +123,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         private void Ping(string configKey, string host, int port, int timeoutSeconds = 5) {
 
-            _config[$"configKey:Pingable"] = "false";
+            _config[$"{configKey}:Pingable"] = "false";
 
             var sw = new Stopwatch();
 
@@ -131,7 +132,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 try {
                     using (var tcp = new TcpClient(host, port)) {
                         var connected = tcp.Connected;
-                        _config[$"configKey:Pingable"] = "true";
+                        _config[$"{configKey}:Pingable"] = "true";
                         break;
                     }
                 } catch (Exception ex) {
