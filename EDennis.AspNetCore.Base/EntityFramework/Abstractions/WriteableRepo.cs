@@ -140,11 +140,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot update a null {entity.GetType().Name}");
 
+            //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
+            //copy property values from entity to existing
+            Context.Entry(existing).CurrentValues.SetValues(entity);
 
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
-            Context.Update(entity);
+
+            //Context.Update(entity); //not needed when copying values
             Context.SaveChanges();
 
             return entity;
@@ -162,11 +166,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot update a null {entity.GetType().Name}");
 
+            //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
+            //copy property values from entity to existing
+            Context.Entry(existing).CurrentValues.SetValues(entity);
 
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
-            Context.Update(entity);
+            //Context.Update(entity);
             await Context.SaveChangesAsync();
 
             return entity;

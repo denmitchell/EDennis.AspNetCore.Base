@@ -31,5 +31,13 @@ namespace EDennis.Samples.Hr.InternalApi2.Controllers {
             return _repo.Create(check);
         }
 
+
+        // PUT: api/AgencyOnlineCheck/1
+        [HttpPut("{id}")]
+        public AgencyOnlineCheck Put([FromBody] AgencyOnlineCheck check, [FromRoute] int id) {
+            return _repo.Update(check,id);
+        }
+
+
     }
 }
