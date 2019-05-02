@@ -176,7 +176,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string clientSecret;
             string[] scopes;
 
-            clientId = appName + "." + mockClientId;
+            clientId = mockClientId;
 
             if (mockClientProperties.Secret != null)
                 clientSecret = mockClientProperties.Secret;

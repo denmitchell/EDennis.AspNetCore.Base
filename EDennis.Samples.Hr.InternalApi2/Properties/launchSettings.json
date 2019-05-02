@@ -9,6 +9,16 @@
     }
   },
   "profiles": {
+    "MockClient=Client1": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5050",
+      "commandLineArgs": "MockClient=EDennis.Samples.Hr.ExternalApi.Client1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "EDennis.Samples.Hr.InternalApi2": {
       "commandName": "Project",
       "launchBrowser": true,

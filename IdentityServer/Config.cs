@@ -5,7 +5,7 @@
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System.Collections.Generic;
-
+using System.Collections.ObjectModel;
 
 namespace IdentityServer {
     public static class Config {
@@ -177,235 +177,79 @@ namespace IdentityServer {
             };
         }
 
+        internal class MockClient : Client {
+            public MockClient() : base() {
+                ClientClaimsPrefix = "";
+                AllowedGrantTypes = GrantTypes.ClientCredentials;
+                ClientSecrets = new Collection<Secret> { new Secret("secret".Sha256()) };
+            }
+        };
+
         public static IEnumerable<Client> GetClients() {
-            return new List<Client>
-            {
-                new Client
-                {
+            return new List<Client> {
+                new MockClient {
                     ClientId = "EDennis.Samples.Hr.ExternalApi",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
                         "EDennis.Samples.Hr.InternalApi2"
                     }
-                    //},
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
-                    //}
                 },
-                new Client
-                {
-                    ClientId = "EDennis.Samples.Hr.InternalApi2.Client1",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    // scopes that client has access to
+                new MockClient {
+                    ClientId = "EDennis.Samples.Hr.ExternalApi.Client1",
                     AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi2"
+                        "EDennis.Samples.Hr.InternalApi1",
+                        "EDennis.Samples.Hr.InternalApi2",
                     }
-                    //},
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
-                    //}
                 },
-                new Client
-                {
-                    ClientId = "EDennis.Samples.InternalApi2.Client2",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
+                new MockClient {
+                    ClientId = "EDennis.Samples.ExternalApi.Client2",
                     AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi1.Employee",
                         "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck",
                         "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck"
                     }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","larry@stooges.net")
-                    //}
                 },
-                new Client
-                {
-                    ClientId = "EDennis.Samples.Hr.InternalApi2.Client3",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
+                new MockClient {
+                    ClientId = "EDennis.Samples.Hr.ExternalApi.Client3",
                     AllowedScopes = {
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
+                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
                         "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.GetLastCheck",
                         "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.GetLastCheck",
                         "EDennis.Samples.Hr.InternalApi2.PreEmployment.GetLastChecks"
                     }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","curly@stooges.net")
-                    //}
                 },
-                new Client
-                {
-                    ClientId = "EDennis.Samples.Hr.InternalApi1.Client1",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    // scopes that client has access to
-                    AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi1"
-                    }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","moe@stooges.net")
-                    //}
-                },
-                new Client
-                {
-                    ClientId = "EDennis.Samples.InternalApi1.Client2",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
-                    AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi1.Employee"
-                    }
-                    //,
-                    //Claims = {
-                    //    new System.Security.Claims.Claim("name","larry@stooges.net")
-                    //}
-                },
-                new Client
-                {
-                    ClientId = "EDennis.Samples.Hr.InternalApi1.Client3",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
-                    AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
-                        "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
-                    }
-                    ,
-                    Claims = {
-                        new System.Security.Claims.Claim("name","curly@stooges.net")
-                    }
-                },
-                new Client
-                {
+                new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client1",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi",
                         "EDennis.Samples.Hr.InternalApi"
-                    }
-                    ,
+                    },
                     Claims = {
                         new System.Security.Claims.Claim("name","moe@stooges.net"),
                         new System.Security.Claims.Claim("Some Claim Type","Some Claim Value")
-                    },
-                    ClientClaimsPrefix=""
+                    }
                 },
-                new Client
-                {
+                new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client2",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.Person",
                         "EDennis.Samples.Hr.InternalApi.Employee"
-                    }
-                    ,
+                    },
                     Claims = {
                         new System.Security.Claims.Claim("name","larry@stooges.net")
                     }
                 },
-                new Client
-                {
+                new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client3",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials, 
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.Person.Get",
                         "EDennis.Samples.DefaultPoliciesApi.Position.Post",
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployees"
-                    }
-                    ,
+                    },
                     Claims = {
                         new System.Security.Claims.Claim("name","curly@stooges.net")
                     }

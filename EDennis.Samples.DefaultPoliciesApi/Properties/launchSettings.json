@@ -9,21 +9,12 @@
     }
   },
   "profiles": {
-    "EDennis.Samples.DefaultPoliciesApi": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5006",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "MockClient=Client1": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5006",
-      "commandLineArgs": "MockClient=Client1",
+      "commandLineArgs": "MockClient=EDennis.Samples.DefaultPoliciesApi.Client1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -33,7 +24,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5006",
-      "commandLineArgs": "MockClient=Client2",
+      "commandLineArgs": "MockClient=EDennis.Samples.DefaultPoliciesApi.Client2",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -43,7 +34,16 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5006",
-      "commandLineArgs": "MockClient=Client3",
+      "commandLineArgs": "MockClient=EDennis.Samples.DefaultPoliciesApi.Client3",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "EDennis.Samples.DefaultPoliciesApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5006",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
