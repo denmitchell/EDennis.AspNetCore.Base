@@ -84,6 +84,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             .UseStartup<TStartup>()
             .UseContentRoot(dir)
             .UseUrls($"http://localhost:{_port}")
+            .ConfigureLogging(options => {
+                options.AddConsole().AddDebug();
+            })
             .ConfigureServices(services => {
                 services.AddSingleton(_projectPorts);
             })

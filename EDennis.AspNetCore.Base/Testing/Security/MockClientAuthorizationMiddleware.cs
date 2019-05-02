@@ -181,7 +181,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             if (mockClientProperties.Secret != null)
                 clientSecret = mockClientProperties.Secret;
             else
-                throw new ArgumentException($"MockClientAuthorizationMiddleware requires 'MockClient:{mockClientId}:ClientSecret' configuration key, which is missing.");
+                throw new ArgumentException($"MockClientAuthorizationMiddleware requires 'MockClient:{mockClientId}:Secret' configuration key, which is missing.");
 
             if (mockClientProperties.Scopes != null && mockClientProperties.Scopes.Count() > 0)
                 scopes = mockClientProperties.Scopes;
