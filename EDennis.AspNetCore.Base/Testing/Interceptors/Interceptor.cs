@@ -44,10 +44,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             //set a reference to the X-Testing- header
             var header = headers.FirstOrDefault();
 
-            //if there are duplicate header values, throw an exception
-            if (header.Value.Count() > 1)
-                throw new DuplicateHeaderException(header);
-
             //set a reference to the X-Testing- header and first value
             var simpleHeader = new KeyValuePair<string, string>(header.Key,
                 header.Value.FirstOrDefault());
