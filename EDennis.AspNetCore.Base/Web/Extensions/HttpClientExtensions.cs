@@ -206,8 +206,11 @@ namespace EDennis.AspNetCore.Base.Web {
                 client.DefaultRequestHeaders.Remove(xTestingHeaders[i]);
 
             msg.Headers.Add($"{operationName}", "{instanceName}");
-            await client.SendAsync(msg);
-
+            try {
+                await client.SendAsync(msg);
+            } catch(ObjectDisposedException) {
+                //ignore this exception, object is disposed.
+            }
         }
 
         public static bool Ping(this HttpClient client, int timeoutSeconds = 5) {
