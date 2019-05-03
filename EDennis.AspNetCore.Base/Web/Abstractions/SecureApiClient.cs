@@ -44,6 +44,13 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
                 .Where(x => CleanUrl(x.BaseAddress) == CleanUrl(HttpClient.BaseAddress))
                 .FirstOrDefault();
 
+            if (string.IsNullOrEmpty(targetApi.Secret))
+                throw new ApplicationException($"Configuration for {targetApi.ProjectName} is missing its Secret (string) setting");
+
+            if (targetApi.Scopes == null || targetApi.Scopes.Count() == 0)
+                throw new ApplicationException($"Configuration for {targetApi.ProjectName} is missing its Scopes (string[]) setting");
+
+
             TokenResponse tokenResponse = null;
 
             //try to get the access token from the cache
