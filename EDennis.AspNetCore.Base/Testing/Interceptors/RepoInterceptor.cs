@@ -64,7 +64,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         private void GetOrAddInMemoryDatabase(TRepo repo, TestDbContextCache<TContext> cache,
-            string baseDatabaseName, string instanceName) {
+            string instanceName, string baseDatabaseName) {
             if (cache.ContainsKey(instanceName)) {
                 repo.Context = cache[instanceName];
                 _logger.LogInformation($"Using existing in-memory database {baseDatabaseName}, instance = {instanceName}");

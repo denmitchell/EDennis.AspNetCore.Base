@@ -205,7 +205,7 @@ namespace EDennis.AspNetCore.Base.Web {
             for (int i = 0; i < xTestingHeaders.Count(); i++)
                 client.DefaultRequestHeaders.Remove(xTestingHeaders[i]);
 
-            msg.Headers.Add($"{operationName}", "{instanceName}");
+            msg.Headers.Add($"{operationName}", $"{instanceName}");
             try {
                 await client.SendAsync(msg);
             } catch(ObjectDisposedException) {
