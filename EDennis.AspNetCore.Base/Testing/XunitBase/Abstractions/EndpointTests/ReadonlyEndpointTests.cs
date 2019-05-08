@@ -6,8 +6,8 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class ReadonlyEndpointTests<TStartup> :
-            IClassFixture<ConfiguringWebApplicationFactory<TStartup>>
+
+    public abstract class ReadonlyEndpointTests<TStartup>
         where TStartup : class {
 
         protected ITestOutputHelper Output { get; }

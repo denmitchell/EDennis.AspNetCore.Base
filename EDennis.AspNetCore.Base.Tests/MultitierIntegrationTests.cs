@@ -12,6 +12,8 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Tests {
+
+    [Collection("External Endpoint Tests")]
     public class MultitierIntegrationTests_InMemory : 
         WriteableEndpointTests<EDennis.Samples.Colors.ExternalApi.Startup> {
 

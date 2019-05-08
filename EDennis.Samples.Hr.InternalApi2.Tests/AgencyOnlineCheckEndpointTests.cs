@@ -14,6 +14,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
+    [Collection("Endpoint Tests")]
     public class AgencyOnlineCheckEndpointTests : WriteableEndpointTests<Startup> {
 
 

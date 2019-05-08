@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 using EDennis.AspNetCore.Base.Testing;
 
 namespace EDennis.AspNetCore.Base.Tests {
+    [Collection("ApiClient Tests")]
     public class ApiClientTests : 
         WriteableApiClientTests<InternalApi,EDennis.Samples.Colors.InternalApi.Startup> {
 

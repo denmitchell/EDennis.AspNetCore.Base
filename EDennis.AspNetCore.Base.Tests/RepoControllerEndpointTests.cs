@@ -14,13 +14,15 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Tests {
+    [Collection("Internal Endpoint Tests")]
     public class RepoControllerEndpointTests : WriteableEndpointTests<Startup> {
 
 
         private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
         private readonly ICacheLogger _logger;
 
-        public RepoControllerEndpointTests(ITestOutputHelper output, ConfiguringWebApplicationFactory<Startup> factory)
+        public RepoControllerEndpointTests(ITestOutputHelper output, 
+            ConfiguringWebApplicationFactory<Startup> factory)
             :base(output,factory){
             _logger = Output.BuildLogger();
         }

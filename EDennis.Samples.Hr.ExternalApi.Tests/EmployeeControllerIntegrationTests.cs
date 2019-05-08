@@ -8,7 +8,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.Samples.Hr.ExternalApi.Tests {
-
+    [Collection("Endpoint Tests")]
     public class EmployeeControllerIntegrationTests
         : WriteableEndpointTests<Startup> {
 

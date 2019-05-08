@@ -10,8 +10,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public abstract class ReadonlyApiClientTests<TClient,TStartup> :
-            IClassFixture<ApiLauncherFactory<TStartup>>, IDisposable
+    public abstract class ReadonlyApiClientTests<TClient,TStartup> : IDisposable
         where TStartup : class
         where TClient: ApiClient {
 
