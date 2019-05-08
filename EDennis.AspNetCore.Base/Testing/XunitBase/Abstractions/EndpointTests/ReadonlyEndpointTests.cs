@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             ConfiguringWebApplicationFactory<TStartup> factory) {
             Output = output;
             HttpClient = TestHttpClientFactory.CreateReadonlyClient(factory);
-            InstanceName = HttpClient.GetInstanceName();
+            InstanceName = "readonly";
         }
 
     }
