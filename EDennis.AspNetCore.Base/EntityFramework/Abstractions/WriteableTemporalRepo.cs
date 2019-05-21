@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public abstract class WriteableTemporalRepo<TEntity, TContext, THistoryContext> 
-                : WriteableRepo<TEntity,TContext>
+    public abstract class WriteableTemporalRepo<TEntity, TContext, THistoryContext>
+                : WriteableRepo<TEntity, TContext>
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
             where THistoryContext : DbContext {
@@ -24,14 +25,23 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public virtual bool WriteUpdate(TEntity next, TEntity current)
             => true;
-            //=> (DateTime.Now > current.SysStart.AddHours(8)
-            //    || SysUser != current.SysUser);
+        //=> (DateTime.Now > current.SysStart.AddHours(8)
+        //    || SysUser != current.SysUser);
+
+
+        public virtual bool WriteUpdate(dynamic next, TEntity current)
+            => true;
+        //=> (DateTime.Now > current.SysStart.AddHours(8)
+        //    || SysUser != current.SysUser);
 
 
         public virtual bool WriteDelete(TEntity current)
             => true;
-            //=> (DateTime.Now > current.SysStart.AddHours(8)
-            //    || SysUser != current.SysUser);
+        //=> (DateTime.Now > current.SysStart.AddHours(8)
+        //    || SysUser != current.SysUser);
+
+
+
 
 
         public THistoryContext HistoryContext { get; set; }
@@ -42,7 +52,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableTemporalRepo(TContext context, THistoryContext historyContext,
-            ScopeProperties scopeProperties) : base(context,scopeProperties) {
+            ScopeProperties scopeProperties) : base(context, scopeProperties) {
             HistoryContext = historyContext;
         }
 
@@ -57,7 +67,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            if(entity.SysStart == null)
+            if (entity.SysStart == null)
                 entity.SysStart = DateTime.Now;
             if (entity.SysEnd == null)
                 entity.SysEnd = DateTime.MaxValue;
@@ -102,9 +112,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = Context.Find<TEntity>(keyValues);
 
-            if (entity.SysStart == null)
+            if (entity.SysStart == default(DateTime))
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == null)
+            if (entity.SysEnd == default(DateTime))
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
@@ -112,12 +122,42 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (WriteUpdate(entity, existing))
                 WriteToHistory(existing);
 
-            Context.Update(entity);
+            //copy property values from entity to existing
+            Context.Entry(existing).CurrentValues.SetValues(entity);
+
+            Context.Update(existing);
             Context.SaveChanges();
 
-            return entity;
+            return existing;
         }
 
+        public override TEntity Update(dynamic partialEntity, params object[] keyValues) {
+            if (partialEntity == null)
+                throw new MissingEntityException(
+                    $"Cannot update a null {typeof(TEntity).Name}");
+
+            List<string> props = DynamicExtensions.GetProperties(partialEntity);
+            if (!props.Contains("SysUser") || partialEntity.SysUser == null)
+                partialEntity.SysUser = ScopeProperties.User;
+            if (!props.Contains("SysStart") || partialEntity.SysStart == default(DateTime))
+                partialEntity.SysStart = DateTime.Now;
+            if (!props.Contains("SysEnd") || partialEntity.SysEnd == default(DateTime))
+                partialEntity.SysEnd = DateTime.MaxValue;
+
+            //retrieve the existing entity
+            var existing = Context.Find<TEntity>(keyValues);
+
+            if (WriteUpdate(partialEntity, existing))
+                WriteToHistory(existing);
+
+            //copy property values from entity to existing
+            DynamicExtensions.Populate<TEntity>(existing,partialEntity);
+
+            Context.Update(existing);
+            Context.SaveChanges();
+
+            return existing; //updated entity
+        }
 
         /// <summary>
         /// Asynchronously updates the provided entity
@@ -132,9 +172,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = await Context.FindAsync<TEntity>(keyValues);
 
-            if (entity.SysStart == null)
+            if (entity.SysStart == default(DateTime))
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == null)
+            if (entity.SysEnd == default(DateTime))
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
@@ -142,10 +182,42 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (WriteUpdate(entity, existing))
                 await WriteToHistoryAsync(existing);
 
-            Context.Update(entity);
+            //copy property values from entity to existing
+            Context.Entry(existing).CurrentValues.SetValues(entity);
+
+            Context.Update(existing);
             await Context.SaveChangesAsync();
 
-            return entity;
+            return existing;
+        }
+
+
+        public override async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
+            if (partialEntity == null)
+                throw new MissingEntityException(
+                    $"Cannot update a null {typeof(TEntity).Name}");
+
+            List<string> props = DynamicExtensions.GetProperties(partialEntity);
+            if (!props.Contains("SysUser") || partialEntity.SysUser == null)
+                partialEntity.SysUser = ScopeProperties.User;
+            if (!props.Contains("SysStart") || partialEntity.SysStart == default(DateTime))
+                partialEntity.SysStart = DateTime.Now;
+            if (!props.Contains("SysEnd") || partialEntity.SysEnd == default(DateTime))
+                partialEntity.SysEnd = DateTime.MaxValue;
+
+            //retrieve the existing entity
+            var existing = await Context.FindAsync<TEntity>(keyValues);
+
+            if (WriteUpdate(partialEntity, existing))
+                WriteToHistory(existing);
+
+            //copy property values from entity to existing
+            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+
+            Context.Update(existing);
+            await Context.SaveChangesAsync();
+
+            return existing; //updated entity
         }
 
         /// <summary>
@@ -191,7 +263,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 params Expression<Func<TEntity, dynamic>>[] orderSelectors
                 ) {
 
-            var asOfPredicate = GetAsOfRangePredicate(from,to);
+            var asOfPredicate = GetAsOfRangePredicate(from, to);
 
             var current = Context.Set<TEntity>()
                 .Where(predicate)
@@ -226,7 +298,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public List<TEntity> QueryAsOf(DateTime asOf,
-                Expression<Func<TEntity,bool>> predicate,
+                Expression<Func<TEntity, bool>> predicate,
                 int pageNumber = 1, int pageSize = 10000,
                 params Expression<Func<TEntity, dynamic>>[] orderSelectors
                 ) {
@@ -381,22 +453,30 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         private void WriteToHistory(TEntity existing) {
             if (Context.Entry(existing).State != EntityState.Detached)
                 Context.Entry(existing).State = EntityState.Detached;
+            var sysEnd = existing.SysEnd;
+            var sysUserNext = existing.SysUserNext;
             existing.SysEnd = DateTime.Now.AddTicks(-1);
             existing.SysUserNext = ScopeProperties.User;
             HistoryContext.Add(existing);
             HistoryContext.SaveChanges();
             HistoryContext.Entry(existing).State = EntityState.Detached;
+            existing.SysEnd = sysEnd;
+            existing.SysUserNext = sysUserNext;
         }
 
 
         private async Task WriteToHistoryAsync(TEntity existing) {
             if (Context.Entry(existing).State != EntityState.Detached)
                 Context.Entry(existing).State = EntityState.Detached;
+            var sysEnd = existing.SysEnd;
+            var sysUserNext = existing.SysUserNext;
             existing.SysEnd = DateTime.Now.AddTicks(-1);
             existing.SysUserNext = ScopeProperties.User;
             HistoryContext.Add(existing);
             await HistoryContext.SaveChangesAsync();
             HistoryContext.Entry(existing).State = EntityState.Detached;
+            existing.SysEnd = sysEnd;
+            existing.SysUserNext = sysUserNext;
         }
 
 

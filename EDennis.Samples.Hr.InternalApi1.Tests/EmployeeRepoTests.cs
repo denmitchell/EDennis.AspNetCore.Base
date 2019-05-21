@@ -290,6 +290,25 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
 
 
         [Theory]
+        [TestJson_("Update", "UpdateAndGetMultiplePatch", "A")]
+        [TestJson_("Update", "UpdateAndGetMultiplePatch", "B")]
+        public void UpdateAndGetMultipleEmployeePatch(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            dynamic input = jsonTestCase.GetObject<dynamic>("Input");
+
+            var expected = jsonTestCase.GetObject<List<Employee>>("Expected");
+
+            var updated = Repo.Update(input, id);
+            var actual = Repo.Query.OrderBy(e => e.Id).ToList();
+
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
+        }
+
+
+
+        [Theory]
         [TestJson_("Update","UpdateAndGetMultiple","A")]
         [TestJson_("Update","UpdateAndGetMultiple","B")]
         public async Task UpdateAndGetMultipleAsyncEmployee(string t, JsonTestCase jsonTestCase) {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,39 +25,39 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public WriteableRepo(TContext context, ScopeProperties scopeProperties) { 
+        public WriteableRepo(TContext context, ScopeProperties scopeProperties) {
             Context = context;
             ScopeProperties = scopeProperties;
         }
 
 
 
-    /// <summary>
-    /// Retrieves the entity with the provided primary key values
-    /// </summary>
-    /// <param name="keyValues">primary key provided as key-value object array</param>
-    /// <returns>Entity whose primary key matches the provided input</returns>
-    public virtual TEntity GetById(params object[] keyValues) {
-        return Context.Find<TEntity>(keyValues);
-    }
-
-
-    /// <summary>
-    /// Asychronously retrieves the entity with the provided primary key values.
-    /// </summary>
-    /// <param name="keyValues">primary key provided as key-value object array</param>
-    /// <returns>Entity whose primary key matches the provided input</returns>
-    public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
-        return await Context.FindAsync<TEntity>(keyValues);
-    }
-
-
-    public IQueryable<TEntity> Query {
-        get {
-            return Context.Set<TEntity>()
-                .AsNoTracking();
+        /// <summary>
+        /// Retrieves the entity with the provided primary key values
+        /// </summary>
+        /// <param name="keyValues">primary key provided as key-value object array</param>
+        /// <returns>Entity whose primary key matches the provided input</returns>
+        public virtual TEntity GetById(params object[] keyValues) {
+            return Context.Find<TEntity>(keyValues);
         }
-    }
+
+
+        /// <summary>
+        /// Asychronously retrieves the entity with the provided primary key values.
+        /// </summary>
+        /// <param name="keyValues">primary key provided as key-value object array</param>
+        /// <returns>Entity whose primary key matches the provided input</returns>
+        public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
+            return await Context.FindAsync<TEntity>(keyValues);
+        }
+
+
+        public IQueryable<TEntity> Query {
+            get {
+                return Context.Set<TEntity>()
+                    .AsNoTracking();
+            }
+        }
 
 
 
@@ -68,7 +69,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>true if an entity with the provided keys exists</returns>
         public bool Exists(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
-            if(entity != null)
+            if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;
             var exists = (entity != null);
             return exists;
@@ -104,7 +105,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            if(entity.SysUser == null)
+            if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
             Context.Add(entity);
             Context.SaveChanges();
@@ -124,7 +125,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
-            Context.Update(entity);
+
+            Context.Add(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
@@ -142,16 +144,38 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
-            //copy property values from entity to existing
-            Context.Entry(existing).CurrentValues.SetValues(entity);
 
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
 
-            //Context.Update(entity); //not needed when copying values
+            //copy property values from entity to existing
+            Context.Entry(existing).CurrentValues.SetValues(entity);
+
+            Context.Update(existing); 
             Context.SaveChanges();
 
             return entity;
+        }
+
+        public virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
+            if (partialEntity == null)
+                throw new MissingEntityException(
+                    $"Cannot update a null {typeof(TEntity).Name}");
+
+            List<string> props = DynamicExtensions.GetProperties(partialEntity);
+            if (!props.Contains("SysUser") || partialEntity.SysUser == null)
+                partialEntity.SysUser = ScopeProperties.User;
+
+            //retrieve the existing entity
+            var existing = Context.Find<TEntity>(keyValues);
+
+            //copy property values from entity to existing
+            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+
+            Context.Update(existing);
+            Context.SaveChanges();
+
+            return existing; //updated entity
         }
 
 
@@ -168,16 +192,41 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
-            //copy property values from entity to existing
-            Context.Entry(existing).CurrentValues.SetValues(entity);
 
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
-            //Context.Update(entity);
+
+            //copy property values from entity to existing
+            Context.Entry(existing).CurrentValues.SetValues(entity);
+
+            Context.Update(existing);
             await Context.SaveChangesAsync();
 
             return entity;
         }
+
+
+        public virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
+            if (partialEntity == null)
+                throw new MissingEntityException(
+                    $"Cannot update a null {typeof(TEntity).Name}");
+
+            List<string> props = DynamicExtensions.GetProperties(partialEntity);
+            if (!props.Contains("SysUser") || partialEntity.SysUser == null)
+                partialEntity.SysUser = ScopeProperties.User;
+
+            //retrieve the existing entity
+            var existing = await Context.FindAsync<TEntity>(keyValues);
+
+            //copy property values from entity to existing
+            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+
+            Context.Update(existing);
+            await Context.SaveChangesAsync();
+
+            return existing; //updated entity
+        }
+
 
         /// <summary>
         /// Deletes the entity whose primary keys match the provided input

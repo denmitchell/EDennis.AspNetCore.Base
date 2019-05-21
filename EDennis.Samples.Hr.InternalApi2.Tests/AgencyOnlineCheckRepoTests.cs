@@ -75,5 +75,27 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
         }
 
 
+        [Theory]
+        [TestJson_("Update", "UpdateAndGetMultiplePatch", "1")]
+        [TestJson_("Update", "UpdateAndGetMultiplePatch", "2")]
+        public void TestUpdatePatchAgencyOnlineCheck(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine($"Instance Name:{InstanceName}");
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<dynamic>("Input");
+            var expected =
+                jsonTestCase.GetObject<List<AgencyOnlineCheck>>("Expected")
+                .OrderBy(x => x.Id);
+
+            Repo.ScopeProperties.User = input.SysUser;
+
+            Repo.Update(input, id);
+            var actual = Repo.Context.AgencyOnlineChecks.ToList().OrderBy(x => x.Id);
+
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
+        }
+
+
     }
 }
