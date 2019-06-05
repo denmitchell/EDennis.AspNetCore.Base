@@ -47,11 +47,15 @@ namespace EDennis.AspNetCore.Base.Web {
             if (authority == "")
                 throw new ApplicationException("Identity Server BaseAddress is null.  If you are using ApiLauncher in a development environment, ensure that the launcher is launched at the beginning of ConfigureServices, and ensure that you call services.AwaitLaunchers().");
 
+            var audience = env.ApplicationName;
+            if (audience.EndsWith(".Lib")) {
+                audience = audience.Substring(0, audience.Length - 4);
+            }
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options => {
                     options.Authority = authority;
                     options.RequireHttpsMetadata = false;
-                    options.Audience = env.ApplicationName;
+                    options.Audience = audience;
                 });
 
             services.AddAuthorizationWithDefaultPolicies(assembly);
