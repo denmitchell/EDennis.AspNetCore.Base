@@ -1,9 +1,36 @@
 ﻿using System.Collections.Generic;
 using Dapper;
 using System.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Linq.Expressions;
+using System;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public static class DataRetriever {
+
+        public static TEntity[] Retrieve<TContext,TEntity>(TContext context)
+            where TContext: DbContext
+            where TEntity: class, new() {
+            var data = context.Query<TEntity>()
+                .AsNoTracking()
+                .ToList();
+            return data.ToArray();
+        }
+
+
+        public static TEntity[] Retrieve<TContext, TEntity>(
+            TContext context, 
+            Expression<Func<TEntity, bool>> linqExpression, 
+            int pageNumber, int pageSize)
+            where TContext : DbContext
+            where TEntity : class, new() {
+            var data = context.Query<TEntity>()
+                .AsNoTracking()
+                .ToList();
+            return data.ToArray();
+        }
+
 
         public static TEntity[] Retrieve<TEntity>(string dbName, string tableName) {
             var server = "(localdb)\\mssqllocaldb";

@@ -9,6 +9,14 @@ using System.Text;
 namespace EDennis.AspNetCore.Base.Web.Extensions {
     public static class IServiceCollectionExtensions_HttpClient {
 
+        public static IServiceCollection AddApiClient<TClientInterface, TClientImplementation>(this IServiceCollection services)
+            where TClientImplementation : ApiClient, TClientInterface
+            where TClientInterface : class {
+            services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
+            services.TryAddScoped<ScopeProperties, ScopeProperties>();
+            services.AddHttpClient<TClientInterface,TClientImplementation>();
+            return services;
+        }
 
         public static IServiceCollection AddApiClients<TClient1>(this IServiceCollection services)
             where TClient1 : ApiClient {
