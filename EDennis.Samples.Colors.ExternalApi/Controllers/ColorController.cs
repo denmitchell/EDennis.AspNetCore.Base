@@ -8,9 +8,9 @@ namespace EDennis.Samples.Colors.ExternalApi.Controllers {
     public class ColorController : ControllerBase
     {
 
-        InternalApi _api;
+        IInternalApi _api;
 
-        public ColorController(InternalApi api) {
+        public ColorController(IInternalApi api) {
             _api = api;
         }
 

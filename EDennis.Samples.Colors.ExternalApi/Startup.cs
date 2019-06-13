@@ -54,7 +54,7 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
 
 
-            services.AddApiClients<InternalApi>();
+            services.AddApiClient<IInternalApi,InternalApi>();
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "Color API", Version = "v1" });

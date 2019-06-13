@@ -37,8 +37,10 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (header.Key == null) {
 
                     var defaultInstanceName = DEFAULT_NAMED_INSTANCE;
-                    if (context.Session != null)
-                        defaultInstanceName = context.Session.Id;
+                    try { 
+                        if (context.Session != null)
+                            defaultInstanceName = context.Session.Id;
+                    } catch { }
 
                     context.Request.Headers.Add(HDR_USE_INMEMORY, defaultInstanceName);
                     header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, defaultInstanceName);

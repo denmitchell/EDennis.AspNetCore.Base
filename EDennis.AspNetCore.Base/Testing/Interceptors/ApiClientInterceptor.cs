@@ -25,8 +25,11 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (header.Key == null) {
 
                     var defaultInstanceName = DEFAULT_NAMED_INSTANCE;
-                    if (context.Session != null)
-                        defaultInstanceName = context.Session.Id;
+                    try {
+                        if (context.Session != null)
+                            defaultInstanceName = context.Session.Id;
+                    } catch { }
+
 
                     context.Request.Headers.Add(HDR_USE_INMEMORY, defaultInstanceName);
                     header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, defaultInstanceName);
@@ -46,10 +49,10 @@ namespace EDennis.AspNetCore.Base.Testing {
                 //if(scopeProperties.OtherProperties.Where(x=>x.Key.StartsWith(Interceptor.HDR_PREFIX)).Count()==0)                    
                 //    scopeProperties.OtherProperties.Add(operation, instanceName);
 
-                var client = provider.GetRequiredService(typeof(TClient)) as TClient;
+                //var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
                 if (operation == HDR_DROP_INMEMORY ) {
-                    client.HttpClient.SendResetAsync(operation,instanceName);
+                    //client.HttpClient.SendResetAsync(operation,instanceName);
                     return;
                 }
 

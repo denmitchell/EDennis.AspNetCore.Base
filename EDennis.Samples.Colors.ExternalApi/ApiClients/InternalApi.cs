@@ -9,7 +9,7 @@ using System.Net.Http;
 
 namespace EDennis.Samples.Colors.ExternalApi {
 
-    public class InternalApi : ApiClient {
+    public class InternalApi : ApiClient, IInternalApi {
 
         private const string COLOR_URL = "iapi/color";
 
