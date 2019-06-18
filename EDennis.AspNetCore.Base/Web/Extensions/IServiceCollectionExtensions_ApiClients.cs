@@ -12,9 +12,13 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
         public static IServiceCollection AddApiClient<TClientInterface, TClientImplementation>(this IServiceCollection services)
             where TClientImplementation : ApiClient, TClientInterface
             where TClientInterface : class {
-            services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
             services.TryAddScoped<ScopeProperties, ScopeProperties>();
-            services.AddHttpClient<TClientInterface,TClientImplementation>();
+            if (typeof(ApiClient).IsAssignableFrom(typeof(TClientImplementation))) { 
+                services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
+                services.AddHttpClient<TClientInterface, TClientImplementation>();
+            } else {
+                services.AddScoped<TClientInterface, TClientImplementation>();
+            }
             return services;
         }
 
