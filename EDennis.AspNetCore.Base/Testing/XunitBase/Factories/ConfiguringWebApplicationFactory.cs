@@ -23,15 +23,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var classInfo = new ClassInfo<TStartup>();
             var dir = classInfo.ProjectDirectory;
 
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
             builder
                 .UseKestrel()
                 .UseStartup<TStartup>()
                 .UseContentRoot(dir)
                 .ConfigureAppConfiguration(options => {
                     options.SetBasePath(dir);
-                    options.AddJsonFile("appsettings.Development.json", true);
+                    options.AddJsonFile($"appsettings.{env}.json", true);
                     options.AddEnvironmentVariables();
-                    options.AddCommandLine(new string[] { "ASPNETCORE_ENVIRONMENT=Development" });
+                    options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
                 });
 
         }

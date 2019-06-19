@@ -148,9 +148,12 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var apiDict = new Dictionary<string, ApiConfig>();
                 config.GetSection("Apis").Bind(apiDict);
 
+                var env = config["ENVIRONMENT"];
+
+
                 var identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
                 if (identityServerApi == null)
-                    throw new ApplicationException("MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having with Secret = null appears in appsettings.Development.json.");
+                    throw new ApplicationException($"MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having with Secret = null appears in appsettings.{env}.json.");
 
                 authority = identityServerApi.BaseAddress;
             } else {

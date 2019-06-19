@@ -16,7 +16,7 @@ namespace EDennis.AspNetCore.Base.Web {
             config.GetSection("ConnectionStrings").Bind(cxnStrings);
 
             if (!cxnStrings.ContainsKey(typeof(TContext).Name))
-                throw new ApplicationException($"Cannot find required entry 'ConnectionStrings:{typeof(TContext).Name}' in the Configuration (e.g., appsettings.Development.json)");
+                throw new ApplicationException($"Cannot find required entry 'ConnectionStrings:{typeof(TContext).Name}' in the Configuration (e.g., appsettings.{env}.json)");
 
             services.AddDbContext<TContext>(
                     options => {
@@ -24,7 +24,9 @@ namespace EDennis.AspNetCore.Base.Web {
                     }
                 );
 
-            if (env.EnvironmentName == EnvironmentName.Development)
+            if (env.EnvironmentName == EnvironmentName.Development
+                || env.EnvironmentName == "LocalDevelopment"
+                || env.EnvironmentName == "Local")
                 services.AddSingleton<TestDbContextCache<TContext>>();
 
             return services;

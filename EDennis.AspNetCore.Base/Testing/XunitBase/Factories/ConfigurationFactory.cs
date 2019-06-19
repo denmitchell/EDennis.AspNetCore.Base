@@ -12,11 +12,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             var classInfo = new ClassInfo<TClass>();
             var dir = classInfo.ProjectDirectory;
 
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(dir)
-                .AddJsonFile("appsettings.Development.json")
+                .AddJsonFile($"appsettings.{env}.json")
                 .AddEnvironmentVariables()
-                .AddCommandLine(new string[] { "ASPNETCORE_ENVIRONMENT=Development" })
+                .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" })
                 .Build();
         }
 

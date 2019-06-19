@@ -41,7 +41,7 @@ namespace EDennis.AspNetCore.Base.Web {
             //identify Identity Server, which is the only configured API without a secret
             var identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
             if (identityServerApi == null)
-                throw new ApplicationException("AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server. No Api having property Secret = null appears in appsettings.Development.json.");
+                throw new ApplicationException($"AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server. No Api having property Secret = null appears in appsettings.{env}.json.");
 
             authority = identityServerApi.BaseAddress;
             if (authority == "")

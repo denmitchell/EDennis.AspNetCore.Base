@@ -37,9 +37,10 @@ namespace EDennis.AspNetCore.Base.Web {
             }
 
             var baseAddress = config[$"Apis:{GetType().Name}:BaseAddress"];
+            var env = config["ENVIRONMENT"];
 
             if (string.IsNullOrEmpty(baseAddress))
-                throw new ApplicationException($"Cannot find entry for 'Apis:{GetType().Name}:BaseAddress' in the configuration (e.g., appsettings.Development.json).  Each ApiClient and SecureApiClient must have an entry in the configuration that corresponds to the class name of the ApiClient or SecureApiClient.");
+                throw new ApplicationException($"Cannot find entry for 'Apis:{GetType().Name}:BaseAddress' in the configuration (e.g., appsettings.{env}.json).  Each ApiClient and SecureApiClient must have an entry in the configuration that corresponds to the class name of the ApiClient or SecureApiClient.");
 
 
             HttpClient.BaseAddress = new Uri(baseAddress);

@@ -79,6 +79,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 _port = int.Parse(api.BaseAddress.Replace("https", "http").Replace("http://localhost:", ""));
             }
 
+            var env = _config["ENVIRONMENT"];
+
+
             var host = new WebHostBuilder()
             .UseKestrel()
             .UseStartup<TStartup>()
@@ -92,7 +95,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             })
             .ConfigureAppConfiguration(options => {
                 options.SetBasePath(dir);
-                options.AddJsonFile("appsettings.Development.json", true);
+                options.AddJsonFile($"appsettings.{env}.json", true);
                 if (_args != null)
                     options.AddCommandLine(_args);
             })
