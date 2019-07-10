@@ -2,6 +2,7 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Colors.ExternalApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -17,19 +18,19 @@ namespace EDennis.Samples.Colors.ExternalApi {
             base (client,config,scopeProperties){ }
 
 
-        public HttpClientResult<Color> Create(Color color) {
+        public ObjectResult Create(Color color) {
             return HttpClient.Post(COLOR_URL, color);
         }
 
-        public HttpClientResult<List<Color>> GetColors() {
+        public ObjectResult GetColors() {
             return HttpClient.Get<List<Color>>(COLOR_URL);
         }
 
-        public HttpClientResult<Color> GetColor(int id) {
+        public ObjectResult GetColor(int id) {
             return HttpClient.Get<Color>($"{COLOR_URL}/{id}");
         }
 
-        public HttpClientResult<Color> Forward(HttpRequest request) {
+        public ObjectResult Forward(HttpRequest request) {
             return HttpClient.Forward<Color>(request, $"{COLOR_URL}/forward");
         }
 

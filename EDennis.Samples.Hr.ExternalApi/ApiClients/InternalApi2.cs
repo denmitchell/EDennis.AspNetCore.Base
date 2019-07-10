@@ -3,6 +3,7 @@ using EDennis.AspNetCore.Base.Web;
 using EDennis.AspNetCore.Base.Web.Abstractions;
 using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 
@@ -30,13 +31,13 @@ namespace EDennis.Samples.Hr.ExternalApi {
         }
 
 
-        public HttpClientResult<AgencyOnlineCheck> CreateAgencyOnlineCheck(AgencyOnlineCheck check)
+        public ObjectResult CreateAgencyOnlineCheck(AgencyOnlineCheck check)
                 => HttpClient.Post(AGENCY_ONLINE_URL, check);
 
-        public HttpClientResult<AgencyInvestigatorCheck> CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check)
+        public ObjectResult CreateAgencyInvestigatorCheck(AgencyInvestigatorCheck check)
             => HttpClient.Post(AGENCY_INVESTIGATOR_URL, check);
 
-        public HttpClientResult<dynamic> GetPreEmploymentChecks(int employeeId)
+        public ObjectResult GetPreEmploymentChecks(int employeeId)
             => HttpClient.Get<dynamic>($"{AGENCY_ONLINE_URL}/{employeeId}");
 
     }

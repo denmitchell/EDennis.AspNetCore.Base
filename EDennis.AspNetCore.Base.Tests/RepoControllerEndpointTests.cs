@@ -65,8 +65,8 @@ namespace EDennis.AspNetCore.Base.Tests {
 
             HttpClient.Post("iapi/color", input);
             var actual = HttpClient.Get<List<Color>>("iapi/color")
-                    .Value
-                    .OrderBy(x=>x.Id);
+                .Object<List<Color>>()
+                .OrderBy(x=>x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, 2, PROPS_FILTER, Output));
         }
@@ -85,7 +85,7 @@ namespace EDennis.AspNetCore.Base.Tests {
 
             HttpClient.Put($"iapi/color/{id}", input);
             var actual = HttpClient.Get<List<Color>>("iapi/color")
-                .Value
+                .Object<List<Color>>()
                 .OrderBy(x => x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
@@ -105,7 +105,7 @@ namespace EDennis.AspNetCore.Base.Tests {
 
             HttpClient.Delete<Color>($"iapi/color/{input}");
             var actual = HttpClient.Get<List<Color>>("iapi/color")
-                .Value
+                .Object<List<Color>>()
                 .OrderBy(x => x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
@@ -122,7 +122,7 @@ namespace EDennis.AspNetCore.Base.Tests {
         public void Get_Inline(int id, string expectedName) {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
-            var color = HttpClient.Get<Color>($"iapi/color/{id}").Value;
+            var color = HttpClient.Get<Color>($"iapi/color/{id}").Object<Color>();
 
             Assert.Equal(expectedName, color.Name);
 
@@ -134,7 +134,7 @@ namespace EDennis.AspNetCore.Base.Tests {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             HttpClient.Post("iapi/color", new Color { Name = "burgundy" });
-            var colors = HttpClient.Get<List<Color>>("iapi/color").Value;
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Object<List<Color>>();
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 7).Name);
 
@@ -155,7 +155,7 @@ namespace EDennis.AspNetCore.Base.Tests {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             HttpClient.Put("iapi/color/1", new Color { Id = 1, Name = "burgundy" });
-            var colors = HttpClient.Get<List<Color>>("iapi/color").Value
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Object<List<Color>>()
                 .OrderBy(x=>x.Name);
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 1).Name);
@@ -177,7 +177,7 @@ namespace EDennis.AspNetCore.Base.Tests {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             HttpClient.Delete("iapi/color/3", new Color { Id = 3, Name = "gray" });
-            var colors = HttpClient.Get<List<Color>>("iapi/color").Value;
+            var colors = HttpClient.Get<List<Color>>("iapi/color").Object<List<Color>>();
 
             Assert.Collection(colors,
                 new Action<Color>[] {

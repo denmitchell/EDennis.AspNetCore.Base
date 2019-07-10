@@ -43,7 +43,7 @@ namespace EDennis.AspNetCore.Base.Tests {
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<Color>("Expected");
             
-            var actual = HttpClient.Get<Color>($"api/color/{id}").Value;
+            var actual = HttpClient.Get<Color>($"api/color/{id}").Object<Color>();
 
             Assert.True(actual.IsEqualOrWrite(expected,PROPS_FILTER,Output));
         }
@@ -78,7 +78,7 @@ namespace EDennis.AspNetCore.Base.Tests {
                 .OrderBy(x=>x.Id);
 
             HttpClient.Post("api/color", input);
-            var actual = HttpClient.Get<List<Color>>("api/color").Value
+            var actual = HttpClient.Get<List<Color>>("api/color").Object<List<Color>>()
                 .OrderBy(x => x.Id);
 
             Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
@@ -96,7 +96,7 @@ namespace EDennis.AspNetCore.Base.Tests {
         public void Get_InlineData(int id, string expectedName) {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
-            var color = HttpClient.Get<Color>($"api/color/{id}").Value;
+            var color = HttpClient.Get<Color>($"api/color/{id}").Object<Color>();
 
             Assert.Equal(expectedName, color.Name);
 
@@ -108,7 +108,7 @@ namespace EDennis.AspNetCore.Base.Tests {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             HttpClient.Post("api/color", new Color { Name = "burgundy" });
-            var colors = HttpClient.Get<List<Color>>("api/color").Value;
+            var colors = HttpClient.Get<List<Color>>("api/color").Object<List<Color>>();
 
             Assert.Equal("burgundy", colors.First(x => x.Id == 7).Name);
 

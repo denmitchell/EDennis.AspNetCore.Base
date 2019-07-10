@@ -21,13 +21,13 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
 
         [HttpPost]
         public ActionResult CreateEmployee([FromBody] Employee employee){
-            return _api1.CreateEmployee(employee).StatusCodeResult();
+            return _api1.CreateEmployee(employee);
         }
 
 
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployee([FromRoute] int id) {
-            return _api1.GetEmployee(id).ObjectResult();
+            return _api1.GetEmployee(id);
         }
 
 
@@ -35,26 +35,26 @@ namespace EDennis.Samples.Hr.ExternalApi.Controllers {
         public ActionResult<List<Employee>> GetEmployees(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 1000) {
-            return _api1.GetEmployees(pageNumber, pageSize).ObjectResult();
+            return _api1.GetEmployees(pageNumber, pageSize);
         }
 
 
         [HttpPost("agencyonlinecheck")]
         public ActionResult CreateAgencyOnlineCheck(
             [FromBody] AgencyOnlineCheck check) {
-            return _api2.CreateAgencyOnlineCheck(check).StatusCodeResult();
+            return _api2.CreateAgencyOnlineCheck(check);
         }
 
 
         [HttpPost("agencyinvestigatorcheck")]
         public ActionResult CreateAgencyInvestigatorCheck(
             [FromBody] AgencyInvestigatorCheck check) {
-            return _api2.CreateAgencyInvestigatorCheck(check).StatusCodeResult();
+            return _api2.CreateAgencyInvestigatorCheck(check);
         }
 
         [HttpGet("preemployment/{id}")]
         public ActionResult<dynamic> GetPreEmploymentChecks([FromRoute] int id) {
-            return _api2.GetPreEmploymentChecks(id).ObjectResult();
+            return _api2.GetPreEmploymentChecks(id);
         }
 
     }

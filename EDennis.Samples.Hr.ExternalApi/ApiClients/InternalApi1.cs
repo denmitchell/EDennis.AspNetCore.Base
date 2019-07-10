@@ -27,12 +27,12 @@ namespace EDennis.Samples.Hr.ExternalApi {
                 identityServer,tokenCache, env) {
         }
 
-        public HttpClientResult<Employee> CreateEmployee(Employee employee) {
+        public ObjectResult CreateEmployee(Employee employee) {
             var response = HttpClient.Post(EMPLOYEE_URL, employee);
             return response;
         }
 
-        public HttpClientResult<Employee> UpdateEmployee(Employee employee, int id) {
+        public ObjectResult UpdateEmployee(Employee employee, int id) {
             var response = HttpClient.Put($"{EMPLOYEE_URL}/{id}", employee);
             return response;
         }
@@ -42,12 +42,12 @@ namespace EDennis.Samples.Hr.ExternalApi {
             return (HttpStatusCode)response.StatusCode;
         }
 
-        public HttpClientResult<Employee> GetEmployee(int id) {
+        public ObjectResult GetEmployee(int id) {
             var response = HttpClient.Get<Employee>($"{EMPLOYEE_URL}/{id}");
             return response;
         }
 
-        public HttpClientResult<List<Employee>> GetEmployees(int pageNumber, int pageSize) {
+        public ObjectResult GetEmployees(int pageNumber, int pageSize) {
             var response = HttpClient.Get<List<Employee>>($"{EMPLOYEE_URL}");
             return response;
         }

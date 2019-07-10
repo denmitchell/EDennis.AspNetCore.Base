@@ -2,12 +2,13 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Colors.ExternalApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EDennis.Samples.Colors.ExternalApi {
     public interface IInternalApi {
-        HttpClientResult<Color> Create(Color color);
-        HttpClientResult<Color> Forward(HttpRequest request);
-        HttpClientResult<Color> GetColor(int id);
-        HttpClientResult<List<Color>> GetColors();
+        ObjectResult Create(Color color);
+        ObjectResult Forward(HttpRequest request);
+        ObjectResult GetColor(int id);
+        ObjectResult GetColors();
     }
 }

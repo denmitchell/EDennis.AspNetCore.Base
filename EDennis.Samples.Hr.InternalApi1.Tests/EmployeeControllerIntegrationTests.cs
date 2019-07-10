@@ -35,7 +35,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Tests {
             Output.WriteLine($"Instance Name:{InstanceName}");
 
             HttpClient.Post("iapi/employee", new Employee { FirstName = firstName });
-            var employee = HttpClient.Get<Employee>("iapi/employee/5").Value;
+            var employee = HttpClient.Get<Employee>("iapi/employee/5").Object<Employee>();
 
             Assert.Equal(firstName, employee.FirstName);
 

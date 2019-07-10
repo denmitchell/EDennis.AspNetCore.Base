@@ -45,7 +45,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Tests {
 
             HttpClient.Post(AGENCY_ONLINE_URL, input);
 
-            var actual = HttpClient.Get<AgencyOnlineCheck>($"{AGENCY_ONLINE_URL}/{employeeId}" ).Value;
+            var actual = HttpClient.Get<AgencyOnlineCheck>($"{AGENCY_ONLINE_URL}/{employeeId}" ).Object<AgencyOnlineCheck>();
 
             Assert.Equal(DateTime.Parse(strDateCompleted), actual.DateCompleted);
             Assert.Equal(status, actual.Status);
