@@ -18,121 +18,101 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static class HttpClientExtensions {
 
-        public static HttpClientResult<T> Get<T>(this HttpClient client, string relativeUrlFromBase) {
+        public static ObjectResult Get<T>(this HttpClient client, string relativeUrlFromBase)
+        {
             return client.GetAsync<T>(relativeUrlFromBase).Result;
         }
 
-        public static async Task<HttpClientResult<T>> GetAsync<T>(
-                this HttpClient client, string relativeUrlFromBase) {
+        public static async Task<ObjectResult> GetAsync<T>(
+                this HttpClient client, string relativeUrlFromBase)
+        {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
             var response = await client.GetAsync(url);
+            var objResult = await GenerateObjectResult<T>(response);
 
-            var so = new HttpClientResult<T> {
-                StatusCode = (int)response.StatusCode
-            };
+            return objResult;
 
-            if (so.StatusCode > 299)
-                return so;
 
-            if (response.Content.Headers.ContentLength > 0) {
-                var json = await response.Content.ReadAsStringAsync();
-                so.Value = JToken.Parse(json).ToObject<T>();
-            }
-
-            return so;
 
         }
 
 
-        public static HttpClientResult<T> Post<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+
+        public static ObjectResult Post<T>(this HttpClient client, string relativeUrlFromBase, T obj)
+        {
             return client.PostAsync(relativeUrlFromBase, obj).Result;
         }
 
-        public static async Task<HttpClientResult<T>> PostAsync<T>(
-                this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static async Task<ObjectResult> PostAsync<T>(
+                this HttpClient client, string relativeUrlFromBase, T obj)
+        {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
 
             //build the request message object for the POST
-            var msg = new HttpRequestMessage {
+            var msg = new HttpRequestMessage
+            {
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(url),
                 Content = new BodyContent<T>(obj)
             };
 
             var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<T>(response);
 
-            var so = new HttpClientResult<T> {
-                StatusCode = (int)response.StatusCode
-            };
-
-            if (so.StatusCode > 299)
-                return so;
-
-            if (response.Content.Headers.ContentLength > 0) {
-                var json = await response.Content.ReadAsStringAsync();
-                if (json != null && json != "")
-                    so.Value = JToken.Parse(json).ToObject<T>();
-            }
-
-            return so;
+            return objResult;
         }
 
 
-        public static HttpClientResult<T> Put<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static ObjectResult Put<T>(this HttpClient client, string relativeUrlFromBase, T obj)
+        {
             return client.PutAsync(relativeUrlFromBase, obj).Result;
         }
 
 
-        public static async Task<HttpClientResult<T>> PutAsync<T>(
-                this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static async Task<ObjectResult> PutAsync<T>(
+                this HttpClient client, string relativeUrlFromBase, T obj)
+        {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
 
             //build the request message object for the PUT
-            var msg = new HttpRequestMessage {
+            var msg = new HttpRequestMessage
+            {
                 Method = HttpMethod.Put,
                 RequestUri = new Uri(url),
                 Content = new BodyContent<T>(obj)
             };
 
             var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<T>(response);
+            return objResult;
 
-            var so = new HttpClientResult<T> {
-                StatusCode = (int)response.StatusCode
-            };
 
-            if (so.StatusCode > 299)
-                return so;
-
-            if (response.Content.Headers.ContentLength > 0) {
-                var json = await response.Content.ReadAsStringAsync();
-                if (json != null && json != "")
-                    so.Value = JToken.Parse(json).ToObject<T>();
-            }
-
-            return so;
         }
 
 
         public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase, T obj,
-            bool flagAsUpdateFirst = false) {
+            bool flagAsUpdateFirst = false)
+        {
             return client.DeleteAsync(relativeUrlFromBase, obj, flagAsUpdateFirst).Result;
         }
 
 
         public static async Task<StatusCodeResult> DeleteAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj,
-                bool flagAsUpdateFirst = false) {
+                bool flagAsUpdateFirst = false)
+        {
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
 
             //build the request message object for the PUT
-            var msg = new HttpRequestMessage {
+            var msg = new HttpRequestMessage
+            {
                 Method = HttpMethod.Delete,
                 RequestUri = new Uri(url),
                 Content = new BodyContent<T>(obj)
@@ -148,19 +128,22 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase,
-                bool flagAsUpdateFirst = false) {
+                bool flagAsUpdateFirst = false)
+        {
             return client.DeleteAsync<T>(relativeUrlFromBase, flagAsUpdateFirst).Result;
         }
 
 
         public static async Task<StatusCodeResult> DeleteAsync<T>(
                 this HttpClient client, string relativeUrlFromBase,
-                bool flagAsUpdateFirst = false) {
+                bool flagAsUpdateFirst = false)
+        {
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
 
             //build the request message object for the PUT
-            var msg = new HttpRequestMessage {
+            var msg = new HttpRequestMessage
+            {
                 Method = HttpMethod.Delete,
                 RequestUri = new Uri(url)
             };
@@ -174,14 +157,16 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static HttpClientResult<T> Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
+        public static ObjectResult Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase)
+        {
             var msg = request.ToHttpRequestMessage(client);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return ForwardRequest<T>(client, msg, url);
         }
 
 
-        public static HttpClientResult<T> Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
+        public static ObjectResult Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase)
+        {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return ForwardRequest<T>(client, msg, url);
@@ -191,13 +176,16 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public static void SendReset(this HttpClient client, string operationName,
-            string instanceName) {
+            string instanceName)
+        {
             client.SendResetAsync(operationName, instanceName);
         }
 
         public static async void SendResetAsync(this HttpClient client, string operationName,
-            string instanceName) {
-            var msg = new HttpRequestMessage {
+            string instanceName)
+        {
+            var msg = new HttpRequestMessage
+            {
                 Method = HttpMethod.Options,
                 RequestUri = client.BaseAddress
             };
@@ -206,19 +194,24 @@ namespace EDennis.AspNetCore.Base.Web {
                 client.DefaultRequestHeaders.Remove(xTestingHeaders[i]);
 
             msg.Headers.Add($"{operationName}", $"{instanceName}");
-            try {
+            try
+            {
                 await client.SendAsync(msg);
-            } catch(ObjectDisposedException) {
+            }
+            catch (ObjectDisposedException)
+            {
                 //ignore this exception, object is disposed.
             }
         }
 
-        public static bool Ping(this HttpClient client, int timeoutSeconds = 5) {
+        public static bool Ping(this HttpClient client, int timeoutSeconds = 5)
+        {
             return client.PingAsync(timeoutSeconds).Result;
         }
 
 
-        public static async Task<bool> PingAsync(this HttpClient client, int timeoutSeconds = 5) {
+        public static async Task<bool> PingAsync(this HttpClient client, int timeoutSeconds = 5)
+        {
 
             var pingable = false;
 
@@ -229,14 +222,19 @@ namespace EDennis.AspNetCore.Base.Web {
                 var sw = new Stopwatch();
 
                 sw.Start();
-                while (sw.ElapsedMilliseconds < (timeoutSeconds * 1000)) {
-                    try {
-                        using (var tcp = new TcpClient(host, port)) {
+                while (sw.ElapsedMilliseconds < (timeoutSeconds * 1000))
+                {
+                    try
+                    {
+                        using (var tcp = new TcpClient(host, port))
+                        {
                             var connected = tcp.Connected;
                             pingable = true;
                             break;
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         if (!ex.Message.Contains("No connection could be made because the target machine actively refused it"))
                             throw ex;
                         else
@@ -253,16 +251,19 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        private static HttpClientResult<T> ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
+        private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase)
+        {
 
             string[] uri = relativeUrlFromBase.Split('?');
 
             var url = new Url(client.BaseAddress)
                 .AppendPathSegment(uri[0]);
-                       
-            if (uri.Length > 1) {
+
+            if (uri.Length > 1)
+            {
                 string[] qsegs = uri[1].Split('&');
-                foreach(var qseg in qsegs) {
+                foreach (var qseg in qsegs)
+                {
                     string[] q = qseg.Split('=');
                     url.SetQueryParam(q[0], q[1]);
                 }
@@ -271,26 +272,18 @@ namespace EDennis.AspNetCore.Base.Web {
             msg.RequestUri = url.ToUri();
 
             var response = client.SendAsync(msg).Result;
+            var objResult = GenerateObjectResult<T>(response).Result;
 
-            var so = new HttpClientResult<T> {
-                StatusCode = (int)response.StatusCode
-            };
+            return objResult;
 
-            if (so.StatusCode > 299)
-                return so;
 
-            if (response.Content.Headers.ContentLength > 0) {
-                var json = response.Content.ReadAsStringAsync().Result;
-                so.Value = JToken.Parse(json).ToObject<T>();
-            }
-
-            return so;
 
         }
 
 
 
-        private static HttpRequestMessage ToHttpRequestMessage(this HttpRequest httpRequest, HttpClient client) {
+        private static HttpRequestMessage ToHttpRequestMessage(this HttpRequest httpRequest, HttpClient client)
+        {
             var msg = new HttpRequestMessage();
             msg
                 .CopyMethod(httpRequest)
@@ -302,7 +295,8 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private static HttpRequestMessage ToHttpRequestMessage<T>(this HttpRequest httpRequest, HttpClient client, T body) {
+        private static HttpRequestMessage ToHttpRequestMessage<T>(this HttpRequest httpRequest, HttpClient client, T body)
+        {
             var msg = new HttpRequestMessage();
             msg
                 .CopyMethod(httpRequest)
@@ -318,7 +312,8 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private static HttpRequestMessage CopyMethod(this HttpRequestMessage msg, HttpRequest req) {
+        private static HttpRequestMessage CopyMethod(this HttpRequestMessage msg, HttpRequest req)
+        {
             if (req.Method.ToUpper() == "POST")
                 msg.Method = HttpMethod.Post;
             else if (req.Method.ToUpper() == "PUT")
@@ -334,7 +329,8 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private static HttpRequestMessage CopyHeaders(this HttpRequestMessage msg, HttpRequest req, HttpClient client) {
+        private static HttpRequestMessage CopyHeaders(this HttpRequestMessage msg, HttpRequest req, HttpClient client)
+        {
             var currentHeaders = client.DefaultRequestHeaders.Select(x => x.Key);
             var requestHeaders = req.Headers.Where(h => !h.Key.StartsWith("Content-"));
             var headers = requestHeaders.Where(h => !currentHeaders.Contains(h.Key));
@@ -345,7 +341,8 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private static HttpRequestMessage CopyQueryString(this HttpRequestMessage msg, HttpRequest req) {
+        private static HttpRequestMessage CopyQueryString(this HttpRequestMessage msg, HttpRequest req)
+        {
             msg.Properties.Add("QueryString", req.QueryString);
             return msg;
         }
@@ -357,11 +354,14 @@ namespace EDennis.AspNetCore.Base.Web {
         //}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler {
         //    UseCookies = false
         //});        
-        private static HttpRequestMessage CopyCookies(this HttpRequestMessage msg, HttpRequest req) {
-            if (req.Cookies != null && req.Cookies.Count > 0) {
+        private static HttpRequestMessage CopyCookies(this HttpRequestMessage msg, HttpRequest req)
+        {
+            if (req.Cookies != null && req.Cookies.Count > 0)
+            {
                 var cookieContainer = new CookieContainer();
                 var sb = new StringBuilder();
-                foreach (var cookie in req.Cookies) {
+                foreach (var cookie in req.Cookies)
+                {
                     sb.Append(cookie.Key);
                     sb.Append("=");
                     sb.Append(cookie.Value);
@@ -373,15 +373,43 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+        private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response)
+        {
 
+            object value = null;
+
+            int statusCode = (int)response.StatusCode;
+
+            if (response.Content.Headers.ContentLength > 0)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                if (statusCode < 299)
+                {
+                    value = JToken.Parse(json).ToObject<T>();
+                }
+                else
+                {
+                    value = json;
+                }
+            }
+
+            return new ObjectResult(value)
+            {
+                StatusCode = statusCode
+            };
+
+        }
         //note: this works, but it isn't needed.
-        private static HttpRequestMessage CopyContent(this HttpRequestMessage msg, HttpRequest req) {
+        private static HttpRequestMessage CopyContent(this HttpRequestMessage msg, HttpRequest req)
+        {
 
             var injectedRequestStream = new MemoryStream();
 
             req.EnableRewind();
 
-            using (var bodyReader = new StreamReader(req.Body)) {
+            using (var bodyReader = new StreamReader(req.Body))
+            {
                 var bodyAsText = bodyReader.ReadToEnd();
                 var msgContent = new StringContent(JToken.FromObject(bodyAsText).ToString(), Encoding.UTF8, "application/json");
                 msg.Content = msgContent;
