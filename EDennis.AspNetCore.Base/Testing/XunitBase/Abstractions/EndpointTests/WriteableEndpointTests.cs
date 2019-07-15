@@ -14,14 +14,24 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected HttpClient HttpClient { get; }
         protected string InstanceName { get; }
 
+        public ConfiguringWebApplicationFactory<TStartup> factory { get; set; }
 
         public WriteableEndpointTests(ITestOutputHelper output,
                 ConfiguringWebApplicationFactory<TStartup> factory) {
             Output = output;
             HttpClient = TestHttpClientFactory.CreateWriteableClient(factory);
             InstanceName = HttpClient.GetInstanceName();
+            this.factory = factory;
         }
 
+        public WriteableEndpointTests(ITestOutputHelper output,
+                ConfiguringWebApplicationFactory<TStartup> factory,
+                string[] commandLineOptions) {
+            Output = output;
+            HttpClient = TestHttpClientFactory.CreateWriteableClient(factory,commandLineOptions);
+            InstanceName = HttpClient.GetInstanceName();
+            this.factory = factory;
+        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

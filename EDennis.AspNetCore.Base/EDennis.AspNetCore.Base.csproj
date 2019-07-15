@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>2.5.0</Version>
+    <Version>2.5.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -14,10 +14,10 @@
     <RepositoryType>github</RepositoryType>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Breaking change -- replacement of HttpClientResult with Microsoft ObjectResult to support returning error messages in response body.  Added Object&lt;T&gt;() extension method to ObjectResult to make it easier to cast the Value property to a typed object.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support for passing in command-line options to WriteableEndpointTests and ReadonlyEndpointTests.  These command-line options are needed to specify that a particular MockClient or AutoLogin user is used with an Xunit test class.</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>2.5.0.0</AssemblyVersion>
-    <FileVersion>2.5.0.0</FileVersion>
+    <AssemblyVersion>2.5.1.0</AssemblyVersion>
+    <FileVersion>2.5.1.0</FileVersion>
 
   </PropertyGroup>
 

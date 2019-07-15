@@ -198,7 +198,7 @@ namespace EDennis.AspNetCore.Base.Web {
             {
                 await client.SendAsync(msg);
             }
-            catch (ObjectDisposedException)
+            catch (Exception)
             {
                 //ignore this exception, object is disposed.
             }

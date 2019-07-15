@@ -89,7 +89,17 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                     //handle errors
                     if (tokenResponse.IsError) {
-                        throw new SecurityException(tokenResponse.Error);
+                        context.Response.StatusCode = 400;
+                        string msg = null;
+                        if (tokenResponse.Error == "invalid_client")
+                            msg = $"Client with Id = {tokenRequestData.ClientId} && Secret = {tokenRequestData.ClientSecret} is invalid.";
+                        else if (tokenResponse.Error == "invalid_scope")
+                            msg = $"One or more of the following scopes are not valid: {string.Join(' ', tokenRequestData.Scopes)}"; 
+                        else
+                            msg = tokenResponse.Error;
+                        await context.Response.WriteAsync(msg);
+                        return;
+                        //throw new SecurityException(tokenResponse.Error);
                     }
 
                     //ValidateJwt(disco, tokenResponse);

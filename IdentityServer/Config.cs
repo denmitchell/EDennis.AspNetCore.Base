@@ -254,6 +254,12 @@ namespace IdentityServer {
                         new System.Security.Claims.Claim("name","curly@stooges.net")
                     }
                 },
+                new MockClient {
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client4",
+                    AllowedScopes = {
+                        "N/A"
+                    }
+                },
                 // resource owner password grant client
                 new Client
                 {
