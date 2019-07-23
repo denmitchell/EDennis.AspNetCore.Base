@@ -17,7 +17,7 @@
     <PackageReleaseNotes>ApiClient and SecureApiClient now set X-User header from ScopeProperties when X-User header is not already present.</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <AssemblyVersion>2.5.2.0</AssemblyVersion>
-    <FileVersion>2.5.1.0</FileVersion>
+    <FileVersion>2.5.2.0</FileVersion>
 
   </PropertyGroup>
 
