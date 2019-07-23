@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>2.5.1</Version>
+    <Version>2.5.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -14,9 +14,9 @@
     <RepositoryType>github</RepositoryType>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Added support for passing in command-line options to WriteableEndpointTests and ReadonlyEndpointTests.  These command-line options are needed to specify that a particular MockClient or AutoLogin user is used with an Xunit test class.</PackageReleaseNotes>
+    <PackageReleaseNotes>ApiClient and SecureApiClient now set X-User header from ScopeProperties when X-User header is not already present.</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>2.5.1.0</AssemblyVersion>
+    <AssemblyVersion>2.5.2.0</AssemblyVersion>
     <FileVersion>2.5.1.0</FileVersion>
 
   </PropertyGroup>

@@ -33,8 +33,14 @@ namespace EDennis.AspNetCore.Base.Web {
                         foreach (var value in header.Value)
                             httpClient.DefaultRequestHeaders.Add(header.Key, value.ToString());
                 }
-
             }
+
+            //add X-User header from ScopeProperties, if the header doesn't already exist.
+            var hdrs = httpClient.DefaultRequestHeaders;
+            var userHeaderCount = hdrs.Where(x => x.Key == "X-User").Count();
+            if (userHeaderCount == 0 && !string.IsNullOrWhiteSpace(ScopeProperties.User))
+                hdrs.Add("X-User", ScopeProperties.User);
+
 
             var baseAddress = config[$"Apis:{GetType().Name}:BaseAddress"];
             var env = config["ENVIRONMENT"];

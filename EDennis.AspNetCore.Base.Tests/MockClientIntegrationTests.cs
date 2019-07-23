@@ -64,6 +64,9 @@ namespace EDennis.AspNetCore.Base.Tests {
 
         [Fact]
         public void TestBadRequest_PositionGet() {
+
+
+
             var statusCode = HttpClient.GetAsync<Position>("api/Position/1").Result.StatusCode;
             Assert.Equal((int)HttpStatusCode.BadRequest, statusCode);
         }
