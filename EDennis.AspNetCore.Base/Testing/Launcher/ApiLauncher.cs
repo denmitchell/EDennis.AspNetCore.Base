@@ -79,7 +79,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 _port = int.Parse(api.BaseAddress.Replace("https", "http").Replace("http://localhost:", ""));
             }
 
-            var env = _config["ENVIRONMENT"];
+            var env = _config["ASPNETCORE_ENVIRONMENT"];
 
 
             var host = new WebHostBuilder()

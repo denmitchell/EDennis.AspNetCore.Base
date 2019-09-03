@@ -29,6 +29,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .UseKestrel()
                 .UseStartup<TStartup>()
                 .UseContentRoot(dir)
+                .UseEnvironment(env)
                 .ConfigureAppConfiguration(options => {
                     options.SetBasePath(dir);
                     options.AddJsonFile($"appsettings.{env}.json", true);
