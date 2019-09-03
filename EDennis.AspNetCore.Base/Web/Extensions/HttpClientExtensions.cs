@@ -34,9 +34,32 @@ namespace EDennis.AspNetCore.Base.Web {
 
             return objResult;
 
+        }
 
+        public static ObjectResult Get<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+            return client.GetAsync<T>(relativeUrlFromBase, obj).Result;
+        }
+
+        public static async Task<ObjectResult> GetAsync<T>(
+                this HttpClient client, string relativeUrlFromBase, T obj) {
+
+
+            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
+
+            //build the request message object for the GET
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url),
+                Content = new BodyContent<T>(obj)
+            };
+
+            var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<T>(response);
+
+            return objResult;
 
         }
+
 
 
 
