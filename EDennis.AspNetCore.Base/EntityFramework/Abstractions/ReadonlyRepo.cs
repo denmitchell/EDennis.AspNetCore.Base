@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
@@ -39,6 +40,78 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public IQueryable<TEntity> Query { get => Context.Query<TEntity>(); }
 
 
+        /// <summary>
+        /// Get by Dynamic Linq Expression
+        /// https://github.com/StefH/System.Linq.Dynamic.Core
+        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
+        /// </summary>
+        /// <param name="where">string Where expression</param>
+        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
+        /// <param name="select">string Select expression</param>
+        /// <param name="skip">int number of records to skip</param>
+        /// <param name="take">int number of records to return</param>
+        /// <returns>dynamic-typed object</returns>
+        public virtual List<dynamic> GetFromDynamicLinq(
+                string where = null,
+                string orderBy = null,
+                string select = null,
+                int? skip = null,
+                int? take = null) {
+
+            IQueryable qry = Query;
+
+            if (where != null)
+                qry = qry.Where(where);
+            if (orderBy != null)
+                qry = qry.OrderBy(orderBy);
+            if (select != null)
+                qry = qry.Select(select);
+            if (skip != null)
+                qry = qry.Skip(skip.Value);
+            if (take != null)
+                qry = qry.Take(take.Value);
+
+            return qry.ToDynamicList();
+
+        }
+
+
+        /// <summary>
+        /// Get by Dynamic Linq Expression
+        /// https://github.com/StefH/System.Linq.Dynamic.Core
+        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
+        /// </summary>
+        /// <param name="where">string Where expression</param>
+        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
+        /// <param name="select">string Select expression</param>
+        /// <param name="skip">int number of records to skip</param>
+        /// <param name="take">int number of records to return</param>
+        /// <returns>dynamic-typed object</returns>
+        public virtual async Task<List<dynamic>> GetFromDynamicLinqAsync(
+                string where = null,
+                string orderBy = null,
+                string select = null,
+                int? skip = null,
+                int? take = null) {
+
+            IQueryable qry = Query;
+
+            if (where != null)
+                qry = qry.Where(where);
+            if (orderBy != null)
+                qry = qry.OrderBy(orderBy);
+            if (select != null)
+                qry = qry.Select(select);
+            if (skip != null)
+                qry = qry.Skip(skip.Value);
+            if (take != null)
+                qry = qry.Take(take.Value);
+
+            return await qry.ToDynamicListAsync();
+
+        }
+
+
 
         /// <summary>
         /// Gets a list of TEntity using the provided
@@ -50,6 +123,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
         public virtual List<TEntity> GetFromSql(string sql){
+
+            //var parms = new DynamicParameters();
+            //parms.Add()
+
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -111,7 +188,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         /// <summary>
-        /// Asynchronouely retrieves a scalar value from the database
+        /// Asynchronously retrieves a scalar value from the database
         /// using the provided SQL SELECT statement
         /// </summary>
         /// <typeparam name="T">The type of object to return</typeparam>
@@ -177,6 +254,150 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             }
             return result;
         }
+
+
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public virtual string GetJsonColumnFromStoredProcedure(string storedProcedureName, DynamicParameter[] parameters) {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(parameters);
+
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                dynamic result = cxn.QuerySingle<dynamic>(sql: "exec storedProcedureName",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+                json = result.Json;
+
+            } else {
+                dynamic result = cxn.QuerySingle<dynamic>(sql: "exec storedProcedureName",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+                json = result.Json;
+            }
+
+            return json;
+        }
+
+
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public virtual async Task<string> GetJsonColumnFromStoredProcedureAsync(string storedProcedureName, DynamicParameter[] parameters) {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(parameters);
+
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {storedProcedureName}",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+                json = result.Json;
+
+            } else {
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {storedProcedureName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+                json = result.Json;
+            }
+
+            return json;
+        }
+
+
+
+
+        /// <summary>
+        /// Retrieves a result via a parameterized stored procedure.
+        /// </summary>
+        public virtual dynamic GetFromStoredProcedure(string storedProcedureName, DynamicParameter[] parameters) {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(parameters);
+
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+
+            dynamic result;
+
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                result = cxn.Query<dynamic>(sql: "exec storedProcedureName",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+
+            } else {
+                result = cxn.Query<dynamic>(sql: "exec storedProcedureName",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+            }
+
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Retrieves a result via a parameterized stored procedure.
+        /// </summary>
+        public virtual async Task<dynamic> GetFromStoredProcedureAsync(string storedProcedureName, DynamicParameter[] parameters) {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(parameters);
+
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+
+            dynamic result;
+
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                result = await cxn.QueryAsync<dynamic>(sql: "exec storedProcedureName",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+
+            } else {
+                result = await cxn.QueryAsync<dynamic>(sql: "exec storedProcedureName",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+            }
+
+            return result;
+        }
+
 
 
     }

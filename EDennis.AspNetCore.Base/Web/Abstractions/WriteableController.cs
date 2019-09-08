@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web.Abstractions
 {
@@ -41,8 +42,9 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
         /// <returns></returns>
         [HttpGet("devextreme")]
         public IActionResult GetDevExtreme(DataSourceLoadOptionsBase loadOptions) {
-            return Ok(DataSourceLoader.Load<TEntity>(_repo.Query,loadOptions));
+            return Ok(DataSourceLoader.Load(_repo.Query,loadOptions));
         }
+
 
 
         /// <summary>
@@ -64,22 +66,32 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
                 [FromBody]int? skip = null,
                 [FromBody]int? take = null
                 ) {
-            IQueryable qry = _repo.Query;
+            return new ObjectResult(_repo.GetFromDynamicLinq(
+                where,orderBy,select,skip,take));
+        }
 
-            if (where != null)
-                qry = qry.Where(where);
-            if (orderBy != null)
-                qry = qry.OrderBy(orderBy);
-            if (select != null)
-                qry = qry.Select(select);
-            if (skip != null)
-                qry = qry.Skip(skip.Value);
-            if (take != null)
-                qry = qry.Take(take.Value);
 
-            var result = qry.ToDynamicList();
-
-            return new ObjectResult(result);
+        /// <summary>
+        /// Get by Dynamic Linq Expression
+        /// https://github.com/StefH/System.Linq.Dynamic.Core
+        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
+        /// </summary>
+        /// <param name="where">string Where expression</param>
+        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
+        /// <param name="select">string Select expression</param>
+        /// <param name="skip">int number of records to skip</param>
+        /// <param name="take">int number of records to return</param>
+        /// <returns>dynamic-typed object</returns>
+        [HttpGet("dynamic/async")]
+        public async Task<IActionResult> GetDynamicLinqAsync(
+                [FromBody]string where = null,
+                [FromBody]string orderBy = null,
+                [FromBody]string select = null,
+                [FromBody]int? skip = null,
+                [FromBody]int? take = null
+                ) {
+            return new ObjectResult(await _repo.GetFromDynamicLinqAsync(
+                where, orderBy, select, skip, take));
         }
 
 
@@ -97,9 +109,30 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
                 return new ObjectResult(rec);
         }
 
+        /// <summary>
+        /// Get by primary key
+        /// </summary>
+        /// <param name="id">integer primary key</param>
+        /// <returns></returns>
+        [HttpGet("{id}/async")]
+        public async Task<IActionResult> GetAsync(int id) {
+            var rec = await _repo.GetByIdAsync(id);
+            if (rec == null)
+                return NotFound();
+            else
+                return new ObjectResult(rec);
+        }
+
+
         [HttpPost]
         public IActionResult Post([FromBody]TEntity value) {
             var created = _repo.Create(value);
+            return CreatedAtAction("Get", created.Id, created);
+        }
+
+        [HttpPost("async")]
+        public async Task<IActionResult> PostAsync([FromBody]TEntity value) {
+            var created = await _repo.CreateAsync(value);
             return CreatedAtAction("Get", created.Id, created);
         }
 
@@ -116,6 +149,20 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
             }
         }
 
+        [HttpPut("{id}/async")]
+        public async Task<IActionResult> PutAsync([FromBody]TEntity value, [FromRoute]int id) {
+            if (id != value.Id)
+                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
+            try {
+                var updated = await _repo.UpdateAsync(value, id);
+                return CreatedAtAction("Get", updated.Id, updated);
+            } catch (MissingEntityException ex) {
+                return new BadRequestObjectResult(ex.Message);
+            }
+        }
+
+
+
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute]int id) {
             try {
@@ -126,6 +173,15 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
             }
         }
 
+        [HttpDelete("{id}/async")]
+        public async Task<IActionResult> DeleteAsync([FromRoute]int id) {
+            try {
+                await _repo.DeleteAsync(id);
+                return NoContent();
+            } catch (MissingEntityException ex) {
+                return new BadRequestObjectResult(ex.Message);
+            }
+        }
 
     }
 }

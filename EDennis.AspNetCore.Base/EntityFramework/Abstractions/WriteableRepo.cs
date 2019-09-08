@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
@@ -259,6 +260,78 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             await Context.SaveChangesAsync();
         }
 
+
+
+        /// <summary>
+        /// Get by Dynamic Linq Expression
+        /// https://github.com/StefH/System.Linq.Dynamic.Core
+        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
+        /// </summary>
+        /// <param name="where">string Where expression</param>
+        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
+        /// <param name="select">string Select expression</param>
+        /// <param name="skip">int number of records to skip</param>
+        /// <param name="take">int number of records to return</param>
+        /// <returns>dynamic-typed object</returns>
+        public List<dynamic> GetFromDynamicLinq(
+                string where = null,
+                string orderBy = null,
+                string select = null,
+                int? skip = null,
+                int? take = null) {
+
+            IQueryable qry = Query;
+
+            if (where != null)
+                qry = qry.Where(where);
+            if (orderBy != null)
+                qry = qry.OrderBy(orderBy);
+            if (select != null)
+                qry = qry.Select(select);
+            if (skip != null)
+                qry = qry.Skip(skip.Value);
+            if (take != null)
+                qry = qry.Take(take.Value);
+
+            return qry.ToDynamicList();
+
+        }
+
+
+        /// <summary>
+        /// Get by Dynamic Linq Expression
+        /// https://github.com/StefH/System.Linq.Dynamic.Core
+        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
+        /// </summary>
+        /// <param name="where">string Where expression</param>
+        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
+        /// <param name="select">string Select expression</param>
+        /// <param name="skip">int number of records to skip</param>
+        /// <param name="take">int number of records to return</param>
+        /// <returns>dynamic-typed object</returns>
+        public virtual async Task<List<dynamic>> GetFromDynamicLinqAsync(
+                string where = null,
+                string orderBy = null,
+                string select = null,
+                int? skip = null,
+                int? take = null) {
+
+            IQueryable qry = Query;
+
+            if (where != null)
+                qry = qry.Where(where);
+            if (orderBy != null)
+                qry = qry.OrderBy(orderBy);
+            if (select != null)
+                qry = qry.Select(select);
+            if (skip != null)
+                qry = qry.Skip(skip.Value);
+            if (take != null)
+                qry = qry.Take(take.Value);
+
+            return await qry.ToDynamicListAsync();
+
+        }
 
 
         protected string PrintKeys(params object[] keyValues) {
