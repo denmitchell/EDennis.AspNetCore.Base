@@ -10,11 +10,11 @@ using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web.Abstractions
+namespace EDennis.AspNetCore.Base.Web
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class WriteableController<TEntity, TContext> : ControllerBase
+    public abstract class WriteableController<TEntity, TContext> : ControllerBase
             where TEntity : class, IHasSysUser, IHasIntegerId, new()
             where TContext : DbContext {
 

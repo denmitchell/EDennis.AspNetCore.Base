@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web.Abstractions
+namespace EDennis.AspNetCore.Base.Web
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReadonlyController<TEntity, TContext> : ControllerBase
+    public abstract class ReadonlyController<TEntity, TContext> : ControllerBase
             where TEntity : class, new()
             where TContext : DbContext {
 
@@ -90,6 +90,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
         }
 
 
+        [HttpGet("sp")]
         public IActionResult GetFromStoredProcedure(
             StoredProcedureWithParameters storedProcedureWithParameters) {
             return Ok(_repo.GetFromStoredProcedure(
@@ -97,6 +98,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
                 storedProcedureWithParameters.Parameters));
         }
 
+        [HttpGet("sp/async")]
         public async Task<IActionResult> GetFromStoredProcedureAsync(
             StoredProcedureWithParameters storedProcedureWithParameters) {
             var result = await _repo.GetFromStoredProcedureAsync(
@@ -106,6 +108,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
         }
 
 
+        [HttpGet("json")]
         public IActionResult GetJsonColumnFromStoredProcedure(
             StoredProcedureWithParameters storedProcedureWithParameters) {
             return Ok(_repo.GetJsonColumnFromStoredProcedure(
@@ -113,6 +116,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions
                 storedProcedureWithParameters.Parameters));
         }
 
+        [HttpGet("json/async")]
         public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync(
             StoredProcedureWithParameters storedProcedureWithParameters) {
             var result = await _repo.GetJsonColumnFromStoredProcedureAsync(
