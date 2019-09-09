@@ -173,7 +173,33 @@ namespace IdentityServer {
                             DisplayName = "EDennis.Samples.DefaultPoliciesApi.Position.Delete"
                         },
                     }
-                }
+                },
+                new ApiResource{
+                    Name ="EDennis.Samples.Colors2Api",
+                    DisplayName="EDennis.Samples.Colors2Api",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.Colors2Api",
+                            DisplayName = "EDennis.Samples.Colors2Api"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Colors2Api.RgbController",
+                            DisplayName = "EDennis.Samples.Colors2Api.RgbController"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Colors2Api.HslController",
+                            DisplayName = "EDennis.Samples.Colors2Api.HslController"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee"
+                        }
+                    }
+                },
             };
         }
 

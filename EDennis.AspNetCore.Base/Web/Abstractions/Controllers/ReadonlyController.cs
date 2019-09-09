@@ -55,14 +55,14 @@ namespace EDennis.AspNetCore.Base.Web
         /// <returns>dynamic-typed object</returns>
         [HttpGet("dynamic")]
         public IActionResult GetDynamicLinq(
-                [FromBody]string where = null,
-                [FromBody]string orderBy = null,
-                [FromBody]string select = null,
-                [FromBody]int? skip = null,
-                [FromBody]int? take = null
+                [FromQuery]string where = null,
+                [FromQuery]string orderBy = null,
+                [FromQuery]string select = null,
+                [FromQuery]int? skip = null,
+                [FromQuery]int? take = null
                 ) {
             return new ObjectResult(_repo.GetFromDynamicLinq(
-                where,orderBy,select,skip,take));
+                where, orderBy, select, skip, take));
         }
 
 
@@ -79,15 +79,16 @@ namespace EDennis.AspNetCore.Base.Web
         /// <returns>dynamic-typed object</returns>
         [HttpGet("dynamic/async")]
         public async Task<IActionResult> GetDynamicLinqAsync(
-                [FromBody]string where = null,
-                [FromBody]string orderBy = null,
-                [FromBody]string select = null,
-                [FromBody]int? skip = null,
-                [FromBody]int? take = null
+                [FromQuery]string where = null,
+                [FromQuery]string orderBy = null,
+                [FromQuery]string select = null,
+                [FromQuery]int? skip = null,
+                [FromQuery]int? take = null
                 ) {
             return new ObjectResult(await _repo.GetFromDynamicLinqAsync(
                 where, orderBy, select, skip, take));
         }
+
 
 
         [HttpGet("sp")]
