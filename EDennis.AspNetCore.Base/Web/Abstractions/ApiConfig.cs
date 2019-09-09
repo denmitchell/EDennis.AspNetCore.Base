@@ -7,5 +7,6 @@
         public string Secret { get; set; }
         public string[] Scopes { get; set; }
         public bool Pingable { get; set; }
+        public bool UserApp { get; set; }
     }
 }
