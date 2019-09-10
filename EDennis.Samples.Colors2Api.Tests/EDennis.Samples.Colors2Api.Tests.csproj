@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.4.6" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.Colors2Api\EDennis.Samples.Colors2Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ReadonlyControllerTests\GetDevExtreme\" />
+    <Folder Include="ReadonlyControllerTests\GetDynamicLinqAsync\" />
+    <Folder Include="ReadonlyControllerTests\GetDynamicLinq\" />
+    <Folder Include="ReadonlyControllerTests\GetOData\" />
+    <Folder Include="ReadonlyControllerTests\GetFromStoredProcedure\" />
+    <Folder Include="ReadonlyControllerTests\GetFromStoredProcedureAsync\" />
+    <Folder Include="ReadonlyControllerTests\GetJsonColumnFromStoredProcedure\" />
+    <Folder Include="ReadonlyControllerTests\GetJsonColumnFromStoredProcedureAsync\" />
+    <Folder Include="WriteableControllerTests\GetDynamicLinqAsync\" />
+    <Folder Include="WriteableControllerTests\GetOData\" />
+    <Folder Include="WriteableControllerTests\Get\" />
+    <Folder Include="WriteableControllerTests\GetAsync\" />
+    <Folder Include="WriteableControllerTests\Delete\" />
+    <Folder Include="WriteableControllerTests\DeleteAsync\" />
+    <Folder Include="WriteableControllerTests\PutAsync\" />
+    <Folder Include="WriteableControllerTests\Put\" />
+    <Folder Include="WriteableControllerTests\PostAsync\" />
+    <Folder Include="WriteableControllerTests\Post\" />
+  </ItemGroup>
+
+</Project>

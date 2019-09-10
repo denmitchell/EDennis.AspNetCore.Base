@@ -81,7 +81,7 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="skip">int number of records to skip</param>
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
-        [HttpGet("dynamic")]
+        [HttpGet("linq")]
         public IActionResult GetDynamicLinq(
                 [FromQuery]string where = null,
                 [FromQuery]string orderBy = null,
@@ -105,7 +105,7 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="skip">int number of records to skip</param>
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
-        [HttpGet("dynamic/async")]
+        [HttpGet("linq/async")]
         public async Task<IActionResult> GetDynamicLinqAsync(
                 [FromQuery]string where = null,
                 [FromQuery]string orderBy = null,

@@ -18,6 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace EDennis.Samples.Colors2Api
 {
@@ -35,11 +37,10 @@ namespace EDennis.Samples.Colors2Api
         public void ConfigureServices(IServiceCollection services) {
 
             services.AddOData();
-            
+
             services
                 .AddMvc(options => {
-                    options.Conventions.Add(new WriteableControllerRouteConvention());
-                    options.Conventions.Add(new ReadonlyControllerRouteConvention());
+
                     //and then, if desired ...
                     //options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
 
@@ -53,11 +54,8 @@ namespace EDennis.Samples.Colors2Api
 
 
                 })
-                .ConfigureApplicationPartManager(m => {
-                    m.FeatureProviders.Add(new WriteableControllerFeatureProvider());
-                    m.FeatureProviders.Add(new ReadonlyControllerFeatureProvider());
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             //services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
 
