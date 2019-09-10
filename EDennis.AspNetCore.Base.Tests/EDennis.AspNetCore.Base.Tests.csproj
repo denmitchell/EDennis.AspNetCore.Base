@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Divergic.Logging.Xunit" Version="1.1.0" />
-    <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.4.1" />
+    <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.4.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />

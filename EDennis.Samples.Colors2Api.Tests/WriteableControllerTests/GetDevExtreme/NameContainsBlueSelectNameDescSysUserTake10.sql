@@ -2,12 +2,13 @@
 declare @ProjectName varchar(255) = 'EDennis.Samples.Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetDevExtreme'
-declare @TestScenario varchar(255) = 'FilterSelectSortTake'
+declare @TestScenario varchar(255) = 'FilterSortSelectTake'
 declare @TestCase varchar(255) = 'NameContainsBlueSelectNameDescSysUserTake10'
 
 declare @Filter varchar(255) = '["Name","Contains","Blue"]'
 declare @Select varchar(255) = '["Name","SysUser"]'
-declare @Sort varchar(255) = '["Name desc"]'
+declare @Sort varchar(255) = '[{selector:"Name",desc:true}]'
+declare @Skip int = 0
 declare @Take int = 10
 
 declare 
@@ -16,6 +17,7 @@ declare
 	select Name, SysUser from Rgb
 	where Name like '%Blue%'
 	order by Name desc
+	offset @Skip rows fetch next @Take row only
 	for json path, include_null_values
 );
 

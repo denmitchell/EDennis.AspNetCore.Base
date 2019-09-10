@@ -21,8 +21,6 @@ namespace EDennis.Samples.Colors2Api.Tests {
         : ReadonlyEndpointTests<Startup> {
 
 
-        private readonly static string[] PROPS_FILTER = new string[] { "SysStart", "SysEnd" };
-
         public WriteableControllerTests(ITestOutputHelper output,
                 ConfiguringWebApplicationFactory<Startup> factory)
             : base(output, factory) { }
@@ -39,7 +37,8 @@ namespace EDennis.Samples.Colors2Api.Tests {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
 
-            var filter = jsonTestCase.JsonTestFiles.Where(x => x.TestFile == "Filter").FirstOrDefault().Json;//.  GetObject<string>("Filter");
+            //var filter = jsonTestCase.JsonTestFiles.Where(x => x.TestFile == "Filter").FirstOrDefault().Json;//.  GetObject<string>("Filter");
+            var filter = jsonTestCase.GetObject<string>("Filter");
             var skip = jsonTestCase.GetObject<int>("Skip");
             var take = jsonTestCase.GetObject<int>("Take");
             var expected = jsonTestCase
@@ -59,18 +58,25 @@ namespace EDennis.Samples.Colors2Api.Tests {
 
 
         [Theory]
-        [TestJson_("GetDevExtreme", "FilterSortSelectTake", "NameContainsBlueSelectNameDescTake10")]
+        [TestJson_("GetDevExtreme", "FilterSortSelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
         public void GetDevExtreme2(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
 
-            var filter = jsonTestCase.GetObject<string[]>("Filter");
-            var select = jsonTestCase.GetObject<string[]>("Select");
-            var sort = jsonTestCase.GetObject<string[]>("Sort");
+            var filter = jsonTestCase.GetObject<string>("Filter");
+            var select = jsonTestCase.GetObject<string>("Select");
+            var sort = jsonTestCase.GetObject<string>("Sort");
             var take = jsonTestCase.GetObject<int>("Take");
-            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var expected = jsonTestCase
+                .GetObject<ICollection<dynamic>>("Expected")
+                .OrderBy(x => x.Name)
+                .ToList();
 
-            var actual = HttpClient.Get<List<LoadResult>>($"api/rgb/devextreme/?filter={filter}&select={select}&sort={sort}&take={take}").Value;
+            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme/?filter={filter}&select={select}&sort={sort}&take={take}")
+                .GetObject<DeserializableLoadResult<dynamic>>();
+            var actual = loadResult.data
+                .OrderBy(x => x.Name)
+                .ToList();
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
