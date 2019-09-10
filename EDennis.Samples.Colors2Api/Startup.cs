@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Net.Http.Headers;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Colors2Api.Models;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,12 +33,25 @@ namespace EDennis.Samples.Colors2Api
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+
+            services.AddOData();
+            
             services
                 .AddMvc(options => {
                     options.Conventions.Add(new WriteableControllerRouteConvention());
                     options.Conventions.Add(new ReadonlyControllerRouteConvention());
                     //and then, if desired ...
                     //options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
+
+                    // Workaround: https://github.com/OData/WebApi/issues/1177
+                    foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0)) {
+                        outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
+                    }
+                    foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0)) {
+                        inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
+                    }
+
+
                 })
                 .ConfigureApplicationPartManager(m => {
                     m.FeatureProviders.Add(new WriteableControllerFeatureProvider());
@@ -83,7 +99,16 @@ namespace EDennis.Samples.Colors2Api
 
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseMvc(routeBuilder => {
+
+                //routeBuilder.MapODataServiceRoute("ODataRoute", "odata", routeBuilder.GetEdmModel());
+
+                // Workaround: https://github.com/OData/WebApi/issues/1175
+                routeBuilder.EnableDependencyInjection();
+
+                routeBuilder.Select().OrderBy().Filter().MaxTop(null);
+
+            });
         }
     }
 }

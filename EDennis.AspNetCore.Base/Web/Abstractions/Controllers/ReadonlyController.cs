@@ -37,8 +37,22 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet("devextreme")]
-        public IActionResult GetDevExtreme(DataSourceLoadOptionsBase loadOptions) {
-            return Ok(DataSourceLoader.Load(_repo.Query,loadOptions));
+        public IActionResult GetDevExtreme(
+                [FromQuery]string select,
+                [FromQuery]string sort,
+                [FromQuery]string filter,
+                [FromQuery]int skip,
+                [FromQuery]int take,
+                [FromQuery]string totalSummary,
+                [FromQuery]string group,
+                [FromQuery]string groupSummary
+            ) {
+            var loadOptions = DataSourceLoadOptionsBuilder.Build(
+                select, sort, filter, skip, take, totalSummary,
+                group, groupSummary);
+
+            var result = DataSourceLoader.Load(_repo.Query, loadOptions);
+            return Ok(result);
         }
 
 

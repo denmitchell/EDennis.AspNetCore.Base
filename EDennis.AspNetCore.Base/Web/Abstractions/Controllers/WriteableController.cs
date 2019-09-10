@@ -3,6 +3,7 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,16 @@ namespace EDennis.AspNetCore.Base.Web
         /// </summary>
         /// <returns></returns>
         [EnableQuery]
+        [ODataQueryFilter]
         [HttpGet("odata")]
-        public IEnumerable<TEntity> GetOData() {
+        public IEnumerable<TEntity> GetOData(
+                [FromQuery]string select,
+                [FromQuery]string orderBy,
+                [FromQuery]string filter,
+                [FromQuery]string expand,
+                [FromQuery]int skip,
+                [FromQuery]int top
+            ) {
             return _repo.Query;
         }
 
@@ -41,8 +50,22 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet("devextreme")]
-        public IActionResult GetDevExtreme(DataSourceLoadOptionsBase loadOptions) {
-            return Ok(DataSourceLoader.Load(_repo.Query,loadOptions));
+        public IActionResult GetDevExtreme(                   
+                [FromQuery]string select,
+                [FromQuery]string sort,
+                [FromQuery]string filter,
+                [FromQuery]int skip,
+                [FromQuery]int take,
+                [FromQuery]string totalSummary,
+                [FromQuery]string group,
+                [FromQuery]string groupSummary
+            ) {
+            var loadOptions = DataSourceLoadOptionsBuilder.Build(
+                select, sort, filter, skip, take, totalSummary, 
+                group, groupSummary);
+
+            var result = DataSourceLoader.Load(_repo.Query, loadOptions);
+            return Ok(result);
         }
 
 
