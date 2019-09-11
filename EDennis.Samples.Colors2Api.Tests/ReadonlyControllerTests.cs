@@ -12,24 +12,24 @@ namespace EDennis.Samples.Colors2Api.Tests
 {
 
     [Collection("Endpoint Tests")]
-    public class WriteableControllerTests
-        : WriteableEndpointTests<Startup> {
+    public class ReadonlyControllerTests
+        : ReadonlyEndpointTests<Startup> {
 
 
-        public WriteableControllerTests(ITestOutputHelper output,
+        public ReadonlyControllerTests(ITestOutputHelper output,
                 ConfiguringWebApplicationFactory<Startup> factory)
             : base(output, factory) { }
 
         internal class TestJson_ : TestJsonAttribute {
             public TestJson_(string methodName, string testScenario, string testCase)
-                : base("Colors2", "EDennis.Samples.Colors2Api", "RgbController", methodName, testScenario, testCase) {
+                : base("Colors2", "EDennis.Samples.Colors2Api", "HslController", methodName, testScenario, testCase) {
             }
         }
 
 
 
         [Theory]
-        [TestJson_("GetOData", "FilterSkipTop", "RedGt200Skip2Top5")]
+        [TestJson_("GetOData", "FilterSkipTop", "HueGt200Skip2Top5")]
         public void GetOData1(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
@@ -41,7 +41,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderBy(x => x.Name)
                 .ToList();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/odata?$filter={filter}&$skip={skip}&$top={top}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/odata?$filter={filter}&$skip={skip}&$top={top}")
                 .GetObject<List<dynamic>>()
                 .OrderBy(x => x.Name)
                 .ToList();
@@ -64,7 +64,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderByDescending(x => x.Name)
                 .ToList();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/odata?$filter={filter}&$select={select}&$orderBy={orderBy}&$top={top}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/odata?$filter={filter}&$select={select}&$orderBy={orderBy}&$top={top}")
                 .GetObject<List<dynamic>>()
                 .ToList();
 
@@ -74,7 +74,7 @@ namespace EDennis.Samples.Colors2Api.Tests
 
 
         [Theory]
-        [TestJson_("GetDevExtreme", "FilterSkipTake", "RedGt200Skip2Take5")]
+        [TestJson_("GetDevExtreme", "FilterSkipTake", "HueGt200Skip2Take5")]
         public void GetDevExtreme1(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
@@ -88,7 +88,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .ToList();
 
 
-            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme?filter={filter}&skip={skip}&take={take}")
+            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/hsl/devextreme?filter={filter}&skip={skip}&take={take}")
                 .GetObject<DeserializableLoadResult<dynamic>>();
             var actual = loadResult.data
                 .OrderBy(x => x.Id)
@@ -113,7 +113,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderByDescending(x => x.Name)
                 .ToList();
 
-            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme?filter={filter}&select={select}&sort={sort}&take={take}")
+            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/hsl/devextreme?filter={filter}&select={select}&sort={sort}&take={take}")
                 .GetObject<DeserializableLoadResult<dynamic>>();
             var actual = loadResult.data
                 .ToList();
@@ -122,7 +122,7 @@ namespace EDennis.Samples.Colors2Api.Tests
         }
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "WhereSkipTake", "RedGt200Skip2Take5")]
+        [TestJson_("GetDynamicLinq", "WhereSkipTake", "HueGt200Skip2Take5")]
         public void GetDynamicLinq1(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
@@ -134,7 +134,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderBy(x => x.Name)
                 .ToList();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&skip={skip}&take={take}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/linq?where={where}&skip={skip}&take={take}")
                 .GetObject<List<dynamic>>()
                 .OrderBy(x => x.Name)
                 .ToList();
@@ -157,7 +157,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderByDescending(x => x.Name)
                 .ToList();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&select={select}&orderBy={orderBy}&take={take}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/linq?where={where}&select={select}&orderBy={orderBy}&take={take}")
                 .GetObject<List<dynamic>>()
                 .ToList();
 
@@ -167,7 +167,7 @@ namespace EDennis.Samples.Colors2Api.Tests
 
 
         [Theory]
-        [TestJson_("GetDynamicLinqAsync", "WhereSkipTake", "RedGt200Skip2Take5")]
+        [TestJson_("GetDynamicLinqAsync", "WhereSkipTake", "HueGt200Skip2Take5")]
         public void GetDynamicLinqAsync1(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
@@ -179,7 +179,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderBy(x => x.Name)
                 .ToList();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq/async?where={where}&skip={skip}&take={take}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/linq/async?where={where}&skip={skip}&take={take}")
                 .GetObject<List<dynamic>>()
                 .OrderBy(x => x.Name)
                 .ToList();
@@ -202,7 +202,7 @@ namespace EDennis.Samples.Colors2Api.Tests
                 .OrderByDescending(x => x.Name)
                 .ToList();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq/async?where={where}&select={select}&orderBy={orderBy}&take={take}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/linq/async?where={where}&select={select}&orderBy={orderBy}&take={take}")
                 .GetObject<List<dynamic>>()
                 .ToList();
 
