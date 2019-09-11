@@ -84,7 +84,7 @@ namespace EDennis.Samples.Colors2Api.Tests
             var take = jsonTestCase.GetObject<int>("Take");
             var expected = jsonTestCase
                 .GetObject<ICollection<dynamic>>("Expected")
-                .OrderBy(x=>x.Id)
+                .OrderBy(x => x.Id)
                 .ToList();
 
 
@@ -221,17 +221,14 @@ namespace EDennis.Samples.Colors2Api.Tests
             var colorName = jsonTestCase.GetObject<string>("ColorName");
 
             var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-                .OrderBy(x => x.Name)
-                .ToList();
+                .FirstOrDefault();
 
-            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/sp?where={where}&skip={skip}&take={take}")
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/sp?colorName={colorName}")
                 .GetObject<List<dynamic>>()
-                .OrderBy(x => x.Name)
-                .ToList();
+                .FirstOrDefault();
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
-
 
     }
 }

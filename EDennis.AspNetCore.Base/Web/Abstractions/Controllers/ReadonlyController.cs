@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web
@@ -123,34 +126,49 @@ namespace EDennis.AspNetCore.Base.Web
 
 
             return Ok(_repo.GetFromStoredProcedure(
-                spName, parms);
+                spName, parms));
         }
-
+        
         [HttpGet("sp/async")]
-        public async Task<IActionResult> GetFromStoredProcedureAsync(
-            StoredProcedureCall storedProcedureWithParameters) {
-            var result = await _repo.GetFromStoredProcedureAsync(
-                storedProcedureWithParameters.StoredProcedureName,
-                storedProcedureWithParameters.Parameters);
-            return Ok(result);
-        }
+        public async Task<IActionResult> GetFromStoredProcedureAsync([FromQuery] string spName) {
 
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+
+            return Ok(await _repo.GetFromStoredProcedureAsync(
+                spName, parms));
+        }
 
         [HttpGet("json")]
-        public IActionResult GetJsonColumnFromStoredProcedure(
-            StoredProcedureCall storedProcedureWithParameters) {
-            return Ok(_repo.GetJsonColumnFromStoredProcedure(
-                storedProcedureWithParameters.StoredProcedureName,
-                storedProcedureWithParameters.Parameters));
+        public ActionResult<string> GetJsonColumnFromStoredProcedure([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+            var json = _repo.GetJsonColumnFromStoredProcedure(
+                spName, parms);
+
+
+            return Content(json,"application/json");
+
         }
 
         [HttpGet("json/async")]
-        public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync(
-            StoredProcedureCall storedProcedureWithParameters) {
-            var result = await _repo.GetJsonColumnFromStoredProcedureAsync(
-                storedProcedureWithParameters.StoredProcedureName,
-                storedProcedureWithParameters.Parameters);
-            return Ok(result);
+        public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+
+            var json = await _repo.GetJsonColumnFromStoredProcedureAsync(
+                spName, parms);
+
+
+            return Content(json, "application/json");
         }
 
     }

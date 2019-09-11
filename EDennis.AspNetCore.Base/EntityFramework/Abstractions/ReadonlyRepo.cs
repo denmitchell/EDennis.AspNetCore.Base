@@ -283,18 +283,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = cxn.QuerySingle<dynamic>(sql: $"exec {spName}",
+                dynamic result = cxn.QuerySingle<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json;
+                json = result.Json ?? result.json ?? result.JSON;
 
             } else {
-                dynamic result = cxn.QuerySingle<dynamic>(sql: $"exec {spName}",
+                dynamic result = cxn.QuerySingle<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
-                json = result.Json;
+
+                json = result.Json ?? result.json ?? result.JSON;
             }
 
             return json;
@@ -325,18 +326,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {spName}",
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json;
+                json = result.Json ?? result.json ?? result.JSON;
 
             } else {
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {spName}",
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
-                json = result.Json;
+
+                json = result.Json ?? result.json ?? result.JSON;
             }
 
             return json;
@@ -367,14 +369,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                result = cxn.Query<dynamic>(sql: $"exec {spName}",
+                result = cxn.Query<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
 
             } else {
-                result = cxn.Query<dynamic>(sql: $"exec {spName}",
+                result = cxn.Query<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
@@ -407,14 +409,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                result = await cxn.QueryAsync<dynamic>(sql: $"exec {spName}",
+                result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
 
             } else {
-                result = await cxn.QueryAsync<dynamic>(sql: $"exec {spName}",
+                result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
@@ -456,7 +458,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 select  
    schema_name(p1.schema_id) [Schema],
    object_name(p1.object_id) [StoredProcedureName],
-   p1.name [ParameterName],  
+   p2.name [ParameterName],  
    parameter_id [Order],  
    type_name(user_type_id) [Type],  
    max_length [Length],  

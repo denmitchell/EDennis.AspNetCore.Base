@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace EDennis.AspNetCore.Base.EntityFramework
 {
@@ -12,8 +13,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework
     public static class DynamicParametersExtensions
     {
 
+        private const string SPNAME_PATTERN = @"(\[?([A-Za-z0-9_]+)\]?\.)?\[?([A-Za-z0-9_]+)\]?";
 
-        public static Dictionary<string, Type> TypeMap = new Dictionary<string, Type>() {
+        private readonly static Dictionary<string, Type> TypeMap = new Dictionary<string, Type>() {
 
         { "bit", typeof(bool) },
         { "tinyint",  typeof(byte) },
@@ -51,16 +53,40 @@ namespace EDennis.AspNetCore.Base.EntityFramework
             IEnumerable<KeyValuePair<string, string>> parms,
             List<StoredProcedureDef> spDefs) {
 
+            GetStoredProcedureNameComponents(spName, out string schema, out string name); 
             var spDef = spDefs
-                .Where(d => d.StoredProcedureName == spName)
+                .Where(d => 
+                    d.StoredProcedureName.ToLower() == name
+                    && d.Schema.ToLower() == schema)
                 .ToList();
             foreach (var parm in parms) {
-                var parmDef = spDef.FirstOrDefault(d => d.ParameterName == parm.Key);
+                var parmDef = spDef
+                    .FirstOrDefault(d => d.ParameterName.ToLower().Replace("@", "") 
+                    == parm.Key.ToLower().Replace("@", ""));
                 dynamic value = Convert.ChangeType(parm.Value,TypeMap[parmDef.Type]);
                 destination.Add(parmDef.ParameterName, value);
 
             }
         }
+
+        private static void GetStoredProcedureNameComponents(
+            string spName, out string schema, out string name) {
+            if (spName.Count(c => c == '.') > 1)
+                throw new ApplicationException($"Stored Procedure name {spName} is not supported.  The name cannot contain more than one period (as in schema.table)");
+            else if (!spName.Contains(".")) {
+                schema = "dbo";
+                name = spName.Replace("[", "").Replace("]", "").ToLower();
+            } else {
+                var components = Regex.Matches(spName, SPNAME_PATTERN)
+                    .SelectMany(m => m.Groups)
+                    .Skip(1)
+                    .Select(g => g.Value)
+                    .ToList();
+                schema = components[0].ToLower();
+                name = components[1].ToLower();
+            }
+        }
+
     }
 
 }
