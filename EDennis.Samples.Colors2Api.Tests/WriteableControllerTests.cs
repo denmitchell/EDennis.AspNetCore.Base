@@ -281,6 +281,80 @@ namespace EDennis.Samples.Colors2Api.Tests
             Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
+        [Theory]
+        [TestJson_("Put", "", "1")]
+        [TestJson_("Put", "", "2")]
+        public void Put(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<Rgb>("Input");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            HttpClient.Put($"api/rgb/{id}",input);
+
+            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
+                .GetObject<List<Rgb>>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("PutAsync", "", "1")]
+        [TestJson_("PutAsync", "", "2")]
+        public void PutAsync(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<Rgb>("Input");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            HttpClient.Put($"api/rgb/async/{id}", input);
+
+            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
+                .GetObject<List<Rgb>>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("Post", "", "1")]
+        [TestJson_("Post", "", "2")]
+        public void Post(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var input = jsonTestCase.GetObject<Rgb>("Input");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            HttpClient.Post($"api/rgb", input);
+
+            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
+                .GetObject<List<Rgb>>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("PostAsync", "", "1")]
+        [TestJson_("PostAsync", "", "2")]
+        public void PostAsync(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var input = jsonTestCase.GetObject<Rgb>("Input");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            HttpClient.Post($"api/rgb/async", input);
+
+            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
+                .GetObject<List<Rgb>>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
 
     }
 }

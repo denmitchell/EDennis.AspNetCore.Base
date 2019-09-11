@@ -24,11 +24,4 @@
     <ProjectReference Include="..\EDennis.Samples.Colors2Api\EDennis.Samples.Colors2Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WriteableControllerTests\PutAsync\" />
-    <Folder Include="WriteableControllerTests\Put\" />
-    <Folder Include="WriteableControllerTests\PostAsync\" />
-    <Folder Include="WriteableControllerTests\Post\" />
-  </ItemGroup>
-
 </Project>
