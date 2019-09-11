@@ -31,13 +31,59 @@ namespace EDennis.Samples.Colors2Api.Tests {
             }
         }
 
+
+
+        [Theory]
+        [TestJson_("GetOData", "FilterSkipTop", "RedGt200Skip2Top5")]
+        public void GetOData1(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var filter = jsonTestCase.GetObject<string>("Filter");
+            var skip = jsonTestCase.GetObject<int>("Skip");
+            var top = jsonTestCase.GetObject<int>("Top");
+            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
+                .OrderBy(x => x.Name)
+                .ToList();
+
+            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/odata?$filter={filter}&$skip={skip}&$top={top}")
+                .GetObject<List<dynamic>>()
+                .OrderBy(x => x.Name)
+                .ToList();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("GetOData", "FilterOrderBySelectTop", "NameContainsBlueSelectNameDescSysUserTop10")]
+        public void GetOData2(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var filter = jsonTestCase.GetObject<string>("Filter");
+            var select = jsonTestCase.GetObject<string>("Select");
+            var orderBy = jsonTestCase.GetObject<string>("OrderBy");
+            var top = jsonTestCase.GetObject<int>("Top");
+
+            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
+                .OrderByDescending(x => x.Name)
+                .ToList();
+
+            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/odata?$filter={filter}&$select={select}&$orderBy={orderBy}&$top={top}")
+                .GetObject<List<dynamic>>()
+                .ToList();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+
+        }
+
+
         [Theory]
         [TestJson_("GetDevExtreme", "FilterSkipTake", "RedGt200Skip2Take5")]
         public void GetDevExtreme1(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             Output.WriteLine($"Db instance name: {InstanceName}");
 
-            //var filter = jsonTestCase.JsonTestFiles.Where(x => x.TestFile == "Filter").FirstOrDefault().Json;//.  GetObject<string>("Filter");
             var filter = jsonTestCase.GetObject<string>("Filter");
             var skip = jsonTestCase.GetObject<int>("Skip");
             var take = jsonTestCase.GetObject<int>("Take");
@@ -69,13 +115,12 @@ namespace EDennis.Samples.Colors2Api.Tests {
             var take = jsonTestCase.GetObject<int>("Take");
             var expected = jsonTestCase
                 .GetObject<ICollection<dynamic>>("Expected")
-                .OrderBy(x => x.Name)
+                .OrderByDescending(x => x.Name)
                 .ToList();
 
             var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme?filter={filter}&select={select}&sort={sort}&take={take}")
                 .GetObject<DeserializableLoadResult<dynamic>>();
             var actual = loadResult.data
-                .OrderBy(x => x.Name)
                 .ToList();
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
@@ -114,12 +159,11 @@ namespace EDennis.Samples.Colors2Api.Tests {
             var take = jsonTestCase.GetObject<int>("Take");
 
             var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-                .OrderBy(x => x.Name)
+                .OrderByDescending(x => x.Name)
                 .ToList();
 
             var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&select={select}&orderBy={orderBy}&take={take}")
                 .GetObject<List<dynamic>>()
-                .OrderBy(x => x.Name)
                 .ToList();
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
@@ -160,12 +204,11 @@ namespace EDennis.Samples.Colors2Api.Tests {
             var take = jsonTestCase.GetObject<int>("Take");
 
             var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-                .OrderBy(x => x.Name)
+                .OrderByDescending(x => x.Name)
                 .ToList();
 
             var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq/async?where={where}&select={select}&orderBy={orderBy}&take={take}")
                 .GetObject<List<dynamic>>()
-                .OrderBy(x => x.Name)
                 .ToList();
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
