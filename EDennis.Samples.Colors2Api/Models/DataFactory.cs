@@ -106,7 +106,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 12,
-                        Name = "Brow",
+                        Name = "Brown",
                         Red = 165,
                         Green = 42,
                         Blue = 42,
@@ -178,7 +178,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 20,
-                        Name = "Crimso",
+                        Name = "Crimson",
                         Red = 220,
                         Green = 20,
                         Blue = 60,
@@ -187,7 +187,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 21,
-                        Name = "Cya",
+                        Name = "Cyan",
                         Red = 0,
                         Green = 255,
                         Blue = 255,
@@ -205,7 +205,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 23,
-                        Name = "DarkCya",
+                        Name = "DarkCyan",
                         Red = 0,
                         Green = 139,
                         Blue = 139,
@@ -223,7 +223,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 25,
-                        Name = "DarkGree",
+                        Name = "DarkGreen",
                         Red = 0,
                         Green = 100,
                         Blue = 0,
@@ -250,7 +250,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 28,
-                        Name = "DarkldenRod",
+                        Name = "DarkGoldenRod",
                         Red = 184,
                         Green = 134,
                         Blue = 11,
@@ -268,7 +268,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 30,
-                        Name = "DarkOliveGree",
+                        Name = "DarkOliveGreen",
                         Red = 85,
                         Green = 107,
                         Blue = 47,
@@ -304,7 +304,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 34,
-                        Name = "DarkSalmo",
+                        Name = "DarkSalmon",
                         Red = 233,
                         Green = 150,
                         Blue = 122,
@@ -313,7 +313,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 35,
-                        Name = "DarkSeaGree",
+                        Name = "DarkSeaGreen",
                         Red = 143,
                         Green = 188,
                         Blue = 143,
@@ -430,7 +430,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 48,
-                        Name = "ForestGree",
+                        Name = "ForestGreen",
                         Red = 34,
                         Green = 139,
                         Blue = 34,
@@ -475,7 +475,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 53,
-                        Name = "Gree",
+                        Name = "Green",
                         Red = 0,
                         Green = 128,
                         Blue = 0,
@@ -529,7 +529,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 59,
-                        Name = "Indi ",
+                        Name = "Indigo ",
                         Red = 75,
                         Green = 0,
                         Blue = 130,
@@ -574,7 +574,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 64,
-                        Name = "LawnGree",
+                        Name = "LawnGreen",
                         Red = 124,
                         Green = 252,
                         Blue = 0,
@@ -583,7 +583,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 65,
-                        Name = "ld",
+                        Name = "Gold",
                         Red = 255,
                         Green = 215,
                         Blue = 0,
@@ -592,7 +592,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 66,
-                        Name = "ldenRod",
+                        Name = "GoldenRod",
                         Red = 218,
                         Green = 165,
                         Blue = 32,
@@ -601,7 +601,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 67,
-                        Name = "LemonChiffo",
+                        Name = "LemonChiffon",
                         Red = 255,
                         Green = 250,
                         Blue = 205,
@@ -646,7 +646,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 72,
-                        Name = "LightGree",
+                        Name = "LightGreen",
                         Red = 144,
                         Green = 238,
                         Blue = 144,
@@ -664,7 +664,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 74,
-                        Name = "LightldenRodYellow",
+                        Name = "LightGoldenRodYellow",
                         Red = 250,
                         Green = 250,
                         Blue = 210,
@@ -682,7 +682,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 76,
-                        Name = "LightSalmo",
+                        Name = "LightSalmon",
                         Red = 255,
                         Green = 160,
                         Blue = 122,
@@ -691,7 +691,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 77,
-                        Name = "LightSeaGree",
+                        Name = "LightSeaGreen",
                         Red = 32,
                         Green = 178,
                         Blue = 170,
@@ -754,7 +754,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 84,
-                        Name = "LimeGree",
+                        Name = "LimeGreen",
                         Red = 50,
                         Green = 205,
                         Blue = 50,
@@ -781,7 +781,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 87,
-                        Name = "Maroo",
+                        Name = "Maroon",
                         Red = 128,
                         Green = 0,
                         Blue = 0,
@@ -826,7 +826,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 92,
-                        Name = "MediumSeaGree",
+                        Name = "MediumSeaGreen",
                         Red = 60,
                         Green = 179,
                         Blue = 113,
@@ -844,7 +844,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 94,
-                        Name = "MediumSpringGree",
+                        Name = "MediumSpringGreen",
                         Red = 0,
                         Green = 250,
                         Blue = 154,
@@ -898,7 +898,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 100,
-                        Name = "Moccasi",
+                        Name = "Moccasin",
                         Red = 255,
                         Green = 228,
                         Blue = 181,
@@ -979,7 +979,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 109,
-                        Name = "PaleGree",
+                        Name = "PaleGreen",
                         Red = 152,
                         Green = 251,
                         Blue = 152,
@@ -988,7 +988,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 110,
-                        Name = "PaleldenRod",
+                        Name = "PaleGoldenRod",
                         Red = 238,
                         Green = 232,
                         Blue = 170,
@@ -1096,7 +1096,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 122,
-                        Name = "RosyBrow",
+                        Name = "RosyBrown",
                         Red = 188,
                         Green = 143,
                         Blue = 143,
@@ -1114,7 +1114,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 124,
-                        Name = "SaddleBrow",
+                        Name = "SaddleBrown",
                         Red = 139,
                         Green = 69,
                         Blue = 19,
@@ -1123,7 +1123,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 125,
-                        Name = "Salmo",
+                        Name = "Salmon",
                         Red = 250,
                         Green = 128,
                         Blue = 114,
@@ -1132,7 +1132,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 126,
-                        Name = "SandyBrow",
+                        Name = "SandyBrown",
                         Red = 244,
                         Green = 164,
                         Blue = 96,
@@ -1141,7 +1141,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 127,
-                        Name = "SeaGree",
+                        Name = "SeaGreen",
                         Red = 46,
                         Green = 139,
                         Blue = 87,
@@ -1222,7 +1222,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 136,
-                        Name = "SpringGree",
+                        Name = "SpringGreen",
                         Red = 0,
                         Green = 255,
                         Blue = 127,
@@ -1240,7 +1240,7 @@ namespace EDennis.Samples.Colors2Api.Models {
                 },
                 new Rgb {
                         Id = 138,
-                        Name = "Ta",
+                        Name = "Tan",
                         Red = 210,
                         Green = 180,
                         Blue = 140,

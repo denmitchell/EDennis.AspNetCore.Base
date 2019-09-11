@@ -137,7 +137,7 @@ namespace EDennis.AspNetCore.Base.Web
         /// </summary>
         /// <param name="id">integer primary key</param>
         /// <returns></returns>
-        [HttpGet("{id}/async")]
+        [HttpGet("async/{id}")]
         public async Task<IActionResult> GetAsync(int id) {
             var rec = await _repo.GetByIdAsync(id);
             if (rec == null)
@@ -172,7 +172,7 @@ namespace EDennis.AspNetCore.Base.Web
             }
         }
 
-        [HttpPut("{id}/async")]
+        [HttpPut("async/{id}")]
         public async Task<IActionResult> PutAsync([FromBody]TEntity value, [FromRoute]int id) {
             if (id != value.Id)
                 return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
@@ -196,7 +196,7 @@ namespace EDennis.AspNetCore.Base.Web
             }
         }
 
-        [HttpDelete("{id}/async")]
+        [HttpDelete("async/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute]int id) {
             try {
                 await _repo.DeleteAsync(id);

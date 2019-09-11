@@ -2,6 +2,7 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
+using EDennis.Samples.Colors2Api.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -208,6 +209,76 @@ namespace EDennis.Samples.Colors2Api.Tests
 
             Assert.True(actual.IsEqualOrWrite(expected, Output));
 
+        }
+
+
+        [Theory]
+        [TestJson_("Get", "", "1")]
+        [TestJson_("Get", "", "2")]
+        public void Get(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Rgb>("Expected");
+
+            var actual = HttpClient.Get<Rgb>($"api/rgb/{id}")
+                .GetObject<Rgb>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("GetAsync", "", "1")]
+        [TestJson_("GetAsync", "", "2")]
+        public void GetAsync(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Rgb>("Expected");
+
+            var actual = HttpClient.Get<Rgb>($"api/rgb/async/{id}")
+                .GetObject<Rgb>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("Delete", "", "1")]
+        [TestJson_("Delete", "", "2")]
+        public void Delete(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            HttpClient.Delete<Rgb>($"api/rgb/{id}");
+
+            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
+                .GetObject<List<Rgb>>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("DeleteAsync", "", "1")]
+        [TestJson_("DeleteAsync", "", "2")]
+        public void DeleteAsync(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            HttpClient.Delete<Rgb>($"api/rgb/async/{id}");
+
+            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
+                .GetObject<List<Rgb>>();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
         }
 
 

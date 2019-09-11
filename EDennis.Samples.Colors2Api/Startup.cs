@@ -82,6 +82,7 @@ namespace EDennis.Samples.Colors2Api
 
             if (env.EnvironmentName == EnvironmentName.Development) {
                 //app.UseMockClientAuthorization();
+                app.UseRepoInterceptor<RgbRepo, Rgb, ColorsDbContext>();
             }
 
             //app.UseAuthentication();

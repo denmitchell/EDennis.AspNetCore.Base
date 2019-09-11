@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="WriteableControllerTests\Get\" />
-    <Folder Include="WriteableControllerTests\GetAsync\" />
-    <Folder Include="WriteableControllerTests\Delete\" />
-    <Folder Include="WriteableControllerTests\DeleteAsync\" />
     <Folder Include="WriteableControllerTests\PutAsync\" />
     <Folder Include="WriteableControllerTests\Put\" />
     <Folder Include="WriteableControllerTests\PostAsync\" />
