@@ -32,7 +32,6 @@
     <Folder Include="ReadonlyControllerTests\GetFromStoredProcedureAsync\" />
     <Folder Include="ReadonlyControllerTests\GetJsonColumnFromStoredProcedure\" />
     <Folder Include="ReadonlyControllerTests\GetJsonColumnFromStoredProcedureAsync\" />
-    <Folder Include="WriteableControllerTests\GetDynamicLinqAsync\" />
     <Folder Include="WriteableControllerTests\GetOData\" />
     <Folder Include="WriteableControllerTests\Get\" />
     <Folder Include="WriteableControllerTests\GetAsync\" />
