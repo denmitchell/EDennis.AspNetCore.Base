@@ -118,4 +118,4 @@ function ExecuteTestSql($solution,$database,$showSuccesses){
     }             
 }
 
-ExecuteTestSql -solution 'EDennis.AspNetCore.Base' -database Colors2 -showSuccesses true
+#ExecuteTestSql -solution 'EDennis.AspNetCore.Base' -database Colors2 -showSuccesses true

@@ -9,7 +9,7 @@ declare @Id int = convert(int,@TestCase)
 declare 
 	@Input varchar(max) = 
 (
-	select Id, Name, @Id Red, @Id Green, @Id Blue, SysUser, DateAdded
+	select 0 Id, Name, @Id Red, @Id Green, @Id Blue, SysUser, DateAdded
 		from Rgb
 		where Id = @Id
 		for json path, without_array_wrapper
