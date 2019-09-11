@@ -4,6 +4,7 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web
@@ -114,16 +115,20 @@ namespace EDennis.AspNetCore.Base.Web
 
 
         [HttpGet("sp")]
-        public IActionResult GetFromStoredProcedure(
-            StoredProcedureWithParameters storedProcedureWithParameters) {
+        public IActionResult GetFromStoredProcedure([FromQuery] string spName){
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string> (q.Key, q.Value[0]));
+
+
             return Ok(_repo.GetFromStoredProcedure(
-                storedProcedureWithParameters.StoredProcedureName,
-                storedProcedureWithParameters.Parameters));
+                spName, parms);
         }
 
         [HttpGet("sp/async")]
         public async Task<IActionResult> GetFromStoredProcedureAsync(
-            StoredProcedureWithParameters storedProcedureWithParameters) {
+            StoredProcedureCall storedProcedureWithParameters) {
             var result = await _repo.GetFromStoredProcedureAsync(
                 storedProcedureWithParameters.StoredProcedureName,
                 storedProcedureWithParameters.Parameters);
@@ -133,7 +138,7 @@ namespace EDennis.AspNetCore.Base.Web
 
         [HttpGet("json")]
         public IActionResult GetJsonColumnFromStoredProcedure(
-            StoredProcedureWithParameters storedProcedureWithParameters) {
+            StoredProcedureCall storedProcedureWithParameters) {
             return Ok(_repo.GetJsonColumnFromStoredProcedure(
                 storedProcedureWithParameters.StoredProcedureName,
                 storedProcedureWithParameters.Parameters));
@@ -141,7 +146,7 @@ namespace EDennis.AspNetCore.Base.Web
 
         [HttpGet("json/async")]
         public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync(
-            StoredProcedureWithParameters storedProcedureWithParameters) {
+            StoredProcedureCall storedProcedureWithParameters) {
             var result = await _repo.GetJsonColumnFromStoredProcedureAsync(
                 storedProcedureWithParameters.StoredProcedureName,
                 storedProcedureWithParameters.Parameters);

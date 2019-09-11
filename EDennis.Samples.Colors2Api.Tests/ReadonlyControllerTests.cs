@@ -211,5 +211,27 @@ namespace EDennis.Samples.Colors2Api.Tests
         }
 
 
+        [Theory]
+        [TestJson_("GetFromStoredProcedure", "HslFromColorName", "AliceBlue")]
+        [TestJson_("GetFromStoredProcedure", "HslFromColorName", "DarkKhaki")]
+        public void GetFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
+
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+
+            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
+                .OrderBy(x => x.Name)
+                .ToList();
+
+            var actual = HttpClient.Get<List<dynamic>>($"api/hsl/sp?where={where}&skip={skip}&take={take}")
+                .GetObject<List<dynamic>>()
+                .OrderBy(x => x.Name)
+                .ToList();
+
+            Assert.True(actual.IsEqualOrWrite(expected, Output));
+        }
+
+
     }
 }

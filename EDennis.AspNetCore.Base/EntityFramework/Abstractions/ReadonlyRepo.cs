@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TEntity : class, new()
             where TContext : DbContext {
 
+
+        private List<StoredProcedureDef> _spDefs;
 
         public TContext Context { get; set; }
 
@@ -262,10 +265,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// This can be used to return a flat or hierarchical JSON-structured
         /// result (e.g., using FOR JSON with SQL Server)
         /// </summary>
-        public virtual string GetJsonColumnFromStoredProcedure(string storedProcedureName, DynamicParameter[] parameters) {
+        public virtual string GetJsonColumnFromStoredProcedure(
+            string spName,
+            IEnumerable<KeyValuePair<string, string>> parms) {
+
+            if (_spDefs == null)
+                BuildStoredProcedureDefs();
 
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(parameters);
+            dynamicParameters.AddRange(spName, parms, _spDefs);
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -275,7 +283,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = cxn.QuerySingle<dynamic>(sql: "exec storedProcedureName",
+                dynamic result = cxn.QuerySingle<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
@@ -283,7 +291,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 json = result.Json;
 
             } else {
-                dynamic result = cxn.QuerySingle<dynamic>(sql: "exec storedProcedureName",
+                dynamic result = cxn.QuerySingle<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
                 json = result.Json;
@@ -299,10 +307,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// This can be used to return a flat or hierarchical JSON-structured
         /// result (e.g., using FOR JSON with SQL Server)
         /// </summary>
-        public virtual async Task<string> GetJsonColumnFromStoredProcedureAsync(string storedProcedureName, DynamicParameter[] parameters) {
+        public virtual async Task<string> GetJsonColumnFromStoredProcedureAsync(
+            string spName,
+            IEnumerable<KeyValuePair<string, string>> parms) {
+
+            if (_spDefs == null)
+                BuildStoredProcedureDefs();
 
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(parameters);
+            dynamicParameters.AddRange(spName, parms, _spDefs);
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -312,7 +325,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {storedProcedureName}",
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
@@ -320,7 +333,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 json = result.Json;
 
             } else {
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {storedProcedureName}",
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
                 json = result.Json;
@@ -335,10 +348,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public virtual dynamic GetFromStoredProcedure(string storedProcedureName, DynamicParameter[] parameters) {
+        public virtual dynamic GetFromStoredProcedure(
+            string spName,
+            IEnumerable<KeyValuePair<string,string>> parms) {
+
+            if (_spDefs == null)
+                BuildStoredProcedureDefs();
 
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(parameters);
+            dynamicParameters.AddRange(spName, parms,_spDefs);
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -349,30 +367,36 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                result = cxn.Query<dynamic>(sql: "exec storedProcedureName",
+                result = cxn.Query<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
 
             } else {
-                result = cxn.Query<dynamic>(sql: "exec storedProcedureName",
+                result = cxn.Query<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
 
             return result;
         }
+
 
 
 
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public virtual async Task<dynamic> GetFromStoredProcedureAsync(string storedProcedureName, DynamicParameter[] parameters) {
+        public virtual async Task<dynamic> GetFromStoredProcedureAsync(
+            string spName,
+            IEnumerable<KeyValuePair<string, string>> parms) {
+
+            if (_spDefs == null)
+                BuildStoredProcedureDefs();
 
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(parameters);
+            dynamicParameters.AddRange(spName, parms, _spDefs);
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -383,20 +407,67 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                result = await cxn.QueryAsync<dynamic>(sql: "exec storedProcedureName",
+                result = await cxn.QueryAsync<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
 
             } else {
-                result = await cxn.QueryAsync<dynamic>(sql: "exec storedProcedureName",
+                result = await cxn.QueryAsync<dynamic>(sql: $"exec {spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
 
             return result;
         }
+
+
+        public virtual void BuildStoredProcedureDefs() {
+
+            _spDefs = new List<StoredProcedureDef>();
+
+            var cxn = Context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+
+
+            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                _spDefs = cxn.Query<StoredProcedureDef>(sql: SQL_SERVER_STORED_PROCEDURE_DEFS,
+                    transaction: dbTrans,
+                    commandType: CommandType.Text)
+                    .ToList();
+
+            } else {
+                _spDefs = cxn.Query<StoredProcedureDef>(sql: SQL_SERVER_STORED_PROCEDURE_DEFS,
+                    commandType: CommandType.Text)
+                    .ToList();
+            }
+
+
+        }
+
+
+
+        public static string SQL_SERVER_STORED_PROCEDURE_DEFS =
+@"
+select  
+   schema_name(p1.schema_id) [Schema],
+   object_name(p1.object_id) [StoredProcedureName],
+   p1.name [ParameterName],  
+   parameter_id [Order],  
+   type_name(user_type_id) [Type],  
+   max_length [Length],  
+   case when type_name(system_type_id) = 'uniqueidentifier' 
+              then precision  
+              else OdbcPrec(system_type_id, max_length, precision) end
+			  [Precision],  
+   OdbcScale(system_type_id, scale) [Scale]  
+  from sys.procedures p1
+  inner join sys.parameters p2 on p1.object_id = p2.object_id
+";
 
 
 
