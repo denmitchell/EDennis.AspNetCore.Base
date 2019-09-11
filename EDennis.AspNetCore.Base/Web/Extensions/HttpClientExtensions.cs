@@ -407,7 +407,7 @@ namespace EDennis.AspNetCore.Base.Web {
             {
                 var json = await response.Content.ReadAsStringAsync();
 
-                if (statusCode < 299)
+                if (statusCode < 299 && typeof(T) != typeof(string))
                 {
                     value = JToken.Parse(json).ToObject<T>();
                 }

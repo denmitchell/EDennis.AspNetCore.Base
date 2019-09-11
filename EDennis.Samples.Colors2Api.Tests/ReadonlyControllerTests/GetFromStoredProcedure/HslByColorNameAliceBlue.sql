@@ -14,10 +14,11 @@ use Colors2;
 declare @ProjectName varchar(255) = 'EDennis.Samples.Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetFromStoredProcedure'
-declare @TestScenario varchar(255) = 'HslFromColorName'
+declare @TestScenario varchar(255) = 'HslByColorName'
 declare @TestCase varchar(255) = 'AliceBlue'
 
-declare @ColorName varchar(255) = 'AliceBlue'
+declare @SpName varchar(255) = @TestScenario
+declare @ColorName varchar(255) = @TestCase
 
 
 select * into #SpResults 
@@ -32,6 +33,7 @@ declare
 	for json path, include_null_values
 );
 
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
