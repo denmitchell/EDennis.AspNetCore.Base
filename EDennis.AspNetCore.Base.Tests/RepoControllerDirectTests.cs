@@ -27,7 +27,7 @@ namespace EDennis.AspNetCore.Base.Tests {
             _output = output;
 
             _repo = TestRepoFactory.CreateWriteableTemporalRepo<
-                ColorRepo, Color, ColorDbContext, ColorHistoryDbContext, ColorController>(fixture);
+                ColorRepo, Color, ColorDbContext, ColorHistoryDbContext, ColorController>(fixture, "moe@stooges.org");
 
             _ctlr = new ColorController(_repo, new Logger<ColorController>(new LoggerFactory()));
         }

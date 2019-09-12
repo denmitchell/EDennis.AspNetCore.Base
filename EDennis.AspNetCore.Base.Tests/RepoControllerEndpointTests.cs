@@ -88,7 +88,7 @@ namespace EDennis.AspNetCore.Base.Tests {
                 .Object<List<Color>>()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, Output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
         }
 
 

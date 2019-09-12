@@ -254,7 +254,7 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi"
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("name","moe@stooges.net"),
+                        new System.Security.Claims.Claim("name","moe@stooges.org"),
                         new System.Security.Claims.Claim("Some Claim Type","Some Claim Value")
                     }
                 },
@@ -265,7 +265,7 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi.Employee"
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("name","larry@stooges.net")
+                        new System.Security.Claims.Claim("name","larry@stooges.org")
                     }
                 },
                 new MockClient {
@@ -277,7 +277,7 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi.Employee.GetEmployees"
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("name","curly@stooges.net")
+                        new System.Security.Claims.Claim("name","curly@stooges.org")
                     }
                 },
                 new MockClient {

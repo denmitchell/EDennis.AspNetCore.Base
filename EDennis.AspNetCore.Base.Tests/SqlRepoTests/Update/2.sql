@@ -1,7 +1,7 @@
 ﻿use colordb;
 declare @Id int = 2;
 declare @Color varchar(30) = 'ivory'
-declare @SysUser varchar(255) = 'moe@stooges.net'
+declare @SysUser varchar(255) = 'moe@stooges.org'
 begin transaction
 declare @Input varchar(max) = (
 select @id Id, @Color Name, getdate() SysStart, 

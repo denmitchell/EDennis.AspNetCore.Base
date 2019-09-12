@@ -1,7 +1,7 @@
 ﻿use colordb;
 begin transaction
 declare @Color varchar(30) = 'orange'
-declare @SysUser varchar(255) = 'moe@stooges.net'
+declare @SysUser varchar(255) = 'moe@stooges.org'
 declare @Input varchar(max) = (
 select @Color Name
 	for json path, without_array_wrapper
