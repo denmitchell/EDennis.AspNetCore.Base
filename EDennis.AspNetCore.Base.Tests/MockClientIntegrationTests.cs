@@ -68,7 +68,7 @@ namespace EDennis.AspNetCore.Base.Tests {
 
 
             var statusCode = HttpClient.GetAsync<Position>("api/Position/1").Result.StatusCode;
-            Assert.Equal((int)HttpStatusCode.BadRequest, statusCode);
+            Assert.InRange(statusCode.Value,400,500);
         }
 
     }

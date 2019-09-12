@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Tests {
 
         public RepoTests(ITestOutputHelper output, 
             ConfigurationFactory<ColorRepo> fixture)
-            : base(output, fixture, "tester@example.org") {
+            : base(output, fixture, "moe@stooges.org") {
         }
 
 
