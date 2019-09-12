@@ -95,7 +95,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
-            Context.Update(entity);
+            Context.Add(entity);
             await Context.SaveChangesAsync();
             return entity;
         }

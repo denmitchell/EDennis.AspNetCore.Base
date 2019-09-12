@@ -267,11 +267,12 @@ namespace EDennis.AspNetCore.Base.Tests {
 
             */
             var actualHistory = Repo.GetByIdHistory(id)
+                .Skip(1)
                 .OrderByDescending(x => x.SysStart);
 
 
-            Assert.True(actual.IsEqualOrWrite(expected, Output));
-            Assert.True(actualHistory.IsEqualOrWrite(expectedHistory, Output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
+            Assert.True(actualHistory.IsEqualOrWrite(expectedHistory, PROPS_FILTER, Output));
         }
 
 
@@ -286,13 +287,14 @@ namespace EDennis.AspNetCore.Base.Tests {
             var expected = jsonTestCase.GetObject<List<Color>>("Expected")
                 .OrderBy(x => x.Id);
             var expectedHistory = jsonTestCase.GetObject<List<Color>>("ExpectedHistory")
+                .Skip(1)
                 .OrderByDescending(x => x.SysStart);
 
             await Repo.UpdateAsync(input,id);
             var actual = Repo.Query.ToPagedList()
                 .OrderBy(x => x.Id);
 
-            Assert.True(actual.IsEqualOrWrite(expected, Output));
+            Assert.True(actual.IsEqualOrWrite(expected, PROPS_FILTER, Output));
         }
 
 

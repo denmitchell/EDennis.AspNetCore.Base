@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj" />
     <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\EDennis.Samples.Colors.ExternalApi\EDennis.Samples.Colors.ExternalApi.csproj" />
     <ProjectReference Include="..\EDennis.Samples.Colors.InternalApi\EDennis.Samples.Colors.InternalApi.csproj" />

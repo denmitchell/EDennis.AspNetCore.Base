@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{11EF6620-8034-4D03-A1C9-032FED7523AD}"
 EndProject
@@ -38,7 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Colors.Exte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base.Tests", "EDennis.AspNetCore.Base.Tests\EDennis.AspNetCore.Base.Tests.csproj", "{7A66FB1E-5770-43CA-90DC-3E5E4DD23E7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.AspNetCore.Identity", "EDennis.Samples.AspNetCore.Identity\EDennis.Samples.AspNetCore.Identity.csproj", "{11F015DC-D789-4667-B968-19D23BC656CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.AspNetCore.Identity", "EDennis.Samples.AspNetCore.Identity\EDennis.Samples.AspNetCore.Identity.csproj", "{11F015DC-D789-4667-B968-19D23BC656CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.NetCoreTestingUtilities", "..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj", "{6A52A0E7-7325-413D-8462-6F21879ED50E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{11F015DC-D789-4667-B968-19D23BC656CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11F015DC-D789-4667-B968-19D23BC656CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11F015DC-D789-4667-B968-19D23BC656CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A52A0E7-7325-413D-8462-6F21879ED50E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A52A0E7-7325-413D-8462-6F21879ED50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A52A0E7-7325-413D-8462-6F21879ED50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A52A0E7-7325-413D-8462-6F21879ED50E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
