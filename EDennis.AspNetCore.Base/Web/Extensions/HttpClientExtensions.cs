@@ -184,6 +184,7 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             var msg = request.ToHttpRequestMessage(client);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            url = WebUtility.UrlDecode(url);
             return ForwardRequest<T>(client, msg, url);
         }
 
@@ -192,6 +193,7 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            url = WebUtility.UrlDecode(url);
             return ForwardRequest<T>(client, msg, url);
         }
 
@@ -359,7 +361,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var headers = requestHeaders.Where(h => !currentHeaders.Contains(h.Key));
             foreach (var header in headers)
                 msg.Headers.Add(header.Key, header.Value.AsEnumerable());
-
+            msg.Headers.Host = client.BaseAddress.Host;
             return msg;
         }
 
