@@ -7,7 +7,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <summary>
     /// Exception that can be used with a "Not Found" result
     /// </summary>
-    public class MissingEntityException : Exception {
+    public class MissingEntityException : RequestException {
 
         /// <summary>
         /// Constructs a new MissingEntityException with 
@@ -16,8 +16,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// find the entity.
         /// </summary>
         /// <param name="message"></param>
-        public MissingEntityException(string message) 
-            : base(message) {
+        public MissingEntityException(string title, string message) 
+            : base(title, message) {
         }
     }
 }

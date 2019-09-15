@@ -3,16 +3,14 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web
-{
+
+namespace EDennis.AspNetCore.Base.Web {
     [ApiController]
     [Route("api/[controller]")]
     public abstract class WriteableController<TEntity, TContext> : ControllerBase
@@ -20,9 +18,12 @@ namespace EDennis.AspNetCore.Base.Web
             where TContext : DbContext {
 
         private readonly WriteableRepo<TEntity,TContext> _repo;
+        private readonly ILogger _logger;
 
-        public WriteableController(WriteableRepo<TEntity, TContext> repo) {
+        public WriteableController(WriteableRepo<TEntity, TContext> repo, 
+            ILogger<WriteableController<TEntity,TContext>> logger) {
             _repo = repo;
+            _logger = logger;
         }
 
         /// <summary>
@@ -149,61 +150,84 @@ namespace EDennis.AspNetCore.Base.Web
 
         [HttpPost]
         public IActionResult Post([FromBody]TEntity value) {
-            var created = _repo.Create(value);
-            return CreatedAtAction("Get", created.Id, created);
+            try {
+                var created = _repo.Create(value);
+                return CreatedAtRoute("Get", new { id = created.Id }, created);
+            } catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
+            }
+            return BadRequest(new ValidationProblemDetails(ModelState));
         }
+
 
         [HttpPost("async")]
         public async Task<IActionResult> PostAsync([FromBody]TEntity value) {
-            var created = await _repo.CreateAsync(value);
-            return CreatedAtAction("Get", created.Id, created);
+            try {
+                var created = await _repo.CreateAsync(value);
+                return CreatedAtRoute("Get", new { id = created.Id }, created);
+            } catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
+            }
+            return BadRequest(new ValidationProblemDetails(ModelState));
         }
 
 
         [HttpPut("{id}")]
         public IActionResult Put([FromBody]TEntity value, [FromRoute]int id) {
             if (id != value.Id)
-                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
+                ModelState.AddModelError("", $"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
             try {
                 var updated = _repo.Update(value,id);
-                return CreatedAtAction("Get", updated.Id, updated);
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
+            } catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
             }
+            if (ModelState.ErrorCount > 0)
+                return BadRequest(new ValidationProblemDetails(ModelState));
+
+            return NoContent();
         }
+
 
         [HttpPut("async/{id}")]
         public async Task<IActionResult> PutAsync([FromBody]TEntity value, [FromRoute]int id) {
             if (id != value.Id)
-                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
+                ModelState.AddModelError("", $"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
             try {
                 var updated = await _repo.UpdateAsync(value, id);
-                return CreatedAtAction("Get", updated.Id, updated);
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
+            } catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
             }
-        }
+            if (ModelState.ErrorCount > 0)
+                return BadRequest(new ValidationProblemDetails(ModelState));
 
+            return NoContent();
+        }
 
 
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute]int id) {
             try {
                 _repo.Delete(id);
-                return NoContent();
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
+            } catch (MissingEntityException) {
+            } catch (Exception ex) {
+                throw ex;
             }
+            return NoContent();
         }
+
 
         [HttpDelete("async/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute]int id) {
             try {
                 await _repo.DeleteAsync(id);
-                return NoContent();
             } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
+                return new ObjectResult(
+                        ex.GetProblemDetails()
+                    ) { StatusCode = (int)HttpStatusCode.NotFound };
+            } catch (Exception ex) {
+                throw ex;
             }
+            return NoContent();
         }
 
     }

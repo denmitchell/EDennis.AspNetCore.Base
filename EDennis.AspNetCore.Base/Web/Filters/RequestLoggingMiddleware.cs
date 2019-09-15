@@ -10,20 +10,20 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web
-{
+namespace EDennis.AspNetCore.Base.Web {
 
-    public class RequestLoggingMiddleware
-    {
+    public class RequestLoggingMiddleware {
         readonly RequestDelegate _next;
         readonly RequestLoggingOptions _options;
 
         private const object NA = null;
+        private ILogger _logger;
 
         public RequestLoggingMiddleware(RequestDelegate next,
             IOptions<RequestLoggingOptions> options) {
@@ -36,8 +36,14 @@ namespace EDennis.AspNetCore.Base.Web
         public async Task Invoke(HttpContext httpContext,
             ILogger<RequestLoggingMiddleware> logger) {
 
+            _logger = logger;
+
             if (!httpContext.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-                #region Request
+
+                if (!LoggerEnabled(_options.LogLevelRange)) {
+                    await _next(httpContext);
+                    return;
+                }
 
                 var req = httpContext.Request;
                 var resp = httpContext.Response;
@@ -49,64 +55,57 @@ namespace EDennis.AspNetCore.Base.Web
 
                 req.EnableBuffering(bufferThreshold: 1024 * 1000);
 
-                if (_options.LogRequestBody && req.ContentLength > 0)
+                if (LoggerEnabled(_options.RequestBodyLogLevel) && req.ContentLength > 0)
                     requestBody = await ToText(req.Body, req.ContentLength, true);
 
                 var originalResponseBody = resp.Body;
 
 
-                #endregion
-
 
                 try {
-                    using (var responseBodyMem = new MemoryStream()) {
-                        //...and use that for the temporary response body
-                        resp.Body = responseBodyMem;
+                    if (LoggerEnabled(_options.ResponseBodyLogLevel)) {
+                        using (var responseBodyMem = new MemoryStream()) {
+                            resp.Body = responseBodyMem;
 
+                            await _next(httpContext);
+
+                            responseBody = await ToText(resp.Body, 1024 * 1000, true);
+
+                            await responseBodyMem.CopyToAsync(originalResponseBody);
+                        }
+                    }
+                    else {
                         await _next(httpContext);
-
-                        if (_options.LogResponseBody)
-                            responseBody = await ToText(resp.Body,1024*1000, true);
-
-                        //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
-                        await responseBodyMem.CopyToAsync(originalResponseBody);
                     }
 
                 } catch (Exception ex) {
-                    var RequestLog = new RequestLog(_options, httpContext, requestBody, responseBody, ex);
+                    var RequestLog = new RequestLog(logger, _options, httpContext, requestBody, responseBody, ex);
 
                     logger.Log(LogLevel.Error, "Url: {Url}, QueryString: {QueryString}, Method: {Method}, StatusCode: {StatusCode}, Headers: {Headers}, Claims: {Claims}, RequestBody: {RequestBody:lj}, ResponseBody: {ResponseBody:lj}, ExceptionMessage: {ExceptionMessage}, StackTrace: {StackTrace}",
                         RequestLog.Url, RequestLog.QueryString, RequestLog.Method, RequestLog.StatusCode, RequestLog.Headers, RequestLog.Claims, RequestLog.RequestBody, RequestLog.ResponseBody, RequestLog.ExceptionMessage, RequestLog.StackTrace);
                     throw ex;
                 }
-                #region Response
-
-                var thresholdStatusCode = _options.MinimumHttpStatusCode;
 
                 var statusCode = httpContext.Response.StatusCode;
 
-                if (statusCode >= thresholdStatusCode) {
+                var logLevel = (statusCode >= 500)
+                    ? LogLevel.Error
+                    : (statusCode >= 400)
+                    ? LogLevel.Warning
+                    : LogLevel.Information;
 
-                    var logLevel = (statusCode >= 500)
-                        ? LogLevel.Error
-                        : (statusCode >= 400)
-                        ? LogLevel.Warning
-                        : LogLevel.Information;
-
-                    var RequestLog = new RequestLog(_options, httpContext, requestBody, responseBody);
+                if (true) {
+                    var RequestLog = new RequestLog(logger, _options, httpContext, requestBody, responseBody);
 
                     logger.Log(logLevel, "Url: {Url}, QueryString: {QueryString}, Method: {Method}, StatusCode: {StatusCode}, Headers: {Headers}, Claims: {Claims}, RequestBody: {RequestBody:lj}, ResponseBody: {ResponseBody:ly}",
                         RequestLog.Url, RequestLog.QueryString, RequestLog.Method, RequestLog.StatusCode, RequestLog.Headers, RequestLog.Claims, RequestLog.RequestBody, RequestLog.ResponseBody);
-
                 }
-                #endregion
 
             }
         }
 
         private async Task<dynamic> ToText(Stream stream, long? size, bool rewind) {
             string text = "";
-            //try {
             stream.Seek(0, SeekOrigin.Begin);
             using (var reader = new StreamReader(
                        stream,
@@ -114,22 +113,25 @@ namespace EDennis.AspNetCore.Base.Web
                        detectEncodingFromByteOrderMarks: false,
                        bufferSize: Convert.ToInt32(size),
                        leaveOpen: rewind)) {
-                    text = await reader.ReadToEndAsync();
+                text = await reader.ReadToEndAsync();
                 if (rewind)
                     stream.Seek(0, SeekOrigin.Begin);
-                }
-            //} catch { }
+            }
             return text;
         }
 
 
+        private bool LoggerEnabled(LogLevelRange range) {
+            return _options.LogLevelRange != LogLevelRange.None
+                && _logger.IsEnabled((LogLevel)range);
+        }
+
     }
 
 
-    public static class RequestLoggingMiddlewareExtensions
-    {
+    public static class RequestLoggingMiddlewareExtensions {
         public static IServiceCollection AddRequestLogging(this IServiceCollection service,
-            Action<RequestLoggingOptions> options = default) {
+            Action<RequestLoggingOptions> options = null) {
 
             options = options ?? (opts => { });
 
@@ -146,28 +148,10 @@ namespace EDennis.AspNetCore.Base.Web
 
     }
 
-    public class RequestLogFormatProvider : IFormatProvider, ICustomFormatter
-    {
-        public object GetFormat (Type formatType) {
-            if (formatType == typeof(ICustomFormatter))
-                return this;
-            else
-                return null;
-        }
-
-        public string Format(string format, object obj, IFormatProvider provider) {
-            if (obj.GetType().Name == "RequestLog")
-                return ((RequestLog)obj).ToString();
-
-            if (obj is IFormattable)
-                return ((IFormattable)obj).ToString(format, CultureInfo.CurrentCulture);
-            else
-                return obj.ToString();
-        }
-    }
 
     public class RequestLog {
-        private RequestLoggingOptions _requestLoggingOptions;
+        private ILogger<RequestLoggingMiddleware> _logger;
+        private RequestLoggingOptions _options;
         private HttpContext _httpContext;
         private string _requestBody;
         private string _responseBody;
@@ -175,22 +159,24 @@ namespace EDennis.AspNetCore.Base.Web
 
         public string Url { get; set; }
         public string QueryString { get; set; }
-        public string Method {get; set;}
-        public int StatusCode { get; set;}
-        public Dictionary<string, string> Headers { get; set;}
-        public Dictionary<string,string> Claims { get; set;}
-        public string RequestBody { get; set;}
-        public string ResponseBody { get; set;}
-        public string ExceptionMessage { get; set;}
-        public string StackTrace { get; set;}
+        public string Method { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
+        public Dictionary<string, string> Claims { get; set; }
+        public string RequestBody { get; set; }
+        public string ResponseBody { get; set; }
+        public string ExceptionMessage { get; set; }
+        public string StackTrace { get; set; }
 
 
-        public RequestLog(RequestLoggingOptions requestLoggingOptions, 
+        public RequestLog(ILogger<RequestLoggingMiddleware> logger, RequestLoggingOptions requestLoggingOptions,
             HttpContext httpContext, string requestBody = null,
             string responseBody = null,
             Exception exception = null
+
             ) {
-            _requestLoggingOptions = requestLoggingOptions;
+            _logger = logger;
+            _options = requestLoggingOptions;
             _httpContext = httpContext;
             _requestBody = requestBody;
             _responseBody = responseBody;
@@ -208,27 +194,34 @@ namespace EDennis.AspNetCore.Base.Web
             Method = req.Method;
             Url = $"{req.Scheme}://{req.Host}{req.Path}";
 
-            StatusCode = resp.StatusCode;
+            StatusCode = (HttpStatusCode)resp.StatusCode;
 
-            if(_requestLoggingOptions.LogRequestBody)
+            if (LoggerEnabled(_options.RequestBodyLogLevel))
                 RequestBody = _requestBody;
-            if (_requestLoggingOptions.LogResponseBody)
+
+            if (LoggerEnabled(_options.ResponseBodyLogLevel))
                 ResponseBody = _responseBody;
 
-            if (_requestLoggingOptions.LogExceptionMessage)
+            if (LoggerEnabled(_options.ExceptionMessage.LogLevelRange)
+                && StatusCode.In(_options.ExceptionMessage.StatusCodeRange))
                 ExceptionMessage = _exception?.Message;
-            if (_requestLoggingOptions.LogStackTrace)
+
+            if (LoggerEnabled(_options.StackTrace.LogLevelRange)
+                && StatusCode.In(_options.StackTrace.StatusCodeRange))
                 StackTrace = _exception?.StackTrace;
 
 
-            if (_requestLoggingOptions.LogHeaders) {
-                Headers = new Dictionary<string, string>();
-                foreach (var header in req.Headers)
-                    Headers.Add(header.Key, string.Join(header.Value,','));
+            if (LoggerEnabled(_options.Headers.LogLevelRange)
+                && StatusCode.In(_options.Headers.StatusCodeRange)) {
+                Headers = req.Headers
+                    .Select(h => KeyValuePair.Create(
+                        h.Key, h.Value.ToString()))
+                    .ToDictionary(h => h.Key, h => h.Value);
             }
 
 
-            if (_requestLoggingOptions.LogUserClaims && _httpContext?.User?.Claims != null
+            if (LoggerEnabled(_options.UserClaims.LogLevelRange)
+                && StatusCode.In(_options.UserClaims.StatusCodeRange)
                 && _httpContext.User.Claims.Count() > 0) {
                 foreach (var claim in _httpContext.User.Claims) {
                     if (Claims.ContainsKey(claim.Type))
@@ -239,7 +232,12 @@ namespace EDennis.AspNetCore.Base.Web
             }
 
         }
-    }
 
+        private bool LoggerEnabled(LogLevelRange range) {
+            return _options.LogLevelRange != LogLevelRange.None
+                && _logger.IsEnabled((LogLevel)range);
+        }
+
+    }
 
 }

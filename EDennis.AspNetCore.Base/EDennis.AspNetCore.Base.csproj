@@ -25,9 +25,14 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.4" />
+    <PackageReference Include="DevExpress.Xpo" Version="18.2.4" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.4.4" />
     <PackageReference Include="EDennis.MigrationsExtensions" Version="3.1.6" />
     <PackageReference Include="Flurl" Version="2.8.2" />
@@ -43,6 +48,12 @@
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="EntityFramework\Exceptions\RequestException.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>
