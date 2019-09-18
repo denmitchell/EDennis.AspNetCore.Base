@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using Microsoft.Extensions.Configuration;
+using System;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public class ConfiguringWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup>
         where TStartup : class{

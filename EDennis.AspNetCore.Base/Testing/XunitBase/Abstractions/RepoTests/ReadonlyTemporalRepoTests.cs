@@ -1,13 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Web;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public abstract class ReadonlyTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> 
         : IClassFixture<ConfigurationFactory<TRepo>>

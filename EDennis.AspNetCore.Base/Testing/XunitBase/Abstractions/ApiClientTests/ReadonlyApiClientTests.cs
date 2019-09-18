@@ -1,14 +1,9 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public abstract class ReadonlyApiClientTests<TClient,TStartup> : IDisposable
         where TStartup : class

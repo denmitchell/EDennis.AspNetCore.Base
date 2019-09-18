@@ -1,12 +1,11 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Web;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
     public abstract class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationFactory<TRepo>>, IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext

@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     /// <summary>
     /// This middleware class creates a mock (autologin) user
@@ -162,118 +162,64 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <returns>URI, if it exists, or shortName
         /// for claim, if it doesn't</returns>
         private string GetClaimUri(string shortName) {
-            switch (shortName.ToLower()) {
-                case "actor":
-                    return ClaimTypes.Actor;
-                case "anonymous":
-                    return ClaimTypes.Anonymous;
-                case "authentication":
-                    return ClaimTypes.Authentication;
-                case "authenticationinstant":
-                    return ClaimTypes.AuthenticationInstant;
-                case "authenticationmethod":
-                    return ClaimTypes.AuthenticationMethod;
-                case "authorizationdecision":
-                    return ClaimTypes.AuthorizationDecision;
-                case "cookiepath":
-                    return ClaimTypes.CookiePath;
-                case "country":
-                    return ClaimTypes.Country;
-                case "dateofbirth":
-                    return ClaimTypes.DateOfBirth;
-                case "denyonlyprimarygroupsid":
-                    return ClaimTypes.DenyOnlyPrimaryGroupSid;
-                case "denyonlyprimarysid":
-                    return ClaimTypes.DenyOnlyPrimarySid;
-                case "denyonlysid":
-                    return ClaimTypes.DenyOnlySid;
-                case "denyonlywindowsdevicegroup":
-                    return ClaimTypes.DenyOnlyWindowsDeviceGroup;
-                case "dns":
-                    return ClaimTypes.Dns;
-                case "dsa":
-                    return ClaimTypes.Dsa;
-                case "email":
-                    return ClaimTypes.Email;
-                case "expiration":
-                    return ClaimTypes.Expiration;
-                case "expired":
-                    return ClaimTypes.Expired;
-                case "gender":
-                    return ClaimTypes.Gender;
-                case "givenname":
-                    return ClaimTypes.GivenName;
-                case "groupsid":
-                    return ClaimTypes.GroupSid;
-                case "hash":
-                    return ClaimTypes.Hash;
-                case "homephone":
-                    return ClaimTypes.HomePhone;
-                case "ispersistent":
-                    return ClaimTypes.IsPersistent;
-                case "locality":
-                    return ClaimTypes.Locality;
-                case "mobilephone":
-                    return ClaimTypes.MobilePhone;
-                case "name":
-                    return ClaimTypes.Name;
-                case "nameidentifier":
-                    return ClaimTypes.NameIdentifier;
-                case "otherphone":
-                    return ClaimTypes.OtherPhone;
-                case "postalcode":
-                    return ClaimTypes.PostalCode;
-                case "primarygroupsid":
-                    return ClaimTypes.PrimaryGroupSid;
-                case "primarysid":
-                    return ClaimTypes.PrimarySid;
-                case "role":
-                    return ClaimTypes.Role;
-                case "rsa":
-                    return ClaimTypes.Rsa;
-                case "serialnumber":
-                    return ClaimTypes.SerialNumber;
-                case "sid":
-                    return ClaimTypes.Sid;
-                case "spn":
-                    return ClaimTypes.Spn;
-                case "stateorprovince":
-                    return ClaimTypes.StateOrProvince;
-                case "streetaddress":
-                    return ClaimTypes.StreetAddress;
-                case "surname":
-                    return ClaimTypes.Surname;
-                case "system":
-                    return ClaimTypes.System;
-                case "thumbprint":
-                    return ClaimTypes.Thumbprint;
-                case "upn":
-                    return ClaimTypes.Upn;
-                case "uri":
-                    return ClaimTypes.Uri;
-                case "userdata":
-                    return ClaimTypes.UserData;
-                case "version":
-                    return ClaimTypes.Version;
-                case "webpage":
-                    return ClaimTypes.Webpage;
-                case "windowsaccountname":
-                    return ClaimTypes.WindowsAccountName;
-                case "windowsdeviceclaim":
-                    return ClaimTypes.WindowsDeviceClaim;
-                case "windowsdevicegroup":
-                    return ClaimTypes.WindowsDeviceGroup;
-                case "windowsfqbnversion":
-                    return ClaimTypes.WindowsFqbnVersion;
-                case "windowssubauthority":
-                    return ClaimTypes.WindowsSubAuthority;
-                case "windowsuserclaim":
-                    return ClaimTypes.WindowsUserClaim;
-                case "x500distinguishedname":
-                    return ClaimTypes.X500DistinguishedName;
-                default:
-                    return shortName;
-            }
+            return (shortName.ToLower()) switch
+            {
+                "actor" => ClaimTypes.Actor,
+                "anonymous" => ClaimTypes.Anonymous,
+                "authentication" => ClaimTypes.Authentication,
+                "authenticationinstant" => ClaimTypes.AuthenticationInstant,
+                "authenticationmethod" => ClaimTypes.AuthenticationMethod,
+                "authorizationdecision" => ClaimTypes.AuthorizationDecision,
+                "cookiepath" => ClaimTypes.CookiePath,
+                "country" => ClaimTypes.Country,
+                "dateofbirth" => ClaimTypes.DateOfBirth,
+                "denyonlyprimarygroupsid" => ClaimTypes.DenyOnlyPrimaryGroupSid,
+                "denyonlyprimarysid" => ClaimTypes.DenyOnlyPrimarySid,
+                "denyonlysid" => ClaimTypes.DenyOnlySid,
+                "denyonlywindowsdevicegroup" => ClaimTypes.DenyOnlyWindowsDeviceGroup,
+                "dns" => ClaimTypes.Dns,
+                "dsa" => ClaimTypes.Dsa,
+                "email" => ClaimTypes.Email,
+                "expiration" => ClaimTypes.Expiration,
+                "expired" => ClaimTypes.Expired,
+                "gender" => ClaimTypes.Gender,
+                "givenname" => ClaimTypes.GivenName,
+                "groupsid" => ClaimTypes.GroupSid,
+                "hash" => ClaimTypes.Hash,
+                "homephone" => ClaimTypes.HomePhone,
+                "ispersistent" => ClaimTypes.IsPersistent,
+                "locality" => ClaimTypes.Locality,
+                "mobilephone" => ClaimTypes.MobilePhone,
+                "name" => ClaimTypes.Name,
+                "nameidentifier" => ClaimTypes.NameIdentifier,
+                "otherphone" => ClaimTypes.OtherPhone,
+                "postalcode" => ClaimTypes.PostalCode,
+                "primarygroupsid" => ClaimTypes.PrimaryGroupSid,
+                "primarysid" => ClaimTypes.PrimarySid,
+                "role" => ClaimTypes.Role,
+                "rsa" => ClaimTypes.Rsa,
+                "serialnumber" => ClaimTypes.SerialNumber,
+                "sid" => ClaimTypes.Sid,
+                "spn" => ClaimTypes.Spn,
+                "stateorprovince" => ClaimTypes.StateOrProvince,
+                "streetaddress" => ClaimTypes.StreetAddress,
+                "surname" => ClaimTypes.Surname,
+                "system" => ClaimTypes.System,
+                "thumbprint" => ClaimTypes.Thumbprint,
+                "upn" => ClaimTypes.Upn,
+                "uri" => ClaimTypes.Uri,
+                "userdata" => ClaimTypes.UserData,
+                "version" => ClaimTypes.Version,
+                "webpage" => ClaimTypes.Webpage,
+                "windowsaccountname" => ClaimTypes.WindowsAccountName,
+                "windowsdeviceclaim" => ClaimTypes.WindowsDeviceClaim,
+                "windowsdevicegroup" => ClaimTypes.WindowsDeviceGroup,
+                "windowsfqbnversion" => ClaimTypes.WindowsFqbnVersion,
+                "windowssubauthority" => ClaimTypes.WindowsSubAuthority,
+                "windowsuserclaim" => ClaimTypes.WindowsUserClaim,
+                "x500distinguishedname" => ClaimTypes.X500DistinguishedName,
+                _ => shortName,
+            };
         }
     }
 

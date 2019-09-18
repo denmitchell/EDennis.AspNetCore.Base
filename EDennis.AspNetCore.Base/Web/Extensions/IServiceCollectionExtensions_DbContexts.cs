@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 
 namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_DbContexts {
 
-        public static IServiceCollection AddDbContexts<TContext>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext>(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
             where TContext : DbContext {
 
             var cxnStrings = new Dictionary<string, string>();
@@ -24,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     }
                 );
 
-            if (env.EnvironmentName == EnvironmentName.Development
+            if (env.EnvironmentName == Environments.Development
                 || env.EnvironmentName == "LocalDevelopment"
                 || env.EnvironmentName == "Local")
                 services.AddSingleton<TestDbContextCache<TContext>>();
@@ -33,7 +34,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static IServiceCollection AddDbContexts<TContext1, TContext2>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2>(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
             where TContext1 : DbContext 
             where TContext2 : DbContext {
 
@@ -44,7 +45,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3>(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
             where TContext1 : DbContext
             where TContext2 : DbContext
             where TContext3 : DbContext {
@@ -56,7 +57,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3, TContext4>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3, TContext4>(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
             where TContext1 : DbContext
             where TContext2 : DbContext
             where TContext3 : DbContext
@@ -70,7 +71,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3, TContext4, TContext5>(this IServiceCollection services, IConfiguration config, IHostingEnvironment env)
+        public static IServiceCollection AddDbContexts<TContext1, TContext2, TContext3, TContext4, TContext5>(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
             where TContext1 : DbContext
             where TContext2 : DbContext
             where TContext3 : DbContext

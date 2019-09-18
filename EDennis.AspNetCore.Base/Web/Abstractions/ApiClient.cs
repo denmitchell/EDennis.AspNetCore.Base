@@ -1,15 +1,12 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Testing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Web
+{
     public abstract class ApiClient {
 
         public const string HEADER_KEY = "ApiClientHeaders";

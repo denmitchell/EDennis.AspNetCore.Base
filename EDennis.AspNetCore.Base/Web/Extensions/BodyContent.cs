@@ -31,8 +31,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="obj">object to deserialize</param>
         /// <param name="encoding">string encoding type</param>
         public BodyContent(T obj, Encoding encoding) :
-            base(null,null) {
-            throw new NotImplementedException();
+            base(JToken.FromObject(obj).ToString(), encoding) {
         }
 
         /// <summary>
@@ -43,8 +42,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="encoding">string encoding type</param>
         /// <param name="mediaType">media type</param>
         public BodyContent(T obj, Encoding encoding, string mediaType) :
-            base(null,null,null) {
-            throw new NotImplementedException();
+            base(JToken.FromObject(obj).ToString(), encoding, mediaType) {
         }
     }
 }

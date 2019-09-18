@@ -7,15 +7,15 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class Interceptor {
 
         protected readonly RequestDelegate _next;
-        public const string HDR_PREFIX = "X-Testing-";
+        public const string TESTING_HDR_PREFIX = "X-Testing-";
         public const string DEFAULT_NAMED_INSTANCE = "default";
 
         public const string HISTORY_INSTANCE_SUFFIX = "-hist";
 
-        public const string HDR_USE_READONLY = HDR_PREFIX + "UseReadonly";
+        public const string TESTING_HDR_USE_READONLY = TESTING_HDR_PREFIX + "UseReadonly";
 
-        public const string HDR_USE_INMEMORY = HDR_PREFIX + "UseInMemory";
-        public const string HDR_DROP_INMEMORY = HDR_PREFIX + "DropInMemory";
+        public const string TESTING_HDR_USE_INMEMORY = TESTING_HDR_PREFIX + "UseInMemory";
+        public const string TESTING_HDR_DROP_INMEMORY = TESTING_HDR_PREFIX + "DropInMemory";
 
         public Interceptor(RequestDelegate next) {
             _next = next;
@@ -31,7 +31,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             //retrieve a list of all X-Testing- headers 
             var headers = context.Request.Headers
-                            .Where(h => h.Key.StartsWith(HDR_PREFIX));
+                            .Where(h => h.Key.StartsWith(TESTING_HDR_PREFIX));
 
             //if there is no X-Testing- header, return a default KeyValuePair
             if (headers.Count() == 0)

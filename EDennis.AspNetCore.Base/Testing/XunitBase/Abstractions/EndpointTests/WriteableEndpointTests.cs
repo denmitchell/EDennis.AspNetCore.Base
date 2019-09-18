@@ -1,11 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Net.Http;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public abstract class WriteableEndpointTests<TStartup> : IDisposable
         where TStartup : class {
@@ -14,14 +13,14 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected HttpClient HttpClient { get; }
         protected string InstanceName { get; }
 
-        public ConfiguringWebApplicationFactory<TStartup> factory { get; set; }
+        public ConfiguringWebApplicationFactory<TStartup> Factory { get; set; }
 
         public WriteableEndpointTests(ITestOutputHelper output,
                 ConfiguringWebApplicationFactory<TStartup> factory) {
             Output = output;
             HttpClient = TestHttpClientFactory.CreateWriteableClient(factory);
             InstanceName = HttpClient.GetInstanceName();
-            this.factory = factory;
+            this.Factory = factory;
         }
 
         public WriteableEndpointTests(ITestOutputHelper output,
@@ -30,7 +29,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output = output;
             HttpClient = TestHttpClientFactory.CreateWriteableClient(factory,commandLineOptions);
             InstanceName = HttpClient.GetInstanceName();
-            this.factory = factory;
+            this.Factory = factory;
         }
 
         #region IDisposable Support
@@ -39,7 +38,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    HttpClient.SendResetAsync(Interceptor.HDR_DROP_INMEMORY, InstanceName);
+                    HttpClient.SendResetAsync(Interceptor.TESTING_HDR_DROP_INMEMORY, InstanceName);
                 }
                 disposedValue = true;
             }

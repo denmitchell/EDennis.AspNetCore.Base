@@ -2,27 +2,23 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using Microsoft.AspNetCore.Server.HttpSys;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public class ApiLauncher<TStartup> : IDisposable
         where TStartup : class {
-
-        private static readonly object _lockobj = new object();
-
 
         public ApiLauncher(IConfiguration config, ILogger logger, ProjectPorts projectPorts) {
             _config = config;
@@ -34,13 +30,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             _projectPorts = projectPorts;
         }
 
-        private IConfiguration _config { get; }
-        private Dictionary<string, ApiConfig> _apis { get; }
-        private string[] _args { get; }
-        private string _projectName { get; set; }
-        private int _port { get; set; }
-        private ILogger _logger { get; }
-        private ProjectPorts _projectPorts { get; }
+        private readonly IConfiguration _config;
+        private readonly Dictionary<string, ApiConfig> _apis;
+        private readonly string[] _args;
+        private string _projectName;
+        private int _port;
+        private readonly ILogger _logger;
+        private readonly ProjectPorts _projectPorts;
 
         public async Task StartAsync() {
 
@@ -119,14 +115,6 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         }
 
-        private static string AssemblyDirectory(Assembly assembly) {
-            string codeBase = assembly.CodeBase;
-            UriBuilder uri = new UriBuilder(codeBase);
-            string path = Uri.UnescapeDataString(uri.Path);
-            return Path.GetDirectoryName(path);
-        }
-
-
         private void Ping(string configKey, string host, int port, int timeoutSeconds = 5) {
 
             _config[$"{configKey}:Pingable"] = "false";
@@ -136,11 +124,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             sw.Start();
             while (sw.ElapsedMilliseconds < (timeoutSeconds * 1000)) {
                 try {
-                    using (var tcp = new TcpClient(host, port)) {
-                        var connected = tcp.Connected;
-                        _config[$"{configKey}:Pingable"] = "true";
-                        break;
-                    }
+                    using var tcp = new TcpClient(host, port);
+                    var connected = tcp.Connected;
+                    _config[$"{configKey}:Pingable"] = "true";
+                    break;
                 } catch (Exception ex) {
                     if (!ex.Message.Contains("No connection could be made because the target machine actively refused it"))
                         throw new ApplicationException($"Could not ping http:\\localhost:{port}",ex);

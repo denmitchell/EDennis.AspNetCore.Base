@@ -1,10 +1,9 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Web
+{
     public static class IServiceCollectionExtensions_Repos {
 
         public static IServiceCollection AddRepos<TRepo>(this IServiceCollection services)

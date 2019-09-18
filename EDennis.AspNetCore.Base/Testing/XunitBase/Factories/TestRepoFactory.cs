@@ -1,13 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
     public class TestRepoFactory {
 
         public const string DEFAULT_USER = "tester@example.org";
@@ -170,6 +167,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     }
 
     public static class TestRepoExtensionMethods {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public static string GetInstanceName<TEntity, TContext>(
             this ReadonlyRepo<TEntity, TContext> repo)
             where TEntity : class, new()
@@ -177,6 +175,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             return TestRepoFactory.READONLY_INSTANCE_NAME;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public static string GetInstanceName<TEntity, TContext, THistoryContext>(
             this ReadonlyTemporalRepo<TEntity, TContext, THistoryContext> repo)
             where TEntity : class, IEFCoreTemporalModel, new()

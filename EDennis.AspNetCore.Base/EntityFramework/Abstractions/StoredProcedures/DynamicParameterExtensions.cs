@@ -78,7 +78,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 name = spName.Replace("[", "").Replace("]", "").ToLower();
             } else {
                 var components = Regex.Matches(spName, SPNAME_PATTERN)
-                    .SelectMany(m => m.Groups)
+                    .ToList().SelectMany<Match,Group>(m => m.Groups)
                     .Skip(1)
                     .Select(g => g.Value)
                     .ToList();

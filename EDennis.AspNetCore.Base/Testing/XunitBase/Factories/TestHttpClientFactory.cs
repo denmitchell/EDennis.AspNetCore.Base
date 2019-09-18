@@ -12,7 +12,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TStartup : class {
 
             var httpClient = factory.CreateClient();
-            httpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_READONLY, "");
+            httpClient.DefaultRequestHeaders.Add(Interceptor.TESTING_HDR_USE_READONLY, "");
             return httpClient;
         }
 
@@ -30,7 +30,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 })
                 .CreateClient();
 
-            httpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_READONLY, "");
+            httpClient.DefaultRequestHeaders.Add(Interceptor.TESTING_HDR_USE_READONLY, "");
             return httpClient;
         }
 
@@ -41,7 +41,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var instanceName = Guid.NewGuid().ToString();
             var httpClient = factory.CreateClient();
-            httpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, instanceName);
+            httpClient.DefaultRequestHeaders.Add(Interceptor.TESTING_HDR_USE_INMEMORY, instanceName);
             return httpClient;
         }
 
@@ -59,13 +59,13 @@ namespace EDennis.AspNetCore.Base.Testing {
                     });
                 })
                 .CreateClient();
-            httpClient.DefaultRequestHeaders.Add(Interceptor.HDR_USE_INMEMORY, instanceName);
+            httpClient.DefaultRequestHeaders.Add(Interceptor.TESTING_HDR_USE_INMEMORY, instanceName);
             return httpClient;
         }
 
 
         public static string GetInstanceName(HttpClient httpClient) {
-            var headers =httpClient.DefaultRequestHeaders.GetValues(Interceptor.HDR_USE_INMEMORY);
+            var headers =httpClient.DefaultRequestHeaders.GetValues(Interceptor.TESTING_HDR_USE_INMEMORY);
             var header = headers.FirstOrDefault();
             return header.ToString();
         }
@@ -75,7 +75,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     public static class TestHttpClientFactoryExtensionMethods {
 
         public static string GetInstanceName(this HttpClient httpClient) {
-            var headers = httpClient.DefaultRequestHeaders.GetValues(Interceptor.HDR_USE_INMEMORY);
+            var headers = httpClient.DefaultRequestHeaders.GetValues(Interceptor.TESTING_HDR_USE_INMEMORY);
             var header = headers.FirstOrDefault();
             return header.ToString();
         }

@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public string ProjectDirectory { get; }
         public string SolutionDirectory { get; private set; }
 
-        private FileInfo _solutionFile;
+        private readonly FileInfo _solutionFile;
 
         public ClassInfo() {
             ClassName = typeof(TClass).Name;
@@ -42,7 +42,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var index = solutionFileText.IndexOf($"\"{ProjectName}\",");
             var start = index + $"\"{ProjectName}\", \"".Length;
             var end = solutionFileText.IndexOf(".csproj\",", start);
-            var length = solutionFileText.Substring(start, end - start).LastIndexOf("\\");
+            var length = solutionFileText[start..end].LastIndexOf("\\");
 
             var projectDirectory = solutionFileText.Substring(start, length).Trim();
 
@@ -74,10 +74,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var thisFile = new FileInfo(sourceFilePath);
             var directory = thisFile.Directory;
-            FileInfo file = null;
             var pattern = $"(Project)[^=]+= \"{ProjectName}\"";
             while (directory != null) {
-                file = directory.GetFiles("*.sln").FirstOrDefault();
+                FileInfo file = directory.GetFiles("*.sln").FirstOrDefault();
                 if (file != null) {
                     var contents = File.ReadAllText(file.FullName);
                     if (Regex.IsMatch(contents, pattern))

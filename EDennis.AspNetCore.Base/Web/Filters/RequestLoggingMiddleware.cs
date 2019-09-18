@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web
@@ -23,12 +19,9 @@ namespace EDennis.AspNetCore.Base.Web
         readonly RequestDelegate _next;
         readonly RequestLoggingOptions _options;
 
-        private const object NA = null;
-
         public RequestLoggingMiddleware(RequestDelegate next,
             IOptions<RequestLoggingOptions> options) {
-            if (next == null) throw new ArgumentNullException(nameof(next));
-            _next = next;
+            _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options?.Value;
         }
 
@@ -59,18 +52,17 @@ namespace EDennis.AspNetCore.Base.Web
 
 
                 try {
-                    using (var responseBodyMem = new MemoryStream()) {
-                        //...and use that for the temporary response body
-                        resp.Body = responseBodyMem;
+                    using var responseBodyMem = new MemoryStream();
+                    //...and use that for the temporary response body
+                    resp.Body = responseBodyMem;
 
-                        await _next(httpContext);
+                    await _next(httpContext);
 
-                        if (_options.LogResponseBody)
-                            responseBody = await ToText(resp.Body,1024*1000, true);
+                    if (_options.LogResponseBody)
+                        responseBody = await ToText(resp.Body, 1024 * 1000, true);
 
-                        //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
-                        await responseBodyMem.CopyToAsync(originalResponseBody);
-                    }
+                    //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
+                    await responseBodyMem.CopyToAsync(originalResponseBody);
 
                 } catch (Exception ex) {
                     var RequestLog = new RequestLog(_options, httpContext, requestBody, responseBody, ex);
@@ -131,7 +123,7 @@ namespace EDennis.AspNetCore.Base.Web
         public static IServiceCollection AddRequestLogging(this IServiceCollection service,
             Action<RequestLoggingOptions> options = default) {
 
-            options = options ?? (opts => { });
+            options ??= (opts => { });
 
             service.Configure(options);
             return service;
@@ -167,11 +159,12 @@ namespace EDennis.AspNetCore.Base.Web
     }
 
     public class RequestLog {
-        private RequestLoggingOptions _requestLoggingOptions;
-        private HttpContext _httpContext;
-        private string _requestBody;
-        private string _responseBody;
-        private Exception _exception;
+
+        private readonly RequestLoggingOptions _requestLoggingOptions;
+        private readonly HttpContext _httpContext;
+        private readonly string _requestBody;
+        private readonly string _responseBody;
+        private readonly Exception _exception;
 
         public string Url { get; set; }
         public string QueryString { get; set; }

@@ -1,5 +1,4 @@
-﻿using EDennis.AspNetCore.Base.Testing;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.Json;
@@ -8,7 +7,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Web
+{
     public static class IConfigurationExtensions {
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -209,7 +208,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public static async void SendResetAsync(this HttpClient client, string operationName,
             string instanceName)
         {
-            var msg = new HttpRequestMessage
+            using var msg = new HttpRequestMessage
             {
                 Method = HttpMethod.Options,
                 RequestUri = client.BaseAddress
@@ -251,12 +250,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 {
                     try
                     {
-                        using (var tcp = new TcpClient(host, port))
-                        {
-                            var connected = tcp.Connected;
-                            pingable = true;
-                            break;
-                        }
+                        using var tcp = new TcpClient(host, port);
+                        var connected = tcp.Connected;
+                        pingable = true;
+                        break;
                     }
                     catch (Exception ex)
                     {
@@ -278,21 +275,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase)
         {
-
-            string[] uri = relativeUrlFromBase.Split('?');
-
             var url = new Url(client.BaseAddress)
-                .AppendPathSegment(uri[0]);
+                .AppendPathSegment(relativeUrlFromBase);
 
-            if (uri.Length > 1)
-            {
-                string[] qsegs = uri[1].Split('&');
-                foreach (var qseg in qsegs)
-                {
-                    string[] q = qseg.Split('=');
-                    url.SetQueryParam(q[0], q[1]);
-                }
-            }
+            WebUtility.UrlDecode(url);
 
             msg.RequestUri = url.ToUri();
 
@@ -383,7 +369,6 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             if (req.Cookies != null && req.Cookies.Count > 0)
             {
-                var cookieContainer = new CookieContainer();
                 var sb = new StringBuilder();
                 foreach (var cookie in req.Cookies)
                 {
@@ -425,30 +410,6 @@ namespace EDennis.AspNetCore.Base.Web {
             };
 
         }
-        //note: this works, but it isn't needed.
-        private static HttpRequestMessage CopyContent(this HttpRequestMessage msg, HttpRequest req)
-        {
-
-            var injectedRequestStream = new MemoryStream();
-
-            req.EnableRewind();
-
-            using (var bodyReader = new StreamReader(req.Body))
-            {
-                var bodyAsText = bodyReader.ReadToEnd();
-                var msgContent = new StringContent(JToken.FromObject(bodyAsText).ToString(), Encoding.UTF8, "application/json");
-                msg.Content = msgContent;
-
-                var bytesToWrite = Encoding.UTF8.GetBytes(bodyAsText);
-                injectedRequestStream.Write(bytesToWrite, 0, bytesToWrite.Length);
-                injectedRequestStream.Seek(0, SeekOrigin.Begin);
-                req.Body = injectedRequestStream;
-            }
-
-            return msg;
-        }
-
-
 
     }
 }

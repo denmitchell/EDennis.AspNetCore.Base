@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace EDennis.AspNetCore.Base.Security {
+namespace EDennis.AspNetCore.Base.Security
+{
     public class DefaultPolicies : Dictionary<string,List<string>>{}
 }

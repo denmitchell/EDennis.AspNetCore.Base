@@ -1,14 +1,14 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.EntityFramework {
+namespace EDennis.AspNetCore.Base.EntityFramework
+{
 
     /// <summary>
     /// A read/write base repository class, backed by

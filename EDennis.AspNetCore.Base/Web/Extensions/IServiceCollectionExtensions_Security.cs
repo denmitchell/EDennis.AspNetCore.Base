@@ -1,24 +1,17 @@
-﻿using EDennis.AspNetCore.Base.Testing;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Web
+{
 
     /// <summary>
     /// Extensions to facilitate configuration of security
@@ -29,7 +22,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services) {
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
-            var env = provider.GetRequiredService<IHostingEnvironment>();
+            var env = provider.GetRequiredService<IWebHostEnvironment>();
 
             var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains(env.ApplicationName + ",")).FirstOrDefault();
 
@@ -49,7 +42,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var audience = env.ApplicationName;
             if (audience.EndsWith(".Lib")) {
-                audience = audience.Substring(0, audience.Length - 4);
+                audience = audience[0..^4];
             }
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options => {
@@ -80,7 +73,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly) {
 
             var provider = services.BuildServiceProvider();
-            var env = provider.GetRequiredService<IHostingEnvironment>();
+            var env = provider.GetRequiredService<IWebHostEnvironment>();
 
             services.AddAuthorization(options => {
 

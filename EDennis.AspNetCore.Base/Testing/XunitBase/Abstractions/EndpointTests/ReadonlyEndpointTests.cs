@@ -1,11 +1,8 @@
-﻿using EDennis.AspNetCore.Base.Web;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System;
-using System.Net.Http;
-using Xunit;
+﻿using System.Net.Http;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public abstract class ReadonlyEndpointTests<TStartup>
         where TStartup : class {

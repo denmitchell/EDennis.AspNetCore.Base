@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Reflection;
-using System.Dynamic;
-using System.Linq.Expressions;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
 
-namespace EDennis.AspNetCore.Base.EntityFramework {
+namespace EDennis.AspNetCore.Base.EntityFramework
+{
     public static class DynamicExtensions {
 
         public static bool PropertyExists(dynamic obj, string property)

@@ -31,8 +31,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                     } catch { }
 
 
-                    context.Request.Headers.Add(HDR_USE_INMEMORY, defaultInstanceName);
-                    header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, defaultInstanceName);
+                    context.Request.Headers.Add(TESTING_HDR_USE_INMEMORY, defaultInstanceName);
+                    header = new KeyValuePair<string, string>(TESTING_HDR_USE_INMEMORY, defaultInstanceName);
                 }
                 string operation = header.Key;
                 string instanceName = header.Value;
@@ -51,7 +51,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 //var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
-                if (operation == HDR_DROP_INMEMORY ) {
+                if (operation == TESTING_HDR_DROP_INMEMORY ) {
                     //client.HttpClient.SendResetAsync(operation,instanceName);
                     return;
                 }

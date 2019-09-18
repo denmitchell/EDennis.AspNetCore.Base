@@ -2,15 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Web
+{
 
     public class ApiLauncherService {
         public IServiceCollection Services { get; set; }
@@ -56,7 +55,7 @@ namespace EDennis.AspNetCore.Base.Web {
             //generate a new ProjectPorts object, if it doesn't exist
             //use EventWaitHandle to prevent multiple threads/processes
             //from trying to simultaneously create the singleton.
-            EventWaitHandle ewh = new EventWaitHandle(
+            using EventWaitHandle ewh = new EventWaitHandle(
                 true, EventResetMode.AutoReset, ProjectPorts.WAIT_HANDLE_NAME);
             ewh.WaitOne();
             var provider = services.BuildServiceProvider();

@@ -3,12 +3,7 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web
@@ -32,6 +27,7 @@ namespace EDennis.AspNetCore.Base.Web
         [EnableQuery]
         [ODataQueryFilter]
         [HttpGet("odata")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public IEnumerable<TEntity> GetOData(
                 [FromQuery]string select,
                 [FromQuery]string orderBy,

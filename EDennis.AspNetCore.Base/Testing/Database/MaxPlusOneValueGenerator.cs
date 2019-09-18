@@ -1,4 +1,6 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
+﻿//TODO: See if this can be removed per fixes to EF
+
+using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;

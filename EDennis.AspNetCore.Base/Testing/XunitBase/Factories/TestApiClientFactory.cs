@@ -11,14 +11,14 @@ namespace EDennis.AspNetCore.Base.Testing {
     public static class TestApiClientFactory {
 
         public const int TIMEOUT_SECONDS = 5;
-
+        private static readonly HttpMessageHandler messageHandler = new DefaultHttpMessageHandler();
 
         public static TClient CreateReadonlyClient<TClient, TStartup>(
             ApiLauncherFactory<TStartup> factory)
             where TClient : ApiClient
             where TStartup : class {
 
-            var httpClient = HttpClientFactory.Create();
+            var httpClient = new HttpClient(messageHandler);
 
             var port = factory.Port;
             var baseAddress = $"http://localhost:{port}";
@@ -35,7 +35,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var apiClientHeaders = new List<KeyValuePair<string, StringValues>> {
                 new KeyValuePair<string, StringValues>(
-                    Interceptor.HDR_USE_READONLY, "")
+                    Interceptor.TESTING_HDR_USE_READONLY, "")
             };
 
             var dict = new Dictionary<string, object> {
@@ -53,7 +53,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             bool ping = httpClient.Ping(TIMEOUT_SECONDS);
             if (ping == false)
-                ping = httpClient.Ping(TIMEOUT_SECONDS);
+                httpClient.Ping(TIMEOUT_SECONDS);
 
             return apiClient;
 
@@ -66,7 +66,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TClient : ApiClient
             where TStartup : class {
 
-            var httpClient = HttpClientFactory.Create();
+            var httpClient = new HttpClient(messageHandler);
 
             var port = factory.Port;
             var baseAddress = $"http://localhost:{port}";
@@ -86,7 +86,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var apiClientHeaders = new List<KeyValuePair<string, StringValues>> {
                 new KeyValuePair<string, StringValues>(
-                    Interceptor.HDR_USE_INMEMORY, instanceName)
+                    Interceptor.TESTING_HDR_USE_INMEMORY, instanceName)
             };
 
             var dict = new Dictionary<string, object> {
@@ -104,7 +104,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             bool ping = httpClient.Ping(TIMEOUT_SECONDS);
             if (ping == false)
-                ping = httpClient.Ping(TIMEOUT_SECONDS);
+                httpClient.Ping(TIMEOUT_SECONDS);
 
             return apiClient;
 
@@ -113,7 +113,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static string GetInstanceName(ApiClient apiClient) {
             var httpClient = apiClient.HttpClient;
-            var headers = httpClient.DefaultRequestHeaders.GetValues(Interceptor.HDR_USE_INMEMORY);
+            var headers = httpClient.DefaultRequestHeaders.GetValues(Interceptor.TESTING_HDR_USE_INMEMORY);
             var header = headers.FirstOrDefault();
             return header.ToString();
         }
@@ -124,7 +124,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static string GetInstanceName(this ApiClient apiClient) {
             var httpClient = apiClient.HttpClient;
-            var headers = httpClient.DefaultRequestHeaders.GetValues(Interceptor.HDR_USE_INMEMORY);
+            var headers = httpClient.DefaultRequestHeaders.GetValues(Interceptor.TESTING_HDR_USE_INMEMORY);
             var header = headers.FirstOrDefault();
             return header.ToString();
         }

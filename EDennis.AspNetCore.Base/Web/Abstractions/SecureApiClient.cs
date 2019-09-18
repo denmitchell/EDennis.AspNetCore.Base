@@ -1,30 +1,28 @@
-﻿using System;
+﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using EDennis.AspNetCore.Base.Testing;
-using Flurl;
-using IdentityModel.Client;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 
-namespace EDennis.AspNetCore.Base.Web.Abstractions {
+namespace EDennis.AspNetCore.Base.Web.Abstractions
+{
 
     public class SecureApiClient : ApiClient {
 
-        SecureTokenCache _secureTokenCache;
-        ApiClient _identityServerApiClient;
-        IHostingEnvironment _hostingEnvironment;
+        readonly SecureTokenCache _secureTokenCache;
+        readonly ApiClient _identityServerApiClient;
+        readonly IWebHostEnvironment _hostingEnvironment;
 
         public SecureApiClient(HttpClient httpClient,
             IConfiguration config,
             ScopeProperties scopeProperties,
             ApiClient identityServerApiClient,
             SecureTokenCache secureTokenCache,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment)
             : base(httpClient, config, scopeProperties) {
 
             _secureTokenCache = secureTokenCache;

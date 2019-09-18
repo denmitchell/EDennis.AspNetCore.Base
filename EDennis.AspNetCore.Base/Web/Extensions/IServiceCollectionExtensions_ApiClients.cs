@@ -1,12 +1,9 @@
 ﻿using EDennis.AspNetCore.Base.Web.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 
-namespace EDennis.AspNetCore.Base.Web.Extensions {
+namespace EDennis.AspNetCore.Base.Web.Extensions
+{
     public static class IServiceCollectionExtensions_HttpClient {
 
         public static IServiceCollection AddApiClient<TClientInterface, TClientImplementation>(this IServiceCollection services)

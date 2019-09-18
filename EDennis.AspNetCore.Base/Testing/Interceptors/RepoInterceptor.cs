@@ -42,8 +42,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                             defaultInstanceName = context.Session.Id;
                     } catch { }
 
-                    context.Request.Headers.Add(HDR_USE_INMEMORY, defaultInstanceName);
-                    header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, defaultInstanceName);
+                    context.Request.Headers.Add(TESTING_HDR_USE_INMEMORY, defaultInstanceName);
+                    header = new KeyValuePair<string, string>(TESTING_HDR_USE_INMEMORY, defaultInstanceName);
                 }
 
                 _logger.LogInformation($"RepoInterceptor processing header {header.Key}: {header.Value}");
@@ -57,11 +57,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(config);
 
-                if (operation == HDR_USE_READONLY)
+                if (operation == TESTING_HDR_USE_READONLY)
                     throw new ApplicationException("HDR_USE_READONLY not appropriate for Writeable Repo.");
-                else if (operation == HDR_USE_INMEMORY) {
+                else if (operation == TESTING_HDR_USE_INMEMORY) {
                     GetOrAddInMemoryDatabase(repo, cache, baseInstanceName, baseDatabaseName);
-                } else if (operation == HDR_DROP_INMEMORY)
+                } else if (operation == TESTING_HDR_DROP_INMEMORY)
                     DropInMemory(cache, baseInstanceName);
 
             }

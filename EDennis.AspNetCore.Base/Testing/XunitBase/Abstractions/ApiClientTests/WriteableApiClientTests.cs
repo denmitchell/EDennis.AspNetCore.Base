@@ -1,14 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
 
     public abstract class WriteableApiClientTests<TClient,TStartup>: IDisposable
         where TStartup : class
@@ -38,7 +34,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    HttpClient.SendResetAsync(Interceptor.HDR_DROP_INMEMORY, InstanceName);
+                    HttpClient.SendResetAsync(Interceptor.TESTING_HDR_DROP_INMEMORY, InstanceName);
                 }
                 disposedValue = true;
             }

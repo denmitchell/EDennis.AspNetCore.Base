@@ -112,9 +112,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = Context.Find<TEntity>(keyValues);
 
-            if (entity.SysStart == default(DateTime))
+            if (entity.SysStart == default)
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == default(DateTime))
+            if (entity.SysEnd == default)
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;
@@ -172,9 +172,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = await Context.FindAsync<TEntity>(keyValues);
 
-            if (entity.SysStart == default(DateTime))
+            if (entity.SysStart == default)
                 entity.SysStart = DateTime.Now;
-            if (entity.SysEnd == default(DateTime))
+            if (entity.SysEnd == default)
                 entity.SysEnd = DateTime.MaxValue;
             if (entity.SysUser == null)
                 entity.SysUser = ScopeProperties.User;

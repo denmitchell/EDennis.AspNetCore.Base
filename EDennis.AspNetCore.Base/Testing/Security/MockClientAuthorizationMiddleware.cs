@@ -5,16 +5,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Security;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Testing {
@@ -55,7 +50,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="context">The HttpContext</param>
         /// <param name="config">The Configuration</param>
         /// <returns></returns>
-        public async Task InvokeAsync(HttpContext context, IConfiguration config, IHostingEnvironment env) {
+        public async Task InvokeAsync(HttpContext context, IConfiguration config) {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 //get a reference to the request headers
@@ -70,7 +65,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     var client = new HttpClient();
 
                     //get parameters for building the token request
-                    var tokenRequestData = GetClientCredentialsTokenRequestData(config, env.ApplicationName);
+                    var tokenRequestData = GetClientCredentialsTokenRequestData(config);
 
                     //get the discovery document from Identity Server
                     var disco = await client.GetDiscoveryDocumentAsync(tokenRequestData.Authority as string);
@@ -90,7 +85,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     //handle errors
                     if (tokenResponse.IsError) {
                         context.Response.StatusCode = 400;
-                        string msg = null;
+                        string msg;
                         if (tokenResponse.Error == "invalid_client")
                             msg = $"Client with Id = {tokenRequestData.ClientId} && Secret = {tokenRequestData.ClientSecret} is invalid.";
                         else if (tokenResponse.Error == "invalid_scope")
@@ -117,7 +112,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        private dynamic GetClientCredentialsTokenRequestData(IConfiguration config, string appName) {
+        private dynamic GetClientCredentialsTokenRequestData(IConfiguration config) {
 
             //get command-line arguments
             var args = config.GetCommandLineArguments();
@@ -136,7 +131,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (mockClientProperties == null)
                     throw new ArgumentException($"MockClientAuthorizationMiddleware requires 'MockClient:{mockClientArg}' configuration key, which is missing.");
                 else {
-                    tokenRequestData = GetClientCredentialsTokenRequestData(mockClientArg, mockClientProperties, appName);
+                    tokenRequestData = GetClientCredentialsTokenRequestData(mockClientArg, mockClientProperties);
                 }
             } else {
                 var mockClientDictionary = new MockClientDictionary();
@@ -148,7 +143,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (defaultMockClient.Key == null)
                     throw new ArgumentException("MockClientAuthorizationMiddleware requires 'MockClient...' configuration key, which is missing.");
                 else {
-                    tokenRequestData = GetClientCredentialsTokenRequestData(defaultMockClient.Key, defaultMockClient.Value, appName);
+                    tokenRequestData = GetClientCredentialsTokenRequestData(defaultMockClient.Key, defaultMockClient.Value);
                 }
 
 
@@ -182,7 +177,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         private dynamic GetClientCredentialsTokenRequestData(string mockClientId,
-            MockClientProperties mockClientProperties, string appName) {
+            MockClientProperties mockClientProperties) {
 
             string authority = null;
             string clientId;
@@ -212,44 +207,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             };
 
         }
-
-
-        //private static void ValidateJwt(
-        //    DiscoveryDocumentResponse disco, TokenResponse tokenResponse) {
-        //    // read discovery document to find issuer and key material
-
-        //    var keys = new List<SecurityKey>();
-        //    foreach (var webKey in disco.KeySet.Keys) {
-        //        var e = Base64Url.Decode(webKey.E);
-        //        var n = Base64Url.Decode(webKey.N);
-
-        //        var key = new RsaSecurityKey(new RSAParameters { Exponent = e, Modulus = n }) {
-        //            KeyId = webKey.Kid
-        //        };
-
-        //        keys.Add(key);
-        //    }
-
-        //    var parameters = new TokenValidationParameters {
-        //        ValidIssuer = disco.Issuer,
-        //        ValidAudience = "mvc.manual",
-        //        IssuerSigningKeys = keys,
-
-        //        NameClaimType = JwtClaimTypes.Name,
-        //        RoleClaimType = JwtClaimTypes.Role,
-
-        //        RequireSignedTokens = true
-        //    };
-
-        //    var handler = new JwtSecurityTokenHandler();
-        //    handler.InboundClaimTypeMap.Clear();
-
-        //    var jwt = tokenResponse.AccessToken;
-
-        //    var user = handler.ValidateToken(jwt, parameters, out var _);
-        //}
-
-
 
 
     }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EDennis.AspNetCore.Base.Testing {
+﻿namespace EDennis.AspNetCore.Base.Testing
+{
     /// <summary>
     /// This class is designed to support IdentityServerMockDataLoader.
     /// *** Special Note: this class is not yet tested.

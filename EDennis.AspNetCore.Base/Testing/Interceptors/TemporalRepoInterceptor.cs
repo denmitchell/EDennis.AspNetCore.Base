@@ -7,11 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
     public class TemporalRepoInterceptor<TRepo, TEntity, TContext, THistoryContext> : Interceptor
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
@@ -44,8 +44,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                             defaultInstanceName = context.Session.Id;
                     } catch { }
 
-                    context.Request.Headers.Add(HDR_USE_INMEMORY, defaultInstanceName);
-                    header = new KeyValuePair<string, string>(HDR_USE_INMEMORY, defaultInstanceName);
+                    context.Request.Headers.Add(TESTING_HDR_USE_INMEMORY, defaultInstanceName);
+                    header = new KeyValuePair<string, string>(TESTING_HDR_USE_INMEMORY, defaultInstanceName);
                 }
 
                 _logger.LogInformation($"TemporalRepoInterceptor processing header {header.Key}: {header.Value}");
@@ -65,12 +65,12 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(config);
                 var histDatabaseName = TestDbContextManager<THistoryContext>.BaseDatabaseName(config);
 
-                if (operation == HDR_USE_READONLY)
+                if (operation == TESTING_HDR_USE_READONLY)
                     throw new ApplicationException("HDR_USE_READONLY not appropriate for Writeable Repo.");
-                else if (operation == HDR_USE_INMEMORY) {
+                else if (operation == TESTING_HDR_USE_INMEMORY) {
                     GetOrAddInMemoryDatabase(repo, cache, baseInstanceName, baseDatabaseName);
                     GetOrAddInMemoryHistoryDatabase(repo, historyCache, histInstanceName, histDatabaseName);
-                } else if (operation == HDR_DROP_INMEMORY) {
+                } else if (operation == TESTING_HDR_DROP_INMEMORY) {
                     DropInMemory(cache, baseInstanceName);
                     DropInMemoryHistory(historyCache, histInstanceName);
                 }

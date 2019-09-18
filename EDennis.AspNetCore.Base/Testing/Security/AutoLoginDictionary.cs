@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
     public class AutoLoginDictionary : Dictionary<string,AutoLoginProperties> {}
 
     public class AutoLoginProperties {

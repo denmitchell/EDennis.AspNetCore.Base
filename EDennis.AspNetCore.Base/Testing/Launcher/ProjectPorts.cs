@@ -10,13 +10,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         //holds a list of available ports.
         //only one thread can take a given port,
         //providing thread-safe access
-        private BlockingCollection<int> _portPool
+        private readonly BlockingCollection<int> _portPool
             = new BlockingCollection<int>();
 
         //holds a mapping of project names to ports.
         //only on thread can assign a port to a project name,
         //and once assigned, it cannot be modified
-        private ConcurrentDictionary<string, int> _projectPorts
+        private readonly ConcurrentDictionary<string, int> _projectPorts
             = new ConcurrentDictionary<string, int>();
 
         public const int DEFAULT_PORT_POOL_SIZE = 30;

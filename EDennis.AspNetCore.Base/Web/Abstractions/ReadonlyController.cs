@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web
@@ -31,6 +28,7 @@ namespace EDennis.AspNetCore.Base.Web
         [EnableQuery]
         [ODataQueryFilter]
         [HttpGet("odata")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public IEnumerable<TEntity> GetOData(
                 [FromQuery]string select,
                 [FromQuery]string orderBy,
