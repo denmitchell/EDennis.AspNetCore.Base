@@ -43,14 +43,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var asOfPredicate = GetAsOfRangePredicate(from, to);
 
-            var current = Context.Query<TEntity>()
+            var current = Context.Set<TEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
                 .AsNoTracking();
 
-            var history = HistoryContext.Query<TEntity>()
+            var history = HistoryContext.Set<TEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
@@ -83,14 +83,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);
 
-            var current = Context.Query<TEntity>()
+            var current = Context.Set<TEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
                 .AsNoTracking();
 
-            var history = HistoryContext.Query<TEntity>()
+            var history = HistoryContext.Set<TEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))

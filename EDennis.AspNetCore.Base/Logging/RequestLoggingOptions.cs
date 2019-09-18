@@ -1,4 +1,4 @@
-﻿namespace EDennis.AspNetCore.Base.Web
+﻿namespace EDennis.AspNetCore.Base.Logging
 {
     public class RequestLoggingOptions
     {

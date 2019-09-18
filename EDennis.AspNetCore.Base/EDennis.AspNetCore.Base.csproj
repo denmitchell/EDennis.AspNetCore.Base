@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>2.7.3</Version>
+    <Version>3.0.0-pre</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -12,12 +12,13 @@
     <PackageProjectUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</PackageProjectUrl>
     <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <!--<PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>-->
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Fix Issues with Forward method</PackageReleaseNotes>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>2.7.3.0</AssemblyVersion>
-    <FileVersion>2.7.3.0</FileVersion>
+    <PackageReleaseNotes>Support .NET Core 3.0</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
 
   </PropertyGroup>
 
@@ -47,11 +48,19 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-rc1.19456.10" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-rc1.19456.10" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-rc1.19456.10" />
-    <PackageReference Include="Swashbuckle.OData" Version="3.5.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.0.1-dev-00099" />
+    <!--<PackageReference Include="Swashbuckle.OData" Version="3.5.0" />-->
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0-rc1.19457.4" />
+  </ItemGroup>  
+  
+  <ItemGroup>
+    <None Include="Package\icon.png" Pack="true" PackagePath="\"/>
+    <None Update="Package\icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

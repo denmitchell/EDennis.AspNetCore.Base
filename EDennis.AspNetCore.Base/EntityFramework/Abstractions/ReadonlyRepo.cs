@@ -40,7 +40,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// Provides direct access to the Query property of the context,
         /// allowing any query to be constructed via Linq expression
         /// </summary>
-        public IQueryable<TEntity> Query { get => Context.Query<TEntity>(); }
+        public IQueryable<TEntity> Query { get => Context.Set<TEntity>(); }
 
 
         /// <summary>

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web
+namespace EDennis.AspNetCore.Base.Logging
 {
 
     public class RequestLoggingMiddleware

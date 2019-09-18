@@ -12,7 +12,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public static TEntity[] Retrieve<TContext,TEntity>(TContext context)
             where TContext: DbContext
             where TEntity: class, new() {
-            var data = context.Query<TEntity>()
+            var data = context.Set<TEntity>()
                 .AsNoTracking()
                 .ToList();
             return data.ToArray();
@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             int pageNumber, int pageSize)
             where TContext : DbContext
             where TEntity : class, new() {
-            var data = context.Query<TEntity>()
+            var data = context.Set<TEntity>()
                 .AsNoTracking()
                 .ToList();
             return data.ToArray();
