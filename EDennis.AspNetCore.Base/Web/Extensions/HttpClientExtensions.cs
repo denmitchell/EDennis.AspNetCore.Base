@@ -184,7 +184,6 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             var msg = request.ToHttpRequestMessage(client);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
-            url = WebUtility.UrlDecode(url);
             return ForwardRequest<T>(client, msg, url);
         }
 
@@ -193,7 +192,6 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
-            url = WebUtility.UrlDecode(url);
             return ForwardRequest<T>(client, msg, url);
         }
 
@@ -276,22 +274,19 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase)
-        {
+        private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
 
-            var url = WebUtility.UrlDecode(relativeUrlFromBase);
+            var url = new Url(client.BaseAddress)
+                 .AppendPathSegment(relativeUrlFromBase);
 
-            url = new Url(client.BaseAddress)
-                .AppendPathSegment(url);
+            url = WebUtility.UrlDecode(url);
 
-            msg.RequestUri = new Uri(url);
-
+            var uri = url.ToUri();
+            msg.RequestUri = uri;
             var response = client.SendAsync(msg).Result;
             var objResult = GenerateObjectResult<T>(response).Result;
 
             return objResult;
-
-
 
         }
 
