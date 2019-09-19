@@ -33,8 +33,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         
 
         private readonly ILogger _logger;
-        private string _m(string m) => $"{this.GetType().Name}.{m}";
-        private string _u;
+        private string M(string m) => $"{this.GetType().Name}.{m}";
+        private readonly string U;
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
@@ -46,6 +46,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 IScopedLogger<object> scopedLogger = null) {
             Context = context;
             ScopeProperties = scopeProperties;
+            U = ScopeProperties.User;
 
             _logger = (scopedLogger?.Enabled ?? false) ? scopedLogger.Logger : logger;
             
@@ -58,7 +59,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// </summary>
         public IQueryable<TEntity> Query { 
             get {
-                _logger.LogTrace("For {User}, calling {Method}", _m("Query"),_u);
+                _logger.LogTrace("For {User}, calling {Method}", M("Query"),U);
                 return Context.Set<TEntity>().AsNoTracking();
             }
         }
@@ -83,7 +84,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? take = null) {
 
             _logger.LogTrace("For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take}",
-                _m("GetFromDynamicLinq"), _u, where, orderBy, select, skip, take);
+                M("GetFromDynamicLinq"), U, where, orderBy, select, skip, take);
 
             IQueryable qry = Query;
 
@@ -103,7 +104,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
 
             } catch (Exception ex) {
                 _logger.LogError(ex, "For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take} -- Exception: {Message}",
-                    _m("GetFromDynamicLinq"), _u, where, orderBy, select, skip, take, ex.Message);
+                    M("GetFromDynamicLinq"), U, where, orderBy, select, skip, take, ex.Message);
                 throw;
             }
 
@@ -130,7 +131,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? take = null) {
 
             _logger.LogTrace("For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take}",
-                _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take);
+                M("GetFromDynamicLinqAsync"), U, where, orderBy, select, skip, take);
 
             IQueryable qry = Query;
 
@@ -150,7 +151,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
 
             } catch (Exception ex) {
                 _logger.LogError(ex, "For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take} -- Exception: {Message}",
-                    _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take, ex.Message);
+                    M("GetFromDynamicLinqAsync"), U, where, orderBy, select, skip, take, ex.Message);
                 throw;
             }
 
@@ -170,7 +171,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         public virtual List<TEntity> GetFromSql(string sql){
 
             _logger.LogTrace("For {User}, calling {Method} with sql={sql}",
-                _m("GetFromSql"), _u, sql);
+                M("GetFromSql"), U, sql);
             try {
                 var cxn = Context.Database.GetDbConnection();
                 if (cxn.State == ConnectionState.Closed)
@@ -186,7 +187,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 return result;
             } catch (Exception ex) {
                 _logger.LogError(ex, "For {User}, calling {Method} with sql={sql} -- Exception: {Message}",
-                    _m("GetFromSql"), _u, sql, ex.Message);
+                    M("GetFromSql"), U, sql, ex.Message);
                 throw;
             }
         }

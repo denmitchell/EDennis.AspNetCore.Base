@@ -24,8 +24,11 @@ namespace EDennis.Samples.Colors.InternalApi.Models {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Color>()
-                .ToTable("Color", "dbo_history")
+                .ToTable<Color>("Color", "dbo_history");
+
+            modelBuilder.Entity<Color>()
                 .HasKey(e=> new { e.Id, e.SysStart });
+
 
 
             if (Database.IsInMemory()) {
@@ -47,7 +50,7 @@ namespace EDennis.Samples.Colors.InternalApi.Models {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Color>()
-                .ToTable("Color", "dbo")
+                .ToTable<Color>("Color", "dbo")
                 .HasKey(e => e.Id);
             
 
