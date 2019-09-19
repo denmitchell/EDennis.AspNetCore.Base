@@ -52,8 +52,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var baseInstanceName = header.Value;
 
                 var repo = provider.GetRequiredService(typeof(TRepo)) as TRepo;
-                var cache = provider.GetRequiredService(typeof(TestDbContextCache<TContext>))
-                        as TestDbContextCache<TContext>;
+                var cache = provider.GetRequiredService(typeof(TestDbContextOptionsCache<TContext>))
+                        as TestDbContextOptionsCache<TContext>;
 
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(config);
 
@@ -70,25 +70,27 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         }
 
-        private void GetOrAddInMemoryDatabase(TRepo repo, TestDbContextCache<TContext> cache,
+        private void GetOrAddInMemoryDatabase(TRepo repo, TestDbContextOptionsCache<TContext> cache,
             string instanceName, string baseDatabaseName) {
             if (cache.ContainsKey(instanceName)) {
-                repo.Context = cache[instanceName];
+                TestDbContextManager<TContext>.CreateInMemoryDatabase(cache[instanceName], out TContext context);
+                repo.Context = context;
                 _logger.LogInformation($"Using existing in-memory database {baseDatabaseName}, instance = {instanceName}");
             } else {
                 _logger.LogInformation($"Creating in-memory database {baseDatabaseName}, instance = {instanceName}");
-                var dbContext = TestDbContextManager<TContext>.CreateInMemoryDatabase(baseDatabaseName, instanceName);
-                repo.Context = dbContext;
+                TestDbContextManager<TContext>.CreateInMemoryDatabase(baseDatabaseName, instanceName, 
+                    out DbContextOptions<TContext> options, out TContext context);
+                repo.Context = context;
                 repo.Context.Database.EnsureCreated();
-                cache.Add(instanceName, repo.Context);
+                cache.Add(instanceName, options);
             }
         }
 
-        private void DropInMemory(TestDbContextCache<TContext> cache, string instanceName) {
+        private void DropInMemory(TestDbContextOptionsCache<TContext> cache, string instanceName) {
             if (cache.ContainsKey(instanceName)) {
                 _logger.LogInformation($"Dropping in-memory history instance {instanceName} for {typeof(TContext).Name}");
-                var context = cache[instanceName];
-                TestDbContextManager<TContext>.DropInMemoryDatabase(context);
+                var options = cache[instanceName];
+                TestDbContextManager<TContext>.DropInMemoryDatabase(options);
                 cache.Remove(instanceName);
             }
         }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>2.7.3</Version>
+    <Version>2.7.4</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -14,10 +14,10 @@
     <RepositoryType>github</RepositoryType>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Fix Issues with Forward method</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Cache DbContextOptions, instead of DbContext.  2. Decode Forward method's input url</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>2.7.3.0</AssemblyVersion>
-    <FileVersion>2.7.3.0</FileVersion>
+    <AssemblyVersion>2.7.4.0</AssemblyVersion>
+    <FileVersion>2.7.4.0</FileVersion>
 
   </PropertyGroup>
 

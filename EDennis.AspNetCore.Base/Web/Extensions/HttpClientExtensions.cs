@@ -279,22 +279,12 @@ namespace EDennis.AspNetCore.Base.Web {
         private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase)
         {
 
-            string[] uri = relativeUrlFromBase.Split('?');
+            var url = WebUtility.UrlDecode(relativeUrlFromBase);
 
-            var url = new Url(client.BaseAddress)
-                .AppendPathSegment(uri[0]);
+            url = new Url(client.BaseAddress)
+                .AppendPathSegment(url);
 
-            if (uri.Length > 1)
-            {
-                string[] qsegs = uri[1].Split('&');
-                foreach (var qseg in qsegs)
-                {
-                    string[] q = qseg.Split('=');
-                    url.SetQueryParam(q[0], q[1]);
-                }
-            }
-
-            msg.RequestUri = url.ToUri();
+            msg.RequestUri = new Uri(url);
 
             var response = client.SendAsync(msg).Result;
             var objResult = GenerateObjectResult<T>(response).Result;

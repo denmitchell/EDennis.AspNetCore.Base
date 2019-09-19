@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class TestDbContextCache<TContext> : Dictionary<string,TContext>
+    public class TestDbContextOptionsCache<TContext> : 
+            Dictionary<string,DbContextOptions<TContext>>
         where TContext : DbContext { }
 }

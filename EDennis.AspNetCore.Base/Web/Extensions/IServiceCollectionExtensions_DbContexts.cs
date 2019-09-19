@@ -27,7 +27,7 @@ namespace EDennis.AspNetCore.Base.Web {
             if (env.EnvironmentName == EnvironmentName.Development
                 || env.EnvironmentName == "LocalDevelopment"
                 || env.EnvironmentName == "Local")
-                services.AddSingleton<TestDbContextCache<TContext>>();
+                services.AddSingleton<TestDbContextOptionsCache<TContext>>();
 
             return services;
         }

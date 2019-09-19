@@ -69,8 +69,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             var databaseName = factory.Configuration.GetDatabaseName<TContext>();
             var instanceName = Guid.NewGuid().ToString();
 
-            var context = TestDbContextManager<TContext>.CreateInMemoryDatabase(
-                databaseName, instanceName);
+            TestDbContextManager<TContext>.CreateInMemoryDatabase(
+                databaseName, instanceName, out DbContextOptions<TContext> options, 
+                out TContext context);
 
             var scopeProperties = new ScopeProperties {
                 User = testUser
@@ -78,6 +79,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
             scopeProperties.OtherProperties.Add("InstanceName", instanceName);
+            scopeProperties.OtherProperties.Add("DbContextOptions", options);
 
             var repo = Activator.CreateInstance(typeof(TRepo),
                 new object[] { context, scopeProperties }) as TRepo;
@@ -106,11 +108,14 @@ namespace EDennis.AspNetCore.Base.Testing {
             var historyInstanceName = instanceName + Interceptor.HISTORY_INSTANCE_SUFFIX;
 
 
-            var context = TestDbContextManager<TContext>.CreateInMemoryDatabase(
-                databaseName, instanceName);
+            TestDbContextManager<TContext>.CreateInMemoryDatabase(
+                databaseName, instanceName, out DbContextOptions<TContext> options,
+                out TContext context);
 
-            var historyContext = TestDbContextManager<THistoryContext>.CreateInMemoryDatabase(
-                historyDatabaseName, historyInstanceName);
+            TestDbContextManager<THistoryContext>.CreateInMemoryDatabase(
+                historyDatabaseName, historyInstanceName, 
+                out DbContextOptions<THistoryContext> historyOptions,
+                out THistoryContext historyContext);
 
             var scopeProperties = new ScopeProperties {
                 User = testUser
@@ -118,6 +123,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             scopeProperties.OtherProperties.Add("InstanceName", instanceName);
             scopeProperties.OtherProperties.Add("HistoryInstanceName", historyInstanceName);
+            scopeProperties.OtherProperties.Add("DbContextOptions", options);
+            scopeProperties.OtherProperties.Add("HistoryDbContextOptions", historyOptions);
 
 
             var repo = Activator.CreateInstance(typeof(TRepo),

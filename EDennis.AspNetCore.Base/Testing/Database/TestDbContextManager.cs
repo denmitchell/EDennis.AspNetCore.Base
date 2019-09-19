@@ -13,26 +13,45 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TContext : DbContext {
 
 
-        public static TContext CreateInMemoryDatabase(string baseDatabaseName, string instanceName) {
-            var options = new DbContextOptionsBuilder<TContext>()
+        public static void CreateInMemoryDatabase(
+                string baseDatabaseName, string instanceName,
+                out DbContextOptions<TContext> options, out TContext context ) {
+
+            options = new DbContextOptionsBuilder<TContext>()
                 .UseInMemoryDatabase($"{baseDatabaseName}-{instanceName}")
                 .Options;
 
             //using reflection, instantiate the DbContext subclass
-            var dbContext = Activator.CreateInstance(typeof(TContext),
+            context = Activator.CreateInstance(typeof(TContext),
                 new object[] { options }) as TContext;
 
-            dbContext.Database.EnsureCreated();
-            return dbContext;
+            context.Database.EnsureCreated();
+        }
 
+        public static void CreateInMemoryDatabase(
+            DbContextOptions<TContext> options, out TContext context) {
+
+            //using reflection, instantiate the DbContext subclass
+            context = Activator.CreateInstance(typeof(TContext),
+                new object[] { options }) as TContext;
+
+            context.Database.EnsureCreated();
+        }
+
+
+        public static void DropInMemoryDatabase(DbContextOptions<TContext> options) {
+            
+            //using reflection, instantiate the DbContext subclass
+            var context = Activator.CreateInstance(typeof(TContext),
+                new object[] { options }) as TContext;
+
+            context.Database.EnsureDeleted();
         }
 
 
         public static void DropInMemoryDatabase(TContext context) {
             context.Database.EnsureDeleted();
         }
-
-
 
         public static TContext GetReadonlyDatabase(IConfiguration config) {
 
