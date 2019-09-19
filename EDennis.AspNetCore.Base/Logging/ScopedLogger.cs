@@ -21,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Logging
     ///</code>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ScopedLogger<T> {
+    public class ScopedLogger<T> : IScopedLogger<T> {
         public bool Enabled { get; set; } = false;
         public ILogger<T> Logger { get; set; }
 

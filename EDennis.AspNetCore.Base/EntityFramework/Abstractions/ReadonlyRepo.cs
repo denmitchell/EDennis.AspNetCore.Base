@@ -1,10 +1,14 @@
 ﻿using Dapper;
+using EDennis.AspNetCore.Base.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Dynamic.Core.Exceptions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework
@@ -25,14 +29,26 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         private List<StoredProcedureDef> _spDefs;
 
         public TContext Context { get; set; }
+        public IScopeProperties ScopeProperties { get; set; }
+        
 
+        private readonly ILogger _logger;
+        private string _m(string m) => $"{this.GetType().Name}.{m}";
+        private string _u;
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public ReadonlyRepo(TContext context) {
+        public ReadonlyRepo(TContext context, 
+                IScopeProperties scopeProperties,
+                ILogger<ReadonlyRepo<TEntity,TContext>> logger,
+                IScopedLogger<object> scopedLogger = null) {
             Context = context;
+            ScopeProperties = scopeProperties;
+
+            _logger = (scopedLogger?.Enabled ?? false) ? scopedLogger.Logger : logger;
+            
         }
 
 
@@ -40,7 +56,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// Provides direct access to the Query property of the context,
         /// allowing any query to be constructed via Linq expression
         /// </summary>
-        public IQueryable<TEntity> Query { get => Context.Set<TEntity>(); }
+        public IQueryable<TEntity> Query { 
+            get {
+                _logger.LogTrace("For {User}, calling {Method}", _m("Query"),_u);
+                return Context.Set<TEntity>().AsNoTracking();
+            }
+        }
 
 
         /// <summary>
@@ -61,20 +82,31 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? skip = null,
                 int? take = null) {
 
+            _logger.LogTrace("For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take}",
+                _m("GetFromDynamicLinq"), _u, where, orderBy, select, skip, take);
+
             IQueryable qry = Query;
 
-            if (where != null)
-                qry = qry.Where(where);
-            if (orderBy != null)
-                qry = qry.OrderBy(orderBy);
-            if (select != null)
-                qry = qry.Select(select);
-            if (skip != null)
-                qry = qry.Skip(skip.Value);
-            if (take != null)
-                qry = qry.Take(take.Value);
+            try {
+                if (where != null)
+                    qry = qry.Where(where);
+                if (orderBy != null)
+                    qry = qry.OrderBy(orderBy);
+                if (select != null)
+                    qry = qry.Select(select);
+                if (skip != null)
+                    qry = qry.Skip(skip.Value);
+                if (take != null)
+                    qry = qry.Take(take.Value);
 
-            return qry.ToDynamicList();
+                return qry.ToDynamicList();
+
+            } catch (Exception ex) {
+                _logger.LogError(ex, "For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take} -- Exception: {Message}",
+                    _m("GetFromDynamicLinq"), _u, where, orderBy, select, skip, take, ex.Message);
+                throw;
+            }
+
 
         }
 
@@ -97,20 +129,30 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? skip = null,
                 int? take = null) {
 
+            _logger.LogTrace("For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take}",
+                _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take);
+
             IQueryable qry = Query;
 
-            if (where != null)
-                qry = qry.Where(where);
-            if (orderBy != null)
-                qry = qry.OrderBy(orderBy);
-            if (select != null)
-                qry = qry.Select(select);
-            if (skip != null)
-                qry = qry.Skip(skip.Value);
-            if (take != null)
-                qry = qry.Take(take.Value);
+            try {
+                if (where != null)
+                    qry = qry.Where(where);
+                if (orderBy != null)
+                    qry = qry.OrderBy(orderBy);
+                if (select != null)
+                    qry = qry.Select(select);
+                if (skip != null)
+                    qry = qry.Skip(skip.Value);
+                if (take != null)
+                    qry = qry.Take(take.Value);
 
-            return await qry.ToDynamicListAsync();
+                return await qry.ToDynamicListAsync();
+
+            } catch (Exception ex) {
+                _logger.LogError(ex, "For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take} -- Exception: {Message}",
+                    _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take, ex.Message);
+                throw;
+            }
 
         }
 
@@ -127,20 +169,26 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// <returns></returns>
         public virtual List<TEntity> GetFromSql(string sql){
 
-            //var parms = new DynamicParameters();
-            //parms.Add()
+            _logger.LogTrace("For {User}, calling {Method} with sql={sql}",
+                _m("GetFromSql"), _u, sql);
+            try {
+                var cxn = Context.Database.GetDbConnection();
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
+                List<TEntity> result;
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
+                    result = cxn.Query<TEntity>(sql, transaction: dbTrans).AsList();
+                } else {
+                    result = cxn.Query<TEntity>(sql).AsList();
+                }
 
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-            List<TEntity> result;
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-                result = cxn.Query<TEntity>(sql, transaction: dbTrans).AsList();
-            } else {
-                result = cxn.Query<TEntity>(sql).AsList();
+                return result;
+            } catch (Exception ex) {
+                _logger.LogError(ex, "For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take} -- Exception: {Message}",
+                    _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take, ex.Message);
+                throw;
             }
-            return result;
         }
 
 

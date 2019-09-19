@@ -19,14 +19,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public TContext Context { get; set; }
-        public ScopeProperties ScopeProperties { get; set; }
+        public IScopeProperties ScopeProperties { get; set; }
 
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public WriteableRepo(TContext context, ScopeProperties scopeProperties) {
+        public WriteableRepo(TContext context, IScopeProperties scopeProperties) {
             Context = context;
             ScopeProperties = scopeProperties;
         }
