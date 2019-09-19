@@ -82,7 +82,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? skip = null,
                 int? take = null) {
 
-            _logger.LogTrace("For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take}",
+            _logger.LogTrace("For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take}",
                 _m("GetFromDynamicLinq"), _u, where, orderBy, select, skip, take);
 
             IQueryable qry = Query;
@@ -102,7 +102,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 return qry.ToDynamicList();
 
             } catch (Exception ex) {
-                _logger.LogError(ex, "For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take} -- Exception: {Message}",
+                _logger.LogError(ex, "For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take} -- Exception: {Message}",
                     _m("GetFromDynamicLinq"), _u, where, orderBy, select, skip, take, ex.Message);
                 throw;
             }
@@ -129,7 +129,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? skip = null,
                 int? take = null) {
 
-            _logger.LogTrace("For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take}",
+            _logger.LogTrace("For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take}",
                 _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take);
 
             IQueryable qry = Query;
@@ -149,7 +149,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 return await qry.ToDynamicListAsync();
 
             } catch (Exception ex) {
-                _logger.LogError(ex, "For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take} -- Exception: {Message}",
+                _logger.LogError(ex, "For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take} -- Exception: {Message}",
                     _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take, ex.Message);
                 throw;
             }
@@ -185,8 +185,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework
 
                 return result;
             } catch (Exception ex) {
-                _logger.LogError(ex, "For {User}, calling {Method} with where={where},orderBy={orderBy},select={select},skip={skip},take={take} -- Exception: {Message}",
-                    _m("GetFromDynamicLinqAsync"), _u, where, orderBy, select, skip, take, ex.Message);
+                _logger.LogError(ex, "For {User}, calling {Method} with sql={sql} -- Exception: {Message}",
+                    _m("GetFromSql"), _u, sql, ex.Message);
                 throw;
             }
         }
