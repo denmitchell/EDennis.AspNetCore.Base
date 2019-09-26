@@ -57,7 +57,7 @@
   </ItemGroup>  
   
   <ItemGroup>
-    <None Include="Package\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="Package\icon.png" Pack="true" PackagePath="\" />
     <None Update="Package\icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing{
     public class MaxPlusOneValueGenerator<TEntity> : ValueGenerator<int> 
         where TEntity : class, IHasIntegerId {
 
-        private static MethodInfo generic;
+        private static readonly MethodInfo generic;
 
         //statically set the MethodInfo for GetMaxKeyValue
         static MaxPlusOneValueGenerator() {

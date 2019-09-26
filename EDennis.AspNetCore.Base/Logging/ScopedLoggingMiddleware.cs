@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Logging {
 
 
-    public partial class ScopedLoggingMiddleware {
+    public partial class ScopedLoggingMiddleware<T> {
 
         public const string HDR_LOGGER_PREFIX = "X-Logging-";
         public const string HDR_USE_SCOPEDLOGGER = HDR_LOGGER_PREFIX + "UseScopedLogger";
@@ -44,10 +44,10 @@ namespace EDennis.AspNetCore.Base.Logging {
                         || values.Contains("*")
                         ) {
 
-                        ScopedLogger<object> scopedLogger = provider.GetRequiredService<ScopedLogger<object>>();
+                        ScopedLogger<T> scopedLogger = provider.GetRequiredService<ScopedLogger<T>>();
                         scopedLogger.Enabled = true;
 
-                        ILogger<object> logger = _loggerFactory.CreateLogger<object>();
+                        ILogger<T> logger = _loggerFactory.CreateLogger<T>();
 
                         scopedLogger.Logger = logger; 
 
