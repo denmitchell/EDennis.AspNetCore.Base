@@ -32,8 +32,8 @@ namespace EDennis.AspNetCore.Base.Web
         /// Sets Authentication settings for the application to be protected by IdentityServer
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="userApp">Used to indicate that this is a Hybrid Flow MVC application when true, and an API without Users when false.</param>
-        public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services, bool userApp = false)
+        /// <param name="isUserApp">Used to indicate that this is a Hybrid Flow MVC application when true, and an API without Users when false.</param>
+        public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services, bool isUserApp = false)
         {
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
@@ -46,7 +46,7 @@ namespace EDennis.AspNetCore.Base.Web
             var apiDict = new Dictionary<string, ApiConfig>();
             config.GetSection("Apis").Bind(apiDict);
 
-            if (!userApp) // If this is an api, process original version of method
+            if (!isUserApp) // If this is an api, process original version of method
             {
                 //identify Identity Server, which is the only configured API without a secret
                 var identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
@@ -74,7 +74,7 @@ namespace EDennis.AspNetCore.Base.Web
             else // this is a User App, initialize MVC Hybrid Flow Client with .NET Identity Users
             {
                 //identify Identity Server, which is the only configured API where userApp is true
-                var identityServerApi = apiDict.Where(x => x.Value.UserApp == true).FirstOrDefault().Value;
+                var identityServerApi = apiDict.Where(x => x.Value.IsUserApp == true).FirstOrDefault().Value;
                 if (identityServerApi == null)
                     throw new ApplicationException($"AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server. No Api having property UserApp=true appears in appsettings.{env}.json.");
 
@@ -113,17 +113,17 @@ namespace EDennis.AspNetCore.Base.Web
                        options.ClientId = env.ApplicationName;
                        options.ClientSecret = secret;
                        options.ResponseType = "code id_token";
-                       options.SaveTokens = true;
+                       options.SaveTokens = false;
                        options.GetClaimsFromUserInfoEndpoint = true;
-                       //options.Scope.Add("dds_claims");
-                       //options.Scope.Add("CT.DDS.IdentityServer.Api1");
+
+                       // Add each scope in scopes array
                        for (int i = 0; i < scopes.Length; i++)
                        {
                            options.Scope.Add(scopes[i]);
                        }
                    });
             }
-            services.AddAuthorizationWithDefaultPolicies(assembly, userApp);
+            services.AddAuthorizationWithDefaultPolicies(assembly, isUserApp);
 
         }
 
@@ -145,7 +145,7 @@ namespace EDennis.AspNetCore.Base.Web
         /// </summary>
         /// <param name="services">the service collection</param>
         /// <param name="env">the hosting environment</param>
-        public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly, bool userApp = false)
+        public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly, bool isUserApp = false)
         {
             var provider = services.BuildServiceProvider();
             var env = provider.GetRequiredService<IHostingEnvironment>();
@@ -155,7 +155,7 @@ namespace EDennis.AspNetCore.Base.Web
             {
                 //create application(api-level) policy
                 var applicationName = env.ApplicationName;
-                CreateScopePolicy(options, applicationName, applicationName, null, userApp);
+                CreateScopePolicy(options, applicationName, applicationName, null, isUserApp);
 
                 var controllers = GetControllerTypes(assembly);
                 foreach (var controller in controllers)
@@ -171,13 +171,13 @@ namespace EDennis.AspNetCore.Base.Web
                     }
 
                     //create controller-level policy
-                    CreateScopePolicy(options, controllerPath, applicationName, actionScopes, userApp);
+                    CreateScopePolicy(options, controllerPath, applicationName, actionScopes, isUserApp);
 
                     // create action-level policies
                     foreach (var action in actions)
                     {
              
-                        CreateScopePolicy(options, controllerPath + '.' + action.Name, applicationName, null,userApp);
+                        CreateScopePolicy(options, controllerPath + '.' + action.Name, applicationName, null,isUserApp);
                        
                     }
 
