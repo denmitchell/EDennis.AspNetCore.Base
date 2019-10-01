@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.Security;
+using EDennis.AspNetCore.Base.Testing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +27,9 @@ namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_Security {
 
 
-        public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services) {
+        public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
+            IOptions<DefaultPoliciesOptions> options = null) {
+
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
             var env = provider.GetRequiredService<IHostingEnvironment>();
@@ -52,13 +55,13 @@ namespace EDennis.AspNetCore.Base.Web {
                 audience = audience.Substring(0, audience.Length - 4);
             }
             services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options => {
-                    options.Authority = authority;
-                    options.RequireHttpsMetadata = false;
-                    options.Audience = audience;
+                .AddJwtBearer("Bearer", opt => {
+                    opt.Authority = authority;
+                    opt.RequireHttpsMetadata = false;
+                    opt.Audience = audience;
                 });
 
-            services.AddAuthorizationWithDefaultPolicies(assembly);
+            services.AddAuthorizationWithDefaultPolicies(assembly, options);
 
         }
 
@@ -77,85 +80,42 @@ namespace EDennis.AspNetCore.Base.Web {
         /// </summary>
         /// <param name="services">the service collection</param>
         /// <param name="env">the hosting environment</param>
-        public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly) {
+        public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
+            IOptions<DefaultPoliciesOptions> options = null) {
+
+            var scopeClaimType = options?.Value?.ScopeClaimType ?? "Scope";
 
             var provider = services.BuildServiceProvider();
             var env = provider.GetRequiredService<IHostingEnvironment>();
 
-            services.AddAuthorization(options => {
+            services.AddAuthorization(opt => {
 
-                //create application(api-level) policy
                 var applicationName = env.ApplicationName;
-                CreatePolicy(options, applicationName, applicationName, null);
-
                 var controllers = GetControllerTypes(assembly);
+
+                var policyNames = new List<string>();
+
                 foreach (var controller in controllers) {
 
                     var controllerPath = applicationName + "." + Regex.Replace(controller.Name, "Controller$", "");
                     var actions = GetActionMethods(controller);
 
-
-                    var actionScopes = new List<string>();
                     foreach (var action in actions) {
-                        actionScopes.Add(controllerPath + '.' + action.Name);
-                    }
+                        var policyName = controllerPath + '.' + action.Name;
 
-                    //create controller-level policy
-                    CreatePolicy(options, controllerPath, applicationName, actionScopes);
+                        opt.AddPolicy(policyName, builder => {
+                            builder.RequireClaimPatternMatch(scopeClaimType, policyName);
+                        });
 
-
-                    foreach (var action in actions) {
-                        CreatePolicy(options, controllerPath + '.' + action.Name, applicationName, null);
                     }
                 }
+
+
+
+
             });
 
 
-        }
-
-
-        /// <summary>
-        /// Creates a scope-based policy, where the
-        /// policy name and scope name are the same.
-        /// This method ensures that app-level scopes
-        /// and controller-level scopes are inherited.
-        /// </summary>
-        /// <param name="options">Authorization Options 
-        /// used to configure AddAuthorization(...)</param>
-        /// <param name="policyName">the name of the policy to add</param>
-        private static void CreatePolicy(AuthorizationOptions options, string policyName, string applicationName, List<string> actionScopes) {
-
-            //add parent and grandparent scopes to cover controller-level
-            //and app-level scopes
-            var scopes = new List<string>() { policyName };
-
-            //add all action-level scopes to controller-level scope
-            if (actionScopes != null) {
-                scopes.AddRange(actionScopes);
-            }
-
-            if (policyName != applicationName) {
-                var parentScope = policyName.DropLastSegment();
-                if (parentScope != null)
-                    scopes.Add(parentScope);
-                if (parentScope != applicationName) {
-                    var grandparentScope = parentScope.DropLastSegment();
-                    if (grandparentScope != null)
-                        scopes.Add(grandparentScope);
-                }
-            }
-            //add the policy
-            options.AddPolicy(policyName, builder => {
-                builder.RequireClaim("Scope", scopes);
-            });
-
-        }
-
-        private static string DropLastSegment(this string path) {
-            int index = path.LastIndexOf(".");
-            if (index == -1)
-                return null;
-            return path.Substring(0, index);
         }
 
 
