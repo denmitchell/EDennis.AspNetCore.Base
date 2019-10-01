@@ -175,14 +175,6 @@ namespace IdentityServer {
                         new Scope {
                             Name = "EDennis.Samples.DefaultPoliciesApi.Position.Delete",
                             DisplayName = "EDennis.Samples.DefaultPoliciesApi.Position.Delete"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesApi.*Get*",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.*Get*"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesApi.*Put*",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.*Put*"
                         }
                     }
                 },
@@ -306,6 +298,24 @@ namespace IdentityServer {
                     },
                     Claims = {
                         new System.Security.Claims.Claim("Role","Readonly")
+                    }
+                },
+                new MockClient {
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client7",
+                    AllowedScopes = {
+                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("Role","NoDelete")
+                    }
+                },
+                new MockClient {
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client8",
+                    AllowedScopes = {
+                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("Scope","-EDennis.Samples.DefaultPoliciesApi.*Delete*")
                     }
                 },
                 // resource owner password grant client

@@ -16,6 +16,8 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string ExclusionPrefix { get; set; } = "-";
 
+        public string[] GloballyIgnoredScopes { get; set; }
+
         /// <summary>
         /// NOTE: This can be used to configure roles for users.
         /// </summary>

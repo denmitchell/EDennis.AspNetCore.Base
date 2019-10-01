@@ -35,6 +35,7 @@ namespace EDennis.AspNetCore.Base.Security {
                 ScopeClaimType = options.Value.ScopeClaimType;
                 PatternClaimType = options.Value.PatternClaimType;
                 NamedPatterns = options.Value.NamedPatterns;
+                GloballyIgnoredScopes = options.Value.GloballyIgnoredScopes;
                 ExclusionPrefix = options.Value.ExclusionPrefix;
             }
         }
@@ -60,6 +61,8 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string ExclusionPrefix { get; } = "-";
 
+        public string[] GloballyIgnoredScopes { get; set; } = new string[] { };
+
         /// <summary>
         /// NOTE: This can be used to configure roles for users.
         /// </summary>
@@ -80,7 +83,9 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 //check Scope first
                 var scopePatterns = context.User?.Claims?
-                    .Where(c => c.Type.ToLower() == ScopeClaimType.ToLower()).Select(c => c.Value);
+                    .Where(c => c.Type.ToLower() == ScopeClaimType.ToLower())
+                    .Select(c => c.Value)
+                    .Where(s => !GloballyIgnoredScopes.Contains(s));
 
                 if (scopePatterns != null && scopePatterns.Count() > 0)
                     found = IsMatch(requirement.Pattern, scopePatterns);
