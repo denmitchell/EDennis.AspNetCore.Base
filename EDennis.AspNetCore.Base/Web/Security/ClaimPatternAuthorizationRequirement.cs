@@ -50,15 +50,15 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string Pattern { get; }
 
-        public string ScopeClaimType { get; } = "ScopeXXX";
-        public string PatternClaimType { get; } = "RoleXXX";
+        public string ScopeClaimType { get; } = "Scope";
+        public string PatternClaimType { get; } = "Role";
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
         /// NOTE: When only exclusions are present, application-level scope
         ///       is used as the base from which exclusions are applied.
         /// </summary>
-        public string ExclusionPrefix { get; } = "-XXX";
+        public string ExclusionPrefix { get; } = "-";
 
         /// <summary>
         /// NOTE: This can be used to configure roles for users.
