@@ -33,14 +33,14 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
         public Startup(ILogger<Startup> logger,
             IConfiguration configuration,
-            IHostingEnvironment env) {
+            IWebHostEnvironment env) {
             Configuration = configuration;
             HostingEnvironment = env;
             Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
         public ILogger Logger { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -55,7 +55,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             //address of IdentityServer must be known)
             //****************************************************
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 services
                     .AddLauncher<A.Startup>(Configuration, Logger)
                     //.AddLauncher<B.Startup>()
@@ -68,8 +68,9 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
 
             services.AddMvc(options => {
+                options.EnableEndpointRouting = false;
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            });
 
 
             services.AddScoped<ScopeProperties>();
@@ -78,7 +79,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             services.AddScoped<PositionRepo, PositionRepo>();
 
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 services.AddSwaggerGen(c => {
                     c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
                 });
@@ -87,12 +88,10 @@ namespace EDennis.Samples.DefaultPoliciesApi {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
-            if (env.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
-            }
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 
-            if (env.EnvironmentName == EnvironmentName.Development) {
+            if (env.EnvironmentName == "Development") {
+                app.UseDeveloperExceptionPage();
                 app.UseMockClientAuthorization();
             }
 
@@ -100,7 +99,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             app.UseUser();
 
 
-            if (env.EnvironmentName == EnvironmentName.Development) {
+            if (env.EnvironmentName == "Development") {
                 app.UseSwagger();
 
                 app.UseSwaggerUI(c => {

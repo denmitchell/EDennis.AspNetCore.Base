@@ -207,7 +207,7 @@ namespace EDennis.AspNetCore.Base.Testing
             return GetInstanceName(repo.ScopeProperties);
         }
 
-        private static string GetInstanceName(ScopeProperties scopeProperties) {
+        private static string GetInstanceName(IScopeProperties scopeProperties) {
             return scopeProperties.OtherProperties["InstanceName"].ToString();
         }
 

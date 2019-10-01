@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EDennis.AspNetCore.Base.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +30,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public ReadonlyTemporalRepo(TContext context, THistoryContext historyContext) :
-            base(context) {
-            HistoryContext = historyContext;
+        public ReadonlyTemporalRepo(TContext context, THistoryContext historyContext,
+                IScopeProperties scopeProperties,
+                ILogger<ReadonlyRepo<TEntity, TContext>> logger,
+                IScopedLogger<object> scopedLogger = null) 
+            : base(context,scopeProperties,logger,scopedLogger) {
+
+                HistoryContext = historyContext;
         }
 
 

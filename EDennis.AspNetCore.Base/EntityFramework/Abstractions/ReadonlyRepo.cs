@@ -32,9 +32,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         public IScopeProperties ScopeProperties { get; set; }
         
 
-        private readonly ILogger _logger;
-        private string M(string m) => $"{this.GetType().Name}.{m}";
-        private readonly string U;
+        internal ILogger _logger;
+        internal string M(string m) => $"{this.GetType().Name}.{m}";
+        internal string U;
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
