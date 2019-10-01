@@ -65,8 +65,13 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 //AwaitApis() blocks the main thread until the Apis are ready
             }
 
-            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
+            var spo = new SecurityOptions();
+            Configuration.GetSection("Security").Bind(spo);
 
+            //only if inected ... services.Configure<SecurityPolicyOptions>(opt => opt = spo);
+
+            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(Options.Create(spo));
+            
             services.AddMvc(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

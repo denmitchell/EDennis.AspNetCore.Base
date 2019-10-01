@@ -121,6 +121,10 @@ namespace IdentityServer {
                     DisplayName="EDennis.Samples.DefaultPoliciesApi",
                     Scopes={
                         new Scope {
+                            Name = "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.ViaClaims"
+                        },
+                        new Scope {
                             Name = "EDennis.Samples.DefaultPoliciesApi",
                             DisplayName = "EDennis.Samples.DefaultPoliciesApi"
                         },
@@ -172,6 +176,14 @@ namespace IdentityServer {
                             Name = "EDennis.Samples.DefaultPoliciesApi.Position.Delete",
                             DisplayName = "EDennis.Samples.DefaultPoliciesApi.Position.Delete"
                         },
+                        new Scope {
+                            Name = "EDennis.Samples.DefaultPoliciesApi.*Get*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.*Get*"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.DefaultPoliciesApi.*Put*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.*Put*"
+                        }
                     }
                 },
                 new ApiResource{
@@ -189,14 +201,6 @@ namespace IdentityServer {
                         new Scope {
                             Name = "EDennis.Samples.Colors2Api.HslController",
                             DisplayName = "EDennis.Samples.Colors2Api.HslController"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee"
                         }
                     }
                 },
@@ -255,7 +259,7 @@ namespace IdentityServer {
                     },
                     Claims = {
                         new System.Security.Claims.Claim("name","moe@stooges.org"),
-                        new System.Security.Claims.Claim("Some Claim Type","Some Claim Value")
+                        new System.Security.Claims.Claim("Some Claim Type","Some Claim Value"),
                     }
                 },
                 new MockClient {
@@ -284,6 +288,24 @@ namespace IdentityServer {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client4",
                     AllowedScopes = {
                         "N/A"
+                    }
+                },
+                new MockClient {
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client5",
+                    AllowedScopes = {
+                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("Scope","EDennis.Samples.DefaultPoliciesApi.*Get*")
+                    }
+                },
+                new MockClient {
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client6",
+                    AllowedScopes = {
+                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
+                    },
+                    Claims = {
+                        new System.Security.Claims.Claim("Role","Readonly")
                     }
                 },
                 // resource owner password grant client

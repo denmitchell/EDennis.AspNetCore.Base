@@ -22,8 +22,8 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="claimType">The claim type that must be absent if no values are provided.</param>
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
-        public ClaimPatternAuthorizationRequirement(string claimType, 
-                string pattern, IOptions<DefaultPoliciesOptions> options = null) {
+        public ClaimPatternAuthorizationRequirement(string claimType,
+                string pattern, IOptions<SecurityOptions> options) {
 
             if (claimType == null) {
                 throw new ArgumentNullException(nameof(claimType));
@@ -33,7 +33,8 @@ namespace EDennis.AspNetCore.Base.Security {
             Pattern = pattern;
             if (options != null) {
                 ScopeClaimType = options.Value.ScopeClaimType;
-                NamedClaimPatternsType = options.Value.NamedClaimPatternsType;
+                PatternClaimType = options.Value.PatternClaimType;
+                NamedPatterns = options.Value.NamedPatterns;
                 ExclusionPrefix = options.Value.ExclusionPrefix;
             }
         }
@@ -49,20 +50,20 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string Pattern { get; }
 
-        public string ScopeClaimType { get; } = "Scope";
-        public string NamedClaimPatternsType { get; } = "Role";
+        public string ScopeClaimType { get; } = "ScopeXXX";
+        public string PatternClaimType { get; } = "RoleXXX";
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
         /// NOTE: When only exclusions are present, application-level scope
         ///       is used as the base from which exclusions are applied.
         /// </summary>
-        public string ExclusionPrefix { get; } = "-";
+        public string ExclusionPrefix { get; } = "-XXX";
 
         /// <summary>
         /// NOTE: This can be used to configure roles for users.
         /// </summary>
-        public Dictionary<string, List<string>> NamedClaimPatterns { get; }
+        public Dictionary<string, string[]> NamedPatterns { get; }
 
 
         /// <summary>
@@ -70,55 +71,37 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         /// <param name="context">The authorization context.</param>
         /// <param name="requirement">The requirement to evaluate.</param>
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, 
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             ClaimPatternAuthorizationRequirement requirement) {
 
             if (context.User != null) {
 
                 var found = false;
-                var hasPositiveScopes = false;
 
-                if (NamedClaimPatterns != null && NamedClaimPatternsType != null) {
+                //check Scope first
+                var scopePatterns = context.User?.Claims?
+                    .Where(c => c.Type.ToLower() == ScopeClaimType.ToLower()).Select(c => c.Value);
 
-                    var ncp = context.User.Claims.Where(c => c.Type == NamedClaimPatternsType);
-
-                    var inheritedPatterns = NamedClaimPatterns.
-                        Where(p => ncp.Any(c => c.Value == p.Key)).SelectMany(p => p.Value);
-
-                    var allPatterns = inheritedPatterns
-                        .Union(context.User.Claims
-                        .Where(c => c.Type == ScopeClaimType).Select(c => c.Value));
+                if (scopePatterns != null && scopePatterns.Count() > 0)
+                    found = IsMatch(requirement.Pattern, scopePatterns);
 
 
-                        foreach (var pattern in allPatterns
-                                .Where(p=>!p.StartsWith(ExclusionPrefix))) {
+                if (!found && NamedPatterns != null && PatternClaimType != null) {
 
-                            hasPositiveScopes = true;
+                    var ncp = context.User.Claims
+                        .Where(c => c.Type.ToLower() == PatternClaimType.ToLower());
 
-                            if (pattern == requirement.Pattern)
-                                found = true;
-                            else if (requirement.Pattern.StartsWith(pattern + "."))
-                                found = true;
-                            else if (Regex.IsMatch(requirement.Pattern, pattern.Replace(".", "\\.").Replace("*", ".*")))
-                                found = true;
-                        }
+                    var namedPatterns = NamedPatterns.
+                        Where(p => ncp.Any(c => c.Value == p.Key));
 
-                        foreach (var pattern in allPatterns
-                                .Where(p => p.StartsWith(ExclusionPrefix))
-                                .Select(p=>p.Substring(ExclusionPrefix.Length))) {
-
-                            if (!hasPositiveScopes)
-                                found = true;
-
-                            if (pattern == requirement.Pattern)
-                                found = false;
-                            else if (requirement.Pattern.StartsWith(pattern + "."))
-                                found = false;
-                            else if (Regex.IsMatch(requirement.Pattern, pattern.Replace(".", "\\.").Replace("*", ".*")))
-                                found = false;
-                        }
-
+                    foreach (var namedPattern in namedPatterns) {
+                        found = IsMatch(requirement.Pattern, namedPattern.Value);
+                        if (found)
+                            break;
                     }
+
+                }
+
 
                 if (found) {
                     context.Succeed(requirement);
@@ -126,6 +109,45 @@ namespace EDennis.AspNetCore.Base.Security {
             }
             return Task.CompletedTask;
         }
+
+        private bool IsMatch(string requirementPattern, IEnumerable<string> testPatterns) {
+
+            var found = false;
+            var hasPositiveScopes = false;
+
+            foreach (var pattern in testPatterns
+                    .Where(p => !p.StartsWith(ExclusionPrefix))) {
+
+                hasPositiveScopes = true;
+
+                if (pattern.ToLower() == requirementPattern.ToLower())
+                    found = true;
+                else if (requirementPattern.ToLower().StartsWith(pattern.ToLower() + "."))
+                    found = true;
+                else if (Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
+                    found = true;
+            }
+
+            foreach (var pattern in testPatterns
+                    .Where(p => p.StartsWith(ExclusionPrefix))
+                    .Select(p => p.Substring(ExclusionPrefix.Length))) {
+
+                if (!hasPositiveScopes)
+                    found = true;
+
+                if (pattern.ToLower() == requirementPattern.ToLower())
+                    found = false;
+                else if (requirementPattern.ToLower().StartsWith(pattern.ToLower() + "."))
+                    found = false;
+                else if (Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
+                    found = false;
+            }
+
+            return found;
+
+        }
+
+
     }
 }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.Security {
-    public class DefaultPoliciesOptions {
+    public class SecurityOptions {
 
+        public string IdentityServerApiConfigKey { get; set; } = "IdentityServer";
         public string ScopeClaimType { get; set; } = "Scope";
-        public string NamedClaimPatternsType { get; set; } = "Role";
+        public string PatternClaimType { get; set; } = "Role";
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
@@ -18,7 +19,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <summary>
         /// NOTE: This can be used to configure roles for users.
         /// </summary>
-        public Dictionary<string,List<string>> NamedClaimPatterns { get; set; }
+        public Dictionary<string,string[]> NamedPatterns { get; set; }
 
     }
 }

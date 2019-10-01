@@ -28,7 +28,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
-            IOptions<DefaultPoliciesOptions> options = null) {
+            IOptions<SecurityOptions> options = null, bool isUserApp = false) {
 
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
@@ -41,10 +41,19 @@ namespace EDennis.AspNetCore.Base.Web {
             var apiDict = new Dictionary<string, ApiConfig>();
             config.GetSection("Apis").Bind(apiDict);
 
-            //identify Identity Server, which is the only configured API without a secret
-            var identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
+            ApiConfig identityServerApi;
+            if (options?.Value?.IdentityServerApiConfigKey != null)
+                identityServerApi = apiDict[options.Value.IdentityServerApiConfigKey];
+            else if (apiDict.ContainsKey("IdentityServerClient"))
+                identityServerApi = apiDict["IdentityServerClient"];
+            else if (apiDict.ContainsKey("IdentityServer"))
+                identityServerApi = apiDict["IdentityServer"];
+            else
+                identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
+
+
             if (identityServerApi == null)
-                throw new ApplicationException($"AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server. No Api having property Secret = null appears in appsettings.{env}.json.");
+                throw new ApplicationException($"AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server.  No Api config entry existed for 'IdentityServer' or 'IdentityServerClient' in appsettings.{env}.json.");
 
             authority = identityServerApi.BaseAddress;
             if (authority == "")
@@ -54,13 +63,56 @@ namespace EDennis.AspNetCore.Base.Web {
             if (audience.EndsWith(".Lib")) {
                 audience = audience.Substring(0, audience.Length - 4);
             }
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", opt => {
-                    opt.Authority = authority;
-                    opt.RequireHttpsMetadata = false;
-                    opt.Audience = audience;
-                });
 
+
+            // If this is an api, process original version of method
+            if (!isUserApp)  {
+
+                services.AddAuthentication("Bearer")
+                    .AddJwtBearer("Bearer", opt => {
+                        opt.Authority = authority;
+                        opt.RequireHttpsMetadata = false;
+                        opt.Audience = audience;
+                    });
+            } else {
+
+                var secret = identityServerApi.Secret;
+                if (secret == "")
+                    throw new ApplicationException("Identity Server Secret is null.");
+
+                var scopes = identityServerApi.Scopes;
+                if (!(scopes?.Length > 0))
+                    throw new ApplicationException("Identity Server Scopes is null");
+
+
+                // Set .NET Identity Options
+                services.AddAuthentication(opt => {
+
+                    opt.DefaultScheme = "Cookies";
+
+                    // DefaultChallengeScheme for .NET Identity is set to "oidc" Identity Server (see .AddOpenIdConnect).
+                    // This allows Identity Server to handle the login
+                    opt.DefaultChallengeScheme = "oidc";
+
+                })
+                   //.Net Identity Cookie for this application domain
+                   .AddCookie("Cookies")
+                   // Identity Server settings
+                   .AddOpenIdConnect("oidc", opt => {
+                       opt.SignInScheme = "Cookies";
+                       opt.Authority = authority;
+                       opt.RequireHttpsMetadata = false;
+                       opt.ClientId = env.ApplicationName;
+                       opt.ClientSecret = secret;
+                       opt.ResponseType = "code id_token";
+                       opt.SaveTokens = true;
+                       opt.GetClaimsFromUserInfoEndpoint = true;
+                       for (int i = 0; i < scopes.Length; i++) {
+                           opt.Scope.Add(scopes[i]);
+                       }
+                   });
+            }
+        
             services.AddAuthorizationWithDefaultPolicies(assembly, options);
 
         }
@@ -81,7 +133,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="services">the service collection</param>
         /// <param name="env">the hosting environment</param>
         public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
-            IOptions<DefaultPoliciesOptions> options = null) {
+            IOptions<SecurityOptions> options = null) {
 
             var scopeClaimType = options?.Value?.ScopeClaimType ?? "Scope";
 
@@ -104,7 +156,7 @@ namespace EDennis.AspNetCore.Base.Web {
                         var policyName = controllerPath + '.' + action.Name;
 
                         opt.AddPolicy(policyName, builder => {
-                            builder.RequireClaimPatternMatch(scopeClaimType, policyName);
+                            builder.RequireClaimPatternMatch(scopeClaimType, policyName, options);
                         });
 
                     }
