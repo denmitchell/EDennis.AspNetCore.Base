@@ -11,14 +11,15 @@
   "profiles": {
     "IdentityServer": {
       "commandName": "Project",
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:51159",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "IdentityServer2": {
       "commandName": "Project",
-      "applicationUrl": "http://localhost:5001",
+      "applicationUrl": "http://localhost:51159",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

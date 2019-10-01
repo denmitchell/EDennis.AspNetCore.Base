@@ -7,40 +7,39 @@ using System.Linq;
 namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonController : ControllerBase
-    {
-        private readonly PersonRepo _repo;
-        private readonly ScopeProperties _scopeProperties;
+    public class PersonController : ControllerBase {
+        public PersonRepo Repo { get; }
+        public ScopeProperties ScopeProperties {get;}
 
         public PersonController(PersonRepo repo, ScopeProperties scopeProperties) {
-            _repo = repo;
-            _scopeProperties = scopeProperties;
+            Repo = repo;
+            ScopeProperties = scopeProperties;
         }
 
         [HttpGet]
         public IEnumerable<Person> GetAll()
         {
-            return _repo;
+            return Repo;
         }
 
         [HttpGet("{id}")]
         public Person Get(int id)
         {
-            return _repo.Where(p=>p.Id==id).FirstOrDefault();
+            return Repo.Where(p=>p.Id==id).FirstOrDefault();
         }
 
         [HttpPost]
         public void Post([FromBody] Person person)
         {
-            _repo.Add(person);
+            Repo.Add(person);
         }
 
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Person person)
         {
-            for(int i = 0; i < _repo.Count; i++) {
-                if (_repo[i].Id == id) {
-                    _repo[i] = person;
+            for(int i = 0; i < Repo.Count; i++) {
+                if (Repo[i].Id == id) {
+                    Repo[i] = person;
                     return;
                 }
             }
@@ -50,13 +49,13 @@ namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
         public void Delete(int id)
         {
             var index = -1;
-            for (int i = 0; i < _repo.Count; i++) {
-                if (_repo[i].Id == id) {
+            for (int i = 0; i < Repo.Count; i++) {
+                if (Repo[i].Id == id) {
                     index = i;
                     break;
                 }
             }
-            _repo.RemoveAt(index);
+            Repo.RemoveAt(index);
         }
     }
 }

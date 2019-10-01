@@ -2,6 +2,7 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace IdentityServer {
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Alice Rodriguez"),
                         new System.Security.Claims.Claim ("email","alice@example.com"),
-                        new System.Security.Claims.Claim ("role","admin")
+                        new System.Security.Claims.Claim ("role","admin")                        
                     }
                 },
                 new TestUser
@@ -33,7 +34,51 @@ namespace IdentityServer {
                         new System.Security.Claims.Claim ("email","bob@example.com"),
                         new System.Security.Claims.Claim ("role","user")
                     }
-                }
+                },
+                new TestUser
+                {
+                    SubjectId = "3",
+                    Username = "huey",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Huey"),
+                        new System.Security.Claims.Claim ("email","huey@example.com"),
+                        new System.Security.Claims.Claim ("role","Admin")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "4",
+                    Username = "dewey",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Dewey"),
+                        new System.Security.Claims.Claim ("email","dewey@example.com"),
+                        new System.Security.Claims.Claim ("role","Readonly")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "5",
+                    Username = "luis",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Luis"),
+                        new System.Security.Claims.Claim ("email","luis@example.com"),
+                        new System.Security.Claims.Claim ("role","NoDelete")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "6",
+                    Username = "luis2",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Luis2"),
+                        new System.Security.Claims.Claim ("email","luis2@example.com"),
+                        new System.Security.Claims.Claim ("scope","-EDennis.Samples.DefaultPoliciesApi.*.Delete*")
+                    }
+                },
             };
         }
 
@@ -196,6 +241,7 @@ namespace IdentityServer {
                         }
                     }
                 },
+                new ApiResource("api1", "My API")
             };
         }
 
@@ -333,8 +379,33 @@ namespace IdentityServer {
                         "profile",
                         "user_data"
                     }
+                },
+            // OpenID Connect implicit flow client (MVC)
+                new Client
+                {
+                    ClientId = "mvc",
+                    ClientName = "MVC Client",
+                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    RedirectUris = { "http://localhost:44337/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:44337/signout-callback-oidc" },
+
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "user_data",
+                        "EDennis.Samples.DefaultPoliciesApi"
+                    },
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true
                 }
             };
-            }
         }
     }
+}

@@ -24,12 +24,9 @@ namespace EDennis.AspNetCore.Base.Security {
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationRequirement(string claimType,
                 string pattern, IOptions<SecurityOptions> options) {
-
-            if (claimType == null) {
-                throw new ArgumentNullException(nameof(claimType));
-            }
-
-            ClaimType = claimType;
+            
+            ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
+            
             Pattern = pattern;
             if (options != null) {
                 ScopeClaimType = options.Value.ScopeClaimType;

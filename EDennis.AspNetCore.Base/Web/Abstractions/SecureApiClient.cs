@@ -15,9 +15,9 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
     public class SecureApiClient : ApiClient {
 
-        SecureTokenCache _secureTokenCache;
-        ApiClient _identityServerApiClient;
-        IHostingEnvironment _hostingEnvironment;
+        private readonly SecureTokenCache _secureTokenCache;
+        private readonly ApiClient _identityServerApiClient;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public SecureApiClient(HttpClient httpClient,
             IConfiguration config,

@@ -64,7 +64,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var dir = api.ProjectDirectory.Replace("{Environment.UserName}", Environment.UserName);
 
-            if (!api.BaseAddress.Contains("localhost")) {
+            if (!api.BaseAddress.Contains("localhost") || api.ExternallyLaunched) {
                 //assign a new port to the project or get the current port assignment
                 var projectPortAssignment = _projectPorts.GetProjectPortAssignment(_projectName);
                 _port = projectPortAssignment.Port;
