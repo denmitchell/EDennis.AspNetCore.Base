@@ -23,15 +23,21 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationRequirement(string claimType,
-                string pattern, IOptions<SecurityOptions> options) {
-            
+                string requirementScope, IOptions<SecurityOptions> options) {
+
             ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
-            
-            Pattern = pattern;
+
+            RequirementScope = requirementScope.ToLower();
+
             if (options != null) {
                 ScopeClaimType = options.Value.ScopeClaimType;
                 PatternClaimType = options.Value.PatternClaimType;
-                NamedPatterns = options.Value.NamedPatterns;
+                //NamedPatterns = options.Value.NamedPatterns;
+
+                if (options.Value.NamedPatterns != null && options.Value.NamedPatterns.Count() > 0)
+                    MatchingNamedPatterns = options.Value.NamedPatterns
+                        .Where(p => IsPatternMatch(requirementScope, p.Value)).Select(p => p.Key.ToLower());
+
                 GloballyIgnoredScopes = options.Value.GloballyIgnoredScopes;
                 ExclusionPrefix = options.Value.ExclusionPrefix;
             }
@@ -46,7 +52,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// Gets the optional list of claim values, which, if present, 
         /// the claim must match.
         /// </summary>
-        public string Pattern { get; }
+        public string RequirementScope { get; }
 
         public string ScopeClaimType { get; } = "Scope";
         public string PatternClaimType { get; } = "Role";
@@ -60,10 +66,13 @@ namespace EDennis.AspNetCore.Base.Security {
 
         public string[] GloballyIgnoredScopes { get; set; } = new string[] { };
 
+
         /// <summary>
         /// NOTE: This can be used to configure roles for users.
         /// </summary>
-        public Dictionary<string, string[]> NamedPatterns { get; }
+        //public Dictionary<string, string[]> NamedPatterns { get; }
+
+        public IEnumerable<string> MatchingNamedPatterns { get; } = new string[] { };
 
 
         /// <summary>
@@ -74,45 +83,49 @@ namespace EDennis.AspNetCore.Base.Security {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             ClaimPatternAuthorizationRequirement requirement) {
 
-            if (context.User != null) {
+            var found = false;
 
-                var found = false;
+            if (context.User.Claims != null && context.User.Claims.Count() > 0) {
 
-                //check Scope first
-                var scopePatterns = context.User?.Claims?
-                    .Where(c => c.Type.ToLower() == ScopeClaimType.ToLower())
-                    .Select(c => c.Value)
-                    .Where(s => !GloballyIgnoredScopes.Contains(s));
+                found = context.User.Claims
+                        .Any(c => c.Type.ToLower() == PatternClaimType 
+                            && MatchingNamedPatterns
+                                .Contains(c.Value.ToLower()));
 
-                if (scopePatterns != null && scopePatterns.Count() > 0)
-                    found = IsMatch(requirement.Pattern, scopePatterns);
+                if (!found) {
 
+                    var scopePatterns = context.User?.Claims?
+                        .Where(c => c.Type.ToLower() == ScopeClaimType.ToLower())
+                        .Select(c => c.Value)
+                        .Where(s => !GloballyIgnoredScopes.Contains(s));
 
-                if (!found && NamedPatterns != null && PatternClaimType != null) {
-
-                    var ncp = context.User.Claims
-                        .Where(c => c.Type.ToLower() == PatternClaimType.ToLower());
-
-                    var namedPatterns = NamedPatterns.
-                        Where(p => ncp.Any(c => c.Value == p.Key));
-
-                    foreach (var namedPattern in namedPatterns) {
-                        found = IsMatch(requirement.Pattern, namedPattern.Value);
-                        if (found)
-                            break;
-                    }
-
+                    if (scopePatterns != null && scopePatterns.Count() > 0)
+                        found = IsMatch(requirement.RequirementScope, scopePatterns);
                 }
 
-
-                if (found) {
-                    context.Succeed(requirement);
-                }
+            }
+            if (found) {
+                context.Succeed(requirement);
             }
             return Task.CompletedTask;
         }
 
-        private bool IsMatch(string requirementPattern, IEnumerable<string> testPatterns) {
+        private bool IsMatch(string requirementScope, IEnumerable<string> testPatterns) {
+
+            foreach (var pattern in testPatterns.Select(p => p.ToLower())) {
+                if (pattern == requirementScope) {
+                    return true;
+                } else if (requirementScope.StartsWith(pattern + ".")) {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+
+
+        private bool IsPatternMatch(string requirementPattern, IEnumerable<string> testPatterns) {
 
             var found = false;
             var hasPositiveScopes = false;

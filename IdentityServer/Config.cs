@@ -43,7 +43,8 @@ namespace IdentityServer {
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Greg"),
                         new System.Security.Claims.Claim ("email","greg@example.com"),
-                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.NoDelete")
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
                     }
                 },
                 new TestUser
@@ -54,7 +55,7 @@ namespace IdentityServer {
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Marcia"),
                         new System.Security.Claims.Claim ("email","marcia@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesMvc.*.Delete*")
+                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.NoDelete")
                     }
                 },
                 new TestUser
@@ -65,8 +66,7 @@ namespace IdentityServer {
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Peter"),
                         new System.Security.Claims.Claim ("email","peter@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position.Index")
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
                     }
                 },
                 new TestUser
@@ -77,8 +77,7 @@ namespace IdentityServer {
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Jan"),
                         new System.Security.Claims.Claim ("email","jan@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details")
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person")
                     }
                 },
                 new TestUser
@@ -91,7 +90,7 @@ namespace IdentityServer {
                         new System.Security.Claims.Claim ("email","bobby@example.com"),
                         new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
                         new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
-                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesMvc.Position")
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
                     }
                 },
                 new TestUser
@@ -102,9 +101,10 @@ namespace IdentityServer {
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Cindy"),
                         new System.Security.Claims.Claim ("email","cindy@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesApi.*.Create*"),
-                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesApi.*.Edit*"),
-                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesApi.*.Delete*")
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Create"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Edit")
                     }
                 },
                 new TestUser
@@ -114,8 +114,8 @@ namespace IdentityServer {
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
                         new System.Security.Claims.Claim ("name","Alice"),
-                        new System.Security.Claims.Claim ("email","luis2@example.com"),
-                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesApi.Readonly")
+                        new System.Security.Claims.Claim ("email","alice@example.com"),
+                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.Readonly")
                     }
                 },
             };
