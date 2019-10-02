@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace IdentityServer {
     public class Startup {
@@ -80,6 +81,7 @@ namespace IdentityServer {
             app.UseStaticFiles();
 
             app.UseIdentityServer();
+
 
             app.UseMvcWithDefaultRoute();
         }

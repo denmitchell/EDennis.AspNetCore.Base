@@ -19,12 +19,14 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Web
+{
 
     /// <summary>
     /// Extensions to facilitate configuration of security
     /// </summary>
-    public static class IServiceCollectionExtensions_Security {
+    public static class IServiceCollectionExtensions_Security
+    {
 
 
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
@@ -66,7 +68,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
             // If this is an api, process original version of method
-            if (!isUserApp)  {
+            if (!isUserApp) {
 
                 services.AddAuthentication("Bearer")
                     .AddJwtBearer("Bearer", opt => {
@@ -112,7 +114,7 @@ namespace EDennis.AspNetCore.Base.Web {
                        }
                    });
             }
-        
+
             services.AddAuthorizationWithDefaultPolicies(assembly, options);
 
         }
@@ -205,9 +207,15 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns>all action methods associated with the indicated controller</returns>
         private static IEnumerable<MethodInfo> GetActionMethods(Type controllerType) {
             var methods = controllerType
-                .GetMethods()
-                .Where(m => m.GetCustomAttributes(true)
-                .Any(h => httpMethodAttributes.Contains(h.GetType())));
+                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(m => !m.IsSpecialName)
+                .Union(
+                    controllerType
+                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                            .Where(m => m.GetCustomAttributes(true)
+                                .Any(h => httpMethodAttributes.Contains(h.GetType()))
+                          )
+                 );
             return methods;
         }
 

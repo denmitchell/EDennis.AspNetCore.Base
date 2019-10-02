@@ -16,67 +16,106 @@ namespace IdentityServer {
                 new TestUser
                 {
                     SubjectId = "1",
-                    Username = "alice",
+                    Username = "mike",
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Alice Rodriguez"),
-                        new System.Security.Claims.Claim ("email","alice@example.com"),
-                        new System.Security.Claims.Claim ("role","admin")                        
+                        new System.Security.Claims.Claim ("name","Mike"),
+                        new System.Security.Claims.Claim ("email","mike@example.com"),
+                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.Admin")
                     }
                 },
                 new TestUser
                 {
                     SubjectId = "2",
-                    Username = "bob",
+                    Username = "carol",
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Bob Jones"),
-                        new System.Security.Claims.Claim ("email","bob@example.com"),
-                        new System.Security.Claims.Claim ("role","user")
+                        new System.Security.Claims.Claim ("name","Carol"),
+                        new System.Security.Claims.Claim ("email","carol@example.com"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc")
                     }
                 },
                 new TestUser
                 {
                     SubjectId = "3",
-                    Username = "huey",
+                    Username = "greg",
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Huey"),
-                        new System.Security.Claims.Claim ("email","huey@example.com"),
-                        new System.Security.Claims.Claim ("role","Admin")
+                        new System.Security.Claims.Claim ("name","Greg"),
+                        new System.Security.Claims.Claim ("email","greg@example.com"),
+                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.NoDelete")
                     }
                 },
                 new TestUser
                 {
                     SubjectId = "4",
-                    Username = "dewey",
+                    Username = "marcia",
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Dewey"),
-                        new System.Security.Claims.Claim ("email","dewey@example.com"),
-                        new System.Security.Claims.Claim ("role","Readonly")
+                        new System.Security.Claims.Claim ("name","Marcia"),
+                        new System.Security.Claims.Claim ("email","marcia@example.com"),
+                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesMvc.*.Delete*")
                     }
                 },
                 new TestUser
                 {
                     SubjectId = "5",
-                    Username = "luis",
+                    Username = "peter",
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Luis"),
-                        new System.Security.Claims.Claim ("email","luis@example.com"),
-                        new System.Security.Claims.Claim ("role","NoDelete")
+                        new System.Security.Claims.Claim ("name","Peter"),
+                        new System.Security.Claims.Claim ("email","peter@example.com"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position.Index")
                     }
                 },
                 new TestUser
                 {
                     SubjectId = "6",
-                    Username = "luis2",
+                    Username = "jan",
                     Password = "password",
                     Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Luis2"),
+                        new System.Security.Claims.Claim ("name","Jan"),
+                        new System.Security.Claims.Claim ("email","jan@example.com"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "7",
+                    Username = "bobby",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Bobby"),
+                        new System.Security.Claims.Claim ("email","bobby@example.com"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
+                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
+                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesMvc.Position")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "8",
+                    Username = "cindy",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Cindy"),
+                        new System.Security.Claims.Claim ("email","cindy@example.com"),
+                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesApi.*.Create*"),
+                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesApi.*.Edit*"),
+                        new System.Security.Claims.Claim ("user_scope","-EDennis.Samples.DefaultPoliciesApi.*.Delete*")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "9",
+                    Username = "alice",
+                    Password = "password",
+                    Claims = new List<System.Security.Claims.Claim> {
+                        new System.Security.Claims.Claim ("name","Alice"),
                         new System.Security.Claims.Claim ("email","luis2@example.com"),
-                        new System.Security.Claims.Claim ("scope","-EDennis.Samples.DefaultPoliciesApi.*.Delete*")
+                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesApi.Readonly")
                     }
                 },
             };
@@ -84,7 +123,7 @@ namespace IdentityServer {
 
         public static IEnumerable<IdentityResource> GetIdentityResources() {
             var userDataResource = new IdentityResource("user_data",
-                new[] { "name", "email", "role" });
+                new[] { "name", "email", "user_scope", "role" });
 
             return new IdentityResource[]
             {
@@ -241,7 +280,21 @@ namespace IdentityServer {
                         }
                     }
                 },
-                new ApiResource("api1", "My API")
+                new ApiResource{
+                    Name ="EDennis.Samples.DefaultPoliciesMvc",
+                    DisplayName="EDennis.Samples.DefaultPoliciesMvc",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.DefaultPoliciesMvc",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesMvc"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.DefaultPoliciesMvc.ViaClaims",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesMvc.ViaClaims"
+                        },
+                    }
+                },
+
             };
         }
 
@@ -380,11 +433,10 @@ namespace IdentityServer {
                         "user_data"
                     }
                 },
-            // OpenID Connect implicit flow client (MVC)
                 new Client
                 {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    ClientName = "EDennis.Samples.DefaultPoliciesMvc",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
                     ClientSecrets =
@@ -392,18 +444,20 @@ namespace IdentityServer {
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:44337/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:44337/signout-callback-oidc" },
+                    RedirectUris = { "http://localhost:65474/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:65474/signout-callback-oidc" },
 
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         "user_data",
+                        "EDennis.Samples.DefaultPoliciesMvc",
                         "EDennis.Samples.DefaultPoliciesApi"
                     },
                     AllowOfflineAccess = true,
-                    AlwaysIncludeUserClaimsInIdToken = true
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AllowAccessTokensViaBrowser = true
                 }
             };
         }
