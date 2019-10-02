@@ -345,53 +345,14 @@ namespace IdentityServer {
                 new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client1",
                     AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi",
-                        "EDennis.Samples.Hr.InternalApi"
+                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("name","moe@stooges.org"),
-                        new System.Security.Claims.Claim("Some Claim Type","Some Claim Value"),
+                        new System.Security.Claims.Claim("Role","Admin")
                     }
                 },
                 new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client2",
-                    AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi.Person",
-                        "EDennis.Samples.Hr.InternalApi.Employee"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","larry@stooges.org")
-                    }
-                },
-                new MockClient {
-                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client3",
-                    AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi.Person.Get",
-                        "EDennis.Samples.DefaultPoliciesApi.Position.Post",
-                        "EDennis.Samples.Hr.InternalApi.Employee.GetEmployee",
-                        "EDennis.Samples.Hr.InternalApi.Employee.GetEmployees"
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("name","curly@stooges.org")
-                    }
-                },
-                new MockClient {
-                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client4",
-                    AllowedScopes = {
-                        "N/A"
-                    }
-                },
-                new MockClient {
-                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client5",
-                    AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("Scope","EDennis.Samples.DefaultPoliciesApi.*Get*")
-                    }
-                },
-                new MockClient {
-                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client6",
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
                     },
@@ -400,21 +361,12 @@ namespace IdentityServer {
                     }
                 },
                 new MockClient {
-                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client7",
+                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client3",
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
                     },
                     Claims = {
                         new System.Security.Claims.Claim("Role","NoDelete")
-                    }
-                },
-                new MockClient {
-                    ClientId = "EDennis.Samples.DefaultPoliciesApi.Client8",
-                    AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
-                    },
-                    Claims = {
-                        new System.Security.Claims.Claim("Scope","-EDennis.Samples.DefaultPoliciesApi.*Delete*")
                     }
                 },
                 // resource owner password grant client

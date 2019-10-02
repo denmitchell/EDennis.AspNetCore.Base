@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.AspNetCore.Base.Web.Extensions;
+using EDennis.Samples.DefaultPoliciesMvc.ApiClients;
 using EDennis.Samples.DefaultPoliciesMvc.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +32,9 @@ namespace EDennis.Samples.DefaultPoliciesMvc
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+
+
+
             services.Configure<CookiePolicyOptions>(options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
@@ -40,7 +45,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc
             var spo = new SecurityOptions();
             Configuration.GetSection("Security").Bind(spo);
 
-            //only if inected ... services.Configure<SecurityPolicyOptions>(opt => opt = spo);
+            //only if injected ... services.Configure<SecurityPolicyOptions>(opt => opt = spo);
 
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(Options.Create(spo));
 
@@ -50,6 +55,9 @@ namespace EDennis.Samples.DefaultPoliciesMvc
 
 
             services.AddScoped<ScopeProperties>();
+            services.AddApiClients<IdentityServerClient>();
+            services.AddApiClient<IDefaultPoliciesApiClient, DefaultPoliciesApiClient>();
+
 
             services.AddDbContext<AppDbContext>(options =>
                             options.UseSqlite("Data Source=hr.db")

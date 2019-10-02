@@ -30,8 +30,8 @@ namespace EDennis.AspNetCore.Base.Security {
             RequirementScope = requirementScope.ToLower();
 
             if (options != null) {
-                ScopeClaimType = options.Value.ScopeClaimType;
-                PatternClaimType = options.Value.PatternClaimType;
+                ScopeClaimType = options.Value.ScopeClaimType.ToLower();
+                PatternClaimType = options.Value.PatternClaimType.ToLower();
                 //NamedPatterns = options.Value.NamedPatterns;
 
                 if (options.Value.NamedPatterns != null && options.Value.NamedPatterns.Count() > 0)
