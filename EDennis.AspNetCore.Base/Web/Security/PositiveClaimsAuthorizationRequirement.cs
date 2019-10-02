@@ -55,12 +55,12 @@ namespace EDennis.AspNetCore.Base.Security
                 //if there are no Allowed values specified, just see if one of the claim types is present
                 if (requirement.AllowedValues == null || !requirement.AllowedValues.Any()) {
                     found = context.User.Claims.Any(c =>
-                            ClaimTypes.Contains(c.Value, StringComparer.OrdinalIgnoreCase));
+                            ClaimTypes.Contains(c.Type, StringComparer.OrdinalIgnoreCase));
 
                 //otherwise, see if any of the Allowed values are present
                 } else {
                     found = context.User.Claims.Any(c => 
-                            ClaimTypes.Contains(c.Value, StringComparer.OrdinalIgnoreCase)
+                            ClaimTypes.Contains(c.Type, StringComparer.OrdinalIgnoreCase)
                             && requirement.AllowedValues.Contains(c.Value, StringComparer.Ordinal));
                 }
 

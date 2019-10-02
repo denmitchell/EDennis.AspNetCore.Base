@@ -189,14 +189,6 @@ namespace IdentityServer {
                         new Scope {
                             Name = "EDennis.Samples.Colors2Api.HslController",
                             DisplayName = "EDennis.Samples.Colors2Api.HslController"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee"
                         }
                     }
                 },
@@ -254,6 +246,7 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi"
                     },
                     Claims = {
+                        new System.Security.Claims.Claim("ExcludedScope","EDennis.Samples.DefaultPoliciesApi.Person.Get"),
                         new System.Security.Claims.Claim("name","moe@stooges.org"),
                         new System.Security.Claims.Claim("Some Claim Type","Some Claim Value")
                     }

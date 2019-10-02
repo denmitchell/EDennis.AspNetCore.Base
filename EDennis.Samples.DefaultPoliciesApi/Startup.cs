@@ -27,6 +27,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using A = IdentityServer;
 using EDennis.AspNetCore.Base;
+using Microsoft.OpenApi.Models;
 
 namespace EDennis.Samples.DefaultPoliciesApi {
     public class Startup {
@@ -81,7 +82,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
             if (HostingEnvironment.EnvironmentName == "Development") {
                 services.AddSwaggerGen(c => {
-                    c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
                 });
             }
 
@@ -97,6 +98,8 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
             app.UseAuthentication();
             app.UseUser();
+
+            app.UseStaticFiles();
 
 
             if (env.EnvironmentName == "Development") {

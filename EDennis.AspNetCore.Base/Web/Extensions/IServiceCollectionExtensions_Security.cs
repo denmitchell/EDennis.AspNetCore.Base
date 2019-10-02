@@ -139,7 +139,8 @@ namespace EDennis.AspNetCore.Base.Web
             }
             //add the policy
             options.AddPolicy(policyName, builder => {
-                builder.AllowClaim(new string[] { "Scope", "IncludedScope" }, scopes);
+                //builder.RequireClaim("Scope", scopes);
+                builder.RequireClaim(new string[] { "Scope", "IncludedScope" }, scopes);
                 builder.RejectClaim("ExcludedScope", scopes);
             });
 
