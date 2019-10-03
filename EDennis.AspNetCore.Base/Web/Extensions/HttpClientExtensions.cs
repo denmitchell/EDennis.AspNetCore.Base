@@ -18,19 +18,19 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static class HttpClientExtensions {
 
-        public static ObjectResult Get<T>(this HttpClient client, string relativeUrlFromBase)
+        public static ObjectResult Get<TResponseObject>(this HttpClient client, string relativeUrlFromBase)
         {
-            return client.GetAsync<T>(relativeUrlFromBase).Result;
+            return client.GetAsync<TResponseObject>(relativeUrlFromBase).Result;
         }
 
-        public static async Task<ObjectResult> GetAsync<T>(
+        public static async Task<ObjectResult> GetAsync<TResponseObject>(
                 this HttpClient client, string relativeUrlFromBase)
         {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
             var response = await client.GetAsync(url);
-            var objResult = await GenerateObjectResult<T>(response);
+            var objResult = await GenerateObjectResult<TResponseObject>(response);
 
             return objResult;
 
