@@ -122,14 +122,20 @@ namespace IdentityServer {
         }
 
         public static IEnumerable<IdentityResource> GetIdentityResources() {
-            var userDataResource = new IdentityResource("user_data",
-                new[] { "name", "email", "user_scope", "role" });
+            var name = new IdentityResource("name", new string[] { "name" });
+            var userScope = new IdentityResource("user_scope", new string[] { "user_scope" });
+            var role = new IdentityResource("role", new string[] { "role" });
+            //var userDataResource = new IdentityResource("user_data",
+            //    new[] { "name", "email", "user_scope", "role" });
 
             return new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                userDataResource
+                new IdentityResources.Email(),
+                userScope,
+                role,
+                name
             };
         }
 
@@ -382,7 +388,9 @@ namespace IdentityServer {
                     AllowedScopes = {
                         "openid",
                         "profile",
-                        "user_data"
+                        "user_scope",
+                        "role",
+                        "name"
                     }
                 },
                 new Client
@@ -403,7 +411,9 @@ namespace IdentityServer {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "user_data",
+                        "user_scope",
+                        "role",
+                        "name",
                         "EDennis.Samples.DefaultPoliciesMvc",
                         "EDennis.Samples.DefaultPoliciesApi"
                     },

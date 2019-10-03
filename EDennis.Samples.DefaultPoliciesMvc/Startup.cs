@@ -42,12 +42,10 @@ namespace EDennis.Samples.DefaultPoliciesMvc
             });
 
 
-            var spo = new SecurityOptions();
-            Configuration.GetSection("Security").Bind(spo);
+            var securityOptions = new SecurityOptions();
+            Configuration.GetSection("Security").Bind(securityOptions);
 
-            //only if injected ... services.Configure<SecurityPolicyOptions>(opt => opt = spo);
-
-            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(Options.Create(spo));
+            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
 
             services.AddMvc(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
@@ -63,32 +61,36 @@ namespace EDennis.Samples.DefaultPoliciesMvc
                             options.UseSqlite("Data Source=hr.db")
                             );
 
+            //
+            // Now Handled by AddClientAuthenticationAndAuthorizationWithDefaultPolicies
+            //
+            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            //services.AddAuthentication(options => {
+            //    options.DefaultScheme = "Cookies";
+            //    options.DefaultChallengeScheme = "oidc";
+            //})
+            //    .AddCookie("Cookies")
+            //    .AddOpenIdConnect("oidc", options => {
+            //        options.SignInScheme = "Cookies";
 
-            services.AddAuthentication(options => {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options => {
-                    options.SignInScheme = "Cookies";
+            //        options.Authority = "http://localhost:51159";
+            //        options.RequireHttpsMetadata = false;
 
-                    options.Authority = "http://localhost:51159";
-                    options.RequireHttpsMetadata = false;
+            //        options.ClientId = "EDennis.Samples.DefaultPoliciesMvc";
+            //        options.ClientSecret = "secret";
+            //        options.ResponseType = "code id_token token";
 
-                    options.ClientId = "EDennis.Samples.DefaultPoliciesMvc";
-                    options.ClientSecret = "secret";
-                    options.ResponseType = "code id_token token";
+            //        options.SaveTokens = true;
+            //        options.GetClaimsFromUserInfoEndpoint = true;
 
-                    options.SaveTokens = true;
-                    options.GetClaimsFromUserInfoEndpoint = true;
+            //        options.Scope.Add("EDennis.Samples.DefaultPoliciesMvc");
+            //        options.Scope.Add("user_scope");
+            //        options.Scope.Add("role");
+            //        options.Scope.Add("name");
+            //        options.Scope.Add("offline_access");
 
-                    options.Scope.Add("EDennis.Samples.DefaultPoliciesMvc");
-                    options.Scope.Add("user_data");
-                    options.Scope.Add("offline_access");
-
-                });
+            //    });
 
 
         }

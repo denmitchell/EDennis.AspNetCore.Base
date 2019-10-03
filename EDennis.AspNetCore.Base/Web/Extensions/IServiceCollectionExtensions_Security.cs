@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -30,7 +31,9 @@ namespace EDennis.AspNetCore.Base.Web
 
 
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
-            IOptions<SecurityOptions> options = null, bool isUserApp = false) {
+            SecurityOptions options = null) {
+
+            var settings = options ?? new SecurityOptions();
 
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
@@ -44,10 +47,15 @@ namespace EDennis.AspNetCore.Base.Web
             config.GetSection("Apis").Bind(apiDict);
 
             ApiConfig identityServerApi;
-            if (options?.Value?.IdentityServerApiConfigKey != null)
-                identityServerApi = apiDict[options.Value.IdentityServerApiConfigKey];
+
+            if (settings.IdentityServerApiConfigKey != null)
+                identityServerApi = apiDict[settings.IdentityServerApiConfigKey];
+            else if (apiDict.ContainsKey("IdentityServerApiClient"))
+                identityServerApi = apiDict["IdentityServerApiClient"];
             else if (apiDict.ContainsKey("IdentityServerClient"))
                 identityServerApi = apiDict["IdentityServerClient"];
+            else if (apiDict.ContainsKey("IdentityServerApi"))
+                identityServerApi = apiDict["IdentityServerApi"];
             else if (apiDict.ContainsKey("IdentityServer"))
                 identityServerApi = apiDict["IdentityServer"];
             else
@@ -66,9 +74,14 @@ namespace EDennis.AspNetCore.Base.Web
                 audience = audience.Substring(0, audience.Length - 4);
             }
 
+            var policyNames = GetDefaultPolicyNames(services, assembly);
 
-            // If this is an api, process original version of method
-            if (!isUserApp) {
+            if(settings.ClearDefaultInboundClaimTypeMap)
+                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+
+            // If Oidc isn't configured, use bearer tokens for security
+            if (settings.OidcOptions == null) {
 
                 services.AddAuthentication("Bearer")
                     .AddJwtBearer("Bearer", opt => {
@@ -78,13 +91,13 @@ namespace EDennis.AspNetCore.Base.Web
                     });
             } else {
 
-                var secret = identityServerApi.Secret;
-                if (secret == "")
-                    throw new ApplicationException("Identity Server Secret is null.");
+                //var secret = settings.OidcOptions.ClientSecret;
+                //if (secret == "")
+                //    throw new ApplicationException("Identity Server Secret is null.");
 
-                var scopes = identityServerApi.Scopes;
-                if (!(scopes?.Length > 0))
-                    throw new ApplicationException("Identity Server Scopes is null");
+                //var scopes = identityServerApi.Scopes;
+                //if (!(scopes?.Length > 0))
+                //    throw new ApplicationException("Identity Server Scopes is null");
 
 
                 // Set .NET Identity Options
@@ -103,19 +116,35 @@ namespace EDennis.AspNetCore.Base.Web
                    .AddOpenIdConnect("oidc", opt => {
                        opt.SignInScheme = "Cookies";
                        opt.Authority = authority;
-                       opt.RequireHttpsMetadata = false;
-                       opt.ClientId = env.ApplicationName;
-                       opt.ClientSecret = secret;
-                       opt.ResponseType = "code id_token";
-                       opt.SaveTokens = true;
-                       opt.GetClaimsFromUserInfoEndpoint = true;
-                       for (int i = 0; i < scopes.Length; i++) {
+                       opt.RequireHttpsMetadata = settings.OidcOptions.RequireHttpsMetadata;
+                       opt.ClientId = settings.OidcOptions.ClientId ?? env.ApplicationName;
+                       opt.ClientSecret = settings.OidcOptions.ClientSecret;
+                       opt.ResponseType = settings.OidcOptions.ResponseType;
+                       opt.SaveTokens = settings.OidcOptions.SaveTokens;
+                       opt.GetClaimsFromUserInfoEndpoint = settings.OidcOptions.GetClaimsFromUserInfoEndpoint;
+
+                       var scopes = new List<string>();
+
+                       if (settings.OidcOptions.OidcScopeOptions.AddClientId)
+                           scopes.Add(settings.OidcOptions.ClientId ?? env.ApplicationName);
+                       if (settings.OidcOptions.OidcScopeOptions.AddOfflineAccess)
+                           scopes.Add("offline_access");
+                       if (settings.OidcOptions.OidcScopeOptions.AddDefaultPolicies)
+                           scopes.AddRange(policyNames);
+                       if (settings.OidcOptions.OidcScopeOptions.AddNamedPatterns)
+                           scopes.AddRange(settings.ScopePolicyOptions.NamedPatterns.Keys);
+
+                       scopes.AddRange(settings.OidcOptions.OidcScopeOptions.AdditionalScopes);
+
+                       for (int i = 0; i < scopes.Count(); i++) {
                            opt.Scope.Add(scopes[i]);
                        }
+
                    });
             }
 
-            services.AddAuthorizationWithDefaultPolicies(assembly, options);
+            services.AddAuthorizationWithDefaultPolicies(assembly,
+                settings.ScopePolicyOptions, policyNames);
 
         }
 
@@ -135,9 +164,9 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="services">the service collection</param>
         /// <param name="env">the hosting environment</param>
         public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
-            IOptions<SecurityOptions> options = null) {
+            ScopePolicyOptions options, IEnumerable<string> policyNames) {
 
-            var scopeClaimType = options?.Value?.ScopeClaimType ?? "Scope";
+            var scopeClaimType = options.ScopeClaimType ?? "Scope";
 
             var provider = services.BuildServiceProvider();
             var env = provider.GetRequiredService<IHostingEnvironment>();
@@ -147,25 +176,13 @@ namespace EDennis.AspNetCore.Base.Web
                 var applicationName = env.ApplicationName;
                 var controllers = GetControllerTypes(assembly);
 
-                var policyNames = new List<string>();
+                foreach (var policyName in policyNames) {
 
-                foreach (var controller in controllers) {
+                    opt.AddPolicy(policyName, builder => {
+                        builder.RequireClaimPatternMatch(scopeClaimType, policyName, options);
+                    });
 
-                    var controllerPath = applicationName + "." + Regex.Replace(controller.Name, "Controller$", "");
-                    var actions = GetActionMethods(controller);
-
-                    foreach (var action in actions) {
-                        var policyName = controllerPath + '.' + action.Name;
-
-                        opt.AddPolicy(policyName, builder => {
-                            builder.RequireClaimPatternMatch(scopeClaimType, policyName, options);
-                        });
-
-                    }
                 }
-
-
-
 
             });
 
@@ -173,6 +190,30 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
+        private static IEnumerable<string> GetDefaultPolicyNames(IServiceCollection services, Assembly assembly) {
+            var provider = services.BuildServiceProvider();
+            var env = provider.GetRequiredService<IHostingEnvironment>();
+
+            var applicationName = env.ApplicationName;
+            var controllers = GetControllerTypes(assembly);
+
+            var policyNames = new List<string>();
+
+            foreach (var controller in controllers) {
+
+                var controllerPath = applicationName + "." + Regex.Replace(controller.Name, "Controller$", "");
+                var actions = GetActionMethods(controller);
+
+                foreach (var action in actions) {
+                    var policyName = controllerPath + '.' + action.Name;
+                    policyNames.Add(policyName);
+
+                }
+            }
+
+            return policyNames;
+
+        }
 
         /// <summary>
         /// Returns a collection of controller types

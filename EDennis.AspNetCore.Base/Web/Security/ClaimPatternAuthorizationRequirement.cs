@@ -23,23 +23,23 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationRequirement(string claimType,
-                string requirementScope, IOptions<SecurityOptions> options) {
+                string requirementScope, ScopePolicyOptions options) {
 
             ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
 
             RequirementScope = requirementScope.ToLower();
 
             if (options != null) {
-                ScopeClaimType = options.Value.ScopeClaimType.ToLower();
-                PatternClaimType = options.Value.PatternClaimType.ToLower();
+                ScopeClaimType = options.ScopeClaimType.ToLower();
+                PatternClaimType = options.PatternClaimType.ToLower();
                 //NamedPatterns = options.Value.NamedPatterns;
 
-                if (options.Value.NamedPatterns != null && options.Value.NamedPatterns.Count() > 0)
-                    MatchingNamedPatterns = options.Value.NamedPatterns
+                if (options.NamedPatterns != null && options.NamedPatterns.Count() > 0)
+                    MatchingNamedPatterns = options.NamedPatterns
                         .Where(p => IsPatternMatch(requirementScope, p.Value)).Select(p => p.Key.ToLower());
 
-                GloballyIgnoredScopes = options.Value.GloballyIgnoredScopes;
-                ExclusionPrefix = options.Value.ExclusionPrefix;
+                GloballyIgnoredScopes = options.GloballyIgnoredScopes;
+                ExclusionPrefix = options.ExclusionPrefix;
             }
         }
 

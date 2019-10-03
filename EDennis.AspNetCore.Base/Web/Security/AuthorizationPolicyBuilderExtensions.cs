@@ -15,7 +15,9 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="claimType">The claim type that must be present and, if specified, have one ore more allowed values.</param>
         /// <param name="allowedValues">Values the claim must process one or more of for evaluation to succeed.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
-        public static AuthorizationPolicyBuilder RequireClaimPatternMatch(this AuthorizationPolicyBuilder builder, string claimType, string pattern, IOptions<SecurityOptions> options) {
+        public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
+            this AuthorizationPolicyBuilder builder, string claimType, 
+            string pattern, ScopePolicyOptions options) {
             if (claimType == null) {
                 throw new ArgumentNullException(nameof(claimType));
             }
