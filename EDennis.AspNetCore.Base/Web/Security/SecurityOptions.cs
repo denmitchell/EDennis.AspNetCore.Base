@@ -6,9 +6,20 @@ namespace EDennis.AspNetCore.Base.Security
 {
     public class SecurityOptions
     {
+        private OidcOptions _oidcOptions;
+
         public string IdentityServerApiConfigKey { get; set; }
         public bool ClearDefaultInboundClaimTypeMap { get; set; } = true;
-        public ScopePolicyOptions ScopePolicyOptions { get; set; }
-        public OidcOptions OidcOptions { get; set; }
+        public ScopePatternOptions ScopePatternOptions { get; set; }
+        public OidcOptions OidcOptions { 
+            get {
+                return _oidcOptions;
+            } set {
+                _oidcOptions = value;
+                //copy userScopePrefix to main security options to pass to policy requirement handler
+                ScopePatternOptions.UserScopePrefix = _oidcOptions?.OidcScopeOptions?.UserScopePrefix ?? "_scope";
+                ScopePatternOptions.IsOidc = true;
+            } 
+        }
     }
 }

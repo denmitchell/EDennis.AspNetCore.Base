@@ -23,14 +23,17 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationRequirement(string claimType,
-                string requirementScope, ScopePolicyOptions options) {
+                string requirementScope, ScopePatternOptions options) {
 
             ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
 
             RequirementScope = requirementScope.ToLower();
 
             if (options != null) {
-                ScopeClaimType = options.ScopeClaimType.ToLower();
+                IsOidc = options.IsOidc;
+                if (IsOidc)
+                    UserScopePrefix = options.UserScopePrefix?.ToLower();
+
                 PatternClaimType = options.PatternClaimType.ToLower();
                 //NamedPatterns = options.Value.NamedPatterns;
 
@@ -54,7 +57,8 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string RequirementScope { get; }
 
-        public string ScopeClaimType { get; } = "Scope";
+        public string UserScopePrefix { get; } = "User_";
+        public bool IsOidc { get; }
         public string PatternClaimType { get; } = "Role";
 
         /// <summary>
@@ -94,8 +98,12 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 if (!found) {
 
+                    var scopeClaimTypes = new List<string> { "scope" };
+                    if (IsOidc)
+                        scopeClaimTypes.Add($"{UserScopePrefix}"); 
+
                     var scopePatterns = context.User?.Claims?
-                        .Where(c => c.Type.ToLower() == ScopeClaimType.ToLower())
+                        .Where(c => scopeClaimTypes.Contains(c.Type.ToLower()))
                         .Select(c => c.Value)
                         .Where(s => !GloballyIgnoredScopes.Contains(s));
 

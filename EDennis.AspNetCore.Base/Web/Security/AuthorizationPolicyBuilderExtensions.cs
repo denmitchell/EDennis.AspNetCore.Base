@@ -17,7 +17,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns>A reference to this instance after the operation has completed.</returns>
         public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
             this AuthorizationPolicyBuilder builder, string claimType, 
-            string pattern, ScopePolicyOptions options) {
+            string pattern, ScopePatternOptions options) {
             if (claimType == null) {
                 throw new ArgumentNullException(nameof(claimType));
             }

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.Security {
-    public class ScopePolicyOptions {
+    public class ScopePatternOptions {
 
-        public string ScopeClaimType { get; set; } = "Scope";
-        public string PatternClaimType { get; set; } = "Role";
+        public string UserScopePrefix { get; internal set; }
+
+        public bool IsOidc { get; internal set; } = false;
+
+        public string PatternClaimType { get; set; } = "role";
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.

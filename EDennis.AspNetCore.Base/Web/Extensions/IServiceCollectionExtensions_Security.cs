@@ -131,8 +131,6 @@ namespace EDennis.AspNetCore.Base.Web
                            scopes.Add("offline_access");
                        if (settings.OidcOptions.OidcScopeOptions.AddDefaultPolicies)
                            scopes.AddRange(policyNames);
-                       if (settings.OidcOptions.OidcScopeOptions.AddNamedPatterns)
-                           scopes.AddRange(settings.ScopePolicyOptions.NamedPatterns.Keys);
 
                        scopes.AddRange(settings.OidcOptions.OidcScopeOptions.AdditionalScopes);
 
@@ -144,7 +142,7 @@ namespace EDennis.AspNetCore.Base.Web
             }
 
             services.AddAuthorizationWithDefaultPolicies(assembly,
-                settings.ScopePolicyOptions, policyNames);
+                settings.ScopePatternOptions, policyNames);
 
         }
 
@@ -164,9 +162,9 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="services">the service collection</param>
         /// <param name="env">the hosting environment</param>
         public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
-            ScopePolicyOptions options, IEnumerable<string> policyNames) {
+            ScopePatternOptions options, IEnumerable<string> policyNames) {
 
-            var scopeClaimType = options.ScopeClaimType ?? "Scope";
+            var userScopePrefix = options.UserScopePrefix ?? "user_";
 
             var provider = services.BuildServiceProvider();
             var env = provider.GetRequiredService<IHostingEnvironment>();
@@ -179,7 +177,7 @@ namespace EDennis.AspNetCore.Base.Web
                 foreach (var policyName in policyNames) {
 
                     opt.AddPolicy(policyName, builder => {
-                        builder.RequireClaimPatternMatch(scopeClaimType, policyName, options);
+                        builder.RequireClaimPatternMatch(userScopePrefix, policyName, options);
                     });
 
                 }
