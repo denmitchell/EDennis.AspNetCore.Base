@@ -7,6 +7,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Claims;
 
 namespace IdentityServer {
     public static class Config {
@@ -18,10 +19,9 @@ namespace IdentityServer {
                     SubjectId = "1",
                     Username = "mike",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Mike"),
-                        new System.Security.Claims.Claim ("email","mike@example.com"),
-                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.Admin")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Mike"),
+                        new Claim ("email","mike@example.com")
                     }
                 },
                 new TestUser
@@ -29,10 +29,9 @@ namespace IdentityServer {
                     SubjectId = "2",
                     Username = "carol",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Carol"),
-                        new System.Security.Claims.Claim ("email","carol@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Carol"),
+                        new Claim ("email","carol@example.com")
                     }
                 },
                 new TestUser
@@ -40,11 +39,9 @@ namespace IdentityServer {
                     SubjectId = "3",
                     Username = "greg",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Greg"),
-                        new System.Security.Claims.Claim ("email","greg@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Greg"),
+                        new Claim ("email","greg@example.com")
                     }
                 },
                 new TestUser
@@ -52,10 +49,9 @@ namespace IdentityServer {
                     SubjectId = "4",
                     Username = "marcia",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Marcia"),
-                        new System.Security.Claims.Claim ("email","marcia@example.com"),
-                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.NoDelete")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Marcia"),
+                        new Claim ("email","marcia@example.com")
                     }
                 },
                 new TestUser
@@ -63,10 +59,9 @@ namespace IdentityServer {
                     SubjectId = "5",
                     Username = "peter",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Peter"),
-                        new System.Security.Claims.Claim ("email","peter@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Peter"),
+                        new Claim ("email","peter@example.com")
                     }
                 },
                 new TestUser
@@ -74,10 +69,9 @@ namespace IdentityServer {
                     SubjectId = "6",
                     Username = "jan",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Jan"),
-                        new System.Security.Claims.Claim ("email","jan@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Jan"),
+                        new Claim ("email","jan@example.com")
                     }
                 },
                 new TestUser
@@ -85,12 +79,9 @@ namespace IdentityServer {
                     SubjectId = "7",
                     Username = "bobby",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Bobby"),
-                        new System.Security.Claims.Claim ("email","bobby@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Bobby"),
+                        new Claim ("email","bobby@example.com")
                     }
                 },
                 new TestUser
@@ -98,13 +89,9 @@ namespace IdentityServer {
                     SubjectId = "8",
                     Username = "cindy",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Cindy"),
-                        new System.Security.Claims.Claim ("email","cindy@example.com"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Create"),
-                        new System.Security.Claims.Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Edit")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Cindy"),
+                        new Claim ("email","cindy@example.com"),
                     }
                 },
                 new TestUser
@@ -112,14 +99,94 @@ namespace IdentityServer {
                     SubjectId = "9",
                     Username = "alice",
                     Password = "password",
-                    Claims = new List<System.Security.Claims.Claim> {
-                        new System.Security.Claims.Claim ("name","Alice"),
-                        new System.Security.Claims.Claim ("email","alice@example.com"),
-                        new System.Security.Claims.Claim ("role","EDennis.Samples.DefaultPoliciesMvc.Readonly")
+                    Claims = new List<Claim> {
+                        new Claim ("name","Alice"),
+                        new Claim ("email","alice@example.com"),
                     }
                 },
             };
         }
+
+        public class UserClientClaimSpec {
+            public string ClientId { get; set; }
+            public string Username { get; set; }
+            public List<Claim> Claims { get; set; }
+        }
+
+        public static IEnumerable<UserClientClaimSpec> UserClientClaims { get; } =
+            new UserClientClaimSpec[] {
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="mike",
+                    Claims = new List<Claim> { 
+                        new Claim("role","EDennis.Samples.DefaultPoliciesMvc.Admin")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="carol",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="greg",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person"),
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="marcia",
+                    Claims = new List<Claim> {
+                        new Claim("role","EDennis.Samples.DefaultPoliciesMvc.NoDelete")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="peter",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="jan",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="bobby",
+                    Claims = new List<Claim> {
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="cindy",
+                    Claims = new List<Claim> {
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Create"),
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Edit")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "EDennis.Samples.DefaultPoliciesMvc",
+                    Username="alice",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Readonly")
+                    }
+                }
+            };
+        
+
 
         public static IEnumerable<IdentityResource> GetIdentityResources() {
             var name = new IdentityResource("name", new string[] { "name" });
@@ -354,7 +421,7 @@ namespace IdentityServer {
                         "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("Role","Admin")
+                        new Claim("Role","Admin")
                     }
                 },
                 new MockClient {
@@ -363,7 +430,7 @@ namespace IdentityServer {
                         "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("Role","Readonly")
+                        new Claim("Role","Readonly")
                     }
                 },
                 new MockClient {
@@ -372,7 +439,7 @@ namespace IdentityServer {
                         "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
                     },
                     Claims = {
-                        new System.Security.Claims.Claim("Role","NoDelete")
+                        new Claim("Role","NoDelete")
                     }
                 },
                 // resource owner password grant client

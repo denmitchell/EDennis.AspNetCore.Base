@@ -38,8 +38,8 @@ namespace IdentityServer {
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
                 .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers());
-                //.AddProfileService<>;
+                .AddTestUsers(Config.GetUsers())
+                .AddProfileService<AppProfileService>();
 
             if (Environment.IsDevelopment()) {
                 //var dir = Environment.ContentRootPath;

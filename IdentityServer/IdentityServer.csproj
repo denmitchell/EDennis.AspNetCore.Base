@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="is4.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
