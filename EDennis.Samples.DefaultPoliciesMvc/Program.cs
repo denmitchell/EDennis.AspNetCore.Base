@@ -14,9 +14,6 @@ namespace EDennis.Samples.DefaultPoliciesMvc
     public class Program
     {
         public static void Main(string[] args) {
-            Task.Run(() => {
-                CurrentDirectoryHelpers.SetCurrentDirectory();
-            });
             CreateWebHostBuilder(args).Build().Run();
         }
 

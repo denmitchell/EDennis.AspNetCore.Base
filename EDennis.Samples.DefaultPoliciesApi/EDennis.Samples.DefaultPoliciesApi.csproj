@@ -28,4 +28,10 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="hr.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

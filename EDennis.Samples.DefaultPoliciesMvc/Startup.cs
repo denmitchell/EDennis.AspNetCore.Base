@@ -34,7 +34,6 @@ namespace EDennis.Samples.DefaultPoliciesMvc
         public void ConfigureServices(IServiceCollection services) {
 
 
-
             services.Configure<CookiePolicyOptions>(options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
@@ -60,37 +59,6 @@ namespace EDennis.Samples.DefaultPoliciesMvc
             services.AddDbContext<AppDbContext>(options =>
                             options.UseSqlite("Data Source=hr.db")
                             );
-
-            //
-            // Now Handled by AddClientAuthenticationAndAuthorizationWithDefaultPolicies
-            //
-            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-            //services.AddAuthentication(options => {
-            //    options.DefaultScheme = "Cookies";
-            //    options.DefaultChallengeScheme = "oidc";
-            //})
-            //    .AddCookie("Cookies")
-            //    .AddOpenIdConnect("oidc", options => {
-            //        options.SignInScheme = "Cookies";
-
-            //        options.Authority = "http://localhost:51159";
-            //        options.RequireHttpsMetadata = false;
-
-            //        options.ClientId = "EDennis.Samples.DefaultPoliciesMvc";
-            //        options.ClientSecret = "secret";
-            //        options.ResponseType = "code id_token token";
-
-            //        options.SaveTokens = true;
-            //        options.GetClaimsFromUserInfoEndpoint = true;
-
-            //        options.Scope.Add("EDennis.Samples.DefaultPoliciesMvc");
-            //        options.Scope.Add("user_scope");
-            //        options.Scope.Add("role");
-            //        options.Scope.Add("name");
-            //        options.Scope.Add("offline_access");
-
-            //    });
 
 
         }

@@ -1,6 +1,6 @@
 ﻿use colordb;
 declare @id int = 4;
-declare @SysUser varchar(255) = 'moe@stooges.net'
+declare @SysUser varchar(255) = 'moe@stooges.org'
 begin transaction
 declare @Input int = @id;
 

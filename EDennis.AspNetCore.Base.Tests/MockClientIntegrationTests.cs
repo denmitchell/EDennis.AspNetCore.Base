@@ -2,6 +2,8 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.DefaultPoliciesApi;
 using EDennis.Samples.DefaultPoliciesApi.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +21,10 @@ namespace EDennis.AspNetCore.Base.Tests {
 
         public Client3IntegrationTests(ITestOutputHelper output,
             ConfiguringWebApplicationFactory<Startup> factory)
-        : base(output, factory, new string[] { "MockClient=EDennis.Samples.DefaultPoliciesApi.Client3" }) { }
-
+        : base(output, factory, new string[] { "MockClient=EDennis.Samples.DefaultPoliciesApi.Client3" }) { 
+        
+        
+        }
 
         [Fact]
         public void TestForbidden_PositionGet() {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,8 +9,8 @@ namespace EDennis.Samples.DefaultPoliciesApi.Models
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Person> Persons { get; set; }
-        public DbSet<Position> Positions { get; set; }
+        public DbSet<Person> Person { get; set; }
+        public DbSet<Position> Position { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -28,6 +29,11 @@ namespace EDennis.Samples.DefaultPoliciesApi.Models
                         new Position { Id = 1, Title = "Manager" },
                         new Position { Id = 2, Title = "Employee" }
                         );
+
+            Debug.WriteLine(Database.GetDbConnection().ConnectionString);
+            Debug.WriteLine($"Database.IsInMemory():{Database.IsInMemory()}");
+            Debug.WriteLine($"Database.IsSqlite():{Database.IsSqlite()}");
+            Debug.WriteLine($"Database.IsSqlServer():{Database.IsSqlServer()}");
         }
     }
 }

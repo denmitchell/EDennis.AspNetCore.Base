@@ -56,15 +56,17 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             //address of IdentityServer must be known)
             //****************************************************
 
-            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-            //    services
-            //        .AddLauncher<A.Startup>(Configuration, Logger)
-            //        //.AddLauncher<B.Startup>()
-            //        //... etc.
-            //        .AwaitApis(); 
-            //    //note: you must call AwaitApis() after adding all launchers
-            //    //AwaitApis() blocks the main thread until the Apis are ready
-            //}
+            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development
+                && (string.IsNullOrEmpty(Configuration["Apis:IdentityServer:BaseAddress"]))
+                ) {
+                services
+                    .AddLauncher<A.Startup>(Configuration, Logger)
+                    //.AddLauncher<B.Startup>()
+                    //... etc.
+                    .AwaitApis();
+                //note: you must call AwaitApis() after adding all launchers
+                //AwaitApis() blocks the main thread until the Apis are ready
+            }
 
             var securityOptions = new SecurityOptions();
             Configuration.GetSection("Security").Bind(securityOptions);
@@ -77,11 +79,14 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
+            Task.Run(() => {
+                CurrentDirectoryHelpers.SetCurrentDirectory();
+            });
 
             services.AddScoped<ScopeProperties>();
 
             services.AddDbContext<AppDbContext>(options =>
-                            options.UseSqlite("Data Source=hr.db")
+                            options.UseSqlite($"Data Source={HostingEnvironment.ContentRootPath}/hr.db")
                             );
 
 

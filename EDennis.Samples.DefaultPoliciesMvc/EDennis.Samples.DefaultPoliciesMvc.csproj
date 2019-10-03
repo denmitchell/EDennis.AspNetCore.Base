@@ -18,4 +18,11 @@
     <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Update="hr.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -23,7 +23,7 @@ namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
         // GET: api/Person
         [HttpGet]
         public async Task<IActionResult> Index() {
-            return new ObjectResult(await _context.Persons.ToListAsync());
+            return new ObjectResult(await _context.Person.ToListAsync());
         }
 
 
@@ -34,7 +34,7 @@ namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
                 return NotFound();
             }
 
-            var person = await _context.Persons
+            var person = await _context.Person
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (person == null) {
                 return NotFound();
@@ -84,8 +84,8 @@ namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id) {
             try {
-                var person = await _context.Persons.FindAsync(id);
-                _context.Persons.Remove(person);
+                var person = await _context.Person.FindAsync(id);
+                _context.Person.Remove(person);
                 await _context.SaveChangesAsync();
                 return new StatusCodeResult((int)HttpStatusCode.NoContent);
             } catch (Exception ex) {
@@ -103,7 +103,7 @@ namespace EDennis.Samples.DefaultPoliciesApi.Controllers {
 
 
         private async Task<bool> ExistsInternal(int id) {
-            return await _context.Persons.AnyAsync(e => e.Id == id);
+            return await _context.Person.AnyAsync(e => e.Id == id);
         }
 
 
