@@ -46,8 +46,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Colors2Api.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DefaultPoliciesMvc", "EDennis.Samples.DefaultPoliciesMvc\EDennis.Samples.DefaultPoliciesMvc.csproj", "{DDBA7FBA-4165-4810-A6B9-265F8689DCCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserRoleService", "UserRoleService\UserRoleService.csproj", "{628278BC-4216-43AD-B343-029CEBBCA085}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,10 +116,6 @@ Global
 		{DDBA7FBA-4165-4810-A6B9-265F8689DCCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDBA7FBA-4165-4810-A6B9-265F8689DCCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDBA7FBA-4165-4810-A6B9-265F8689DCCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{628278BC-4216-43AD-B343-029CEBBCA085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{628278BC-4216-43AD-B343-029CEBBCA085}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{628278BC-4216-43AD-B343-029CEBBCA085}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{628278BC-4216-43AD-B343-029CEBBCA085}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
