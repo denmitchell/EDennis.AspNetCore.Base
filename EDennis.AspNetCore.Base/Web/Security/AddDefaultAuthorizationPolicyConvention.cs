@@ -21,11 +21,11 @@ namespace EDennis.AspNetCore.Base.Security {
 
         public void Apply(ControllerModel controller) {
 
-            _config[$"DefaultPolicies:{_appName}"] = "application";
+            //_config[$"DefaultPolicies:{_appName}"] = "application";
 
             var controllerPath = _appName + '.' + controller.ControllerName;
-            controller.Filters.Add(new AuthorizeFilter(controllerPath));
-            _config[$"DefaultPolicies:{controllerPath}"] = "controller";
+            //controller.Filters.Add(new AuthorizeFilter(controllerPath));
+            //_config[$"DefaultPolicies:{controllerPath}"] = "controller";
 
             foreach(var action in controller.Actions) {
                 var actionPath = controllerPath + '.' + action.ActionName;

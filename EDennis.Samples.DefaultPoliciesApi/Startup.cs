@@ -27,6 +27,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using A = IdentityServer;
 using EDennis.AspNetCore.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace EDennis.Samples.DefaultPoliciesApi {
     public class Startup {
@@ -55,27 +56,34 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             //address of IdentityServer must be known)
             //****************************************************
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
-                services
-                    .AddLauncher<A.Startup>(Configuration, Logger)
-                    //.AddLauncher<B.Startup>()
-                    //... etc.
-                    .AwaitApis(); 
-                //note: you must call AwaitApis() after adding all launchers
-                //AwaitApis() blocks the main thread until the Apis are ready
-            }
+            //if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            //    services
+            //        .AddLauncher<A.Startup>(Configuration, Logger)
+            //        //.AddLauncher<B.Startup>()
+            //        //... etc.
+            //        .AwaitApis(); 
+            //    //note: you must call AwaitApis() after adding all launchers
+            //    //AwaitApis() blocks the main thread until the Apis are ready
+            //}
 
-            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
+            var securityOptions = new SecurityOptions();
+            Configuration.GetSection("Security").Bind(securityOptions);
 
+
+            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
+            
             services.AddMvc(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
+
             services.AddScoped<ScopeProperties>();
 
-            services.AddScoped<PersonRepo, PersonRepo>();
-            services.AddScoped<PositionRepo, PositionRepo>();
+            services.AddDbContext<AppDbContext>(options =>
+                            options.UseSqlite("Data Source=hr.db")
+                            );
+
 
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
@@ -108,7 +116,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 });
             }
 
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
         }
 
 

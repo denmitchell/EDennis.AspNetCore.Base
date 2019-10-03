@@ -21,8 +21,6 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class ApiLauncher<TStartup> : IDisposable
         where TStartup : class {
 
-        private static readonly object _lockobj = new object();
-
 
         public ApiLauncher(IConfiguration config, ILogger logger, ProjectPorts projectPorts) {
             _config = config;
@@ -34,13 +32,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             _projectPorts = projectPorts;
         }
 
-        private IConfiguration _config { get; }
-        private Dictionary<string, ApiConfig> _apis { get; }
-        private string[] _args { get; }
-        private string _projectName { get; set; }
-        private int _port { get; set; }
-        private ILogger _logger { get; }
-        private ProjectPorts _projectPorts { get; }
+        private readonly IConfiguration _config;
+        private readonly Dictionary<string, ApiConfig> _apis;
+        private readonly string[] _args;
+        private string _projectName;
+        private int _port;
+        private readonly ILogger _logger;
+        private readonly ProjectPorts _projectPorts;
 
         public async Task StartAsync() {
 
@@ -64,7 +62,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var dir = api.ProjectDirectory.Replace("{Environment.UserName}", Environment.UserName);
 
-            if (!api.BaseAddress.Contains("localhost")) {
+            if (!api.BaseAddress.Contains("localhost") || api.ExternallyLaunched) {
                 //assign a new port to the project or get the current port assignment
                 var projectPortAssignment = _projectPorts.GetProjectPortAssignment(_projectName);
                 _port = projectPortAssignment.Port;

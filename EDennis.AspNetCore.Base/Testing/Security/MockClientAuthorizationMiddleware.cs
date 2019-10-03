@@ -55,7 +55,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="context">The HttpContext</param>
         /// <param name="config">The Configuration</param>
         /// <returns></returns>
-        public async Task InvokeAsync(HttpContext context, IConfiguration config, IHostingEnvironment env) {
+        public async Task InvokeAsync(HttpContext context, IConfiguration config) {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 //get a reference to the request headers
@@ -70,7 +70,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     var client = new HttpClient();
 
                     //get parameters for building the token request
-                    var tokenRequestData = GetClientCredentialsTokenRequestData(config, env.ApplicationName);
+                    var tokenRequestData = GetClientCredentialsTokenRequestData(config);
 
                     //get the discovery document from Identity Server
                     var disco = await client.GetDiscoveryDocumentAsync(tokenRequestData.Authority as string);
@@ -90,7 +90,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     //handle errors
                     if (tokenResponse.IsError) {
                         context.Response.StatusCode = 400;
-                        string msg = null;
+                        string msg;
                         if (tokenResponse.Error == "invalid_client")
                             msg = $"Client with Id = {tokenRequestData.ClientId} && Secret = {tokenRequestData.ClientSecret} is invalid.";
                         else if (tokenResponse.Error == "invalid_scope")
@@ -117,7 +117,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        private dynamic GetClientCredentialsTokenRequestData(IConfiguration config, string appName) {
+        private dynamic GetClientCredentialsTokenRequestData(IConfiguration config) {
 
             //get command-line arguments
             var args = config.GetCommandLineArguments();
@@ -136,7 +136,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (mockClientProperties == null)
                     throw new ArgumentException($"MockClientAuthorizationMiddleware requires 'MockClient:{mockClientArg}' configuration key, which is missing.");
                 else {
-                    tokenRequestData = GetClientCredentialsTokenRequestData(mockClientArg, mockClientProperties, appName);
+                    tokenRequestData = GetClientCredentialsTokenRequestData(mockClientArg, mockClientProperties);
                 }
             } else {
                 var mockClientDictionary = new MockClientDictionary();
@@ -148,7 +148,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (defaultMockClient.Key == null)
                     throw new ArgumentException("MockClientAuthorizationMiddleware requires 'MockClient...' configuration key, which is missing.");
                 else {
-                    tokenRequestData = GetClientCredentialsTokenRequestData(defaultMockClient.Key, defaultMockClient.Value, appName);
+                    tokenRequestData = GetClientCredentialsTokenRequestData(defaultMockClient.Key, defaultMockClient.Value);
                 }
 
 
@@ -182,7 +182,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         private dynamic GetClientCredentialsTokenRequestData(string mockClientId,
-            MockClientProperties mockClientProperties, string appName) {
+            MockClientProperties mockClientProperties) {
 
             string authority = null;
             string clientId;

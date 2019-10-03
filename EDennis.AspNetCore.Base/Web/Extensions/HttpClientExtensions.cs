@@ -36,32 +36,6 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
-        public static ObjectResult Get<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
-            return client.GetAsync<T>(relativeUrlFromBase, obj).Result;
-        }
-
-        public static async Task<ObjectResult> GetAsync<T>(
-                this HttpClient client, string relativeUrlFromBase, T obj) {
-
-
-            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
-
-            //build the request message object for the GET
-            var msg = new HttpRequestMessage {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(url),
-                Content = new BodyContent<T>(obj)
-            };
-
-            var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<T>(response);
-
-            return objResult;
-
-        }
-
-
-
         public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
             return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj).Result;
         }
@@ -84,6 +58,32 @@ namespace EDennis.AspNetCore.Base.Web {
             var objResult = await GenerateObjectResult<TResponseObject>(response);
 
             return objResult;
+
+        }
+
+
+
+        public static StatusCodeResult GetStatusCodeResult(this HttpClient client, string relativeUrlFromBase) {
+            return client.GetStatusCodeResultAsync(relativeUrlFromBase).Result;
+        }
+
+
+
+        public static async Task<StatusCodeResult> GetStatusCodeResultAsync(
+                this HttpClient client, string relativeUrlFromBase) {
+
+            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
+
+            //build the request message object for the GET
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url)
+            };
+
+            var response = await client.SendAsync(msg);
+            var statusCode = response.StatusCode;
+
+            return new StatusCodeResult((int)statusCode);
 
         }
 
