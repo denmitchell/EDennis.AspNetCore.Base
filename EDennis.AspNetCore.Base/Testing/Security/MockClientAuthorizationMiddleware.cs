@@ -158,7 +158,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var apiDict = new Dictionary<string, ApiConfig>();
                 config.GetSection("Apis").Bind(apiDict);
 
-                var env = config["ENVIRONMENT"];
+                var env = config["ASPNETCORE_ENVIRONMENT"];
 
 
                 var identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
