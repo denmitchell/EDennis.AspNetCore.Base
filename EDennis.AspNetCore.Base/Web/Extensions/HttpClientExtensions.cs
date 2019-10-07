@@ -393,7 +393,6 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             if (req.Cookies != null && req.Cookies.Count > 0)
             {
-                var cookieContainer = new CookieContainer();
                 var sb = new StringBuilder();
                 foreach (var cookie in req.Cookies)
                 {

@@ -160,8 +160,12 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var env = config["ASPNETCORE_ENVIRONMENT"];
 
+                var identityServerApiName = GetIdentityServerApiType().Name;
 
-                var identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
+                if (apiDict.ContainsKey("identityServerApiName")){
+                    throw new ApplicationException($"MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having with Secret = null appears in appsettings.{env}.json.");
+                }
+                var identityServerApi = apiDict[identityServerApiName];
                 if (identityServerApi == null)
                     throw new ApplicationException($"MockClientAuthorizationMiddleware requires the presence of a Apis config entry that is an identity server. No Api having with Secret = null appears in appsettings.{env}.json.");
 
@@ -250,6 +254,16 @@ namespace EDennis.AspNetCore.Base.Testing {
         //}
 
 
+        private static Type GetIdentityServerApiType() {
+            var serviceType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(t => t.IsSubclassOf(typeof(IdentityServerApi)))
+                .FirstOrDefault();
+            if (serviceType != null)
+                return serviceType;
+            else
+                return typeof(IdentityServerApi);
+        }
 
 
     }
