@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Colors2Api"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Colors2Api.Tests", "EDennis.Samples.Colors2Api.Tests\EDennis.Samples.Colors2Api.Tests.csproj", "{0C28DFBC-F0D9-4128-928B-0452326F533E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ScopedLogging.ColorsApi", "EDennis.Samples.ScopedLogging.ColorsApi\EDennis.Samples.ScopedLogging.ColorsApi.csproj", "{C5DDD3FA-5A5F-43B2-963A-39F98B79060C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,10 @@ Global
 		{0C28DFBC-F0D9-4128-928B-0452326F533E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C28DFBC-F0D9-4128-928B-0452326F533E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C28DFBC-F0D9-4128-928B-0452326F533E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5DDD3FA-5A5F-43B2-963A-39F98B79060C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5DDD3FA-5A5F-43B2-963A-39F98B79060C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5DDD3FA-5A5F-43B2-963A-39F98B79060C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5DDD3FA-5A5F-43B2-963A-39F98B79060C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

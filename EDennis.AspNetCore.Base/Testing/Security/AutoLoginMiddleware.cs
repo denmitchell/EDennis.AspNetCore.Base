@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,8 @@ namespace EDennis.AspNetCore.Base.Testing
     /// The middleware should be invoked before Authentication
     /// and only when in the Development environment.
     /// </summary>
-    public class AutoLoginMiddleware {
+    public class AutoLoginMiddleware
+    {
         private readonly RequestDelegate _next;
 
         public AutoLoginMiddleware(RequestDelegate next) {
@@ -79,77 +81,80 @@ namespace EDennis.AspNetCore.Base.Testing
         /// <param name="httpContext">The HttpContext of the Request/Response</param>
         /// <param name="config">The config object, which gathers information from appsettings.json, environment vars ... etc.</param>
         /// <returns></returns>
-        public async Task Invoke(HttpContext httpContext, IConfiguration config) {
+        public async Task Invoke(HttpContext httpContext, IServiceProvider provider, IConfiguration config) {
 
 
-            var autologinDict = new AutoLoginDictionary();
+            if (!httpContext.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+                var autologinDict = new AutoLoginDictionary();
 
-            config.GetSection("AutoLogin").Bind(autologinDict);
+                config.GetSection("AutoLogin").Bind(autologinDict);
 
-            if (autologinDict == null || autologinDict.Count == 0)
-                throw new ArgumentException($"Missing configuration for AutoLogin");
-
-
-            //CommandLineConfigurationSource cmdSource
-
-            //get command-line arguments
-            var args = config.GetCommandLineArguments().ToDictionary(
-                d=>d.Key.ToLower(),d=>d.Value);
-
-            //get AutoLogin entry, if it exists
-            var autologinArg = (!args.ContainsKey("autologin") ? null : args["autologin"]);
-
-            if (autologinArg == null)
-                autologinArg = autologinDict
-                    .Where(x=>x.Value.Default)
-                    .FirstOrDefault()
-                    .Key;
-
-            if (autologinArg == null)
-                throw new ArgumentException($"Missing configuration for AutoLogin");
+                if (autologinDict == null || autologinDict.Count == 0)
+                    throw new ArgumentException($"Missing configuration for AutoLogin");
 
 
-            if(!autologinDict.ContainsKey(autologinArg))
-                throw new ArgumentException($"Missing configuration for AutoLogin:{autologinArg}");
+                //CommandLineConfigurationSource cmdSource
 
-            //get the configuration for the autologin
-            var autologinConfig = autologinDict[autologinArg];
+                //get command-line arguments
+                var args = config.GetCommandLineArguments().ToDictionary(
+                    d => d.Key.ToLower(), d => d.Value);
 
-            //get the autologin claims
-            if (!(autologinConfig.Claims is IEnumerable<MockClaim> autoLoginConfigClaims) || autologinConfig.Claims.Count() == 0)
-                throw new ArgumentException($"Missing claims configuration for AutoLogin:{autologinArg}");
+                //get AutoLogin entry, if it exists
+                var autologinArg = (!args.ContainsKey("autologin") ? null : args["autologin"]);
+
+                if (autologinArg == null)
+                    autologinArg = autologinDict
+                        .Where(x => x.Value.Default)
+                        .FirstOrDefault()
+                        .Key;
+
+                if (autologinArg == null)
+                    throw new ArgumentException($"Missing configuration for AutoLogin");
 
 
-            //add microsoft uri claims
-            var claims = autoLoginConfigClaims
-                .Select(a => new Claim(GetClaimUri(a.Type), a.Value));
+                if (!autologinDict.ContainsKey(autologinArg))
+                    throw new ArgumentException($"Missing configuration for AutoLogin:{autologinArg}");
 
-            //add simple name (jwt) claims
-            claims = claims.Union( autoLoginConfigClaims
-                .Select(a => new Claim(a.Type, a.Value)));
+                //get the configuration for the autologin
+                var autologinConfig = autologinDict[autologinArg];
+
+                //get the autologin claims
+                if (!(autologinConfig.Claims is IEnumerable<MockClaim> autoLoginConfigClaims) || autologinConfig.Claims.Count() == 0)
+                    throw new ArgumentException($"Missing claims configuration for AutoLogin:{autologinArg}");
 
 
-            //add the Name claim type, if it doesn't exist already
-            if (claims.Where(x => x.Type == ClaimTypes.Name).Count() == 0) {
-                claims = claims.Union(
-                    new Claim[] {
+                //add microsoft uri claims
+                var claims = autoLoginConfigClaims
+                    .Select(a => new Claim(GetClaimUri(a.Type), a.Value));
+
+                //add simple name (jwt) claims
+                claims = claims.Union(autoLoginConfigClaims
+                    .Select(a => new Claim(a.Type, a.Value)));
+
+
+                //add the Name claim type, if it doesn't exist already
+                if (claims.Where(x => x.Type == ClaimTypes.Name).Count() == 0) {
+                    claims = claims.Union(
+                        new Claim[] {
                         new Claim(ClaimTypes.Name, autologinArg), //microsoft uri
                         new Claim("name", autologinArg) //jwt/simple type
-                    });
+                        });
+                }
+
+
+                var scopeProperties = provider.GetRequiredService<ScopeProperties>();
+                scopeProperties.User = autologinArg;
+                scopeProperties.UpdateLoggerIndex();
+
+                //create the new user object
+                var identity = new ClaimsIdentity(claims,
+                      CookieAuthenticationDefaults.AuthenticationScheme);
+                httpContext.User = new ClaimsPrincipal(identity);
+
+                //sign the user on and serialize the user principal to a cookie
+                await httpContext.SignInAsync(httpContext.User);
+
             }
-
-
-
-
-            //create the new user object
-            var identity = new ClaimsIdentity(claims,
-                  CookieAuthenticationDefaults.AuthenticationScheme);
-            httpContext.User = new ClaimsPrincipal(identity);
-
-            //sign the user on and serialize the user principal to a cookie
-            await httpContext.SignInAsync(httpContext.User);
-
-
             await _next(httpContext);
         }
 
@@ -228,7 +233,8 @@ namespace EDennis.AspNetCore.Base.Testing
     /// Miscellaneous extension methods supporting the
     /// AutoLoginMiddleware class
     /// </summary>
-    public static class IApplicationBuilder_AutoLoginExtensionMethods {
+    public static class IApplicationBuilder_AutoLoginExtensionMethods
+    {
 
         /// <summary>
         /// Creates a Use... method for the middleware

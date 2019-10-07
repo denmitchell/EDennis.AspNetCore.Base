@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -21,14 +22,26 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public TContext Context { get; set; }
         public IScopeProperties ScopeProperties { get; set; }
 
+        protected ILogger _logger;
+
+        internal string M(string m) => $"{this.GetType().Name}.{m}";
+        internal string U;
+
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public WriteableRepo(TContext context, IScopeProperties scopeProperties) {
+        public WriteableRepo(TContext context, 
+            IScopeProperties scopeProperties,
+            IEnumerable<ILogger<WriteableRepo<TEntity, TContext>>> loggers) {
+
             Context = context;
             ScopeProperties = scopeProperties;
+            U = ScopeProperties.User;
+
+            _logger = loggers.ElementAt(scopeProperties.LoggerIndex);
+
         }
 
 

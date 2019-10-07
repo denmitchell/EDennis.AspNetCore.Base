@@ -11,8 +11,7 @@ using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.Exceptions;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.EntityFramework
-{
+namespace EDennis.AspNetCore.Base.EntityFramework {
 
     /// <summary>
     /// A read/write base repository class, backed by
@@ -30,26 +29,45 @@ namespace EDennis.AspNetCore.Base.EntityFramework
 
         public TContext Context { get; set; }
         public IScopeProperties ScopeProperties { get; set; }
-        
 
-        internal ILogger _logger;
-        internal string M(string m) => $"{this.GetType().Name}.{m}";
-        internal string U;
+
+        protected ILogger Logger;
+
+        #region logging support
+        /// <summary>
+        /// Method Name (qualified by Class Name)
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        protected string M(string m) => $"{GetType().Name}.{m}";
+
+        /// <summary>
+        /// User (from ScopeProperties)
+        /// </summary>
+        protected string U;
+
+        /// <summary>
+        /// Data that serializes to Json upon call to ToString()
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public AutoJson D(dynamic data) => new AutoJson(data);
+        #endregion
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public ReadonlyRepo(TContext context, 
+        public ReadonlyRepo(TContext context,
                 IScopeProperties scopeProperties,
-                ILogger<ReadonlyRepo<TEntity,TContext>> logger,
-                IScopedLogger<object> scopedLogger = null) {
+                IEnumerable<ILogger<ReadonlyRepo<TEntity, TContext>>> loggers) {
+
             Context = context;
             ScopeProperties = scopeProperties;
             U = ScopeProperties.User;
 
-            _logger = (scopedLogger?.Enabled ?? false) ? scopedLogger.Logger : logger;
-            
+            Logger = loggers.ElementAt(scopeProperties.LoggerIndex);
+
         }
 
 
@@ -57,9 +75,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// Provides direct access to the Query property of the context,
         /// allowing any query to be constructed via Linq expression
         /// </summary>
-        public IQueryable<TEntity> Query { 
+        public IQueryable<TEntity> Query {
             get {
-                _logger.LogTrace("For {User}, calling {Method}", M("Query"),U);
+                #region logging
+                Logger.LogDebug("For {User}, {Method}", M("Query"), U);
+                #endregion
                 return Context.Set<TEntity>().AsNoTracking();
             }
         }
@@ -83,9 +103,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 int? skip = null,
                 int? take = null) {
 
-            _logger.LogTrace("For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take}",
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\twhere={where}\n\torderBy={orderBy}\n\tselect={select}\n\tskip={skip}\n\ttake={take}",
                 M("GetFromDynamicLinq"), U, where, orderBy, select, skip, take);
-
+            #endregion
             IQueryable qry = Query;
 
             try {
@@ -100,11 +121,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 if (take != null)
                     qry = qry.Take(take.Value);
 
-                return qry.ToDynamicList();
+                var returnVal = qry.ToDynamicList();
+
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\twhere={where}\n\torderBy={orderBy}\n\tselect={select}\n\tskip={skip}\n\ttake={take}\n\treturning {Return}",
+                    M("GetFromDynamicLinq"), U, where, orderBy, select, skip, take, D(returnVal));
+                #endregion
+                return returnVal;
 
             } catch (Exception ex) {
-                _logger.LogError(ex, "For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take} -- Exception: {Message}",
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\twhere={where}\n\torderBy={orderBy}\n\tselect={select}\n\tskip={skip}\n\ttake={take}\n\tError: {Error}",
                     M("GetFromDynamicLinq"), U, where, orderBy, select, skip, take, ex.Message);
+                #endregion
                 throw;
             }
 
@@ -124,15 +153,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
         public virtual async Task<List<dynamic>> GetFromDynamicLinqAsync(
-                string where = null,
-                string orderBy = null,
-                string select = null,
-                int? skip = null,
-                int? take = null) {
+                string where = null, string orderBy = null, string select = null,
+                int? skip = null, int? take = null) {
 
-            _logger.LogTrace("For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take}",
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\twhere={where}\n\torderBy={orderBy}\n\tselect={select}\n\tskip={skip}\n\ttake={take}",
                 M("GetFromDynamicLinqAsync"), U, where, orderBy, select, skip, take);
-
+            #endregion
             IQueryable qry = Query;
 
             try {
@@ -147,11 +174,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 if (take != null)
                     qry = qry.Take(take.Value);
 
-                return await qry.ToDynamicListAsync();
+                var returnVal = await qry.ToDynamicListAsync();
+
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\twhere={where}\n\torderBy={orderBy}\n\tselect={select}\n\tskip={skip}\n\ttake={take}\n\treturning {Return}",
+                    M("GetFromDynamicLinqAsync"), U, where, orderBy, select, skip, take, D(returnVal));
+                #endregion
+                return returnVal;
 
             } catch (Exception ex) {
-                _logger.LogError(ex, "For {User}, calling {Method} with where={where}|orderBy={orderBy}|select={select}|skip={skip}|take={take} -- Exception: {Message}",
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\twhere={where}\n\torderBy={orderBy}\n\tselect={select}\n\tskip={skip}\n\ttake={take}\n\tError: {Error}",
                     M("GetFromDynamicLinqAsync"), U, where, orderBy, select, skip, take, ex.Message);
+                #endregion
                 throw;
             }
 
@@ -168,10 +203,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public virtual List<TEntity> GetFromSql(string sql){
+        public virtual List<TEntity> GetFromSql(string sql) {
 
-            _logger.LogTrace("For {User}, calling {Method} with sql={sql}",
-                M("GetFromSql"), U, sql);
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tsql={sql}", M("GetFromSql"), U, sql);
+            #endregion
             try {
                 var cxn = Context.Database.GetDbConnection();
                 if (cxn.State == ConnectionState.Closed)
@@ -184,10 +220,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                     result = cxn.Query<TEntity>(sql).AsList();
                 }
 
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tsql={sql}\n\tReturning {Return}",
+                    M("GetFromSql"), U, sql, D(result));
+                #endregion
                 return result;
+
             } catch (Exception ex) {
-                _logger.LogError(ex, "For {User}, calling {Method} with sql={sql} -- Exception: {Message}",
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tsql={sql}\n\tError: {Error}",
                     M("GetFromSql"), U, sql, ex.Message);
+                #endregion
                 throw;
             }
         }
@@ -202,18 +245,36 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql){
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-            List<TEntity> result;
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-                result = (await cxn.QueryAsync<TEntity>(sql, transaction: dbTrans)).AsList();
-            } else {
-                result = (await cxn.QueryAsync<TEntity>(sql)).AsList();
+        public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql) {
+
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tsql={sql}", M("GetFromSqlAsync"), U, sql);
+            #endregion
+
+            try {
+                var cxn = Context.Database.GetDbConnection();
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
+                List<TEntity> result;
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
+                    result = (await cxn.QueryAsync<TEntity>(sql, transaction: dbTrans)).AsList();
+                } else {
+                    result = (await cxn.QueryAsync<TEntity>(sql)).AsList();
+                }
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tsql={sql}\n\tReturning {Return}",
+                    M("GetFromSqlAsync"), U, sql, D(result));
+                #endregion
+                return result;
+
+            } catch (Exception ex) {
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tsql={sql}\n\tError: {Error}",
+                    M("GetFromSqlAsync"), U, sql, ex.Message);
+                #endregion
+                throw;
             }
-            return result;
         }
 
 
@@ -225,17 +286,35 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
         /// <returns></returns>
         public virtual T GetScalarFromSql<T>(string sql) {
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-            T result;
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-                result = cxn.ExecuteScalar<T>(sql, transaction: dbTrans);
-            } else {
-                result = cxn.ExecuteScalar<T>(sql);
+
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tsql={sql}", M("GetScalarFromSql"), U, sql);
+            #endregion
+
+            try {
+                var cxn = Context.Database.GetDbConnection();
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
+                T result;
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
+                    result = cxn.ExecuteScalar<T>(sql, transaction: dbTrans);
+                } else {
+                    result = cxn.ExecuteScalar<T>(sql);
+                }
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tsql={sql}\n\tReturning {Return}",
+                    M("GetScalarFromSql"), U, sql, D(result));
+                #endregion
+                return result;
+
+            } catch (Exception ex) {
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tsql={sql}\n\tError: {Error}",
+                    M("GetScalarFromSql"), U, sql, ex.Message);
+                #endregion
+                throw;
             }
-            return result;
         }
 
 
@@ -401,13 +480,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework
         /// </summary>
         public virtual dynamic GetFromStoredProcedure(
             string spName,
-            IEnumerable<KeyValuePair<string,string>> parms) {
+            IEnumerable<KeyValuePair<string, string>> parms) {
 
             if (_spDefs == null)
                 BuildStoredProcedureDefs();
 
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(spName, parms,_spDefs);
+            dynamicParameters.AddRange(spName, parms, _spDefs);
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)

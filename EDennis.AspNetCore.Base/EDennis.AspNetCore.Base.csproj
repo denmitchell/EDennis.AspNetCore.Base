@@ -38,22 +38,23 @@
     <PackageReference Include="Flurl" Version="3.0.0-pre1" />
     <!--<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />-->
     <PackageReference Include="IdentityModel" Version="4.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-rc1.19457.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <!--<PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />-->
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0-rc1.19456.14" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-rc1.19456.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0" />
     <!--<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="1.0.19" />-->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-rc1.19456.10" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0-rc1.19456.10" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-rc1.19456.10" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.0.1-dev-00099" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <!--<PackageReference Include="Swashbuckle.OData" Version="3.5.0" />-->
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.19" />
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0-rc1.19457.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
   </ItemGroup>  
   
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableTemporalRepo(TContext context, THistoryContext historyContext,
-            ScopeProperties scopeProperties) : base(context, scopeProperties) {
+            IScopeProperties scopeProperties, 
+            IEnumerable<ILogger<WriteableRepo<TEntity,TContext>>> loggers) 
+            : base(context, scopeProperties, loggers) {
             HistoryContext = historyContext;
         }
 

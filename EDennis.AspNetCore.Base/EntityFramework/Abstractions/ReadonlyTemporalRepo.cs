@@ -32,9 +32,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="context">Entity Framework DbContext</param>
         public ReadonlyTemporalRepo(TContext context, THistoryContext historyContext,
                 IScopeProperties scopeProperties,
-                ILogger<ReadonlyRepo<TEntity, TContext>> logger,
-                IScopedLogger<object> scopedLogger = null) 
-            : base(context,scopeProperties,logger,scopedLogger) {
+                IEnumerable<ILogger<ReadonlyRepo<TEntity, TContext>>> loggers) 
+            : base(context,scopeProperties,loggers) {
 
                 HistoryContext = historyContext;
         }
