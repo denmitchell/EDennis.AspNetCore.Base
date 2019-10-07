@@ -52,7 +52,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc
 
 
             services.AddScoped<ScopeProperties>();
-            services.AddApiClients<IdentityServerClient>();
+            services.AddApiClients<IdentityServerApi>();
             services.AddApiClient<IDefaultPoliciesApiClient, DefaultPoliciesApiClient>();
 
 

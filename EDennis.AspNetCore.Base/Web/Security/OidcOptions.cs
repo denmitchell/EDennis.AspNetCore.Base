@@ -5,8 +5,6 @@ using System.Text;
 namespace EDennis.AspNetCore.Base.Security
 {
     public class OidcOptions {
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
         public string ResponseType { get; set; } = "code id_token";
         public bool RequireHttpsMetadata { get; set; } = true;
         public bool SaveTokens { get; set; } = true;

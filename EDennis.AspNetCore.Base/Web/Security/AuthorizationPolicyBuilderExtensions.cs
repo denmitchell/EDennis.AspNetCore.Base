@@ -16,14 +16,14 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="allowedValues">Values the claim must process one or more of for evaluation to succeed.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
         public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
-            this AuthorizationPolicyBuilder builder, string claimType, 
-            string pattern, ScopePatternOptions options) {
-            if (claimType == null) {
-                throw new ArgumentNullException(nameof(claimType));
+            this AuthorizationPolicyBuilder builder, 
+            string requirementScope, ScopePatternOptions options) {
+            if (requirementScope == null) {
+                throw new ArgumentNullException(nameof(requirementScope));
             }
 
 
-            builder.Requirements.Add(new ClaimPatternAuthorizationRequirement(claimType, pattern, options));
+            builder.Requirements.Add(new ClaimPatternAuthorizationRequirement(requirementScope, options));
             return builder;
         }
 

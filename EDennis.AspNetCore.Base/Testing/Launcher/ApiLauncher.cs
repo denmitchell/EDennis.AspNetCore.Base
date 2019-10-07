@@ -54,7 +54,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var api = apiEntry.Value;
 
-            if (api.BaseAddress != null && api.BaseAddress != "" && !api.BaseAddress.Contains("localhost"))
+            if (api.ExternallyLaunched || (api.BaseAddress != null && api.BaseAddress != "" 
+                && !api.BaseAddress.Contains("localhost")))
                 return;
 
             var configKey = $"Apis:{apiEntry.Key}";
@@ -62,7 +63,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var dir = api.ProjectDirectory.Replace("{Environment.UserName}", Environment.UserName);
 
-            if (!api.BaseAddress.Contains("localhost") || api.ExternallyLaunched) {
+            if (!api.BaseAddress.Contains("localhost")) {
                 //assign a new port to the project or get the current port assignment
                 var projectPortAssignment = _projectPorts.GetProjectPortAssignment(_projectName);
                 _port = projectPortAssignment.Port;

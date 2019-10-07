@@ -1,27 +1,18 @@
 ﻿using EDennis.AspNetCore.Base.Security;
-using EDennis.AspNetCore.Base.Testing;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web
-{
+namespace EDennis.AspNetCore.Base.Web {
 
     /// <summary>
     /// Extensions to facilitate configuration of security
@@ -29,45 +20,45 @@ namespace EDennis.AspNetCore.Base.Web
     public static class IServiceCollectionExtensions_Security
     {
 
-
+        /// <summary>
+        /// NOTE: to avoid creating multiple copies of Configuration, pass in IHostingEnvironment and IConfiguration
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="options"></param>
+        /// <param name="environment"></param>
+        /// <param name="configuration"></param>
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
-            SecurityOptions options = null) {
+            SecurityOptions options = null, IHostingEnvironment environment = null, IConfiguration configuration = null) {
 
             var settings = options ?? new SecurityOptions();
 
-            var provider = services.BuildServiceProvider();
-            var config = provider.GetRequiredService<IConfiguration>();
-            var env = provider.GetRequiredService<IHostingEnvironment>();
+            IConfiguration config = configuration;
+            IHostingEnvironment env = environment;
 
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains(env.ApplicationName + ",")).FirstOrDefault();
+            if(env == null || config == null) {
+                var provider = services.BuildServiceProvider();
+                config = provider.GetRequiredService<IConfiguration>();
+                env = provider.GetRequiredService<IHostingEnvironment>();
+            }
 
-            string authority = "";
+            var assembly = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => a.FullName.Contains(env.ApplicationName + ","))
+                .FirstOrDefault();
 
             var apiDict = new Dictionary<string, ApiConfig>();
             config.GetSection("Apis").Bind(apiDict);
 
-            ApiConfig identityServerApi;
+            var identityServerApiName = GetIdentityServerApiType().Name;
 
-            if (settings.IdentityServerApiConfigKey != null)
-                identityServerApi = apiDict[settings.IdentityServerApiConfigKey];
-            else if (apiDict.ContainsKey("IdentityServerApiClient"))
-                identityServerApi = apiDict["IdentityServerApiClient"];
-            else if (apiDict.ContainsKey("IdentityServerClient"))
-                identityServerApi = apiDict["IdentityServerClient"];
-            else if (apiDict.ContainsKey("IdentityServerApi"))
-                identityServerApi = apiDict["IdentityServerApi"];
-            else if (apiDict.ContainsKey("IdentityServer"))
-                identityServerApi = apiDict["IdentityServer"];
-            else
-                identityServerApi = apiDict.Where(x => string.IsNullOrEmpty(x.Value.Secret)).FirstOrDefault().Value;
+            if (!apiDict.ContainsKey(identityServerApiName))
+                throw new ApplicationException("IdentityServerApi is not in Configuration.  \"IdentityServerApi\" (or a subclass) must be present in the Apis section of Configuration");
+
+            var identityServerApiConfig = apiDict[identityServerApiName];
 
 
-            if (identityServerApi == null)
-                throw new ApplicationException($"AddClientAuthenticationAndAuthorizationWithDefaultPolicies requires the presence of a Apis config entry that is an identity server.  No Api config entry existed for 'IdentityServer' or 'IdentityServerClient' in appsettings.{env}.json.");
-
-            authority = identityServerApi.BaseAddress;
-            if (authority == "")
-                throw new ApplicationException("Identity Server BaseAddress is null.  If you are using ApiLauncher in a development environment, ensure that the launcher is launched at the beginning of ConfigureServices, and ensure that you call services.AwaitLaunchers().");
+            string authority = identityServerApiConfig.BaseAddress;
+            if (string.IsNullOrEmpty(authority))
+                throw new ApplicationException("IdentityServerApi BaseAddress is null.  If you are using ApiLauncher in a development environment, ensure that the launcher is launched at the beginning of ConfigureServices, and ensure that you call services.AwaitLaunchers().");
 
             var audience = env.ApplicationName;
             if (audience.EndsWith(".Lib")) {
@@ -91,14 +82,6 @@ namespace EDennis.AspNetCore.Base.Web
                     });
             } else {
 
-                //var secret = settings.OidcOptions.ClientSecret;
-                //if (secret == "")
-                //    throw new ApplicationException("Identity Server Secret is null.");
-
-                //var scopes = identityServerApi.Scopes;
-                //if (!(scopes?.Length > 0))
-                //    throw new ApplicationException("Identity Server Scopes is null");
-
 
                 // Set .NET Identity Options
                 services.AddAuthentication(opt => {
@@ -117,8 +100,8 @@ namespace EDennis.AspNetCore.Base.Web
                        opt.SignInScheme = "Cookies";
                        opt.Authority = authority;
                        opt.RequireHttpsMetadata = settings.OidcOptions.RequireHttpsMetadata;
-                       opt.ClientId = settings.OidcOptions.ClientId ?? env.ApplicationName;
-                       opt.ClientSecret = settings.OidcOptions.ClientSecret;
+                       opt.ClientId = audience;
+                       opt.ClientSecret = settings.ClientSecret;
                        opt.ResponseType = settings.OidcOptions.ResponseType;
                        opt.SaveTokens = settings.OidcOptions.SaveTokens;
                        opt.GetClaimsFromUserInfoEndpoint = settings.OidcOptions.GetClaimsFromUserInfoEndpoint;
@@ -126,7 +109,7 @@ namespace EDennis.AspNetCore.Base.Web
                        var scopes = new List<string>();
 
                        if (settings.OidcOptions.OidcScopeOptions.AddClientId)
-                           scopes.Add(settings.OidcOptions.ClientId ?? env.ApplicationName);
+                           scopes.Add(audience);
                        if (settings.OidcOptions.OidcScopeOptions.AddOfflineAccess)
                            scopes.Add("offline_access");
                        if (settings.OidcOptions.OidcScopeOptions.AddDefaultPolicies)
@@ -142,17 +125,14 @@ namespace EDennis.AspNetCore.Base.Web
             }
 
             services.AddAuthorizationWithDefaultPolicies(assembly,
-                settings.ScopePatternOptions, policyNames);
+                settings.ScopePatternOptions, policyNames, env);
 
         }
 
         /// <summary>
-        /// Adds all default application-level, 
-        /// controller-level, and action-level policies,
-        /// where the policy name is either ...
+        /// Adds all action-level policies,
+        /// where the policy name is  ...
         /// 
-        /// {ApplicationName}
-        /// {ApplicationName}.{ControllerName}
         /// {ApplicationName}.{ControllerName}.{ActionName}
         /// 
         /// NOTE: this method is designed to be used with
@@ -162,12 +142,17 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="services">the service collection</param>
         /// <param name="env">the hosting environment</param>
         public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
-            ScopePatternOptions options, IEnumerable<string> policyNames) {
+            ScopePatternOptions options, IEnumerable<string> policyNames,
+            IHostingEnvironment environment = null) {
 
             var userScopePrefix = options.UserScopePrefix ?? "user_";
 
-            var provider = services.BuildServiceProvider();
-            var env = provider.GetRequiredService<IHostingEnvironment>();
+            IHostingEnvironment env = environment;
+
+            if (env == null ) {
+                var provider = services.BuildServiceProvider();
+                env = provider.GetRequiredService<IHostingEnvironment>();
+            }
 
             services.AddAuthorization(opt => {
 
@@ -175,9 +160,9 @@ namespace EDennis.AspNetCore.Base.Web
                 var controllers = GetControllerTypes(assembly);
 
                 foreach (var policyName in policyNames) {
-
+                    var requirementScope = policyName;
                     opt.AddPolicy(policyName, builder => {
-                        builder.RequireClaimPatternMatch(userScopePrefix, policyName, options);
+                        builder.RequireClaimPatternMatch(requirementScope, options);
                     });
 
                 }
@@ -188,9 +173,14 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
-        private static IEnumerable<string> GetDefaultPolicyNames(IServiceCollection services, Assembly assembly) {
-            var provider = services.BuildServiceProvider();
-            var env = provider.GetRequiredService<IHostingEnvironment>();
+        private static IEnumerable<string> GetDefaultPolicyNames(IServiceCollection services, Assembly assembly,
+            IHostingEnvironment environment = null) {
+
+            IHostingEnvironment env = environment;
+            if (env == null) {
+                var provider = services.BuildServiceProvider();
+                env = provider.GetRequiredService<IHostingEnvironment>();
+            }
 
             var applicationName = env.ApplicationName;
             var controllers = GetControllerTypes(assembly);
@@ -258,6 +248,17 @@ namespace EDennis.AspNetCore.Base.Web
             return methods;
         }
 
+
+        private static Type GetIdentityServerApiType() {
+            var serviceType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(t=> t.IsSubclassOf(typeof(IdentityServerApi)))
+                .FirstOrDefault();
+            if (serviceType != null)
+                return serviceType;
+            else
+                return typeof(IdentityServerApi);
+        }
 
     }
 

@@ -39,13 +39,14 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             List<ApiConfig> apis = new List<ApiConfig>();
 
             config.GetSection("Apis").Bind(apis);
+            var clientSecret = config["Security:ClientSecret"];
+
+            if (string.IsNullOrEmpty(clientSecret))
+                throw new ApplicationException($"Configuration for {_hostingEnvironment.ApplicationName} is missing its Secret (string) setting");
 
             var targetApi = apis
                 .Where(x => CleanUrl(x.BaseAddress) == CleanUrl(HttpClient.BaseAddress))
                 .FirstOrDefault();
-
-            if (string.IsNullOrEmpty(targetApi.Secret))
-                throw new ApplicationException($"Configuration for {targetApi.ProjectName} is missing its Secret (string) setting");
 
             if (targetApi.Scopes == null || targetApi.Scopes.Count() == 0)
                 throw new ApplicationException($"Configuration for {targetApi.ProjectName} is missing its Scopes (string[]) setting");
@@ -64,7 +65,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
                     .FirstOrDefault();
 
                 //get a new token
-                tokenResponse = await GetTokenResponse(targetApi, identityServerApi);
+                tokenResponse = await GetTokenResponse(targetApi, identityServerApi, clientSecret);
 
                 //update cache
                 cachedToken = new CachedToken {
@@ -91,7 +92,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
 
 
-        private async Task<TokenResponse> GetTokenResponse(ApiConfig targetApi, ApiConfig identityServerApi) {
+        private async Task<TokenResponse> GetTokenResponse(ApiConfig targetApi, ApiConfig identityServerApi, string clientSecret) {
 
 
             var disco = await _identityServerApiClient.HttpClient.GetDiscoveryDocumentAsync(identityServerApi.BaseAddress);
@@ -104,7 +105,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
                 Address = disco.TokenEndpoint,
 
                 ClientId = _hostingEnvironment.ApplicationName,
-                ClientSecret = targetApi.Secret,
+                ClientSecret = clientSecret,
                 Scope = string.Join(' ', targetApi.Scopes)
             });
 

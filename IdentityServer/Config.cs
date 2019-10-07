@@ -181,7 +181,7 @@ namespace IdentityServer {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="alice",
                     Claims = new List<Claim> {
-                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Readonly")
+                        new Claim("role","EDennis.Samples.DefaultPoliciesMvc.Readonly")
                     }
                 }
             };

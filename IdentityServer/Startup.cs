@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base.Web.Security;
 using IdentityModel;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Builder;
@@ -34,12 +35,13 @@ namespace IdentityServer {
 
         public void ConfigureServices(IServiceCollection services) {
 
+
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
                 .AddInMemoryClients(Config.GetClients())
                 .AddTestUsers(Config.GetUsers())
-                .AddProfileService<AppProfileService>();
+                .AddProfileService<StaticClaimsProfileService>();
 
             if (Environment.IsDevelopment()) {
                 //var dir = Environment.ContentRootPath;

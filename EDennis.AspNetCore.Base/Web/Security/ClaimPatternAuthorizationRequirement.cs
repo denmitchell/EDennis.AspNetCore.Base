@@ -22,10 +22,8 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="claimType">The claim type that must be absent if no values are provided.</param>
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
-        public ClaimPatternAuthorizationRequirement(string claimType,
+        public ClaimPatternAuthorizationRequirement(
                 string requirementScope, ScopePatternOptions options) {
-
-            ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
 
             RequirementScope = requirementScope.ToLower();
 
@@ -57,9 +55,9 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string RequirementScope { get; }
 
-        public string UserScopePrefix { get; } = "User_";
+        public string UserScopePrefix { get; } = "user_";
         public bool IsOidc { get; }
-        public string PatternClaimType { get; } = "Role";
+        public string PatternClaimType { get; } = "role";
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
@@ -100,7 +98,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
                     var scopeClaimTypes = new List<string> { "scope" };
                     if (IsOidc)
-                        scopeClaimTypes.Add($"{UserScopePrefix}"); 
+                        scopeClaimTypes.Add($"{UserScopePrefix}scope"); 
 
                     var scopePatterns = context.User?.Claims?
                         .Where(c => scopeClaimTypes.Contains(c.Type.ToLower()))

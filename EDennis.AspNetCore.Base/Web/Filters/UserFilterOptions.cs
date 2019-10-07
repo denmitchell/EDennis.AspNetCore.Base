@@ -17,8 +17,8 @@ namespace EDennis.AspNetCore.Base.Web {
         /// Set of sources to be used for SysUser.  The first
         /// source that is not null is used.
         /// </summary>
-        public SortedSet<SysUserSource> Sources { get; set; } =
-            new SortedSet<SysUserSource> {
+        public List<SysUserSource> Sources { get; set; } =
+            new List<SysUserSource> {
                 SysUserSource.ExistingScopeProperties,
                 SysUserSource.RequestHeader,
                 SysUserSource.UserClaim,
@@ -29,8 +29,8 @@ namespace EDennis.AspNetCore.Base.Web {
         /// Set of user claims to be used for SysUser.  The first
         /// claim that is not null is used.
         /// </summary>
-        public SortedSet<string> SysUserClaimTypes { get; set; } =
-            new SortedSet<string> {
+        public List<string> SysUserClaimTypes { get; set; } =
+            new List<string> {
                 "name",
                 "client_name",
                 "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
@@ -41,8 +41,8 @@ namespace EDennis.AspNetCore.Base.Web {
         /// Set of additional claims to add to ScopeProperties, which is
         /// available in Repos and ApiClients.
         /// </summary>
-        public SortedSet<string> OtherUserClaimsToAddToScopeProperties { get; set; } =
-            new SortedSet<string> {
+        public List<string> OtherUserClaimsToAddToScopeProperties { get; set; } =
+            new List<string> {
                 "client_id"
             };
 

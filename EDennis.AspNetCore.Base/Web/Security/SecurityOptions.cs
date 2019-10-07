@@ -8,6 +8,7 @@ namespace EDennis.AspNetCore.Base.Security
     {
         private OidcOptions _oidcOptions;
 
+        public string ClientSecret { get; set; }
         public string IdentityServerApiConfigKey { get; set; }
         public bool ClearDefaultInboundClaimTypeMap { get; set; } = true;
         public ScopePatternOptions ScopePatternOptions { get; set; }
