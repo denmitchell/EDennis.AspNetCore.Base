@@ -52,7 +52,8 @@ namespace EDennis.AspNetCore.Base.Testing
 
             var api = apiEntry.Value;
 
-            if (api.BaseAddress != null && api.BaseAddress != "" && !api.BaseAddress.Contains("localhost"))
+            if (api.ExternallyLaunched || (api.BaseAddress != null && api.BaseAddress != ""
+                && !api.BaseAddress.Contains("localhost")))
                 return;
 
             var configKey = $"Apis:{apiEntry.Key}";

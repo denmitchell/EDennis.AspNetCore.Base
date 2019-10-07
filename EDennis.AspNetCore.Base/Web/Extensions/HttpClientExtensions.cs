@@ -17,19 +17,17 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static class HttpClientExtensions {
 
-        public static ObjectResult Get<T>(this HttpClient client, string relativeUrlFromBase)
-        {
-            return client.GetAsync<T>(relativeUrlFromBase).Result;
+        public static ObjectResult Get<TResponseObject>(this HttpClient client, string relativeUrlFromBase) {
+            return client.GetAsync<TResponseObject>(relativeUrlFromBase).Result;
         }
 
-        public static async Task<ObjectResult> GetAsync<T>(
-                this HttpClient client, string relativeUrlFromBase)
-        {
+        public static async Task<ObjectResult> GetAsync<TResponseObject>(
+                this HttpClient client, string relativeUrlFromBase) {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
             var response = await client.GetAsync(url);
-            var objResult = await GenerateObjectResult<T>(response);
+            var objResult = await GenerateObjectResult<TResponseObject>(response);
 
             return objResult;
 
@@ -57,6 +55,33 @@ namespace EDennis.AspNetCore.Base.Web {
             var objResult = await GenerateObjectResult<TResponseObject>(response);
 
             return objResult;
+
+        }
+
+
+
+
+        public static StatusCodeResult GetStatusCodeResult(this HttpClient client, string relativeUrlFromBase) {
+            return client.GetStatusCodeResultAsync(relativeUrlFromBase).Result;
+        }
+
+
+
+        public static async Task<StatusCodeResult> GetStatusCodeResultAsync(
+                this HttpClient client, string relativeUrlFromBase) {
+
+            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
+
+            //build the request message object for the GET
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url)
+            };
+
+            var response = await client.SendAsync(msg);
+            var statusCode = response.StatusCode;
+
+            return new StatusCodeResult((int)statusCode);
 
         }
 
@@ -183,7 +208,6 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             var msg = request.ToHttpRequestMessage(client);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
-            url = WebUtility.UrlDecode(url);
             return ForwardRequest<T>(client, msg, url);
         }
 
@@ -192,7 +216,6 @@ namespace EDennis.AspNetCore.Base.Web {
         {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
-            url = WebUtility.UrlDecode(url);
             return ForwardRequest<T>(client, msg, url);
         }
 
@@ -276,18 +299,16 @@ namespace EDennis.AspNetCore.Base.Web {
         private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase)
         {
             var url = new Url(client.BaseAddress)
-                .AppendPathSegment(relativeUrlFromBase);
+                  .AppendPathSegment(relativeUrlFromBase);
 
-            WebUtility.UrlDecode(url);
+            url = WebUtility.UrlDecode(url);
 
-            msg.RequestUri = url.ToUri();
-
+            var uri = url.ToUri();
+            msg.RequestUri = uri;
             var response = client.SendAsync(msg).Result;
             var objResult = GenerateObjectResult<T>(response).Result;
 
             return objResult;
-
-
 
         }
 

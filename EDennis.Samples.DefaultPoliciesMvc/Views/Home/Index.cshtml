@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var claims = (Dictionary<string, string>)ViewData["Claims"] ?? new Dictionary<string, string>();
+    var authProps = (Dictionary<string, string>)ViewData["AuthProps"] ?? new Dictionary<string, string>();
+}
+
+<div class="spacer"> </div>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+<div class="text-center">
+    <h1 class="h6">Click a link below</h1>
+</div>
+<div class="spacer"> </div>
+<div class="container">
+    <div class="row">
+        <div class="offset-sm-2 col-sm-3">
+            <a class="btn btn-primary btn-block"
+               asp-controller="Person" asp-action="Index">
+                Person
+            </a>
+        </div>
+        <div class="offset-sm-2 col-sm-3">
+            <a class="btn btn-primary btn-block"
+               asp-controller="Position" asp-action="Index">
+                Position
+            </a>
+        </div>
+    </div>
+</div>
+<div class="spacer"> </div>
+<div class="container">
+    <div class="row">
+        <div class="offset-sm-2 col-sm-3">
+            <a class="btn btn-success btn-block"
+               asp-controller="PersonRemote" asp-action="Index">
+                Person-Remote
+            </a>
+        </div>
+        <div class="offset-sm-2 col-sm-3">
+            <a class="btn btn-success btn-block"
+               asp-controller="PositionRemote" asp-action="Index">
+                Position-Remote
+            </a>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<h2>Claims</h2>
+
+<dl>
+    @foreach (var claim in claims) {
+        <dt>@claim.Key</dt>
+        <dd>@claim.Value</dd>
+    }
+</dl>
+
+<h2>Properties</h2>
+
+<dl>
+    @foreach (var prop in authProps) {
+        <dt>@prop.Key</dt>
+        <dd>@prop.Value</dd>
+    }
+</dl>

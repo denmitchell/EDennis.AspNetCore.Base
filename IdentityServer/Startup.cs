@@ -35,7 +35,9 @@ namespace IdentityServer {
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients());
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(Config.GetUsers())
+                .AddProfileService<StaticClaimsProfileService>();
 
             if (Environment.IsDevelopment()) {
                 //var dir = Environment.ContentRootPath;
