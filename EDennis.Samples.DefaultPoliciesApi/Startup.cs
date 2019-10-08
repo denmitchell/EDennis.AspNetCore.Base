@@ -28,6 +28,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using A = IdentityServer;
 using EDennis.AspNetCore.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDennis.Samples.DefaultPoliciesApi {
     public class Startup {
@@ -73,7 +74,15 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
 
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
-            
+
+            //add an AuthorizationPolicyProvider using a factory pattern, 
+            //so that the construction of the class is delayed until after
+            //AddDefaultAuthorizationPolicyConvention is called
+            services.AddSingleton<IAuthorizationPolicyProvider>(factory => {
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    Configuration, securityOptions.ScopePatternOptions);
+            });
+
             services.AddMvc(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
