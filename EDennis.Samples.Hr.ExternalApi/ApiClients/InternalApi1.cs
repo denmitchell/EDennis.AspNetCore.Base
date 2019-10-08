@@ -21,7 +21,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
             ScopeProperties scopeProperties,
             IdentityServer identityServer,
             SecureTokenCache tokenCache,
-            IHostingEnvironment env
+            IWebHostEnvironment env
             ) :
             base(client, config, scopeProperties,
                 identityServer,tokenCache, env) {
@@ -48,7 +48,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
         }
 
         public ObjectResult GetEmployees(int pageNumber, int pageSize) {
-            var response = HttpClient.Get<List<Employee>>($"{EMPLOYEE_URL}");
+            var response = HttpClient.Get<List<Employee>>($"{EMPLOYEE_URL}?pageNumber={pageNumber}&pageSize={pageSize}");
             return response;
         }
 

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
@@ -12,13 +7,9 @@ using EDennis.Samples.DefaultPoliciesMvc.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Microsoft.Extensions.Hosting;
 
 namespace EDennis.Samples.DefaultPoliciesMvc {
     public class Startup {
@@ -45,7 +36,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
 
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
 
-            services.AddMvc(options => {
+            services.AddControllersWithViews(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
             });
 
@@ -64,21 +55,21 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) {
+        public void Configure(IApplicationBuilder app) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 app.UseDeveloperExceptionPage();
             } else {
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
 
-            app.UseRouting();
 
             //app.UseAuthorization();
             app.UseAuthentication();
             app.UseUser();
 
 
+            app.UseRouting();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",

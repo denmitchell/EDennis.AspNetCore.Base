@@ -22,11 +22,11 @@ using Microsoft.IdentityModel.Tokens;
 namespace IdentityServer {
     public class Startup {
 
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IHostingEnvironment environment, IConfiguration config) {
-            Environment = environment;
+        public Startup(IWebHostEnvironment environment, IConfiguration config) {
+            HostingEnvironment = environment;
             Configuration = config;
         }
 
@@ -39,7 +39,7 @@ namespace IdentityServer {
                 .AddTestUsers(Config.GetUsers())
                 .AddProfileService<StaticClaimsProfileService>();
 
-            if (Environment.IsDevelopment()) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 //var dir = Environment.ContentRootPath;
                 //var cert = new X509Certificate2($"{dir}/is4.pfx","is4",keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet);
                 //builder.AddSigningCredential(cert);
@@ -70,7 +70,7 @@ namespace IdentityServer {
 
 
         public void Configure(IApplicationBuilder app) {
-            if (Environment.IsDevelopment()) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 app.UseDeveloperExceptionPage();
             }
 

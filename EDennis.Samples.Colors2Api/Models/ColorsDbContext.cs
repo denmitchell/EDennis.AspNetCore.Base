@@ -19,7 +19,7 @@ namespace EDennis.Samples.Colors2Api.Models
         }
 
         public virtual DbSet<Rgb> Rgb { get; set; }
-        public virtual DbQuery<Hsl> Hsl { get; set; }
+        public virtual DbSet<Hsl> Hsl { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -52,8 +52,9 @@ namespace EDennis.Samples.Colors2Api.Models
 
             });
 
-            modelBuilder.Query<Hsl>(entity => {
-                entity.ToView("vwHsl");
+            modelBuilder.Entity<Hsl>(entity => {
+                entity
+                .HasNoKey().ToView("vwHsl");
             });
 
         }

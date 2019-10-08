@@ -1,13 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using C = Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using CD = Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
@@ -117,7 +112,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<EmployeePosition> EmployeePositions { get; set; }
-        public DbQuery<ManagerPosition> ManagerPositions { get; set; }
+        public DbSet<ManagerPosition> ManagerPositions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -131,7 +126,8 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
                 .HasMaxLength(60);
 
 
-            modelBuilder.Query<ManagerPosition>()
+            modelBuilder.Entity<ManagerPosition>()
+                .HasNoKey()
                 .ToQuery(() =>
                     from e in Employees
                     join ep in EmployeePositions

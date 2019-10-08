@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using A = IdentityServer;
 
@@ -17,14 +18,14 @@ namespace EDennis.Samples.Hr.InternalApi1 {
     public class Startup {
 
         public Startup(ILogger<Startup> logger, 
-            IConfiguration configuration, IHostingEnvironment env) {
+            IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;
             HostingEnvironment = env;
             Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
         public ILogger Logger { get; set; }
 
 
@@ -40,7 +41,7 @@ namespace EDennis.Samples.Hr.InternalApi1 {
             //address of IdentityServer must be known)
             //****************************************************
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 services
                     .AddLauncher<A.Startup>(Configuration, Logger)
                     //.AddLauncher<B.Startup>()
@@ -50,24 +51,25 @@ namespace EDennis.Samples.Hr.InternalApi1 {
                 //AwaitApis() blocks the main thread until the Apis are ready
             }
 
-            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
+            var securityOptions = new SecurityOptions();
+            Configuration.GetSection("Security").Bind(securityOptions);
 
 
-            services.AddMvc(options => {
+            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
+
+            services.AddControllers(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-            .AddJsonOptions(opt => {
-                opt.SerializerSettings.Converters.Add(new SafeJsonConverter());
             });
+
 
             //AspNetCore.Base config
             services.AddDbContexts<HrContext,HrHistoryContext>(Configuration, HostingEnvironment);
             services.AddRepos<EmployeeRepo,PositionRepo,EmployeePositionRepo>();
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
 
                 services.AddSwaggerGen(c => {
-                    c.SwaggerDoc("v1", new Info { Title = "HR Internal API", Version = "v1" });
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "HR Internal API", Version = "v1" });
                 });
 
                 services.ConfigureSwaggerGen(options => {
@@ -79,8 +81,8 @@ namespace EDennis.Samples.Hr.InternalApi1 {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
-            if (env.IsDevelopment()) {
+        public void Configure(IApplicationBuilder app) {
+            if (HostingEnvironment.EnvironmentName == "env") {
                 app.UseDeveloperExceptionPage();
 
                 app.UseMockClientAuthorization();
@@ -93,9 +95,12 @@ namespace EDennis.Samples.Hr.InternalApi1 {
             app.UseAuthentication();
             app.UseUser();
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Internal API V1");

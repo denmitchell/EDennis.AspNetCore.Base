@@ -13,13 +13,14 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         public StateBackgroundCheckContext(
             DbContextOptions<StateBackgroundCheckContext> options) : base(options) { }
 
-        public DbQuery<StateBackgroundCheckView> StateBackgroundChecks { get; set; }
+        public DbSet<StateBackgroundCheckView> StateBackgroundChecks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
             modelBuilder.Entity<StateBackgroundCheck>()
                 .ToTable("StateBackgroundCheck");
-            modelBuilder.Query<StateBackgroundCheckView>()
+            modelBuilder.Entity<StateBackgroundCheckView>()
+                .HasNoKey()
                 .ToView("StateBackgroundCheckView");
         }
     }

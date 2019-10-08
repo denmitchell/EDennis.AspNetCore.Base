@@ -1,0 +1,303 @@
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Colors.InternalApi.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+...
+
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
+
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Colors.InternalApi.Migrations.ColorHistoryDb
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert_History.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Colors2Api.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\RgbInserts.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\vwHsl.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\HslByColorName.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\RgbJsonByColorName.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}
+
+
+using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace EDennis.Samples.DefaultPoliciesApi.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+...
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+        }
+    }
+}
+
+using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace EDennis.Samples.DefaultPoliciesMvc.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+...
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Hr.InternalApi1.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
+
+
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropMaintenanceProcedures();
+            migrationBuilder.DropTestJsonTableSupport();
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Hr.InternalApi2.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\AgencyInvestigatorCheck_Insert.sql"));
+
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyInvestigatorCheckHistory
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\AgencyInvestigatorCheckHistory_Insert.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.AgencyOnlineCheck
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\AgencyOnlineCheck_Insert.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheck
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\FederalBackgroundCheck_Insert.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\FederalBackgroundCheckView.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.FederalBackgroundCheckHistory
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\FederalBackgroundCheckHistory_Insert.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\FederalBackgroundCheckHistoryView.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+        }
+    }
+}
+
+
+using EDennis.MigrationsExtensions;
+using System.IO;
+
+namespace EDennis.Samples.Hr.InternalApi2.Migrations.StateBackgroundCheck
+{
+    public partial class Initial : Migration
+    {
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+
+...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\StateBackgroundCheck_Insert.sql"));
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\StateBackgroundCheckView.sql"));
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+        }
+    }
+}

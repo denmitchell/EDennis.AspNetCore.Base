@@ -1,29 +1,25 @@
 ﻿using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.AspNetCore.Base.Web.Extensions;
-using EDennis.Samples.Colors.ExternalApi.Controllers;
-using EDennis.Samples.Colors.InternalApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using System;
-using System.Linq;
 using A = EDennis.Samples.Colors.InternalApi;
 
 namespace EDennis.Samples.Colors.ExternalApi {
     public class Startup {
-        public Startup(IConfiguration configuration, IHostingEnvironment env, ILogger<Startup> logger) {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger) {
             Configuration = configuration;
             HostingEnvironment = env;
             Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
         public ILogger Logger { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -38,7 +34,7 @@ namespace EDennis.Samples.Colors.ExternalApi {
             //address of IdentityServer must be known)
             //****************************************************
 
-            if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 services
                     .AddLauncher<A.Startup>(Configuration, Logger)
                     //.AddLauncher<B.Startup>()
@@ -48,16 +44,16 @@ namespace EDennis.Samples.Colors.ExternalApi {
                 //AwaitApis() blocks the main thread until the Apis are ready
             }
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .ExcludeReferencedProjectControllers<A.Startup>();  //IMPORTANT!
+            services.AddControllers();
+
+            //    .ExcludeReferencedProjectControllers<A.Startup>();  //IMPORTANT!
 
 
 
             services.AddApiClient<IInternalApi,InternalApi>();
 
             services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new Info { Title = "Color API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Color API", Version = "v1" });
             });
 
             services.ConfigureSwaggerGen(options => {
@@ -66,8 +62,8 @@ namespace EDennis.Samples.Colors.ExternalApi {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider provider) {
-            if (env.IsDevelopment()) {
+        public void Configure(IApplicationBuilder app) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 app.UseDeveloperExceptionPage();
 
                 //AspNetCore.Base config
@@ -75,7 +71,10 @@ namespace EDennis.Samples.Colors.ExternalApi {
             }
 
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
 
 
             app.UseSwagger();

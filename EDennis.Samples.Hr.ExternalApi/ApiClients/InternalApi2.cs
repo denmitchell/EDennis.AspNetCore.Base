@@ -14,9 +14,6 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
         private const string AGENCY_INVESTIGATOR_URL = "iapi/AgencyInvestigatorCheck";
         private const string AGENCY_ONLINE_URL = "iapi/AgencyOnlineCheck";
-        private const string FEDERAL_BACKGROUND_URL = "iapi/FederalBackgroundCheck";
-        private const string STATE_BACKGROUND_URL = "iapi/StateBackgroundCheck";
-        private const string PREEMPLOYMENT_URL = "iapi/PreEmployment";
 
 
         public InternalApi2(HttpClient client,
@@ -24,7 +21,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
             ScopeProperties scopeProperties,
             IdentityServer identityServer,
             SecureTokenCache tokenCache,
-            IHostingEnvironment env
+            IWebHostEnvironment env
             ) :
             base(client, config, scopeProperties,
                 identityServer, tokenCache, env) {

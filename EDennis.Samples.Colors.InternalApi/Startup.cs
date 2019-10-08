@@ -1,42 +1,35 @@
-using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
-using EDennis.MigrationsExtensions;
 using EDennis.Samples.Colors.InternalApi.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
-using Swashbuckle.AspNetCore.Swagger;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.OpenApi.Models;
 
 namespace EDennis.Samples.Colors.InternalApi {
     public class Startup {
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment) {
-            Environment = environment;
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment) {
+            HostingEnvironment = environment;
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddControllers();
 
             //AspNetCore.Base config
-            services.AddDbContexts<ColorDbContext,ColorHistoryDbContext>(Configuration, Environment);
+            services.AddDbContexts<ColorDbContext,ColorHistoryDbContext>(Configuration, HostingEnvironment);
             services.AddRepos<ColorRepo>();
 
             services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new Info { Title = "Color API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Color API", Version = "v1" });
             });
 
             services.ConfigureSwaggerGen(options => {
@@ -49,8 +42,8 @@ namespace EDennis.Samples.Colors.InternalApi {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
-            if (env.IsDevelopment()) {
+        public void Configure(IApplicationBuilder app) {
+            if (HostingEnvironment.EnvironmentName == "Development") {
                 app.UseDeveloperExceptionPage();
 
                 app.UseAutoLogin();
@@ -64,7 +57,10 @@ namespace EDennis.Samples.Colors.InternalApi {
 
             app.UseStaticFiles();
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c => {

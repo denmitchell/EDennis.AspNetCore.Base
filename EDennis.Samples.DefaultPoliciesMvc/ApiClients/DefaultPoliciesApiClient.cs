@@ -19,7 +19,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc.ApiClients {
 
         public DefaultPoliciesApiClient(HttpClient client, IConfiguration config,
             ScopeProperties scopeProperties, IdentityServerApi identityServerClient,
-            SecureTokenCache secureTokenCache, IHostingEnvironment hostingEnvironment
+            SecureTokenCache secureTokenCache, IWebHostEnvironment hostingEnvironment
             ) : base(client, config, scopeProperties,
                   identityServerClient,
                 secureTokenCache, hostingEnvironment) { }

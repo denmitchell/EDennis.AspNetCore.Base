@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -27,17 +26,17 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="environment"></param>
         /// <param name="configuration"></param>
         public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
-            SecurityOptions options = null, IHostingEnvironment environment = null, IConfiguration configuration = null) {
+            SecurityOptions options = null, IWebHostEnvironment environment = null, IConfiguration configuration = null) {
 
             var settings = options ?? new SecurityOptions();
 
             IConfiguration config = configuration;
-            IHostingEnvironment env = environment;
+            IWebHostEnvironment env = environment;
 
             if (env == null || config == null) {
                 var provider = services.BuildServiceProvider();
                 config = provider.GetRequiredService<IConfiguration>();
-                env = provider.GetRequiredService<IHostingEnvironment>();
+                env = provider.GetRequiredService<IWebHostEnvironment>();
             }
 
             var assembly = AppDomain.CurrentDomain.GetAssemblies()
@@ -61,7 +60,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var audience = env.ApplicationName;
             if (audience.EndsWith(".Lib")) {
-                audience = audience.Substring(0, audience.Length - 4);
+                audience = audience[0..^4];
             }
 
             var policyNames = GetDefaultPolicyNames(services, assembly);
@@ -142,15 +141,15 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="env">the hosting environment</param>
         public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
             ScopePatternOptions options, IEnumerable<string> policyNames,
-            IHostingEnvironment environment = null) {
+            IWebHostEnvironment environment = null) {
 
             var userScopePrefix = options.UserScopePrefix ?? "user_";
 
-            IHostingEnvironment env = environment;
+            IWebHostEnvironment env = environment;
 
             if (env == null) {
                 var provider = services.BuildServiceProvider();
-                env = provider.GetRequiredService<IHostingEnvironment>();
+                env = provider.GetRequiredService<IWebHostEnvironment>();
             }
 
             services.AddAuthorization(opt => {
@@ -173,12 +172,12 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         private static IEnumerable<string> GetDefaultPolicyNames(IServiceCollection services, Assembly assembly,
-            IHostingEnvironment environment = null) {
+            IWebHostEnvironment environment = null) {
 
-            IHostingEnvironment env = environment;
+            IWebHostEnvironment env = environment;
             if (env == null) {
                 var provider = services.BuildServiceProvider();
-                env = provider.GetRequiredService<IHostingEnvironment>();
+                env = provider.GetRequiredService<IWebHostEnvironment>();
             }
 
             var applicationName = env.ApplicationName;
