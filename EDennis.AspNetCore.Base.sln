@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Colors2Api.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ScopedLogging.ColorsApi", "EDennis.Samples.ScopedLogging.ColorsApi\EDennis.Samples.ScopedLogging.ColorsApi.csproj", "{C5DDD3FA-5A5F-43B2-963A-39F98B79060C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.DefaultPoliciesMvc", "EDennis.Samples.DefaultPoliciesMvc\EDennis.Samples.DefaultPoliciesMvc.csproj", "{9B5DADD6-74D1-438D-8D98-DC1956D389A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DefaultPoliciesMvc", "EDennis.Samples.DefaultPoliciesMvc\EDennis.Samples.DefaultPoliciesMvc.csproj", "{9B5DADD6-74D1-438D-8D98-DC1956D389A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

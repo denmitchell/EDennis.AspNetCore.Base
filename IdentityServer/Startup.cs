@@ -1,83 +1,98 @@
-﻿// Slightly adapted from ...
-// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using IdentityModel;
-using IdentityModel.Client;
+using IdentityServer4;
+using IdentityServer4.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
-namespace IdentityServer {
-    public class Startup {
-
-        public IWebHostEnvironment HostingEnvironment { get; }
+namespace IdentityServer
+{
+    public class Startup
+    {
+        public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IWebHostEnvironment environment, IConfiguration config) {
-            HostingEnvironment = environment;
-            Configuration = config;
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
+        {
+            Environment = environment;
+            Configuration = configuration;
         }
 
-        public void ConfigureServices(IServiceCollection services) {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews();
 
-            var builder = services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers())
-                .AddProfileService<StaticClaimsProfileService>();
+            services.Configure<IISOptions>(options =>
+            {
+                options.AutomaticAuthentication = false;
+                options.AuthenticationDisplayName = "Windows";
+            });
 
-            if (HostingEnvironment.EnvironmentName == "Development") {
-                //var dir = Environment.ContentRootPath;
-                //var cert = new X509Certificate2($"{dir}/is4.pfx","is4",keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet);
-                //builder.AddSigningCredential(cert);
-                builder.AddDeveloperSigningCredential(true,"temp.rsa");
-            } else {
+            var builder = services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+            })
+                .AddTestUsers(TestUsers.Users);
+
+            // in-memory, code config
+            builder.AddInMemoryIdentityResources(Config.GetIdentityResources());
+            builder.AddInMemoryApiResources(Config.GetApis());
+            builder.AddInMemoryClients(Config.GetClients());
+            builder.AddTestUsers(Config.GetUsers());
+            builder.AddProfileService<StaticClaimsProfileService>();
+
+            // or in-memory, json config
+            //builder.AddInMemoryIdentityResources(Configuration.GetSection("IdentityResources"));
+            //builder.AddInMemoryApiResources(Configuration.GetSection("ApiResources"));
+            //builder.AddInMemoryClients(Configuration.GetSection("clients"));
+
+            if (Environment.IsDevelopment())
+            {
+                builder.AddDeveloperSigningCredential();
+            }
+            else
+            {
                 throw new Exception("need to configure key material");
             }
 
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    // register your IdentityServer with Google at https://console.developers.google.com
+                    // enable the Google+ API
+                    // set the redirect URI to http://localhost:5000/signin-google
+                    options.ClientId = "copy client ID from Google here";
+                    options.ClientSecret = "copy client secret from Google here";
+                });
         }
 
-        public X509Certificate2 GetCert() {
-            X509Certificate2 cert = null;
-            using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.LocalMachine)) {
-                certStore.Open(OpenFlags.ReadOnly);
-                X509Certificate2Collection certCollection = certStore.Certificates.Find(
-                    X509FindType.FindByThumbprint,
-                    // Replace below with your cert's thumbprint
-                    "975FAB88433D95CB677892F7B92ED53A204ED929",
-                    false);
-
-                // Get the first cert with the thumbprint
-                if (certCollection.Count > 0) {
-                    cert = certCollection[0];
-                }
-            }
-            return cert;
-        }
-
-
-        public void Configure(IApplicationBuilder app) {
-            if (HostingEnvironment.EnvironmentName == "Development") {
+        public void Configure(IApplicationBuilder app)
+        {
+            if (Environment.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
+            app.UseRouting();
             app.UseIdentityServer();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+            });
         }
-
-
-
     }
 }

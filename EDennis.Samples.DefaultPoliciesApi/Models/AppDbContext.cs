@@ -30,10 +30,6 @@ namespace EDennis.Samples.DefaultPoliciesApi.Models
                         new Position { Id = 2, Title = "Employee" }
                         );
 
-            Debug.WriteLine(Database.GetDbConnection().ConnectionString);
-            Debug.WriteLine($"Database.IsInMemory():{Database.IsInMemory()}");
-            Debug.WriteLine($"Database.IsSqlite():{Database.IsSqlite()}");
-            Debug.WriteLine($"Database.IsSqlServer():{Database.IsSqlServer()}");
         }
     }
 }
