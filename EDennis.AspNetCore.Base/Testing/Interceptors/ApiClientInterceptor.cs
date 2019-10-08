@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
+    [Obsolete ("Use ScopePropertiesMiddleware to copy headers to ScopeProperties to make available to ApiClients and other classes.")]
     public class ApiClientInterceptor<TClient> : Interceptor
         where TClient : ApiClient {
 

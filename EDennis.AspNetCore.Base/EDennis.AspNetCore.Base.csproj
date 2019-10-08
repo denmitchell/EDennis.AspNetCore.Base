@@ -41,6 +41,7 @@
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="DevExpress.Xpo" Version="19.1.4" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
     <PackageReference Include="EDennis.MigrationsExtensions" Version="3.5.0" />
     <PackageReference Include="Flurl" Version="3.0.0-pre1" />
