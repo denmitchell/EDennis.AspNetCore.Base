@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>3.0.0-pre</Version>
+    <Version>3.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -16,7 +16,6 @@
     <!--<PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>-->
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
     <PackageReleaseNotes>Support .NET Core 3.0</PackageReleaseNotes>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
 
@@ -25,8 +24,17 @@
   <PropertyGroup>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Package\icon.png" Pack="true" PackagePath="\" />
+    <None Update="Package\icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>  
@@ -34,7 +42,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.30" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
-    <PackageReference Include="EDennis.MigrationsExtensions" Version="3.1.7" />
+    <PackageReference Include="EDennis.MigrationsExtensions" Version="3.5.0" />
     <PackageReference Include="Flurl" Version="3.0.0-pre1" />
     <!--<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />-->
     <PackageReference Include="IdentityModel" Version="4.0.0" />
@@ -58,11 +66,5 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
   </ItemGroup>  
   
-  <ItemGroup>
-    <None Include="Package\icon.png" Pack="true" PackagePath="\" />
-    <None Update="Package\icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
 </Project>

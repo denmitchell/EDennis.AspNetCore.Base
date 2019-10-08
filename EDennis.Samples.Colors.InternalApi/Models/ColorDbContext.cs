@@ -1,14 +1,10 @@
-﻿using System;
-using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Linq;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
+using Microsoft.EntityFrameworkCore;
 
 namespace EDennis.Samples.Colors.InternalApi.Models {
 
-    
+
     public class ColorDbContextDesignTimeFactory :
         MigrationsExtensionsDbContextDesignTimeFactory<ColorDbContext> { }
 
