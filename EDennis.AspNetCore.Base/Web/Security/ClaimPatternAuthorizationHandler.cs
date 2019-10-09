@@ -15,14 +15,14 @@ namespace EDennis.AspNetCore.Base.Security {
     /// NOTE: This is adapted from ... https://github.com/aspnet/Security/blob/master/src/Microsoft.AspNetCore.Authorization/Infrastructure/ClaimsAuthorizationRequirement.cs
     /// 
     /// </summary>
-    public class ClaimPatternAuthorizationRequirement : AuthorizationHandler<ClaimPatternAuthorizationRequirement>, IAuthorizationRequirement {
+    public class ClaimPatternAuthorizationHandler : AuthorizationHandler<ClaimPatternAuthorizationHandler>, IAuthorizationRequirement {
         /// <summary>
-        /// Creates a new instance of <see cref="ClaimPatternAuthorizationRequirement"/>.
+        /// Creates a new instance of <see cref="ClaimPatternAuthorizationHandler"/>.
         /// </summary>
         /// <param name="claimType">The claim type that must be absent if no values are provided.</param>
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
-        public ClaimPatternAuthorizationRequirement(
+        public ClaimPatternAuthorizationHandler(
                 string requirementScope, ScopePatternOptions options) {
 
             RequirementScope = requirementScope.ToLower();
@@ -83,7 +83,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="context">The authorization context.</param>
         /// <param name="requirement">The requirement to evaluate.</param>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-            ClaimPatternAuthorizationRequirement requirement) {
+            ClaimPatternAuthorizationHandler requirement) {
 
             var found = false;
 
