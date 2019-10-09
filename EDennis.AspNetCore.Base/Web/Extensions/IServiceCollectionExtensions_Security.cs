@@ -124,8 +124,8 @@ namespace EDennis.AspNetCore.Base.Web {
                    });
             }
 
-            services.AddAuthorizationWithDefaultPolicies(assembly,
-                settings.ScopePatternOptions, policyNames, env);
+            //services.AddAuthorizationWithDefaultPolicies(assembly,
+            //    settings.ScopePatternOptions, policyNames, env);
 
         }
 

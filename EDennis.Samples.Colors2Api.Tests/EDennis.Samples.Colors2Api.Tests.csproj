@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.Colors2Api\EDennis.Samples.Colors2Api.csproj" />
   </ItemGroup>
 
 </Project>

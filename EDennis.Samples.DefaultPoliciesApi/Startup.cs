@@ -75,6 +75,12 @@ namespace EDennis.Samples.DefaultPoliciesApi {
 
             services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
 
+            services.AddMvc(options => {
+                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            .ExcludeReferencedProjectControllers<A.Startup>();
+
+
             //add an AuthorizationPolicyProvider using a factory pattern, 
             //so that the construction of the class is delayed until after
             //AddDefaultAuthorizationPolicyConvention is called
@@ -83,9 +89,6 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                     Configuration, securityOptions.ScopePatternOptions);
             });
 
-            services.AddMvc(options => {
-                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
             Task.Run(() => {

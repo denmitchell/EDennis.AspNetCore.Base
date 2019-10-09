@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DefaultPoliciesApi\EDennis.Samples.DefaultPoliciesApi.csproj" />
+    <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
   </ItemGroup>
 
 

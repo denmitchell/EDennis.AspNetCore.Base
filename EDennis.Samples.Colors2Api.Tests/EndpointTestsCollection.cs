@@ -2,7 +2,7 @@
 using EDennis.Samples.Colors2Api;
 using Xunit;
 
-namespace EDennis.Samples.Colors2Api {
+namespace EDennis.Samples.Colors2Api.Tests {
 
     [CollectionDefinition("Endpoint Tests")]
     public class EndpointTestsCollection 

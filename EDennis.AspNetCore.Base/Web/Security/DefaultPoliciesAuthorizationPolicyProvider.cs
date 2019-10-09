@@ -7,24 +7,18 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Security {
     public class DefaultPoliciesAuthorizationPolicyProvider : IAuthorizationPolicyProvider {
 
-        private readonly AuthorizationOptions _options = new AuthorizationOptions();
-        private Task<AuthorizationPolicy> _cachedDefaultPolicy;
+        private AuthorizationOptions _options;
+        private Task<AuthorizationPolicy> _cachedPolicyTask;
+        private IConfiguration _configuration;
+        private ScopePatternOptions _scopePatternOptions;
+        
 
+        public DefaultPoliciesAuthorizationPolicyProvider(IConfiguration configuration, 
+            ScopePatternOptions scopePatternOptions) {
 
-        public DefaultPoliciesAuthorizationPolicyProvider(IConfiguration configuration, ScopePatternOptions options) {
-
-            //***
-            //*** Get the DefaultPolicies added to configuration 
-            //*** by AddDefaultAuthorizationPolicyConvention
-            //***
-            List<string> policies = new List<string>();
-            configuration.Bind("DefaultPolicies", policies);
-
-            foreach(var policy in policies)
-                _options.AddPolicy(policy, builder => {
-                    builder.RequireClaimPatternMatch(policy, options);
-            });
-
+            _configuration = configuration;
+            _scopePatternOptions = scopePatternOptions;
+            
         }
 
         /// <summary>
@@ -32,11 +26,15 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         /// <returns>The default authorization policy.</returns>
         public Task<AuthorizationPolicy> GetDefaultPolicyAsync() {
-            return GetCachedPolicy(ref _cachedDefaultPolicy, _options.DefaultPolicy);
+            if (_options == null)
+                BuildPolicyOptions();
+            return GetCachedPolicy(ref _cachedPolicyTask, _options.DefaultPolicy);
         }
 
 
         private Task<AuthorizationPolicy> GetCachedPolicy(ref Task<AuthorizationPolicy> cachedPolicy, AuthorizationPolicy currentPolicy) {
+            if (_options == null)
+                BuildPolicyOptions();
             var local = cachedPolicy;
             if (local == null || local.Result != currentPolicy) {
                 cachedPolicy = local = Task.FromResult(currentPolicy);
@@ -53,7 +51,30 @@ namespace EDennis.AspNetCore.Base.Security {
             // MVC caches policies specifically for this class, so this method MUST return the same policy per
             // policyName for every request or it could allow undesired access. It also must return synchronously.
             // A change to either of these behaviors would require shipping a patch of MVC as well.
+            if (_options == null)
+                BuildPolicyOptions();
             return Task.FromResult(_options.GetPolicy(policyName));
         }
+
+        private void BuildPolicyOptions() {
+            _options = new AuthorizationOptions();
+
+            //***
+            //*** Get the DefaultPolicies added to configuration 
+            //*** by AddDefaultAuthorizationPolicyConvention
+            //***
+            Dictionary<string, string> policies = new Dictionary<string, string>();
+            _configuration.Bind("DefaultPolicies", policies);
+
+            if (policies.Count > 0) {
+                foreach (var policy in policies.Keys)
+                    _options.AddPolicy(policy, builder => {
+                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions);
+                    });                
+            }
+
+        }
+
+
     }
 }

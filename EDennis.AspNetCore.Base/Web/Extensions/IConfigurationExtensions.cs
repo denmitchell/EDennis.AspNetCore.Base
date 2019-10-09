@@ -108,7 +108,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public static Dictionary<string, ApiConfig> GetApiConfig(this IConfiguration config) {
 
-            var env = config["ASPNETCORE_ENVIRONMENT"];
+            var env = config["ASPNETCORE_ENVIRONMENT"] ?? "Development";
 
             var apis = new Dictionary<string, ApiConfig>();
             var apiConfig = config.GetJsonConfiguration($"appsettings.{env}.json")
