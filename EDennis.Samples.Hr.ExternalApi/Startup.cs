@@ -51,7 +51,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
             var securityOptions = new SecurityOptions();
             Configuration.GetSection("Security").Bind(securityOptions);
 
-            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
+            services.AddAuthentication(securityOptions);
 
             services.AddControllers(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));

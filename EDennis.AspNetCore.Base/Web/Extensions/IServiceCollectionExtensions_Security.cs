@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="options"></param>
         /// <param name="environment"></param>
         /// <param name="configuration"></param>
-        public static void AddClientAuthenticationAndAuthorizationWithDefaultPolicies(this IServiceCollection services,
+        public static void AddAuthentication(this IServiceCollection services,
             SecurityOptions options = null, IWebHostEnvironment environment = null, IConfiguration configuration = null) {
 
             var settings = options ?? new SecurityOptions();
@@ -63,7 +63,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 audience = audience[0..^4];
             }
 
-            var policyNames = GetDefaultPolicyNames(services, assembly);
 
             if (settings.ClearDefaultInboundClaimTypeMap)
                 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -106,12 +105,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
                        var scopes = new List<string>();
 
-                       if (settings.OidcOptions.OidcScopeOptions.AddClientId)
-                           scopes.Add(audience);
                        if (settings.OidcOptions.OidcScopeOptions.AddOfflineAccess)
                            scopes.Add("offline_access");
-                       if (settings.OidcOptions.OidcScopeOptions.AddDefaultPolicies)
-                           scopes.AddRange(policyNames);
 
                        scopes.AddRange(settings.OidcOptions.OidcScopeOptions.AdditionalScopes);
 
@@ -122,128 +117,6 @@ namespace EDennis.AspNetCore.Base.Web {
                    });
             }
 
-            services.AddAuthorizationWithDefaultPolicies(assembly,
-                settings.ScopePatternOptions, policyNames, env);
-
-        }
-
-        /// <summary>
-        /// Adds all action-level policies,
-        /// where the policy name is  ...
-        /// 
-        /// {ApplicationName}.{ControllerName}.{ActionName}
-        /// 
-        /// NOTE: this method is designed to be used with
-        /// <see cref="AddDefaultAuthorizationPolicyConvention"/>
-        /// 
-        /// </summary>
-        /// <param name="services">the service collection</param>
-        /// <param name="env">the hosting environment</param>
-        public static void AddAuthorizationWithDefaultPolicies(this IServiceCollection services, Assembly assembly,
-            ScopePatternOptions options, IEnumerable<string> policyNames,
-            IWebHostEnvironment environment = null) {
-
-            var userScopePrefix = options.UserScopePrefix ?? "user_";
-
-            IWebHostEnvironment env = environment;
-
-            if (env == null) {
-                var provider = services.BuildServiceProvider();
-                env = provider.GetRequiredService<IWebHostEnvironment>();
-            }
-
-            services.AddAuthorization(opt => {
-
-                var applicationName = env.ApplicationName;
-                var controllers = GetControllerTypes(assembly);
-
-                foreach (var policyName in policyNames) {
-                    var requirementScope = policyName;
-                    opt.AddPolicy(policyName, builder => {
-                        builder.RequireClaimPatternMatch(requirementScope, options);
-                    });
-
-                }
-
-            });
-
-
-        }
-
-
-        private static IEnumerable<string> GetDefaultPolicyNames(IServiceCollection services, Assembly assembly,
-            IWebHostEnvironment environment = null) {
-
-            IWebHostEnvironment env = environment;
-            if (env == null) {
-                var provider = services.BuildServiceProvider();
-                env = provider.GetRequiredService<IWebHostEnvironment>();
-            }
-
-            var applicationName = env.ApplicationName;
-            var controllers = GetControllerTypes(assembly);
-
-            var policyNames = new List<string>();
-
-            foreach (var controller in controllers) {
-
-                var controllerPath = applicationName + "." + Regex.Replace(controller.Name, "Controller$", "");
-                var actions = GetActionMethods(controller);
-
-                foreach (var action in actions) {
-                    var policyName = controllerPath + '.' + action.Name;
-                    policyNames.Add(policyName);
-
-                }
-            }
-
-            return policyNames;
-
-        }
-
-        /// <summary>
-        /// Returns a collection of controller types
-        /// </summary>
-        /// <returns>all controller types</returns>
-        private static IEnumerable<Type> GetControllerTypes(Assembly assembly) {
-            var controllerTypes = assembly.GetTypes()
-                .Where(t =>
-                    t.IsSubclassOf(typeof(ControllerBase)) ||
-                    t.IsSubclassOf(typeof(Controller)) ||
-                    t.GetCustomAttribute<ApiControllerAttribute>() != null ||
-                    t.GetCustomAttribute<RouteAttribute>() != null
-                    );
-            return controllerTypes;
-        }
-
-
-        //list of HTTP Method attributes
-        static readonly Type[] httpMethodAttributes = new Type[] {
-                typeof(HttpGetAttribute),
-                typeof(HttpPostAttribute),
-                typeof(HttpPutAttribute),
-                typeof(HttpPatchAttribute),
-                typeof(HttpDeleteAttribute),
-                typeof(HttpOptionsAttribute),
-                typeof(HttpHeadAttribute) };
-
-        /// <summary>
-        /// returns a collection of action methods
-        /// </summary>
-        /// <param name="controllerType">the controller</param>
-        /// <returns>all action methods associated with the indicated controller</returns>
-        private static IEnumerable<MethodInfo> GetActionMethods(Type controllerType) {
-            var methods = controllerType
-                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(m => !m.IsSpecialName)
-                .Union(
-                    controllerType
-                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                            .Where(m => m.GetCustomAttributes(true)
-                                .Any(h => httpMethodAttributes.Contains(h.GetType()))
-                          )
-                 );
-            return methods;
         }
 
 

@@ -52,7 +52,7 @@ namespace EDennis.Samples.Hr.InternalApi1 {
             Configuration.GetSection("Security").Bind(securityOptions);
 
 
-            services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies(securityOptions);
+            services.AddAuthentication(securityOptions);
 
             services.AddControllers(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));

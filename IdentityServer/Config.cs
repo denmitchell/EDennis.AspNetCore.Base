@@ -502,7 +502,6 @@ namespace IdentityServer
                         "user_scope",
                         "role",
                         "name",
-                        "EDennis.Samples.DefaultPoliciesMvc",
                         "EDennis.Samples.DefaultPoliciesApi"
                     },
                     AllowOfflineAccess = true,
