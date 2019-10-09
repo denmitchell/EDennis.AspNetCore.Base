@@ -36,7 +36,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
 
         private async Task SetBearerToken(IConfiguration config) {
-            List<ApiConfig> apis = new List<ApiConfig>();
+            Dictionary<string, ApiConfig> apis = new Dictionary<string, ApiConfig>();
 
             config.GetSection("Apis").Bind(apis);
             var clientSecret = config["Security:ClientSecret"];
@@ -44,35 +44,36 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             if (string.IsNullOrEmpty(clientSecret))
                 throw new ApplicationException($"Configuration for {_hostingEnvironment.ApplicationName} is missing its Secret (string) setting");
 
-            var targetApi = apis
-                .Where(x => CleanUrl(x.BaseAddress) == CleanUrl(HttpClient.BaseAddress))
-                .FirstOrDefault();
+            var targetApiName = this.GetType().Name;
+
+            var targetApi = apis[targetApiName];
+            //.Where(x => CleanUrl(x.BaseAddress) == CleanUrl(HttpClient.BaseAddress))
+            //.FirstOrDefault();
 
             if (targetApi.Scopes == null || targetApi.Scopes.Count() == 0)
-                throw new ApplicationException($"Configuration for {targetApi.ProjectName} is missing its Scopes (string[]) setting");
+                throw new ApplicationException($"Configuration for {targetApiName} is missing its Scopes (string[]) setting");
 
 
             TokenResponse tokenResponse = null;
 
             //try to get the access token from the cache
-            _secureTokenCache.TryGetValue(targetApi.ProjectName, out CachedToken cachedToken);
+            _secureTokenCache.TryGetValue(targetApiName, out CachedToken cachedToken);
             if (cachedToken != null && cachedToken.Expiration < DateTime.Now.Subtract(TimeSpan.FromSeconds(10))) {
                 tokenResponse = cachedToken.TokenResponse;
-            }
-            else {
-                var identityServerApi = apis
-                    .Where(x => CleanUrl(x.BaseAddress) == CleanUrl(_identityServerApiClient.HttpClient.BaseAddress))
-                    .FirstOrDefault();
+            } else {
+                //var identityServerApi = apis
+                //    .Where(x => CleanUrl(x.Value.BaseAddress) == CleanUrl(_identityServerApiClient.HttpClient.BaseAddress))
+                //    .FirstOrDefault();
 
                 //get a new token
-                tokenResponse = await GetTokenResponse(targetApi, identityServerApi, clientSecret);
+                tokenResponse = await GetTokenResponse(targetApi, _identityServerApiClient, clientSecret);
 
                 //update cache
                 cachedToken = new CachedToken {
                     TokenResponse = tokenResponse,
                     Expiration = DateTime.Now.Add(TimeSpan.FromSeconds(tokenResponse.ExpiresIn))
                 };
-                _secureTokenCache[targetApi.ProjectName] = cachedToken;
+                _secureTokenCache[targetApiName] = cachedToken;
 
             }
 
@@ -84,6 +85,8 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
         }
 
         private string CleanUrl(string url) {
+            if (url == null)
+                throw new ApplicationException($"You must specify a Base Address for {this.GetType().Name}");
             return Regex.Replace(Regex.Replace(url, "/$", ""), "\\$", "");
         }
         private string CleanUrl(Uri uri) {
@@ -92,12 +95,13 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
 
 
-        private async Task<TokenResponse> GetTokenResponse(ApiConfig targetApi, ApiConfig identityServerApi, string clientSecret) {
+        private async Task<TokenResponse> GetTokenResponse(ApiConfig targetApi, ApiClient identityServerApi, string clientSecret) {
 
+            var isUrl = identityServerApi.HttpClient.BaseAddress.ToString();
 
-            var disco = await _identityServerApiClient.HttpClient.GetDiscoveryDocumentAsync(identityServerApi.BaseAddress);
+            var disco = await _identityServerApiClient.HttpClient.GetDiscoveryDocumentAsync(isUrl);
             if (disco.IsError) {
-                throw new ApplicationException($"Cannot retrieve discovery document from {identityServerApi.BaseAddress}");
+                throw new ApplicationException($"Cannot retrieve discovery document from {isUrl}");
             }
 
             // request token
@@ -110,7 +114,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             });
 
             if (tokenResponse.IsError) {
-                throw new ApplicationException($"Cannot retrieve token from {identityServerApi.BaseAddress}");
+                throw new ApplicationException($"Cannot retrieve token from {isUrl}");
             }
 
             return tokenResponse;
@@ -120,4 +124,3 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
     }
 }
-
