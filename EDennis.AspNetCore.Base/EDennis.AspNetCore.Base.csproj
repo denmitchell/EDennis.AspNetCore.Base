@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Version>2.7.5</Version>
+    <Version>2.7.6</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -16,8 +16,8 @@
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
     <PackageReleaseNotes>Added overloads to Get and GetAsync (HttpClientExtensionMethods) that accept two type parameters -- one for the Request Object and the other for the Response Object.</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <AssemblyVersion>2.7.5.0</AssemblyVersion>
-    <FileVersion>2.7.5.0</FileVersion>
+    <AssemblyVersion>2.7.6.0</AssemblyVersion>
+    <FileVersion>2.7.6.0</FileVersion>
 
   </PropertyGroup>
 
