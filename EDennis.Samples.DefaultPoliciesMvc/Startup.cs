@@ -52,7 +52,12 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
             }
 
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options=> {
+                options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
+            })
+                .ExcludeReferencedProjectControllers<A.Startup>()
+                .ExcludeReferencedProjectControllers<B.Startup>();
+
 
             services.Configure<CookiePolicyOptions>(options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -73,6 +78,14 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
             services.AddScoped<ScopeProperties>();
             services.AddApiClients<IdentityServerApi>();
             services.AddApiClient<IDefaultPoliciesApiClient, DefaultPoliciesApiClient>();
+
+            //add an AuthorizationPolicyProvider using a factory pattern, 
+            //so that the construction of the class is delayed until after
+            //AddDefaultAuthorizationPolicyConvention is called
+            services.AddSingleton<IAuthorizationPolicyProvider>(factory => {
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    Configuration, securityOptions.ScopePatternOptions);
+            });
 
 
             services.AddDbContext<AppDbContext>(options =>

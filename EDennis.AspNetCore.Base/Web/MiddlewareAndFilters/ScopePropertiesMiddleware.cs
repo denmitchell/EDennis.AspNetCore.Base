@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +31,7 @@ namespace EDennis.AspNetCore.Base.Web
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
 
+                //set User property
                 scopeProperties.User = _options.UserSource switch
                 {
                     UserSource.CLAIMS_PRINCIPAL_IDENTITY_NAME => context.User?.Identity?.Name,
@@ -38,9 +40,23 @@ namespace EDennis.AspNetCore.Base.Web
                     UserSource.SUBJECT_CLAIM => GetClaimValue(context, JwtClaimTypes.Subject),
                     UserSource.EMAIL_CLAIM => GetClaimValue(context, IdentityServerConstants.StandardScopes.Email),
                     UserSource.PHONE_CLAIM => GetClaimValue(context, IdentityServerConstants.StandardScopes.Phone),
-                    UserSource.CLIENT_ID_CLAIM => GetClaimValue(context, IdentityServerConstants.),
-                    _ => context.User?.Claims?.FirstOrDefault(x => x.Type == _options.UserSourceClaimType)?.Value
+                    UserSource.CLIENT_ID_CLAIM => GetClaimValue(context, JwtClaimTypes.ClientId),
+                    UserSource.CUSTOM_CLAIM => GetClaimValue(context, _options.UserSourceClaimType),
+                    UserSource.SESSION_ID => context.Session?.Id,
+                    UserSource.X_USER_HEADER => GetHeaderValue(context,"X-User"),
+                    _ => null
                 };
+
+                foreach (var prefix in _options.StoreHeadersWithPrefixes) {
+                    var headers = context.Request.Headers
+                        .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        .Select(y => (y.Value.ToArray()).Select(x => KeyValuePair.Create(y,x)));
+
+                    scopeProperties.Headers.AddRange(headers);
+
+                        .SelectMany(x => x).Select(y=> new  item.Value.ToArray(), 
+                            (item,value) => Tuple.Create(item.Key, item.Value));
+                    }
 
                 string sysUser = null;
                 var sources = _options.Sources.ToArray();
@@ -108,6 +124,12 @@ namespace EDennis.AspNetCore.Base.Web
         private string GetClaimValue(HttpContext context, string claimType)
             => context.User?.Claims?.FirstOrDefault(x 
                 => x.Type.Equals(claimType,StringComparison.OrdinalIgnoreCase))?.Value;
+
+
+        private string GetHeaderValue(HttpContext context, string headerKey)
+            => context.Request?.Headers?.FirstOrDefault(x
+                => x.Key.Equals(headerKey, StringComparison.OrdinalIgnoreCase)).Value.ToString();
+
 
     }
 
