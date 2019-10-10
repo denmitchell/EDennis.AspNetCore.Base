@@ -46,7 +46,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 params Expression<Func<TEntity, dynamic>>[] orderSelectors
                 ) {
 
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tfrom={from}\n\tto={to}\n\tpredicate={predicate}\n\tpageNumber={pageNumber}\n\tpageSize={pageSize}",
+                U, M("QueryAsOf"), from, to, predicate, pageNumber, pageSize);
+            #endregion
+
             var asOfPredicate = GetAsOfRangePredicate(from, to);
+
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tlocal variable: asOfPredicate={asOfPredicate}",
+                U, M("QueryAsOf"), asOfPredicate);
+            #endregion
 
             var current = Context.Set<TEntity>()
                 .Where(predicate)
@@ -55,12 +65,22 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .Take(pageSize)
                 .AsNoTracking();
 
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tlocal variable: current={current}",
+                U, M("QueryAsOf"), D(current));
+            #endregion
+
             var history = HistoryContext.Set<TEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
                 .AsNoTracking();
+
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tlocal variable: history={history}",
+                U, M("QueryAsOf"), D(current));
+            #endregion
 
             if (orderSelectors.Length > 0) {
                 var currentOrdered = OrderByUtils
@@ -75,6 +95,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
             var union = current.ToList().Union(history.ToList()).ToList();
+
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tReturning: {Return}",
+                U, M("QueryAsOf"), D(union));
+            #endregion
 
             return union;
         }

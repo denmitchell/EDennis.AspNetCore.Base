@@ -50,7 +50,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public AutoJson D(object data) => new AutoJson(data);
+        public AutoJson D(dynamic data) => new AutoJson(data);
         #endregion
 
         /// <summary>
