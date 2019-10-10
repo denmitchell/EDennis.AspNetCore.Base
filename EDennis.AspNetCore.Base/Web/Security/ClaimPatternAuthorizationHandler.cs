@@ -28,6 +28,8 @@ namespace EDennis.AspNetCore.Base.Security {
             RequirementScope = requirementScope.ToLower();
 
             if (options != null) {
+                ExactMatchOnly = options.ExactMatchOnly;
+
                 IsOidc = options.IsOidc;
                 if (IsOidc)
                     UserScopePrefix = options.UserScopePrefix?.ToLower();
@@ -55,6 +57,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string RequirementScope { get; }
 
+        public bool ExactMatchOnly { get; set; } = false;
         public string UserScopePrefix { get; } = "user_";
         public bool IsOidc { get; }
         public string PatternClaimType { get; } = "role";
@@ -141,11 +144,14 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 hasPositiveScopes = true;
 
-                if (pattern.ToLower() == requirementPattern.ToLower())
+                //exact match (ignoring case)
+                if (pattern.Equals(requirementPattern,StringComparison.OrdinalIgnoreCase))
                     found = true;
-                else if (requirementPattern.ToLower().StartsWith(pattern.ToLower() + "."))
+                //match on segment (app-level policy or controller-level policy)
+                else if (!ExactMatchOnly && requirementPattern.StartsWith(pattern + ".", StringComparison.OrdinalIgnoreCase))
                     found = true;
-                else if (Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
+                //match on regular expression
+                else if (!ExactMatchOnly && Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
                     found = true;
             }
 

@@ -5,6 +5,8 @@ using System.Text;
 namespace EDennis.AspNetCore.Base.Security {
     public class ScopePatternOptions {
 
+        public bool ExactMatchOnly { get; set; } = false;
+
         public string UserScopePrefix { get; internal set; }
 
         public bool IsOidc { get; internal set; } = false;
