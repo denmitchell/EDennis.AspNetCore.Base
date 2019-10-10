@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+
 
 namespace EDennis.AspNetCore.Base.Security {
     /// <summary>
@@ -28,39 +27,24 @@ namespace EDennis.AspNetCore.Base.Security {
             RequirementScope = requirementScope.ToLower();
 
             if (options != null) {
-                ExactMatchOnly = options.ExactMatchOnly;
 
                 IsOidc = options.IsOidc;
+
                 if (IsOidc)
                     UserScopePrefix = options.UserScopePrefix?.ToLower();
 
-                PatternClaimType = options.PatternClaimType.ToLower();
-                //NamedPatterns = options.Value.NamedPatterns;
-
-                if (options.NamedPatterns != null && options.NamedPatterns.Count() > 0)
-                    MatchingNamedPatterns = options.NamedPatterns
-                        .Where(p => IsPatternMatch(requirementScope, p.Value)).Select(p => p.Key.ToLower());
-
-                GloballyIgnoredScopes = options.GloballyIgnoredScopes;
                 ExclusionPrefix = options.ExclusionPrefix;
             }
         }
 
-        /// <summary>
-        /// Gets the claim types, one or more of which must be present.
-        /// </summary>
-        public string ClaimType { get; }
 
         /// <summary>
-        /// Gets the optional list of claim values, which, if present, 
-        /// the claim must match.
+        /// Gets the scope/policy value a scope claim pattern must match
         /// </summary>
         public string RequirementScope { get; }
 
-        public bool ExactMatchOnly { get; set; } = false;
         public string UserScopePrefix { get; } = "user_";
         public bool IsOidc { get; }
-        public string PatternClaimType { get; } = "role";
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
@@ -69,15 +53,12 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string ExclusionPrefix { get; } = "-";
 
-        public string[] GloballyIgnoredScopes { get; set; } = new string[] { };
 
+        //list of previously matched patterns that indicate success against the policy
+        public List<string> PositiveMatches { get; } = new List<string> { };
 
-        /// <summary>
-        /// NOTE: This can be used to configure roles for users.
-        /// </summary>
-        //public Dictionary<string, string[]> NamedPatterns { get; }
-
-        public IEnumerable<string> MatchingNamedPatterns { get; } = new string[] { };
+        //list of previous matched patterns that indicate failure against the policy
+        public List<string> NegativeMatches { get; } = new List<string> { };
 
 
         /// <summary>
@@ -88,94 +69,143 @@ namespace EDennis.AspNetCore.Base.Security {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             ClaimPatternAuthorizationHandler requirement) {
 
-            var found = false;
+            MatchType matchType = MatchType.Unmatched;
+
+            var scopeClaimType = $"{(IsOidc ? UserScopePrefix : "")}scope".ToLower();
 
             if (context.User.Claims != null && context.User.Claims.Count() > 0) {
 
-                found = context.User.Claims
-                        .Any(c => c.Type.ToLower() == PatternClaimType 
-                            && MatchingNamedPatterns
-                                .Contains(c.Value.ToLower()));
+                var scopeClaims = context.User.Claims
+                        .Where(c => c.Type.ToLower() == scopeClaimType)
+                        .Select(c => c.Value.ToLower());
 
-                if (!found) {
+                //if the cache of positive matches contains one of the provided 
+                //scope patterns, the requirement will be met and no further processing will occur
+                matchType = scopeClaims.Any(c => PositiveMatches.Contains(c)) ? MatchType.Positive : MatchType.Unmatched;
 
-                    var scopeClaimTypes = new List<string> { "scope" };
-                    if (IsOidc)
-                        scopeClaimTypes.Add($"{UserScopePrefix}scope"); 
 
-                    var scopePatterns = context.User?.Claims?
-                        .Where(c => scopeClaimTypes.Contains(c.Type.ToLower()))
-                        .Select(c => c.Value)
-                        .Where(s => !GloballyIgnoredScopes.Contains(s));
+                //if unmatched and the cache of negative matches contains one of the 
+                //provided scope patterns, flag as a negative match
+                if (matchType == MatchType.Unmatched)
+                    matchType = scopeClaims.Any(c => NegativeMatches.Contains(c)) ? MatchType.Negative : MatchType.Unmatched;
 
-                    if (scopePatterns != null && scopePatterns.Count() > 0)
-                        found = IsMatch(requirement.RequirementScope, scopePatterns);
-                }
+                //if still unmatched, evaluate the scopeClaims with pattern-matching algorithm
+                if (matchType == MatchType.Unmatched)
+                    matchType = EvaluatePattern(requirement.RequirementScope, scopeClaims);
 
             }
-            if (found) {
+            if (matchType == MatchType.Positive) {
                 context.Succeed(requirement);
             }
             return Task.CompletedTask;
         }
 
-        private bool IsMatch(string requirementScope, IEnumerable<string> testPatterns) {
+        public MatchType EvaluatePattern(string requirementPattern, IEnumerable<string> scopeClaims) {
 
-            foreach (var pattern in testPatterns.Select(p => p.ToLower())) {
-                if (pattern == requirementScope) {
-                    return true;
-                } else if (requirementScope.StartsWith(pattern + ".")) {
-                    return true;
+            MatchType matchType = MatchType.Unmatched;
+
+            //if the client (or user) has more than one scope (or user_scope) claim,
+            //only one of these scope values has to match (effectively, an OR condition)
+            foreach (var scopeClaim in scopeClaims) {
+                var scope = scopeClaim;
+
+                //prepend a universally matching pattern to scopes that start with an exclusion 
+                if (scopeClaim.StartsWith(ExclusionPrefix))
+                    scope = "*," + scope;
+
+                //logically, we will treat the last matching pattern in the array of patterns 
+                //as the pattern that determines the nature of match -- positive or negative
+                foreach (var pattern in scope.Split().Reverse()) {
+                    if (pattern.StartsWith(ExclusionPrefix)) {
+                        var match = requirementPattern.Matches(pattern.Substring(1));
+                        if (match) {
+                            matchType = MatchType.Negative;
+                            NegativeMatches.Add(scope); //register this pattern in cache as negative match
+                            break; //continue with outer loop if a negative match
+                        }
+                    } else {
+                        var match = requirementPattern.Matches(pattern);
+                        if (match) {
+                            matchType = MatchType.Positive;
+                            PositiveMatches.Add(scope); //register this pattern in cache as positive match
+                            return matchType; //short-circuit if a positive match
+                        }
+                    }
                 }
             }
-            return false;
+            return matchType;
 
         }
-
-
-
-        private bool IsPatternMatch(string requirementPattern, IEnumerable<string> testPatterns) {
-
-            var found = false;
-            var hasPositiveScopes = false;
-
-            foreach (var pattern in testPatterns
-                    .Where(p => !p.StartsWith(ExclusionPrefix))) {
-
-                hasPositiveScopes = true;
-
-                //exact match (ignoring case)
-                if (pattern.Equals(requirementPattern,StringComparison.OrdinalIgnoreCase))
-                    found = true;
-                //match on segment (app-level policy or controller-level policy)
-                else if (!ExactMatchOnly && requirementPattern.StartsWith(pattern + ".", StringComparison.OrdinalIgnoreCase))
-                    found = true;
-                //match on regular expression
-                else if (!ExactMatchOnly && Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
-                    found = true;
-            }
-
-            foreach (var pattern in testPatterns
-                    .Where(p => p.StartsWith(ExclusionPrefix))
-                    .Select(p => p.Substring(ExclusionPrefix.Length))) {
-
-                if (!hasPositiveScopes)
-                    found = true;
-
-                if (pattern.ToLower() == requirementPattern.ToLower())
-                    found = false;
-                else if (requirementPattern.ToLower().StartsWith(pattern.ToLower() + "."))
-                    found = false;
-                else if (Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
-                    found = false;
-            }
-
-            return found;
-
-        }
-
 
     }
+
+    public enum MatchType { Unmatched, Positive, Negative }
+
+    /// <summary>
+    /// From https://www.geeksforgeeks.org/wildcard-pattern-matching/
+    /// This supports ? (single char wildcard) and * (multi-character wildcard)
+    /// </summary>
+    public static class StringExtensions {
+        // Function that matches input str with 
+        // given wildcard pattern 
+        internal static bool Matches(this string str, string pattern) {
+
+            int n = str.Length;
+            int m = str.Length;
+
+            // empty pattern can only match with 
+            // empty string 
+            if (m == 0)
+                return (n == 0);
+
+            // lookup table for storing results of 
+            // subproblems 
+            bool[,] lookup = new bool[n + 1, m + 1];
+
+            // initialize lookup table to false 
+            for (int i = 0; i < n + 1; i++)
+                for (int j = 0; j < m + 1; j++)
+                    lookup[i, j] = false;
+
+            // empty pattern can match with  
+            // empty string 
+            lookup[0, 0] = true;
+
+            // Only '*' can match with empty string 
+            for (int j = 1; j <= m; j++)
+                if (pattern[j - 1] == '*')
+                    lookup[0, j] = lookup[0, j - 1];
+
+            // fill the table in bottom-up fashion 
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= m; j++) {
+                    // Two cases if we see a '*' 
+                    // a) We ignore '*'' character and move 
+                    // to next character in the pattern, 
+                    //     i.e., '*' indicates an empty sequence. 
+                    // b) '*' character matches with ith 
+                    //     character in input 
+                    if (pattern[j - 1] == '*')
+                        lookup[i, j] = lookup[i, j - 1] ||
+                                       lookup[i - 1, j];
+
+                    // Current characters are considered as 
+                    // matching in two cases 
+                    // (a) current character of pattern is '?' 
+                    // (b) characters actually match 
+                    else if (pattern[j - 1] == '?' ||
+                                 str[i - 1] == pattern[j - 1])
+                        lookup[i, j] = lookup[i - 1, j - 1];
+
+                    // If characters don't match 
+                    else lookup[i, j] = false;
+                }
+            }
+            return lookup[n, m];
+        }
+    }
+
+
 }
 
 

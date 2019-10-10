@@ -15,8 +15,6 @@ namespace EDennis.AspNetCore.Base.Security
     public class OidcScopeOptions
     {
         public string UserScopePrefix = "user_";
-        public bool AddClientId { get; set; } = false;
-        public bool AddDefaultPolicies { get; set; } = false;
         public bool AddOfflineAccess { get; set; } = true;
         public string[] AdditionalScopes { get; set; } = new string[] { };
 
