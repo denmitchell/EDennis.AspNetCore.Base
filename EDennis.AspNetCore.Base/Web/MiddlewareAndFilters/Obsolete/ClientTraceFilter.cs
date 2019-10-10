@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Web
 {
 
+    [Obsolete("Use ScopePropertiesMiddleware with AppendHostPath option")]
     public class ClientTraceFilter {
 
         readonly RequestDelegate _next;

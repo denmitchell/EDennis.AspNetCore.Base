@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Linq.Dynamic.Core.Exceptions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
@@ -51,7 +50,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public AutoJson D(dynamic data) => new AutoJson(data);
+        public AutoJson D(object data) => new AutoJson(data);
         #endregion
 
         /// <summary>
@@ -472,7 +471,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             #region logging
             Logger.LogDebug("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}",
-                U, M("GetJsonColumFromStoredProcedure"), spName, D(parms));
+                U, M("GetJsonColumnFromStoredProcedure"), spName, D(parms));
             #endregion
 
             if (_spDefs == null) {
@@ -526,15 +525,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 }
 
                 #region logging
-                Logger.LogDebug("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tReturning: {Return}",
-                    U, M("GetJsonColumFromStoredProcedure"), spName, D(parms), json);
+                Logger.LogTrace("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tReturning: {Return}",
+                    U, M("GetJsonColumnFromStoredProcedure"), spName, D(parms), json);
                 #endregion
                 return json;
 
             } catch (Exception ex) {
                 #region logging
                 Logger.LogError(ex, "For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tError: {Error}",
-                    U, M("GetFromJsonSqlAsync"), spName, D(parms), ex.Message);
+                    U, M("GetJsonColumnFromStoredProcedure"), spName, D(parms), ex.Message);
                 #endregion
                 throw;
             }
@@ -551,36 +550,70 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             string spName,
             IEnumerable<KeyValuePair<string, string>> parms) {
 
-            if (_spDefs == null)
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}",
+                U, M("GetJsonColumnFromStoredProcedureAsync"), spName, D(parms));
+            #endregion
+
+            if (_spDefs == null) {
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tspName={spName},\n\tinvoking {Invoking}",
+                    U, M("GetJsonColumnFromStoredProcedureAsync"), spName, "BuildStoredProcedureDefs()");
+                #endregion
                 BuildStoredProcedureDefs();
+            }
 
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.AddRange(spName, parms, _spDefs);
 
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-            string json;
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tspName={spName},\n\tDynamic Parameters: {DynamicParameters}",
+                U, M("GetJsonColumnFromStoredProcedureAsync"), spName, D(dynamicParameters));
+            #endregion
 
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
+            try {
 
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    transaction: dbTrans,
-                    commandType: CommandType.StoredProcedure);
+                var cxn = Context.Database.GetDbConnection();
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tOpening Connection {ConnectionString}",
+                    U, M("GetJsonColumnFromStoredProcedureAsync"), cxn.ConnectionString);
+                #endregion
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
+                string json;
 
-                json = result.Json ?? result.json ?? result.JSON;
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
 
-            } else {
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    commandType: CommandType.StoredProcedure);
+                    dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                        param: dynamicParameters,
+                        transaction: dbTrans,
+                        commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                    json = result.Json ?? result.json ?? result.JSON;
+
+                } else {
+                    dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                        param: dynamicParameters,
+                        commandType: CommandType.StoredProcedure);
+
+                    json = result.Json ?? result.json ?? result.JSON;
+                }
+
+                #region logging
+                Logger.LogDebug("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tReturning: {Return}",
+                    U, M("GetJsonColumnFromStoredProcedureAsync"), spName, D(parms), json);
+                #endregion
+                return json;
+
+            } catch (Exception ex) {
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tError: {Error}",
+                    U, M("GetJsonColumnFromStoredProcedureAsync"), spName, D(parms), ex.Message);
+                #endregion
+                throw;
             }
 
-            return json;
         }
 
 
@@ -590,37 +623,71 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
         public virtual dynamic GetFromStoredProcedure(
-            string spName,
-            IEnumerable<KeyValuePair<string, string>> parms) {
+            string spName, IEnumerable<KeyValuePair<string, string>> parms) {
 
-            if (_spDefs == null)
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}",
+                U, M("GetFromStoredProcedure"), spName, D(parms));
+            #endregion
+
+            if (_spDefs == null) {
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tspName={spName},\n\tinvoking {Invoking}",
+                    U, M("GetFromStoredProcedure"), spName, "BuildStoredProcedureDefs()");
+                #endregion
                 BuildStoredProcedureDefs();
+            }
 
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.AddRange(spName, parms, _spDefs);
 
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-
-            dynamic result;
-
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-
-                result = cxn.Query<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    transaction: dbTrans,
-                    commandType: CommandType.StoredProcedure);
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tspName={spName},\n\tDynamic Parameters: {DynamicParameters}",
+                U, M("GetFromStoredProcedure"), spName, D(dynamicParameters));
+            #endregion
 
 
-            } else {
-                result = cxn.Query<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    commandType: CommandType.StoredProcedure);
+            try {
+
+                var cxn = Context.Database.GetDbConnection();
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tOpening Connection {ConnectionString}",
+                    U, M("GetFromStoredProcedure"), cxn.ConnectionString);
+                #endregion
+
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
+
+                dynamic result;
+
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
+
+                    result = cxn.Query<dynamic>(sql: $"{spName}",
+                        param: dynamicParameters,
+                        transaction: dbTrans,
+                        commandType: CommandType.StoredProcedure);
+
+
+                } else {
+                    result = cxn.Query<dynamic>(sql: $"{spName}",
+                        param: dynamicParameters,
+                        commandType: CommandType.StoredProcedure);
+                }
+
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tReturning: {Return}",
+                    U, M("GetFromStoredProcedure"), spName, D(parms), D((object)result));
+                #endregion
+                return result;
+
+            } catch (Exception ex) {
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tError: {Error}",
+                    U, M("GetFromStoredProcedure"), spName, D(parms), ex.Message);
+                #endregion
+                throw;
             }
-
-            return result;
         }
 
 
@@ -633,67 +700,122 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             string spName,
             IEnumerable<KeyValuePair<string, string>> parms) {
 
-            if (_spDefs == null)
+            #region logging
+            Logger.LogDebug("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}",
+                U, M("GetFromStoredProcedureAsync"), spName, D(parms));
+            #endregion
+
+            if (_spDefs == null) {
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tspName={spName},\n\tinvoking {Invoking}",
+                    U, M("GetFromStoredProcedureAsync"), spName, "BuildStoredProcedureDefs()");
+                #endregion
                 BuildStoredProcedureDefs();
+            }
 
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.AddRange(spName, parms, _spDefs);
 
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
 
-            dynamic result;
-
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-
-                result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    transaction: dbTrans,
-                    commandType: CommandType.StoredProcedure);
+            #region logging
+            Logger.LogTrace("For {User}, {Method}\n\tspName={spName},\n\tDynamic Parameters: {DynamicParameters}",
+                U, M("GetFromStoredProcedureAsync"), spName, D(dynamicParameters));
+            #endregion
 
 
-            } else {
-                result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    commandType: CommandType.StoredProcedure);
+            try {
+
+                var cxn = Context.Database.GetDbConnection();
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tOpening Connection {ConnectionString}",
+                    U, M("GetFromStoredProcedure"), cxn.ConnectionString);
+                #endregion
+
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
+
+                dynamic result;
+
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
+
+                    result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
+                        param: dynamicParameters,
+                        transaction: dbTrans,
+                        commandType: CommandType.StoredProcedure);
+
+
+                } else {
+                    result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
+                        param: dynamicParameters,
+                        commandType: CommandType.StoredProcedure);
+                }
+
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tReturning: {Return}",
+                    U, M("GetFromStoredProcedureAsync"), spName, D(parms), D((object)result));
+                #endregion
+                return result;
+
+            } catch (Exception ex) {
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tspName={spName}\n\tparms={parms}\n\tError: {Error}",
+                    U, M("GetFromStoredProcedureAsync"), spName, D(parms), ex.Message);
+                #endregion
+                throw;
             }
-
-            return result;
         }
 
 
         public virtual void BuildStoredProcedureDefs() {
 
+            #region logging
+            Logger.LogDebug("For {User}, {Method}", U, M("BuildStoredProcedureDefs"));
+            #endregion
+
             _spDefs = new List<StoredProcedureDef>();
 
-            var cxn = Context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
+            try {
+
+                var cxn = Context.Database.GetDbConnection();
+                #region logging
+                Logger.LogTrace("For {User}, {Method}\n\tOpening Connection {ConnectionString}",
+                    U, M("BuildStoredProcedureDefs"), cxn.ConnectionString);
+                #endregion
+
+                if (cxn.State == ConnectionState.Closed)
+                    cxn.Open();
 
 
-            if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
+                if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                    var dbTrans = trans.GetDbTransaction();
 
-                _spDefs = cxn.Query<StoredProcedureDef>(sql: SQL_SERVER_STORED_PROCEDURE_DEFS,
-                    transaction: dbTrans,
-                    commandType: CommandType.Text)
-                    .ToList();
+                    _spDefs = cxn.Query<StoredProcedureDef>(sql: SQL_SERVER_STORED_PROCEDURE_DEFS,
+                        transaction: dbTrans,
+                        commandType: CommandType.Text)
+                        .ToList();
 
-            } else {
-                _spDefs = cxn.Query<StoredProcedureDef>(sql: SQL_SERVER_STORED_PROCEDURE_DEFS,
-                    commandType: CommandType.Text)
-                    .ToList();
+                } else {
+                    _spDefs = cxn.Query<StoredProcedureDef>(sql: SQL_SERVER_STORED_PROCEDURE_DEFS,
+                        commandType: CommandType.Text)
+                        .ToList();
+                }
+
+
+
+            } catch (Exception ex) {
+                #region logging
+                Logger.LogError(ex, "For {User}, {Method}\n\tError: {Error}",
+                    U, M("BuildStoredProcedureDefs"), ex.Message);
+                #endregion
+                throw;
             }
-
-
         }
 
 
 
         public static string SQL_SERVER_STORED_PROCEDURE_DEFS =
-@"
+        @"
 select  
    schema_name(p1.schema_id) [Schema],
    object_name(p1.object_id) [StoredProcedureName],

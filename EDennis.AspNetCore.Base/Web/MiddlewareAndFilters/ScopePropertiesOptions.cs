@@ -1,5 +1,4 @@
 ﻿using IdentityModel;
-using System;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -19,7 +18,8 @@ namespace EDennis.AspNetCore.Base.Web {
     public class ScopePropertiesOptions {
         public UserSource UserSource { get; set; } = UserSource.CLAIMS_PRINCIPAL_IDENTITY_NAME;
         public string UserSourceClaimType { get; set; }
-        public string[] StoreHeadersWithPrefixes { get; set; } = new string[] { "X-" };
-        public string[] StoreClaimsOfType { get; set; } = new string[] { JwtClaimTypes.Role, JwtClaimTypes.ClientId, JwtClaimTypes.Subject };
+        public string StoreHeadersWithPattern { get; set; } = "^X-";
+        public bool AppendHostPath { get; set; } = false;
+        public string StoreClaimTypesWithPattern { get; set; } = $"^({JwtClaimTypes.Role}|{JwtClaimTypes.ClientId}|{JwtClaimTypes.Subject}$";
     }
 }

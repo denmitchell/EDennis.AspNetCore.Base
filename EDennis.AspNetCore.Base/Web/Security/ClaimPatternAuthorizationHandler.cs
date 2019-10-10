@@ -15,19 +15,22 @@ namespace EDennis.AspNetCore.Base.Security {
     /// NOTE: This is adapted from ... https://github.com/aspnet/Security/blob/master/src/Microsoft.AspNetCore.Authorization/Infrastructure/ClaimsAuthorizationRequirement.cs
     /// 
     /// </summary>
-    public class ClaimPatternAuthorizationRequirement : AuthorizationHandler<ClaimPatternAuthorizationRequirement>, IAuthorizationRequirement {
+    public class ClaimPatternAuthorizationHandler : AuthorizationHandler<ClaimPatternAuthorizationHandler>, IAuthorizationRequirement {
         /// <summary>
-        /// Creates a new instance of <see cref="ClaimPatternAuthorizationRequirement"/>.
+        /// Creates a new instance of <see cref="ClaimPatternAuthorizationHandler"/>.
         /// </summary>
         /// <param name="claimType">The claim type that must be absent if no values are provided.</param>
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
-        public ClaimPatternAuthorizationRequirement(
+        public ClaimPatternAuthorizationHandler(
                 string requirementScope, ScopePatternOptions options) {
 
             RequirementScope = requirementScope.ToLower();
 
             if (options != null) {
+
+                ExactMatchOnly = options.ExactMatchOnly;
+
                 IsOidc = options.IsOidc;
                 if (IsOidc)
                     UserScopePrefix = options.UserScopePrefix?.ToLower();
@@ -55,6 +58,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string RequirementScope { get; }
 
+        public bool ExactMatchOnly { get; } = false;
         public string UserScopePrefix { get; } = "user_";
         public bool IsOidc { get; }
         public string PatternClaimType { get; } = "role";
@@ -83,7 +87,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="context">The authorization context.</param>
         /// <param name="requirement">The requirement to evaluate.</param>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-            ClaimPatternAuthorizationRequirement requirement) {
+            ClaimPatternAuthorizationHandler requirement) {
 
             var found = false;
 
@@ -141,11 +145,14 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 hasPositiveScopes = true;
 
-                if (pattern.ToLower() == requirementPattern.ToLower())
+                //exact match (ignoring case)
+                if (pattern.Equals(requirementPattern, StringComparison.OrdinalIgnoreCase))
                     found = true;
-                else if (requirementPattern.ToLower().StartsWith(pattern.ToLower() + "."))
+                //match on segment (app-level policy or controller-level policy)
+                else if (!ExactMatchOnly && requirementPattern.StartsWith(pattern + ".", StringComparison.OrdinalIgnoreCase))
                     found = true;
-                else if (Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
+                //match on regular expression
+                else if (!ExactMatchOnly && Regex.IsMatch(requirementPattern, pattern.Replace(".", "\\.").Replace("*", ".*"), RegexOptions.IgnoreCase))
                     found = true;
             }
 

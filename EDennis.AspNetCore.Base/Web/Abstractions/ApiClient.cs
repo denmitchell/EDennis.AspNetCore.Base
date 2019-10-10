@@ -1,16 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace EDennis.AspNetCore.Base.Web
 {
     public abstract class ApiClient {
 
+        [Obsolete]
         public const string HEADER_KEY = "ApiClientHeaders";
-
         public HttpClient HttpClient { get; set; }
         public ScopeProperties ScopeProperties { get; set; }
         public IConfiguration Configuration { get; set; }
@@ -21,25 +21,26 @@ namespace EDennis.AspNetCore.Base.Web
             ScopeProperties = scopeProperties;
             Configuration = config;
 
-            //build headers from ApiClientHeaders entry in scopeProperties
-            foreach (var targetProp in scopeProperties.OtherProperties.Where(x => x.Key == this.GetType().Name)) {
-                var dict = targetProp.Value as Dictionary<string, object>;
-                foreach (var prop in dict) {
-                    var headers = prop.Value as List<KeyValuePair<string, StringValues>>;
-                    foreach (var header in headers)
-                        foreach (var value in header.Value)
-                            httpClient.DefaultRequestHeaders.Add(header.Key, value.ToString());
-                }
+            BuildClient(config);
+        }
+
+        private void BuildClient(IConfiguration config) {
+
+            var apiClientConfig = new ApiConfig();
+            try {
+                config.Bind($"Apis:{GetType().Name}", apiClientConfig);
+            } catch (Exception ex) {
+                string msg;
+                if (string.IsNullOrEmpty(config[$"Apis:{GetType().Name}"]))
+                    msg = $"Configuration does not contain an entry for Apis:{GetType().Name}";
+                else
+                    msg = $"Unable to bind Apis:{GetType().Name} as ApiConfig object.";
+                throw new ApplicationException(msg,ex);
             }
 
-            //add X-User header from ScopeProperties, if the header doesn't already exist.
-            var hdrs = httpClient.DefaultRequestHeaders;
-            var userHeaderCount = hdrs.Where(x => x.Key == "X-User").Count();
-            if (userHeaderCount == 0 && !string.IsNullOrWhiteSpace(ScopeProperties.User))
-                hdrs.Add("X-User", ScopeProperties.User);
+            #region BaseAddress
+            var baseAddress = apiClientConfig.BaseAddress;
 
-
-            var baseAddress = config[$"Apis:{GetType().Name}:BaseAddress"];
             var env = config["ASPNETCORE_ENVIRONMENT"];
 
             if (string.IsNullOrEmpty(baseAddress))
@@ -47,6 +48,31 @@ namespace EDennis.AspNetCore.Base.Web
 
 
             HttpClient.BaseAddress = new Uri(baseAddress);
+            #endregion
+            #region DefaultRequestHeaders
+
+            var pOpt = apiClientConfig.ScopePropertiesOptions;
+
+            ScopeProperties.Headers
+                .Where(h => Regex.IsMatch(h.Key, pOpt.PropagateHeadersWithPattern, RegexOptions.IgnoreCase))
+                .ToList()
+                .ForEach(x => HttpClient.DefaultRequestHeaders
+                .Add(x.Key, x.Value.ToArray()));
+
+            ScopeProperties.Claims
+                .Where(c => Regex.IsMatch(c.Type, pOpt.PropagateClaimTypesWithPattern, RegexOptions.IgnoreCase))
+                .GroupBy(c => c.Type)
+                .Select(g => KeyValuePair.Create(g.Key, g.Select(v => v.Value)))
+                .ToList()
+                .ForEach(x => HttpClient.DefaultRequestHeaders
+                .AddOrReplace($"X-{x.Key}", x.Value));
+
+            if (ScopeProperties.User != null && pOpt.PropagateUser)
+                HttpClient.DefaultRequestHeaders
+                    .AddOrReplace("X-User", ScopeProperties.User);
+
+            #endregion
+
         }
     }
 }

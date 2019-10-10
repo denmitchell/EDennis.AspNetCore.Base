@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.Web {
             }
 
 
-            builder.Requirements.Add(new ClaimPatternAuthorizationRequirement(requirementScope, options));
+            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options));
             return builder;
         }
 

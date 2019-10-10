@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web
 {
-
+    [Obsolete("Use ScopePropertiesMiddleware, instead")]
     public class UserFilter {
 
         private readonly RequestDelegate _next;

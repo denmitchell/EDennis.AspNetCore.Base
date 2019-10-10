@@ -11,6 +11,7 @@ namespace EDennis.AspNetCore.Base.Web {
         ExistingScopeProperties
     }
 
+    [Obsolete("Use ScopePropertiesMiddleware and options")]
     public class UserFilterOptions {
 
         /// <summary>

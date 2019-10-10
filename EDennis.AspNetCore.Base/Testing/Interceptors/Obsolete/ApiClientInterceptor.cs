@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
+
     [Obsolete ("Use ScopePropertiesMiddleware to copy headers to ScopeProperties to make available to ApiClients and other classes.")]
     public class ApiClientInterceptor<TClient> : Interceptor
         where TClient : ApiClient {
@@ -47,13 +48,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 scopeProperties.OtherProperties.Add(typeof(TClient).Name, dict);
 
-                //if(scopeProperties.OtherProperties.Where(x=>x.Key.StartsWith(Interceptor.HDR_PREFIX)).Count()==0)                    
-                //    scopeProperties.OtherProperties.Add(operation, instanceName);
-
-                //var client = provider.GetRequiredService(typeof(TClient)) as TClient;
 
                 if (operation == TESTING_HDR_DROP_INMEMORY ) {
-                    //client.HttpClient.SendResetAsync(operation,instanceName);
                     return;
                 }
 
@@ -66,6 +62,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     }
 
 
+    [Obsolete("Use ScopePropertiesMiddleware to copy headers to ScopeProperties to make available to ApiClients and other classes.")]
     public static class IApplicationBuilderExtensions_ApiClientInterceptorMiddleware {
         public static IApplicationBuilder UseApiClientInterceptor<TClient>(this IApplicationBuilder app)
         where TClient : ApiClient {
