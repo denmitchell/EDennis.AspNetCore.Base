@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+
 
 namespace EDennis.AspNetCore.Base.Security {
     /// <summary>
@@ -38,14 +37,9 @@ namespace EDennis.AspNetCore.Base.Security {
             }
         }
 
-        /// <summary>
-        /// Gets the claim types, one or more of which must be present.
-        /// </summary>
-        public string ClaimType { get; }
 
         /// <summary>
-        /// Gets the optional list of claim values, which, if present, 
-        /// the claim must match.
+        /// Gets the scope/policy value a scope claim pattern must match
         /// </summary>
         public string RequirementScope { get; }
 
@@ -60,8 +54,10 @@ namespace EDennis.AspNetCore.Base.Security {
         public string ExclusionPrefix { get; } = "-";
 
 
-
+        //list of previously matched patterns that indicate success against the policy
         public List<string> PositiveMatches { get; } = new List<string> { };
+
+        //list of previous matched patterns that indicate failure against the policy
         public List<string> NegativeMatches { get; } = new List<string> { };
 
 
@@ -81,7 +77,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 var scopeClaims = context.User.Claims
                         .Where(c => c.Type.ToLower() == scopeClaimType)
-                        .Select(c=> c.Value.ToLower());
+                        .Select(c => c.Value.ToLower());
 
                 //if the cache of positive matches contains one of the provided 
                 //scope patterns, the requirement will be met and no further processing will occur
@@ -115,7 +111,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 //prepend a universally matching pattern to scopes that start with an exclusion 
                 if (scopeClaim.StartsWith(ExclusionPrefix))
-                    scope = "*," + scope; 
+                    scope = "*," + scope;
 
                 //logically, we will treat the last matching pattern in the array of patterns 
                 //as the pattern that determines the nature of match -- positive or negative
@@ -130,7 +126,7 @@ namespace EDennis.AspNetCore.Base.Security {
                     } else {
                         var match = requirementPattern.Matches(pattern);
                         if (match) {
-                            matchType = MatchType.Positive; 
+                            matchType = MatchType.Positive;
                             PositiveMatches.Add(scope); //register this pattern in cache as positive match
                             return matchType; //short-circuit if a positive match
                         }
