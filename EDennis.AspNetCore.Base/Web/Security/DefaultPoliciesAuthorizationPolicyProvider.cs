@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,14 +16,17 @@ namespace EDennis.AspNetCore.Base.Security {
         //outerkey is the scope policy (the default policy associated with the action method)
         //inner key is the pattern that matches either negatively or positively
         private ConcurrentDictionary<string,ConcurrentDictionary<string,MatchType>> _policyPatternCacheSet;
-        
+        private ILogger _logger;
+
 
         public DefaultPoliciesAuthorizationPolicyProvider(IConfiguration configuration, 
-            ScopePatternOptions scopePatternOptions) {
+            ScopePatternOptions scopePatternOptions,
+            ILogger logger) {
 
             _configuration = configuration;
             _scopePatternOptions = scopePatternOptions;
-            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string, MatchType>>();            
+            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string, MatchType>>();
+            _logger = logger;
         }
 
         /// <summary>
@@ -61,6 +65,7 @@ namespace EDennis.AspNetCore.Base.Security {
         }
 
         private void BuildPolicyOptions() {
+            _logger.LogTrace("Building default policies");
             _options = new AuthorizationOptions();
 
             //***
@@ -74,7 +79,7 @@ namespace EDennis.AspNetCore.Base.Security {
                 foreach (var policy in policies.Keys)
                     _options.AddPolicy(policy, builder => {
                         var policyPatternCache = _policyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, MatchType>());
-                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions, policyPatternCache);
+                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions, policyPatternCache, _logger);
                     });                
             }
 

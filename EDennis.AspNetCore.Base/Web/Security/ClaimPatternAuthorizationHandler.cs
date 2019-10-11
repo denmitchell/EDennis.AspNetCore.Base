@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
@@ -24,10 +26,11 @@ namespace EDennis.AspNetCore.Base.Security {
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationHandler(
                 string requirementScope, ScopePatternOptions options,
-                ConcurrentDictionary<string, MatchType> policyPatternCache) {
+                ConcurrentDictionary<string, MatchType> policyPatternCache,
+                ILogger logger) {
 
-            RequirementScope = requirementScope.ToLower();
-            _policyPatternCache = policyPatternCache;
+            RequirementScope = requirementScope;
+            PolicyPatternCache = policyPatternCache;
 
             if (options != null) {
 
@@ -37,6 +40,7 @@ namespace EDennis.AspNetCore.Base.Security {
                     UserScopePrefix = options.UserScopePrefix?.ToLower();
 
                 ExclusionPrefix = options.ExclusionPrefix;
+                Logger = logger;
             }
         }
 
@@ -48,6 +52,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
         public string UserScopePrefix { get; } = "user_";
         public bool IsOidc { get; }
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
@@ -58,25 +63,36 @@ namespace EDennis.AspNetCore.Base.Security {
 
         //within a singleton, holds all previously matched patterns
         //that indicate success or failure against the policy
-        private readonly ConcurrentDictionary<string, MatchType> _policyPatternCache;
+        public ConcurrentDictionary<string, MatchType> PolicyPatternCache { get; set; }
 
 
         /// <summary>
         /// Makes a decision if authorization is allowed based on the claims requirements specified.
         /// </summary>
         /// <param name="context">The authorization context.</param>
-        /// <param name="requirement">The requirement to evaluate.</param>
+        /// <param name="handler">The requirement to evaluate.</param>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-            ClaimPatternAuthorizationHandler requirement) {
+            ClaimPatternAuthorizationHandler handler) {
+
+            MatchType matchType = EvaluateScope(context.User, handler);
+
+            if (matchType == MatchType.Positive) {
+                context.Succeed(handler);
+            }
+            return Task.CompletedTask;
+        }
+
+
+        public MatchType EvaluateScope(ClaimsPrincipal claimsPrincipal, ClaimPatternAuthorizationHandler handler) {
 
             MatchType matchType = MatchType.Unmatched;
 
             var scopeClaimType = $"{(IsOidc ? UserScopePrefix : "")}scope".ToLower();
 
-            if (context.User.Claims != null && context.User.Claims.Count() > 0) {
+            if (claimsPrincipal.Claims != null && claimsPrincipal.Claims.Count() > 0) {
 
                 //get relevant claims (case-insensitve match on this)
-                var scopeClaims = context.User.Claims
+                var scopeClaims = claimsPrincipal.Claims
                         .Where(c => c.Type.ToLower() == scopeClaimType)
                         .Select(c => c.Value)
                         .ToList();
@@ -85,25 +101,26 @@ namespace EDennis.AspNetCore.Base.Security {
                 //check cache for matched pattern(s).
                 //short-circuit if a positive match is found
                 foreach (var scopeClaim in scopeClaims) {
-                    if (_policyPatternCache.ContainsKey(scopeClaim)) {
-                        matchType = _policyPatternCache[scopeClaim];
+                    if (PolicyPatternCache.ContainsKey(scopeClaim)) {
+                        Logger.LogTrace("Scope claim matches cached policy pattern");
+                        matchType = PolicyPatternCache[scopeClaim];
                         if (matchType == MatchType.Positive)
                             break;
                     }
                 }
 
-
-
                 //if unmatched, evaluate the scopeClaims with pattern-matching algorithm
-                if (matchType == MatchType.Unmatched)
-                    matchType = EvaluatePattern(requirement.RequirementScope, scopeClaims);
+                if (matchType == MatchType.Unmatched) {
+                    Logger.LogTrace("Evaluating scope claim against policy pattern");
+                    matchType = EvaluatePattern(handler.RequirementScope, scopeClaims);
+                }
+            }
+            if (matchType == MatchType.Positive)
+                Logger.LogTrace("Scope claim matches policy pattern");
 
-            }
-            if (matchType == MatchType.Positive) {
-                context.Succeed(requirement);
-            }
-            return Task.CompletedTask;
+            return matchType;
         }
+
 
         public MatchType EvaluatePattern(string requirementPattern, IEnumerable<string> scopeClaims) {
 
@@ -125,14 +142,14 @@ namespace EDennis.AspNetCore.Base.Security {
                         var match = requirementPattern.MatchesWildcardPattern(pattern.Substring(1));
                         if (match) {
                             matchType = MatchType.Negative;
-                            _policyPatternCache.TryAdd(scope, MatchType.Negative); //register this pattern in cache as negative match
+                            PolicyPatternCache.TryAdd(scope, MatchType.Negative); //register this pattern in cache as negative match
                             break; //continue with outer loop if a negative match
                         }
                     } else {
                         var match = requirementPattern.MatchesWildcardPattern(pattern);
                         if (match) {
                             matchType = MatchType.Positive;
-                            _policyPatternCache.TryAdd(scope, MatchType.Positive); //register this pattern in cache as negative match
+                            PolicyPatternCache.TryAdd(scope, MatchType.Positive); //register this pattern in cache as negative match
                             return matchType; //short-circuit if a positive match
                         }
                     }
@@ -165,7 +182,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
             //iterate over source and pattern characters until end of source
             //or pattern (short-circuiting if no match)
-            for(; s < source.Length || p < pattern.Length; s++, p++) {
+            for (; s < source.Length || p < pattern.Length; s++, p++) {
 
                 //return true if end of source and pattern
                 if (s == source.Length && p == pattern.Length)
@@ -193,9 +210,9 @@ namespace EDennis.AspNetCore.Base.Security {
 
                     //corresponding characters don't match and pattern character isn't an asterix; so, non-match
                 } else
-                    return false; 
+                    return false;
             }
-            
+
             //with the asterix-consuming feature of the above loop, 
             //at this point, the only way the input string matches the pattern 
             //is if there are no more characters remaining to match from 
@@ -203,8 +220,8 @@ namespace EDennis.AspNetCore.Base.Security {
             return s == source.Length && p == pattern.Length;
 
 
+        }
     }
-}
 
 
 

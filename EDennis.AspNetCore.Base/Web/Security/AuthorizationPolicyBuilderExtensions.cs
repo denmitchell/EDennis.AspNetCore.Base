@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
@@ -19,13 +20,14 @@ namespace EDennis.AspNetCore.Base.Web {
         public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
             this AuthorizationPolicyBuilder builder, 
             string requirementScope, ScopePatternOptions options,
-            ConcurrentDictionary<string,MatchType> policyPatternCache) {
+            ConcurrentDictionary<string,MatchType> policyPatternCache,
+            ILogger logger) {
             if (requirementScope == null) {
                 throw new ArgumentNullException(nameof(requirementScope));
             }
 
 
-            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options, policyPatternCache));
+            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options, policyPatternCache, logger));
             return builder;
         }
 
