@@ -120,7 +120,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
                 //logically, we will treat the last matching pattern in the array of patterns 
                 //as the pattern that determines the nature of match -- positive or negative
-                foreach (var pattern in scope.Split().Reverse()) {
+                foreach (var pattern in scope.Split(',').Reverse()) {
                     if (pattern.StartsWith(ExclusionPrefix)) {
                         var match = requirementPattern.MatchesWildcardPattern(pattern.Substring(1));
                         if (match) {

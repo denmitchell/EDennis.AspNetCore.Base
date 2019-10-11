@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using EDennis.AspNetCore.Base.Security;
+using System.Collections.Concurrent;
 
 namespace EDennis.AspNetCore.Base.Tests {
     public class ClaimPatternAuthorizationHandlerTests {
@@ -25,5 +26,27 @@ namespace EDennis.AspNetCore.Base.Tests {
             var actual = input.MatchesWildcardPattern(pattern);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("A.B", new string[] { "A.B" }, MatchType.Positive)]
+        [InlineData("A.B", new string[] { "-A.B" }, MatchType.Negative)]
+        [InlineData("A.B", new string[] { "-A.C" }, MatchType.Positive)]
+        [InlineData("A.B", new string[] { "-A*" }, MatchType.Negative)]
+        [InlineData("A.B", new string[] { "-A*,A.B" }, MatchType.Positive)]
+        [InlineData("A.B", new string[] { "A.*,-A.C" }, MatchType.Positive)]
+        [InlineData("A.B", new string[] { "A.*,-A.B" }, MatchType.Negative)]
+        [InlineData("A.B.C", new string[] { "A.*,-A.B*,A.B.C" }, MatchType.Positive)]
+        [InlineData("A.B.C", new string[] { "A.*,-A.B*,A.B.D" }, MatchType.Negative)]
+        [InlineData("A.B.C", new string[] { "-A.*,A.B*,-A.B.C" }, MatchType.Negative)]
+        [InlineData("A.B.C", new string[] { "-A.*,A.B*,-A.B.D" }, MatchType.Positive)]
+
+        public void TestEvaluatePattern(string policyScope, string[] scopeClaims, MatchType expected) {
+            var handler = new ClaimPatternAuthorizationHandler(policyScope,
+                new ScopePatternOptions()/*use defaults*/, new ConcurrentDictionary<string, MatchType>());
+            var actual = handler.EvaluatePattern(policyScope,scopeClaims);
+            Assert.Equal(expected, actual);
+        }
+
+
     }
 }
