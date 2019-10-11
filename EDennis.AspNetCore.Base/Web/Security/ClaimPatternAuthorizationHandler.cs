@@ -146,70 +146,132 @@ namespace EDennis.AspNetCore.Base.Security {
 
     public enum MatchType { Unmatched, Positive, Negative }
 
-
-    /// <summary>
-    /// From https://www.geeksforgeeks.org/wildcard-pattern-matching/
-    /// This supports ? (single char wildcard) and * (multi-character wildcard)
-    /// </summary>
     public static class StringExtensions {
-        // Function that matches input str with 
-        // given wildcard pattern 
-        internal static bool MatchesWildcardPattern(this string str, string pattern) {
 
-            int n = str.Length;
-            int m = str.Length;
+        // Function that matches source string with given wildcard pattern (asterixes only) 
+        public static bool MatchesWildcardPattern(this string source, string pattern) {
 
-            // empty pattern can only match with 
-            // empty string 
-            if (m == 0)
-                return (n == 0);
+            //short-circuit for trivial results;
+            if (source == pattern)
+                return true;
+            else if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(pattern))
+                return false;
+            else if (pattern == "*")
+                return true;
 
-            // lookup table for storing results of 
-            // subproblems 
-            bool[,] lookup = new bool[n + 1, m + 1];
+            //initialize string index variables
+            int s = 0;
+            int p = 0;
 
-            // initialize lookup table to false 
-            for (int i = 0; i < n + 1; i++)
-                for (int j = 0; j < m + 1; j++)
-                    lookup[i, j] = false;
+            //iterate over source and pattern characters until end of source
+            //or pattern (short-circuiting if no match)
+            for(; s < source.Length || p < pattern.Length; s++, p++) {
 
-            // empty pattern can match with  
-            // empty string 
-            lookup[0, 0] = true;
+                //return true if end of source and pattern
+                if (s == source.Length && p == pattern.Length)
+                    return true;
 
-            // Only '*' can match with empty string 
-            for (int j = 1; j <= m; j++)
-                if (pattern[j - 1] == '*')
-                    lookup[0, j] = lookup[0, j - 1];
 
-            // fill the table in bottom-up fashion 
-            for (int i = 1; i <= n; i++) {
-                for (int j = 1; j <= m; j++) {
-                    // Two cases if we see a '*' 
-                    // a) We ignore '*'' character and move 
-                    // to next character in the pattern, 
-                    //     i.e., '*' indicates an empty sequence. 
-                    // b) '*' character matches with ith 
-                    //     character in input 
-                    if (pattern[j - 1] == '*')
-                        lookup[i, j] = lookup[i, j - 1] ||
-                                       lookup[i - 1, j];
+                //handle matching characters without wildcard
+                else if (s < source.Length && p < pattern.Length && source[s] == pattern[p])
+                    continue;
 
-                    // Current characters are considered as 
-                    // matching in two cases 
-                    // (a) current character of pattern is '?' 
-                    // (b) characters actually match 
-                    else if (pattern[j - 1] == '?' ||
-                                 str[i - 1] == pattern[j - 1])
-                        lookup[i, j] = lookup[i - 1, j - 1];
+                //handle asterix in pattern
+                else if (p < pattern.Length && pattern[p] == '*') {
 
-                    // If characters don't match 
-                    else lookup[i, j] = false;
-                }
+                    //advance through pattern string until non-asterix character is encountered or end of string
+                    while (p < pattern.Length && pattern[p] == '*')
+                        p++;
+
+                    //if end of pattern is reached and it ends with '*', it matches
+                    if (p == pattern.Length)
+                        return true;
+
+                    //advance the source to the first character that matches the pattern's next (non-asterix) character
+                    while (s < source.Length && source[s] != pattern[p])
+                        s++;
+
+                    //corresponding characters don't match and pattern character isn't an asterix; so, non-match
+                } else
+                    return false; 
             }
-            return lookup[n, m];
-        }
+            
+            //with the asterix-consuming feature of the above loop, 
+            //at this point, the only way the input string matches the pattern 
+            //is if there are no more characters remaining to match from 
+            //both the input and pattern.
+            return s == source.Length && p == pattern.Length;
+
+
     }
+}
+
+
+
+    ///YIKES ...
+    ///// <summary>
+    ///// From https://www.geeksforgeeks.org/wildcard-pattern-matching/
+    ///// This supports ? (single char wildcard) and * (multi-character wildcard)
+    ///// </summary>
+    //public static class StringExtensions {
+    //    // Function that matches input str with 
+    //    // given wildcard pattern 
+    //    public static bool MatchesWildcardPattern(this string str, string pattern) {
+
+    //        int n = str.Length;
+    //        int m = str.Length;
+
+    //        // empty pattern can only match with 
+    //        // empty string 
+    //        if (m == 0)
+    //            return (n == 0);
+
+    //        // lookup table for storing results of 
+    //        // subproblems 
+    //        bool[,] lookup = new bool[n + 1, m + 1];
+
+    //        // initialize lookup table to false 
+    //        for (int i = 0; i < n + 1; i++)
+    //            for (int j = 0; j < m + 1; j++)
+    //                lookup[i, j] = false;
+
+    //        // empty pattern can match with  
+    //        // empty string 
+    //        lookup[0, 0] = true;
+
+    //        // Only '*' can match with empty string 
+    //        for (int j = 1; j <= m; j++)
+    //            if (pattern[j - 1] == '*')
+    //                lookup[0, j] = lookup[0, j - 1];
+
+    //        // fill the table in bottom-up fashion 
+    //        for (int i = 1; i <= n; i++) {
+    //            for (int j = 1; j <= m; j++) {
+    //                // Two cases if we see a '*' 
+    //                // a) We ignore '*'' character and move 
+    //                // to next character in the pattern, 
+    //                //     i.e., '*' indicates an empty sequence. 
+    //                // b) '*' character matches with ith 
+    //                //     character in input 
+    //                if (pattern[j - 1] == '*')
+    //                    lookup[i, j] = lookup[i, j - 1] ||
+    //                                   lookup[i - 1, j];
+
+    //                // Current characters are considered as 
+    //                // matching in two cases 
+    //                // (a) current character of pattern is '?' 
+    //                // (b) characters actually match 
+    //                else if (pattern[j - 1] == '?' ||
+    //                             str[i - 1] == pattern[j - 1])
+    //                    lookup[i, j] = lookup[i - 1, j - 1];
+
+    //                // If characters don't match 
+    //                else lookup[i, j] = false;
+    //            }
+    //        }
+    //        return lookup[n, m];
+    //    }
+    //}
 
 
 }
