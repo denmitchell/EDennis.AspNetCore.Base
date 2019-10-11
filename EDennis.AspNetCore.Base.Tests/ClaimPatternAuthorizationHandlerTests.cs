@@ -39,7 +39,10 @@ namespace EDennis.AspNetCore.Base.Tests {
         [InlineData("A.B.C", new string[] { "A.*,-A.B*,A.B.D" }, MatchType.Negative)]
         [InlineData("A.B.C", new string[] { "-A.*,A.B*,-A.B.C" }, MatchType.Negative)]
         [InlineData("A.B.C", new string[] { "-A.*,A.B*,-A.B.D" }, MatchType.Positive)]
-
+        [InlineData("A.B", new string[] { "A.*,-A.B", "B.*,-B.C" }, MatchType.Negative)]
+        [InlineData("A.C", new string[] { "A.*,-A.B", "B.*,-B.C" }, MatchType.Positive)]
+        [InlineData("B.C", new string[] { "A.*,-A.B", "B.*,-B.C" }, MatchType.Negative)]
+        [InlineData("B.D", new string[] { "A.*,-A.B", "B.*,-B.C" }, MatchType.Positive)]
         public void TestEvaluatePattern(string policyScope, string[] scopeClaims, MatchType expected) {
             var handler = new ClaimPatternAuthorizationHandler(policyScope,
                 new ScopePatternOptions()/*use defaults*/, new ConcurrentDictionary<string, MatchType>());

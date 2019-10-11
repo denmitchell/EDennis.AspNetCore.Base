@@ -12,6 +12,8 @@ namespace EDennis.AspNetCore.Base.Security {
         private Task<AuthorizationPolicy> _cachedPolicyTask;
         private IConfiguration _configuration;
         private ScopePatternOptions _scopePatternOptions;
+        //outerkey is the scope policy (the default policy associated with the action method)
+        //inner key is the pattern that matches either negatively or positively
         private ConcurrentDictionary<string,ConcurrentDictionary<string,MatchType>> _policyPatternCacheSet;
         
 
