@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +23,11 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationHandler(
-                string requirementScope, ScopePatternOptions options) {
+                string requirementScope, ScopePatternOptions options,
+                ConcurrentDictionary<string, MatchType> policyPatternCache) {
 
             RequirementScope = requirementScope.ToLower();
+            _policyPatternCache = policyPatternCache;
 
             if (options != null) {
 
@@ -53,12 +56,9 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string ExclusionPrefix { get; } = "-";
 
-
-        //list of previously matched patterns that indicate success against the policy
-        public List<string> PositiveMatches { get; } = new List<string> { };
-
-        //list of previous matched patterns that indicate failure against the policy
-        public List<string> NegativeMatches { get; } = new List<string> { };
+        //within a singleton, holds all previously matched patterns
+        //that indicate success or failure against the policy
+        private readonly ConcurrentDictionary<string, MatchType> _policyPatternCache;
 
 
         /// <summary>
@@ -75,21 +75,26 @@ namespace EDennis.AspNetCore.Base.Security {
 
             if (context.User.Claims != null && context.User.Claims.Count() > 0) {
 
+                //get relevant claims (case-insensitve match on this)
                 var scopeClaims = context.User.Claims
                         .Where(c => c.Type.ToLower() == scopeClaimType)
-                        .Select(c => c.Value.ToLower());
-
-                //if the cache of positive matches contains one of the provided 
-                //scope patterns, the requirement will be met and no further processing will occur
-                matchType = scopeClaims.Any(c => PositiveMatches.Contains(c)) ? MatchType.Positive : MatchType.Unmatched;
+                        .Select(c => c.Value)
+                        .ToList();
 
 
-                //if unmatched and the cache of negative matches contains one of the 
-                //provided scope patterns, flag as a negative match
-                if (matchType == MatchType.Unmatched)
-                    matchType = scopeClaims.Any(c => NegativeMatches.Contains(c)) ? MatchType.Negative : MatchType.Unmatched;
+                //check cache for matched pattern(s).
+                //short-circuit if a positive match is found
+                foreach (var scopeClaim in scopeClaims) {
+                    if (_policyPatternCache.ContainsKey(scopeClaim)) {
+                        matchType = _policyPatternCache[scopeClaim];
+                        if (matchType == MatchType.Positive)
+                            break;
+                    }
+                }
 
-                //if still unmatched, evaluate the scopeClaims with pattern-matching algorithm
+
+
+                //if unmatched, evaluate the scopeClaims with pattern-matching algorithm
                 if (matchType == MatchType.Unmatched)
                     matchType = EvaluatePattern(requirement.RequirementScope, scopeClaims);
 
@@ -117,17 +122,17 @@ namespace EDennis.AspNetCore.Base.Security {
                 //as the pattern that determines the nature of match -- positive or negative
                 foreach (var pattern in scope.Split().Reverse()) {
                     if (pattern.StartsWith(ExclusionPrefix)) {
-                        var match = requirementPattern.Matches(pattern.Substring(1));
+                        var match = requirementPattern.MatchesWildcardPattern(pattern.Substring(1));
                         if (match) {
                             matchType = MatchType.Negative;
-                            NegativeMatches.Add(scope); //register this pattern in cache as negative match
+                            _policyPatternCache.TryAdd(scope, MatchType.Negative); //register this pattern in cache as negative match
                             break; //continue with outer loop if a negative match
                         }
                     } else {
-                        var match = requirementPattern.Matches(pattern);
+                        var match = requirementPattern.MatchesWildcardPattern(pattern);
                         if (match) {
                             matchType = MatchType.Positive;
-                            PositiveMatches.Add(scope); //register this pattern in cache as positive match
+                            _policyPatternCache.TryAdd(scope, MatchType.Positive); //register this pattern in cache as negative match
                             return matchType; //short-circuit if a positive match
                         }
                     }
@@ -141,6 +146,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
     public enum MatchType { Unmatched, Positive, Negative }
 
+
     /// <summary>
     /// From https://www.geeksforgeeks.org/wildcard-pattern-matching/
     /// This supports ? (single char wildcard) and * (multi-character wildcard)
@@ -148,7 +154,7 @@ namespace EDennis.AspNetCore.Base.Security {
     public static class StringExtensions {
         // Function that matches input str with 
         // given wildcard pattern 
-        internal static bool Matches(this string str, string pattern) {
+        internal static bool MatchesWildcardPattern(this string str, string pattern) {
 
             int n = str.Length;
             int m = str.Length;

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,13 +18,14 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns>A reference to this instance after the operation has completed.</returns>
         public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
             this AuthorizationPolicyBuilder builder, 
-            string requirementScope, ScopePatternOptions options) {
+            string requirementScope, ScopePatternOptions options,
+            ConcurrentDictionary<string,MatchType> policyPatternCache) {
             if (requirementScope == null) {
                 throw new ArgumentNullException(nameof(requirementScope));
             }
 
 
-            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options));
+            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options, policyPatternCache));
             return builder;
         }
 

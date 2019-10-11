@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace EDennis.AspNetCore.Base.Security {
         private Task<AuthorizationPolicy> _cachedPolicyTask;
         private IConfiguration _configuration;
         private ScopePatternOptions _scopePatternOptions;
+        private ConcurrentDictionary<string,ConcurrentDictionary<string,string>> _policyPatternCacheSet;
         
 
         public DefaultPoliciesAuthorizationPolicyProvider(IConfiguration configuration, 
@@ -18,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
             _configuration = configuration;
             _scopePatternOptions = scopePatternOptions;
-            
+            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();            
         }
 
         /// <summary>
@@ -69,7 +71,8 @@ namespace EDennis.AspNetCore.Base.Security {
             if (policies.Count > 0) {
                 foreach (var policy in policies.Keys)
                     _options.AddPolicy(policy, builder => {
-                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions);
+                        var policyPatternCache = _policyPatternCacheSet.TryAdd(policy, new ConcurrentDictionary<string, string>());
+                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions, policyPatternCache);
                     });                
             }
 
