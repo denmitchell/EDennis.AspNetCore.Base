@@ -89,7 +89,8 @@ namespace EDennis.Samples.DefaultPoliciesMvc
             //AddDefaultAuthorizationPolicyConvention is called
             services.AddSingleton<IAuthorizationPolicyProvider>(factory => {
                 return new DefaultPoliciesAuthorizationPolicyProvider(
-                    Configuration, securityOptions.ScopePatternOptions);
+                    Configuration, securityOptions.ScopePatternOptions,
+                    Logger);
             });
 
 
