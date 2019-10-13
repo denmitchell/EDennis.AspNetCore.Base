@@ -1,6 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,16 +11,22 @@ namespace EDennis.AspNetCore.Base.Security {
 
         private AuthorizationOptions _options;
         private Task<AuthorizationPolicy> _cachedPolicyTask;
-        private IConfiguration _configuration;
-        private ScopePatternOptions _scopePatternOptions;
+        private readonly IConfiguration _configuration;
+        private readonly ScopePatternOptions _scopePatternOptions;
+        //outerkey is the scope policy (the default policy associated with the action method)
+        //inner key is the pattern that matches either negatively or positively
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, bool>> _policyPatternCacheSet;
+        private readonly ILogger _logger;
 
 
         public DefaultPoliciesAuthorizationPolicyProvider(IConfiguration configuration,
-            ScopePatternOptions scopePatternOptions) {
+            ScopePatternOptions scopePatternOptions,
+            ILogger logger) {
 
             _configuration = configuration;
             _scopePatternOptions = scopePatternOptions;
-
+            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string,bool>>();
+            _logger = logger;
         }
 
         /// <summary>
@@ -57,6 +65,7 @@ namespace EDennis.AspNetCore.Base.Security {
         }
 
         private void BuildPolicyOptions() {
+            _logger.LogTrace("Building default policies");
             _options = new AuthorizationOptions();
 
             //***
@@ -69,7 +78,8 @@ namespace EDennis.AspNetCore.Base.Security {
             if (policies.Count > 0) {
                 foreach (var policy in policies.Keys)
                     _options.AddPolicy(policy, builder => {
-                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions);
+                        var policyPatternCache = _policyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, bool>());
+                        builder.RequireClaimPatternMatch(policy, _scopePatternOptions, policyPatternCache, _logger);
                     });
             }
 
@@ -83,5 +93,6 @@ namespace EDennis.AspNetCore.Base.Security {
         public Task<AuthorizationPolicy> GetFallbackPolicyAsync() {
             throw new System.NotImplementedException();
         }
+
     }
 }

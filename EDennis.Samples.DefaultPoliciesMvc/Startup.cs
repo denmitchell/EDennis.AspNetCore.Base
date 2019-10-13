@@ -65,7 +65,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var securityOptions = new SecurityOptions();
+            var securityOptions = new EDennis.AspNetCore.Base.Security.SecurityOptions();
             Configuration.GetSection("Security").Bind(securityOptions);
 
             services.AddAuthentication(securityOptions);
@@ -84,7 +84,8 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
             //AddDefaultAuthorizationPolicyConvention is called
             services.AddSingleton<IAuthorizationPolicyProvider>(factory => {
                 return new DefaultPoliciesAuthorizationPolicyProvider(
-                    Configuration, securityOptions.ScopePatternOptions);
+                    Configuration, securityOptions.ScopePatternOptions,
+                    Logger);
             });
 
 

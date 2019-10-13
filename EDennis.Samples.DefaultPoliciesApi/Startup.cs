@@ -3,6 +3,7 @@ using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.DefaultPoliciesApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +68,15 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             });
 
             services.AddScoped<ScopeProperties>();
+
+            //add an AuthorizationPolicyProvider using a factory pattern, 
+            //so that the construction of the class is delayed until after
+            //AddDefaultAuthorizationPolicyConvention is called
+            services.AddSingleton<IAuthorizationPolicyProvider>(factory => {
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    Configuration, securityOptions.ScopePatternOptions,
+                    Logger);
+            });
 
             services.AddDbContext<AppDbContext>(options =>
                             options.UseSqlite($"Data Source={HostingEnvironment.ContentRootPath}/hr.db")

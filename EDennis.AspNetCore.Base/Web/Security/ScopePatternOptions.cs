@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EDennis.AspNetCore.Base.Security {
+﻿namespace EDennis.AspNetCore.Base.Security {
     public class ScopePatternOptions {
 
-        public bool ExactMatchOnly { get; set; } = false;
+        public string UserScopePrefix { get; set; } = "user_";
 
-        public string UserScopePrefix { get; internal set; }
-
-        public bool IsOidc { get; internal set; } = false;
-
-        public string PatternClaimType { get; set; } = "role";
+        public bool IsOidc { get; set; } = false;
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
@@ -19,13 +11,6 @@ namespace EDennis.AspNetCore.Base.Security {
         ///       is used as the base from which exclusions are applied.
         /// </summary>
         public string ExclusionPrefix { get; set; } = "-";
-
-        public string[] GloballyIgnoredScopes { get; set; }
-
-        /// <summary>
-        /// NOTE: This can be used to configure roles for users.
-        /// </summary>
-        public Dictionary<string,string[]> NamedPatterns { get; set; }
 
     }
 }
