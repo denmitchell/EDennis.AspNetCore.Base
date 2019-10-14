@@ -81,14 +81,10 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             .ExcludeReferencedProjectControllers<A.Startup>();
 
 
-            //add an AuthorizationPolicyProvider using a factory pattern, 
-            //so that the construction of the class is delayed until after
-            //AddDefaultAuthorizationPolicyConvention is called
-            services.AddSingleton<IAuthorizationPolicyProvider>(factory => {
-                return new DefaultPoliciesAuthorizationPolicyProvider(
-                    Configuration, securityOptions.ScopePatternOptions,
-                    Logger);
-            });
+            //add an AuthorizationPolicyProvider which generates default
+            //policies upon first access to any controller action
+            services.AddSingleton<IAuthorizationPolicyProvider>(new DefaultPoliciesAuthorizationPolicyProvider(
+                    Configuration, securityOptions.ScopePatternOptions,Logger));
 
 
 
