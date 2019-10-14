@@ -119,43 +119,43 @@ namespace IdentityServer {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="mike",
                     Claims = new List<Claim> { 
-                        new Claim("role","EDennis.Samples.DefaultPoliciesMvc.Admin")
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc*")
                     }
                 },
                 new UserClientClaimSpec {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="carol",
                     Claims = new List<Claim> {
-                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc")
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc*")
                     }
                 },
                 new UserClientClaimSpec {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="greg",
                     Claims = new List<Claim> {
-                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person"),
-                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.*"),
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position.*")
                     }
                 },
                 new UserClientClaimSpec {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="marcia",
                     Claims = new List<Claim> {
-                        new Claim("role","EDennis.Samples.DefaultPoliciesMvc.NoDelete")
+                        new Claim("user_scope","-EDennis.Samples.DefaultPoliciesMvc.*Delete*")
                     }
                 },
                 new UserClientClaimSpec {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="peter",
                     Claims = new List<Claim> {
-                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person")
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.*")
                     }
                 },
                 new UserClientClaimSpec {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="jan",
                     Claims = new List<Claim> {
-                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position.*")
                     }
                 },
                 new UserClientClaimSpec {
@@ -164,7 +164,7 @@ namespace IdentityServer {
                     Claims = new List<Claim> {
                         new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Index"),
                         new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Person.Details"),
-                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position")
+                        new Claim ("user_scope","EDennis.Samples.DefaultPoliciesMvc.Position.*")
                     }
                 },
                 new UserClientClaimSpec {
@@ -181,7 +181,7 @@ namespace IdentityServer {
                     ClientId = "EDennis.Samples.DefaultPoliciesMvc",
                     Username="alice",
                     Claims = new List<Claim> {
-                        new Claim("role","EDennis.Samples.DefaultPoliciesMvc.Readonly")
+                        new Claim("user_scope","EDennis.Samples.DefaultPoliciesMvc.*Index*,EDennis.Samples.DefaultPoliciesMvc.*Details*,")
                     }
                 }
             };
@@ -214,24 +214,24 @@ namespace IdentityServer {
                     DisplayName="EDennis.Samples.Hr.InternalApi2",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi2",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi2"
+                            Name = "EDennis.Samples.Hr.InternalApi2.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck"
+                            Name = "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck"
+                            Name = "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck"
+                            Name = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck"
+                            Name = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi2.StateBackgroundCheck.*"
                         },
                         new Scope {
                             Name = "EDennis.Samples.Hr.InternalApi2.FederalBackgroundCheck.GetLastCheck",
@@ -252,12 +252,12 @@ namespace IdentityServer {
                     DisplayName="EDennis.Samples.Hr.InternalApi1",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi1",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi1"
+                            Name = "EDennis.Samples.Hr.InternalApi1.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Hr.InternalApi1.Employee",
-                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee"
+                            Name = "EDennis.Samples.Hr.InternalApi1.Employee.*",
+                            DisplayName = "EDennis.Samples.Hr.InternalApi1.Employee.*"
                         },
                         new Scope {
                             Name = "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
@@ -278,16 +278,12 @@ namespace IdentityServer {
                     DisplayName="EDennis.Samples.DefaultPoliciesApi",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesApi.ViaClaims",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.ViaClaims"
+                            Name = "EDennis.Samples.DefaultPoliciesApi.*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesApi",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesApi"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesApi.Person",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.Person"
+                            Name = "EDennis.Samples.DefaultPoliciesApi.Person.*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.Person.*"
                         },
                         new Scope {
                             Name = "EDennis.Samples.DefaultPoliciesApi.Person.Index",
@@ -314,8 +310,8 @@ namespace IdentityServer {
                             DisplayName = "EDennis.Samples.DefaultPoliciesApi.Person.Exists"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesApi.Position",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.Position"
+                            Name = "EDennis.Samples.DefaultPoliciesApi.Position.*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesApi.Position.*"
                         },
                         new Scope {
                             Name = "EDennis.Samples.DefaultPoliciesApi.Position.Index",
@@ -348,16 +344,16 @@ namespace IdentityServer {
                     DisplayName="EDennis.Samples.Colors2Api",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.Colors2Api",
-                            DisplayName = "EDennis.Samples.Colors2Api"
+                            Name = "EDennis.Samples.Colors2Api.*",
+                            DisplayName = "EDennis.Samples.Colors2Api.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Colors2Api.RgbController",
-                            DisplayName = "EDennis.Samples.Colors2Api.RgbController"
+                            Name = "EDennis.Samples.Colors2Api.RgbController.*",
+                            DisplayName = "EDennis.Samples.Colors2Api.RgbController.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.Colors2Api.HslController",
-                            DisplayName = "EDennis.Samples.Colors2Api.HslController"
+                            Name = "EDennis.Samples.Colors2Api.HslController.*",
+                            DisplayName = "EDennis.Samples.Colors2Api.HslController.*"
                         }
                     }
                 },
@@ -366,13 +362,9 @@ namespace IdentityServer {
                     DisplayName="EDennis.Samples.DefaultPoliciesMvc",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesMvc",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesMvc"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesMvc.ViaClaims",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesMvc.ViaClaims"
-                        },
+                            Name = "EDennis.Samples.DefaultPoliciesMvc.*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesMvc.*"
+                        }
                     }
                 },
 
@@ -395,22 +387,22 @@ namespace IdentityServer {
                         "EDennis.Samples.Hr.InternalApi1.Employee.CreateEmployee",
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployee",
                         "EDennis.Samples.Hr.InternalApi1.Employee.GetEmployees",
-                        "EDennis.Samples.Hr.InternalApi2"
+                        "EDennis.Samples.Hr.InternalApi2.*"
                     }
                 },
                 new MockClient {
                     ClientId = "EDennis.Samples.Hr.ExternalApi.Client1",
                     AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi1",
-                        "EDennis.Samples.Hr.InternalApi2",
+                        "EDennis.Samples.Hr.InternalApi1.*",
+                        "EDennis.Samples.Hr.InternalApi2.*",
                     }
                 },
                 new MockClient {
                     ClientId = "EDennis.Samples.ExternalApi.Client2",
                     AllowedScopes = {
-                        "EDennis.Samples.Hr.InternalApi1.Employee",
-                        "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck",
-                        "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck"
+                        "EDennis.Samples.Hr.InternalApi1.Employee.*",
+                        "EDennis.Samples.Hr.InternalApi2.AgencyInvestigatorCheck.*",
+                        "EDennis.Samples.Hr.InternalApi2.AgencyOnlineCheck.*"
                     }
                 },
                 new MockClient {
@@ -426,8 +418,8 @@ namespace IdentityServer {
                 new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client1",
                     AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi",
-                        "EDennis.Samples.Hr.InternalApi"
+                        "EDennis.Samples.DefaultPoliciesApi.*",
+                        "EDennis.Samples.Hr.InternalApi.*"
                     },
                     Claims = {
                         new Claim("name","moe@stooges.org"),
@@ -437,8 +429,8 @@ namespace IdentityServer {
                 new MockClient {
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client2",
                     AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesApi.Person",
-                        "EDennis.Samples.Hr.InternalApi.Employee"
+                        "EDennis.Samples.DefaultPoliciesApi.Person.*",
+                        "EDennis.Samples.Hr.InternalApi.Employee.*"
                     },
                     Claims = {
                         new Claim("name","larry@stooges.org")
@@ -501,7 +493,7 @@ namespace IdentityServer {
                         "role",
                         "name",
                         //"EDennis.Samples.DefaultPoliciesMvc",
-                        "EDennis.Samples.DefaultPoliciesApi"
+                        "EDennis.Samples.DefaultPoliciesApi.*"
                     },
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,

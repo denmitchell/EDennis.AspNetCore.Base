@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Security {
         private ScopePatternOptions _scopePatternOptions;
         //outerkey is the scope policy (the default policy associated with the action method)
         //inner key is the pattern that matches either negatively or positively
-        private ConcurrentDictionary<string,ConcurrentDictionary<string,MatchType>> _policyPatternCacheSet;
+        private ConcurrentDictionary<string,ConcurrentDictionary<string,bool>> _policyPatternCacheSet;
         private ILogger _logger;
 
 
@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
             _configuration = configuration;
             _scopePatternOptions = scopePatternOptions;
-            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string, MatchType>>();
+            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string, bool>>();
             _logger = logger;
         }
 
@@ -78,7 +78,7 @@ namespace EDennis.AspNetCore.Base.Security {
             if (policies.Count > 0) {
                 foreach (var policy in policies.Keys)
                     _options.AddPolicy(policy, builder => {
-                        var policyPatternCache = _policyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, MatchType>());
+                        var policyPatternCache = _policyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, bool>());
                         builder.RequireClaimPatternMatch(policy, _scopePatternOptions, policyPatternCache, _logger);
                     });                
             }

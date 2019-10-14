@@ -57,7 +57,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
                 .ExcludeReferencedProjectControllers<B.Startup>();
 
             //AspNetCore.Base config
-            services.AddApiClients<IdentityServer,InternalApi1,InternalApi2>();
+            services.AddApiClients<IdentityServerApi,InternalApi1,InternalApi2>();
 
             if (HostingEnvironment.EnvironmentName == EnvironmentName.Development) {
 

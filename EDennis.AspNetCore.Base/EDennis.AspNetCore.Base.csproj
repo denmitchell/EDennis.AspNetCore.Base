@@ -14,7 +14,7 @@
     <RepositoryType>github</RepositoryType>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Added overloads to Get and GetAsync (HttpClientExtensionMethods) that accept two type parameters -- one for the Request Object and the other for the Response Object.</PackageReleaseNotes>
+    <PackageReleaseNotes>Reworked DefaultPolicies security feature to use wildcard pattern matching (e.g., EDennis.Samples.DefaultPoliciesApi.*), rather than hierarchical segment matching (App, App.Controller, App.Controller.Action).  The pattern matching features supports exclusions (e.g., -EDennis.Samples.DefaultApi.*Delete*) and comma-delimited lists of patterns in a single scope.</PackageReleaseNotes>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <AssemblyVersion>2.7.6.0</AssemblyVersion>
     <FileVersion>2.7.6.0</FileVersion>

@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
             this AuthorizationPolicyBuilder builder, 
             string requirementScope, ScopePatternOptions options,
-            ConcurrentDictionary<string,MatchType> policyPatternCache,
+            ConcurrentDictionary<string,bool> policyPatternCache,
             ILogger logger) {
             if (requirementScope == null) {
                 throw new ArgumentNullException(nameof(requirementScope));
