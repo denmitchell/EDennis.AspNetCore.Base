@@ -19,7 +19,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
             HttpClient client, 
             IConfiguration config, 
             ScopeProperties scopeProperties,
-            IdentityServer identityServer,
+            IdentityServerApi identityServer,
             SecureTokenCache tokenCache,
             IHostingEnvironment env
             ) :
