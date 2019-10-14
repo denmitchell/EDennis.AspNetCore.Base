@@ -146,7 +146,7 @@ namespace EDennis.AspNetCore.Base.Security {
             MatchContext context = scopeClaim.StartsWith(ExclusionPrefix) ? MatchContext.Exclusion : MatchContext.Inclusion;
 
             //split each scope into a set of patterns
-            var patterns = scopeClaim.Split(',');
+            var patterns = scopeClaim.Split(',').Select(x=>x.Trim());
 
             //handle special if just one pattern in scope claim and inclusion
             if (patterns.Count() == 1 && context == MatchContext.Inclusion)
