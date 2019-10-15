@@ -1,0 +1,4 @@
+2019-10-15 04:05:29.190 -04:00 [INF] Hello from Logger!
+2019-10-15 04:10:04.627 -04:00 [INF] Hello from Logger!
+2019-10-15 04:13:45.216 -04:00 [INF] Hello from Logger!
+2019-10-15 04:15:53.659 -04:00 [INF] Hello from Logger!

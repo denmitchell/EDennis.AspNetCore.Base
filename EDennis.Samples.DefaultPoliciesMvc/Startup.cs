@@ -1,4 +1,5 @@
 using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.AspNetCore.Base.Web.Extensions;
@@ -12,18 +13,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
 using A = IdentityServer;
 using B = EDennis.Samples.DefaultPoliciesApi;
 
 namespace EDennis.Samples.DefaultPoliciesMvc {
     public class Startup {
-        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger) {
-            Configuration = configuration;
-            HostingEnvironment = env;
-            Logger = logger;
+
+        public static ILogger<Startup> Logger;
+
+        static Startup() {
+
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var configuration = new ConfigurationBuilder()
+                            .AddJsonFile($"appsettings.{env}.json")
+                            .Build();
+
+            //This is the default logger.
+            //   Name = "Logger", Index = 0, LogLevel = Information
+            Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration, "Logging:Loggers:Default")
+                        .CreateLogger();
+
+            Log.Logger.Information($"Starting Application: EDennis.Samples.DefaultPoliciesApi, {env}");
+
+            Logger = new SerilogLoggerFactory(Log.Logger).CreateLogger<Startup>();
         }
 
-        public ILogger Logger { get; }
+
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env) {
+            Configuration = configuration;
+            HostingEnvironment = env;
+        }
 
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment HostingEnvironment { get; }
@@ -81,8 +104,12 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
 
             //add an AuthorizationPolicyProvider which generates default
             //policies upon first access to any controller action
-            services.AddSingleton<IAuthorizationPolicyProvider>(new DefaultPoliciesAuthorizationPolicyProvider(
-                    Configuration, securityOptions.ScopePatternOptions, Logger));
+            services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    Configuration, securityOptions.ScopePatternOptions, logger);
+            }
+            );
 
 
             services.AddDbContext<AppDbContext>(options =>

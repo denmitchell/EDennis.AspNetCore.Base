@@ -91,7 +91,14 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         /// <returns></returns>
         public Task<AuthorizationPolicy> GetFallbackPolicyAsync() {
-            throw new System.NotImplementedException();
+            //per https://github.com/googleapis/google-api-dotnet-client/issues/1434#issuecomment-527104967
+            var result = new AuthorizationPolicyBuilder();
+            result = result.RequireAssertion(context =>
+            {
+                return true;
+            });
+
+            return Task.FromResult(result.Build());
         }
 
     }
