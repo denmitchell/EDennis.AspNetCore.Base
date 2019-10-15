@@ -40,8 +40,8 @@ namespace EDennis.AspNetCore.Base.Security {
                     UserScopePrefix = options.UserScopePrefix?.ToLower();
 
                 ExclusionPrefix = options.ExclusionPrefix;
-                Logger = logger;
             }
+            Logger = logger;
         }
 
 
