@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,14 @@ namespace EDennis.AspNetCore.Base.Web
         public HttpClient HttpClient { get; set; }
         public ScopeProperties ScopeProperties { get; set; }
         public IConfiguration Configuration { get; set; }
-
-        public ApiClient(HttpClient httpClient, IConfiguration config, ScopeProperties scopeProperties) {
+        public ILogger Logger { get; }
+        public ApiClient(HttpClient httpClient, IConfiguration config, 
+            ScopeProperties scopeProperties, ILogger logger) {
 
             HttpClient = httpClient;
             ScopeProperties = scopeProperties;
             Configuration = config;
+            Logger = logger;
 
             BuildClient(config);
         }

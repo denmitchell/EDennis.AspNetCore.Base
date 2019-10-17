@@ -10,10 +10,11 @@ using Flurl;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
-    public class SecureApiClient : ApiClient {
+    public abstract class SecureApiClient : ApiClient {
 
         private readonly SecureTokenCache _secureTokenCache;
         private readonly ApiClient _identityServerApiClient;
@@ -24,8 +25,9 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             ScopeProperties scopeProperties,
             ApiClient identityServerApiClient,
             SecureTokenCache secureTokenCache,
-            IWebHostEnvironment hostingEnvironment)
-            : base(httpClient, config, scopeProperties) {
+            IWebHostEnvironment hostingEnvironment,
+            ILogger logger)
+            : base(httpClient, config, scopeProperties, logger) {
 
             _secureTokenCache = secureTokenCache;
             _identityServerApiClient = identityServerApiClient;

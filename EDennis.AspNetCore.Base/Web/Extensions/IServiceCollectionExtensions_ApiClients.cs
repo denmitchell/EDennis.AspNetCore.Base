@@ -1,6 +1,13 @@
-﻿using EDennis.AspNetCore.Base.Web.Abstractions;
+﻿using Castle.DynamicProxy;
+using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Web.Abstractions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 
 namespace EDennis.AspNetCore.Base.Web.Extensions
 {
@@ -35,17 +42,43 @@ namespace EDennis.AspNetCore.Base.Web.Extensions
         SecureTokenCache secureTokenCache,
         IWebHostEnvironment hostingEnvironment)
         : base(httpClient, config, scopeProperties) {
-
         */
+        private static IServiceCollection AddScoped<TSecureApiClient>(this IServiceCollection services)
+            where TSecureApiClient : SecureApiClient {
 
+            services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
+            services.AddHttpClient<TSecureApiClient, TSecureApiClient>();
+            services.TryAddScoped<IdentityServerApi>();
 
-
-        private static IServiceCollection AddScoped<TSecureApiClient, TContext>(this IServiceCollection services)
-            where TRepoImplementation : class
-            where TContext : DbContext {
-            return services.AddScoped(f => {
-                var loggers = f.GetRequiredService<IEnumerable<ILogger<TRepoImplementation>>>();
+            services = services.AddScoped(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TSecureApiClient>>>();
                 var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                var secureTokenCache = f.GetRequiredService<SecureTokenCache>();
+                var webHostEnvironment = f.GetRequiredService<IWebHostEnvironment>();
+                var identityServerApi = f.GetRequiredService<IdentityServerApi>();
+                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
+                var httpClient = f.GetRequiredService<HttpClientFactory<TSecureApiClient>>();
+                var api = (TSecureApiClient)new ProxyGenerator()
+                    .CreateClassProxy(typeof(TSecureApiClient),
+                        new object[] { /*HttpClient httpClient,
+            IConfiguration config,
+            ScopeProperties scopeProperties,
+            ApiClient identityServerApiClient,
+            SecureTokenCache secureTokenCache,
+            IWebHostEnvironment hostingEnvironment,
+            ILogger logger */},
+                        new TraceInterceptor(activeLogger, scopeProperties));
+
+
+
+            });
+
+
+            return services.AddScoped(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TSecureApiClient>>>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                var secureTokenCache = f.GetRequiredService<SecureTokenCache>();
+                var webHostEnvironment = f.GetRequiredService<IWebHostEnvironment>();
                 var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
                 var context = f.GetRequiredService<TContext>();
                 var repo = (TRepoImplementation)new ProxyGenerator()
