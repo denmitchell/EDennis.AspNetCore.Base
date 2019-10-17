@@ -24,9 +24,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         protected ILogger _logger;
 
-        internal string M(string m) => $"{this.GetType().Name}.{m}";
-        internal string U;
-
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
@@ -34,13 +31,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableRepo(TContext context, 
             IScopeProperties scopeProperties,
-            IEnumerable<ILogger<WriteableRepo<TEntity, TContext>>> loggers) {
+            ILogger<WriteableRepo<TEntity, TContext>> logger) {
 
             Context = context;
             ScopeProperties = scopeProperties;
-            U = ScopeProperties.User;
 
-            _logger = loggers.ElementAt(scopeProperties.LoggerIndex);
+            _logger = logger;
 
         }
 
@@ -66,7 +62,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public IQueryable<TEntity> Query {
+        public virtual IQueryable<TEntity> Query {
             get {
                 return Context.Set<TEntity>()
                     .AsNoTracking();
@@ -81,7 +77,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key values</param>
         /// <returns>true if an entity with the provided keys exists</returns>
-        public bool Exists(params object[] keyValues) {
+        public virtual bool Exists(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
             if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;
@@ -96,7 +92,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key values</param>
         /// <returns></returns>
-        public async Task<bool> ExistsAsync(params object[] keyValues) {
+        public virtual async Task<bool> ExistsAsync(params object[] keyValues) {
             var entity = await Context.FindAsync<TEntity>(keyValues);
             if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;
@@ -286,7 +282,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="skip">int number of records to skip</param>
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
-        public List<dynamic> GetFromDynamicLinq(
+        public virtual List<dynamic> GetFromDynamicLinq(
                 string where = null,
                 string orderBy = null,
                 string select = null,

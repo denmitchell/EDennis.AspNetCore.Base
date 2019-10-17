@@ -26,7 +26,7 @@ namespace EDennis.Samples.Colors.InternalApi {
 
             //AspNetCore.Base config
             services.AddDbContexts<ColorDbContext,ColorHistoryDbContext>(Configuration, HostingEnvironment);
-            services.AddRepos<ColorRepo>();
+            services.AddRepo<ColorRepo,ColorDbContext>();
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Color API", Version = "v1" });

@@ -22,6 +22,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+
         public static IServiceCollection AddRepo<TRepoInterface, TRepoImplementation, TContext>(this IServiceCollection services)
             where TRepoInterface : class
             where TRepoImplementation : class, IRepo, TRepoInterface
@@ -56,6 +57,46 @@ namespace EDennis.AspNetCore.Base.Web {
                 var scopeProperties = f.GetRequiredService<ScopeProperties>();
                 var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
                 var context = f.GetRequiredService<TContext>();
+                var repo = (TRepoImplementation)new ProxyGenerator()
+                    .CreateClassProxy(typeof(TRepoImplementation),
+                        new object[] { context, scopeProperties, activeLogger },
+                        new TraceInterceptor(activeLogger, scopeProperties));
+                return repo;
+            });
+        }
+
+
+        private static IServiceCollection AddScoped<TRepoInterface, TRepoImplementation, TEntity, TContext, THistoryContext>(this IServiceCollection services)
+            where TRepoInterface : class
+            where TEntity : class, IEFCoreTemporalModel, new()
+            where TRepoImplementation : WriteableTemporalRepo<TEntity,TContext,THistoryContext>, TRepoInterface
+            where TContext : DbContext
+            where THistoryContext : DbContext {
+            return services.AddScoped<TRepoInterface>(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TRepoInterface>>>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
+                var context = f.GetRequiredService<TContext>();
+                var histContext = f.GetRequiredService<THistoryContext>();
+                var repo = (TRepoImplementation)new ProxyGenerator()
+                    .CreateClassProxy(typeof(TRepoImplementation),
+                        new object[] { context, scopeProperties, activeLogger },
+                        new TraceInterceptor(activeLogger, scopeProperties));
+                return repo;
+            });
+        }
+
+        private static IServiceCollection AddScoped<TRepoImplementation, TEntity, TContext, THistoryContext>(this IServiceCollection services)
+            where TEntity : class, IEFCoreTemporalModel, new()
+            where TRepoImplementation : WriteableTemporalRepo<TEntity, TContext, THistoryContext>
+            where TContext : DbContext
+            where THistoryContext : DbContext {
+            return services.AddScoped(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TRepoImplementation>>>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
+                var context = f.GetRequiredService<TContext>();
+                var histContext = f.GetRequiredService<THistoryContext>();
                 var repo = (TRepoImplementation)new ProxyGenerator()
                     .CreateClassProxy(typeof(TRepoImplementation),
                         new object[] { context, scopeProperties, activeLogger },

@@ -54,8 +54,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableTemporalRepo(TContext context, THistoryContext historyContext,
             IScopeProperties scopeProperties, 
-            IEnumerable<ILogger<WriteableRepo<TEntity,TContext>>> loggers) 
-            : base(context, scopeProperties, loggers) {
+            ILogger<WriteableRepo<TEntity,TContext>> logger) 
+            : base(context, scopeProperties, logger) {
             HistoryContext = historyContext;
         }
 
@@ -65,7 +65,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The entity to create</param>
         /// <returns>The created entity</returns>
-        public override TEntity Create(TEntity entity) {
+        public new virtual TEntity Create(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
@@ -87,7 +87,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The entity to create</param>
         /// <returns>The created entity</returns>
-        public override async Task<TEntity> CreateAsync(TEntity entity) {
+        public new virtual async Task<TEntity> CreateAsync(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
@@ -108,7 +108,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-        public override TEntity Update(TEntity entity, params object[] keyValues) {
+        public new virtual TEntity Update(TEntity entity, params object[] keyValues) {
             if (entity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {entity.GetType().Name}");
@@ -134,7 +134,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             return existing;
         }
 
-        public override TEntity Update(dynamic partialEntity, params object[] keyValues) {
+        public new virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
@@ -167,7 +167,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-        public override async Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues) {
+        public new virtual async Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues) {
 
             if (entity == null)
                 throw new MissingEntityException(
@@ -195,7 +195,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public override async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
+        public new virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
@@ -227,7 +227,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
-        public override void Delete(params object[] keyValues) {
+        public new virtual void Delete(params object[] keyValues) {
 
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
@@ -246,7 +246,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchrously deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
-        public override async Task DeleteAsync(params object[] keyValues) {
+        public new virtual async Task DeleteAsync(params object[] keyValues) {
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
                 throw new MissingEntityException(
@@ -260,7 +260,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> QueryAsOf(DateTime from,
+        public virtual List<TEntity> QueryAsOf(DateTime from,
                 DateTime to, Expression<Func<TEntity, bool>> predicate,
                 int pageNumber = 1, int pageSize = 10000,
                 params Expression<Func<TEntity, dynamic>>[] orderSelectors
@@ -300,7 +300,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> QueryAsOf(DateTime asOf,
+        public virtual List<TEntity> QueryAsOf(DateTime asOf,
                 Expression<Func<TEntity, bool>> predicate,
                 int pageNumber = 1, int pageSize = 10000,
                 params Expression<Func<TEntity, dynamic>>[] orderSelectors
@@ -340,7 +340,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> GetByIdHistory(params object[] key) {
+        public virtual List<TEntity> GetByIdHistory(params object[] key) {
             var current = Context.Find<TEntity>(key);
             var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
 
@@ -355,7 +355,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public TEntity GetByIdAsOf(DateTime asOf, params object[] key) {
+        public virtual TEntity GetByIdAsOf(DateTime asOf, params object[] key) {
             var current = Context.Find<TEntity>(key);
             var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);

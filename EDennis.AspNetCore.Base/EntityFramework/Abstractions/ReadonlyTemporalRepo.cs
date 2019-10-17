@@ -17,10 +17,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     public abstract class ReadonlyTemporalRepo<TEntity, TContext, THistoryContext>
-        : ReadonlyRepo<TEntity,TContext>
+        : ReadonlyRepo<TEntity, TContext>
             where TEntity : class, IEFCoreTemporalModel, new()
             where TContext : DbContext
-            where THistoryContext: DbContext {
+            where THistoryContext : DbContext {
 
 
         public THistoryContext HistoryContext { get; set; }
@@ -32,10 +32,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="context">Entity Framework DbContext</param>
         public ReadonlyTemporalRepo(TContext context, THistoryContext historyContext,
                 IScopeProperties scopeProperties,
-                IEnumerable<ILogger<ReadonlyRepo<TEntity, TContext>>> loggers) 
-            : base(context,scopeProperties,loggers) {
+                ILogger<ReadonlyRepo<TEntity, TContext>> logger)
+            : base(context, scopeProperties, logger) {
 
-                HistoryContext = historyContext;
+            HistoryContext = historyContext;
         }
 
 
@@ -46,17 +46,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 params Expression<Func<TEntity, dynamic>>[] orderSelectors
                 ) {
 
-            #region logging
-            Logger.LogDebug("For {User}, {Method}\n\tfrom={from}\n\tto={to}\n\tpredicate={predicate}\n\tpageNumber={pageNumber}\n\tpageSize={pageSize}",
-                U, M("QueryAsOf"), from, to, predicate, pageNumber, pageSize);
-            #endregion
-
             var asOfPredicate = GetAsOfRangePredicate(from, to);
 
-            #region logging
-            Logger.LogTrace("For {User}, {Method}\n\tlocal variable: asOfPredicate={asOfPredicate}",
-                U, M("QueryAsOf"), asOfPredicate);
-            #endregion
 
             var current = Context.Set<TEntity>()
                 .Where(predicate)
@@ -65,11 +56,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .Take(pageSize)
                 .AsNoTracking();
 
-            #region logging
-            Logger.LogTrace("For {User}, {Method}\n\tlocal variable: current={current}",
-                U, M("QueryAsOf"), D(current));
-            #endregion
-
             var history = HistoryContext.Set<TEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
@@ -77,10 +63,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .Take(pageSize)
                 .AsNoTracking();
 
-            #region logging
-            Logger.LogTrace("For {User}, {Method}\n\tlocal variable: history={history}",
-                U, M("QueryAsOf"), D(current));
-            #endregion
 
             if (orderSelectors.Length > 0) {
                 var currentOrdered = OrderByUtils
@@ -95,11 +77,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
             var union = current.ToList().Union(history.ToList()).ToList();
-
-            #region logging
-            Logger.LogTrace("For {User}, {Method}\n\tReturning: {Return}",
-                U, M("QueryAsOf"), D(union));
-            #endregion
 
             return union;
         }

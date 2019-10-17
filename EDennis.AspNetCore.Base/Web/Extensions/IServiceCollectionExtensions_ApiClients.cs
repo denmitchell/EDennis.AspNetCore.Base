@@ -1,168 +1,194 @@
-﻿using Castle.DynamicProxy;
+﻿using Castle.Core.Configuration;
+using Castle.DynamicProxy;
 using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Web.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 
-namespace EDennis.AspNetCore.Base.Web.Extensions
-{
+namespace EDennis.AspNetCore.Base.Web.Extensions {
     public static class IServiceCollectionExtensions_ApiClients {
 
 
-
-        public static IServiceCollection AddRepo<TRepoImplementation, TContext>(this IServiceCollection services)
-            where TRepoImplementation : class, IRepo
-            where TContext : DbContext {
+        public static IServiceCollection AddApiClient<TApiClientImplementation>(this IServiceCollection services)
+            where TApiClientImplementation : ApiClient {
             services.TryAddScoped<ScopeProperties>();
-            services.AddScoped<TRepoImplementation, TContext>();
+            services.AddScoped<TApiClientImplementation>();
             return services;
         }
 
 
-        public static IServiceCollection AddRepo<TRepoInterface, TRepoImplementation, TContext>(this IServiceCollection services)
-            where TRepoInterface : class
-            where TRepoImplementation : class, IRepo, TRepoInterface
-            where TContext : DbContext {
+        public static IServiceCollection AddApiClient<TApiClientInterface, TApiClientImplementation>(this IServiceCollection services)
+            where TApiClientInterface : class
+            where TApiClientImplementation : ApiClient, TApiClientInterface {
             services.TryAddScoped<ScopeProperties>();
-            services.AddScoped<TRepoInterface, TRepoImplementation, TContext>();
+            services.AddScoped<TApiClientInterface, TApiClientImplementation>();
             return services;
         }
 
 
-        /*
-    public SecureApiClient(HttpClient httpClient,
-        IConfiguration config,
-        ScopeProperties scopeProperties,
-        ApiClient identityServerApiClient,
-        SecureTokenCache secureTokenCache,
-        IWebHostEnvironment hostingEnvironment)
-        : base(httpClient, config, scopeProperties) {
-        */
-        private static IServiceCollection AddScoped<TSecureApiClient>(this IServiceCollection services)
-            where TSecureApiClient : SecureApiClient {
 
-            services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
-            services.AddHttpClient<TSecureApiClient, TSecureApiClient>();
-            services.TryAddScoped<IdentityServerApi>();
+        private static IServiceCollection AddScoped<TApiClientInterface, TApiClientImplementation>(this IServiceCollection services)
+            where TApiClientInterface : class
+            where TApiClientImplementation : ApiClient, TApiClientInterface {
+
+            bool isSecureClient = typeof(SecureApiClient).IsAssignableFrom(typeof(TApiClientImplementation));
+
+
+            services.AddHttpClient(); //this ensures that all related services are created
+
+            if (isSecureClient) {
+                services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
+                services.TryAddScoped<IdentityServerApi>();
+            }
+
+            services = services.AddScoped<TApiClientInterface>(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TApiClientImplementation>>>();
+                var configuration = f.GetRequiredService<IConfiguration>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                SecureTokenCache secureTokenCache = null;
+                IWebHostEnvironment webHostEnvironment = null;
+                IdentityServerApi identityServerApi = null;
+                if (isSecureClient) {
+                    secureTokenCache = f.GetRequiredService<SecureTokenCache>();
+                    webHostEnvironment = f.GetRequiredService<IWebHostEnvironment>();
+                    identityServerApi = f.GetRequiredService<IdentityServerApi>();
+                }
+                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
+                var httpClientFactory = f.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient(typeof(ApiClient).Name);
+
+                if (isSecureClient) {
+                    var api = (TApiClientImplementation)new ProxyGenerator()
+                        .CreateClassProxy(typeof(TApiClientImplementation),
+                            new object[] { httpClient, configuration, scopeProperties, identityServerApi,
+                            secureTokenCache, webHostEnvironment, activeLogger},
+                            new TraceInterceptor(activeLogger, scopeProperties));
+                    return api;
+                } else {
+                    var api = (TApiClientImplementation)new ProxyGenerator()
+                        .CreateClassProxy(typeof(TApiClientImplementation),
+                            new object[] { httpClient, configuration, scopeProperties, activeLogger },
+                            new TraceInterceptor(activeLogger, scopeProperties));
+                    return api;
+                }
+            });
+
+            return services;
+
+        }
+
+
+
+
+        private static IServiceCollection AddScoped<TApiClientImplementation>(this IServiceCollection services)
+            where TApiClientImplementation : ApiClient {
+
+            services.AddHttpClient(); //this ensures that all related services are created
+
+
+            bool isSecureClient = typeof(SecureApiClient).IsAssignableFrom(typeof(TApiClientImplementation));
+
+            if (isSecureClient) {
+                services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
+                services.TryAddScoped<IdentityServerApi>();
+            }
 
             services = services.AddScoped(f => {
-                var loggers = f.GetRequiredService<IEnumerable<ILogger<TSecureApiClient>>>();
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TApiClientImplementation>>>();
+                var configuration = f.GetRequiredService<IConfiguration>();
                 var scopeProperties = f.GetRequiredService<ScopeProperties>();
-                var secureTokenCache = f.GetRequiredService<SecureTokenCache>();
-                var webHostEnvironment = f.GetRequiredService<IWebHostEnvironment>();
-                var identityServerApi = f.GetRequiredService<IdentityServerApi>();
+                SecureTokenCache secureTokenCache = null;
+                IWebHostEnvironment webHostEnvironment = null;
+                IdentityServerApi identityServerApi = null;
+                if (isSecureClient) {
+                    secureTokenCache = f.GetRequiredService<SecureTokenCache>();
+                    webHostEnvironment = f.GetRequiredService<IWebHostEnvironment>();
+                    identityServerApi = f.GetRequiredService<IdentityServerApi>();
+                }
                 var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
-                var httpClient = f.GetRequiredService<HttpClientFactory<TSecureApiClient>>();
-                var api = (TSecureApiClient)new ProxyGenerator()
-                    .CreateClassProxy(typeof(TSecureApiClient),
-                        new object[] { /*HttpClient httpClient,
-            IConfiguration config,
-            ScopeProperties scopeProperties,
-            ApiClient identityServerApiClient,
-            SecureTokenCache secureTokenCache,
-            IWebHostEnvironment hostingEnvironment,
-            ILogger logger */},
-                        new TraceInterceptor(activeLogger, scopeProperties));
+                var httpClientFactory = f.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient(typeof(ApiClient).Name);
 
-
-
+                if (isSecureClient) {
+                    var api = (TApiClientImplementation)new ProxyGenerator()
+                        .CreateClassProxy(typeof(TApiClientImplementation),
+                            new object[] { httpClient, configuration, scopeProperties, identityServerApi,
+                            secureTokenCache, webHostEnvironment, activeLogger},
+                            new TraceInterceptor(activeLogger, scopeProperties));
+                    return api;
+                } else {
+                    var api = (TApiClientImplementation)new ProxyGenerator()
+                        .CreateClassProxy(typeof(TApiClientImplementation),
+                            new object[] { httpClient, configuration, scopeProperties, activeLogger },
+                            new TraceInterceptor(activeLogger, scopeProperties));
+                    return api;
+                }
             });
 
-
-            return services.AddScoped(f => {
-                var loggers = f.GetRequiredService<IEnumerable<ILogger<TSecureApiClient>>>();
-                var scopeProperties = f.GetRequiredService<ScopeProperties>();
-                var secureTokenCache = f.GetRequiredService<SecureTokenCache>();
-                var webHostEnvironment = f.GetRequiredService<IWebHostEnvironment>();
-                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
-                var context = f.GetRequiredService<TContext>();
-                var repo = (TRepoImplementation)new ProxyGenerator()
-                    .CreateClassProxy(typeof(TRepoImplementation),
-                        new object[] { context, scopeProperties, activeLogger },
-                        new TraceInterceptor(activeLogger, scopeProperties));
-                return repo;
-            });
-        }
-
-        private static IServiceCollection AddScoped<TRepoInterface, TRepoImplementation, TContext>(this IServiceCollection services)
-            where TRepoInterface : class
-            where TRepoImplementation : class, TRepoInterface
-            where TContext : DbContext {
-            return services.AddScoped<TRepoInterface>(f => {
-                var loggers = f.GetRequiredService<IEnumerable<ILogger<TRepoInterface>>>();
-                var scopeProperties = f.GetRequiredService<ScopeProperties>();
-                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
-                var context = f.GetRequiredService<TContext>();
-                var repo = (TRepoImplementation)new ProxyGenerator()
-                    .CreateClassProxy(typeof(TRepoImplementation),
-                        new object[] { context, scopeProperties, activeLogger },
-                        new TraceInterceptor(activeLogger, scopeProperties));
-                return repo;
-            });
-        }
-
-        public static IServiceCollection AddApiClient<TClientInterface, TClientImplementation>(this IServiceCollection services)
-            where TClientImplementation : class, TClientInterface
-            where TClientInterface : class {
-            services.TryAddScoped<ScopeProperties, ScopeProperties>();
-            if (typeof(ApiClient).IsAssignableFrom(typeof(TClientImplementation))) { 
-                services.TryAddSingleton<SecureTokenCache, SecureTokenCache>();
-                services.AddHttpClient<TClientInterface, TClientImplementation>();
-            } else {
-                services.AddScoped<TClientInterface, TClientImplementation>();
-            }
             return services;
+
         }
 
 
+
+        [Obsolete("Use AddApiClient instead")]
         public static IServiceCollection AddApiClients<TClient1>(this IServiceCollection services)
-            where TClient1 : ApiClient {
-            services.TryAddSingleton<SecureTokenCache,SecureTokenCache>();
-            services.TryAddScoped<ScopeProperties,ScopeProperties>();
-            services.AddHttpClient<TClient1>();
+        where TClient1 : ApiClient {
+            services.AddApiClient<TClient1>();
             return services;
         }
 
+        [Obsolete("Use AddApiClient instead")]
         public static IServiceCollection AddApiClients<TClient1, TClient2>(this IServiceCollection services)
             where TClient1 : ApiClient
             where TClient2 : ApiClient {
-            services.AddApiClients<TClient1>();
-            services.AddHttpClient<TClient2>();
+            services.AddApiClient<TClient1>();
+            services.AddApiClient<TClient2>();
             return services;
         }
 
+        [Obsolete("Use AddApiClient instead")]
         public static IServiceCollection AddApiClients<TClient1, TClient2, TClient3>(this IServiceCollection services)
             where TClient1 : ApiClient
             where TClient2 : ApiClient
             where TClient3 : ApiClient {
-            services.AddApiClients<TClient1, TClient2>();
-            services.AddHttpClient<TClient3>();
+            services.AddApiClient<TClient1>();
+            services.AddApiClient<TClient2>();
+            services.AddApiClient<TClient3>();
             return services;
         }
 
+        [Obsolete("Use AddApiClient instead")]
         public static IServiceCollection AddApiClients<TClient1, TClient2, TClient3, TClient4>(this IServiceCollection services)
             where TClient1 : ApiClient
             where TClient2 : ApiClient
             where TClient3 : ApiClient
             where TClient4 : ApiClient {
-            services.AddApiClients<TClient1, TClient2, TClient3>();
-            services.AddHttpClient<TClient4>();
+            services.AddApiClient<TClient1>();
+            services.AddApiClient<TClient2>();
+            services.AddApiClient<TClient3>();
+            services.AddApiClient<TClient4>();
             return services;
         }
 
+        [Obsolete("Use AddApiClient instead")]
         public static IServiceCollection AddApiClients<TClient1, TClient2, TClient3, TClient4, TClient5>(this IServiceCollection services)
             where TClient1 : ApiClient
             where TClient2 : ApiClient
             where TClient3 : ApiClient
             where TClient4 : ApiClient
             where TClient5 : ApiClient {
-            services.AddApiClients<TClient1, TClient2, TClient3, TClient4>();
-            services.AddHttpClient<TClient5>();
+            services.AddApiClient<TClient1>();
+            services.AddApiClient<TClient2>();
+            services.AddApiClient<TClient3>();
+            services.AddApiClient<TClient4>();
+            services.AddApiClient<TClient5>();
             return services;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Net.Http;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -11,7 +12,8 @@ namespace EDennis.AspNetCore.Base.Web {
     /// with a different class name. 
     /// </summary>
     public class IdentityServerApi : ApiClient {
-        public IdentityServerApi(HttpClient httpClient, IConfiguration config, ScopeProperties scopeProperties) : base(httpClient, config, scopeProperties) {
+        public IdentityServerApi(HttpClient httpClient, IConfiguration config, ScopeProperties scopeProperties, ILogger<IdentityServerApi> logger) 
+            : base(httpClient, config, scopeProperties, logger) {
         }
     }
 }
