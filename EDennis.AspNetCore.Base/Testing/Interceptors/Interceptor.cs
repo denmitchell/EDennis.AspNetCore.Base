@@ -13,6 +13,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public const string HISTORY_INSTANCE_SUFFIX = "-hist";
 
         public const string HDR_USE_READONLY = HDR_PREFIX + "UseReadonly";
+        public const string HDR_USE_RELATIONAL = HDR_PREFIX + "UseRelational";
 
         public const string HDR_USE_INMEMORY = HDR_PREFIX + "UseInMemory";
         public const string HDR_DROP_INMEMORY = HDR_PREFIX + "DropInMemory";
