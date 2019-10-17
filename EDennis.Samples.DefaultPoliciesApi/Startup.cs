@@ -1,8 +1,10 @@
 ﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.DefaultPoliciesApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,26 +12,46 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using System;
 using System.Threading.Tasks;
 using A = IdentityServer;
 
 namespace EDennis.Samples.DefaultPoliciesApi {
     public class Startup {
 
-        public Startup(ILogger<Startup> logger,
+        public static ILogger<Startup> Logger;
+        static Startup() {
+
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var configuration = new ConfigurationBuilder()
+                            .AddJsonFile($"appsettings.{env}.json")
+                            .Build();
+
+            //This is the default logger.
+            //   Name = "Logger", Index = 0, LogLevel = Information
+            Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration, "Logging:Loggers:Default")
+                        .CreateLogger();
+
+            Log.Logger.Information($"Starting Application: EDennis.Samples.DefaultPoliciesApi, {env}");
+
+            Logger = new SerilogLoggerFactory(Log.Logger).CreateLogger<Startup>();
+        }
+
+        public Startup(
             IConfiguration configuration,
             IWebHostEnvironment env) {
             Configuration = configuration;
             HostingEnvironment = env;
-            Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment HostingEnvironment { get; }
-        public ILogger Logger { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+
 
             //****************************************************
             //Important: ApiLaunchers must be added to the service
@@ -62,11 +84,21 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             }).ExcludeReferencedProjectControllers<A.Startup>();
 
 
-            Task.Run(() => {
-                CurrentDirectoryHelpers.SetCurrentDirectory();
-            });
+            //Task.Run(() => {
+            //    CurrentDirectoryHelpers.SetCurrentDirectory();
+            //});
 
             services.AddScoped<ScopeProperties>();
+
+            //add an AuthorizationPolicyProvider which generates default
+            //policies upon first access to any controller action
+            services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    Configuration, securityOptions.ScopePatternOptions, logger);
+                }
+            );
+
 
             services.AddDbContext<AppDbContext>(options =>
                             options.UseSqlite($"Data Source={HostingEnvironment.ContentRootPath}/hr.db")

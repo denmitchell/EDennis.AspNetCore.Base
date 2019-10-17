@@ -1,9 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.Security;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections.Concurrent;
 
 namespace EDennis.AspNetCore.Base.Web {
     public static class AuthorizationPolicyBuilderExtensions {
@@ -16,14 +15,16 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="allowedValues">Values the claim must process one or more of for evaluation to succeed.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
         public static AuthorizationPolicyBuilder RequireClaimPatternMatch(
-            this AuthorizationPolicyBuilder builder, 
-            string requirementScope, ScopePatternOptions options) {
+            this AuthorizationPolicyBuilder builder,
+            string requirementScope, ScopePatternOptions options,
+            ConcurrentDictionary<string, bool> policyPatternCache,
+            ILogger logger) {
             if (requirementScope == null) {
                 throw new ArgumentNullException(nameof(requirementScope));
             }
 
 
-            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options));
+            builder.Requirements.Add(new ClaimPatternAuthorizationHandler(requirementScope, options, policyPatternCache, logger));
             return builder;
         }
 

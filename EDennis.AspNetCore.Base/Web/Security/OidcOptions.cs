@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EDennis.AspNetCore.Base.Security
-{
+﻿namespace EDennis.AspNetCore.Base.Security {
     public class OidcOptions {
         public string ResponseType { get; set; } = "code id_token";
         public bool RequireHttpsMetadata { get; set; } = true;
@@ -12,8 +7,7 @@ namespace EDennis.AspNetCore.Base.Security
         public OidcScopeOptions OidcScopeOptions { get; set; } = new OidcScopeOptions();
     }
 
-    public class OidcScopeOptions
-    {
+    public class OidcScopeOptions {
         public string UserScopePrefix = "user_";
         public bool AddOfflineAccess { get; set; } = true;
         public string[] AdditionalScopes { get; set; } = new string[] { };

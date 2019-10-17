@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EDennis.AspNetCore.Base.Security {
+﻿namespace EDennis.AspNetCore.Base.Security {
     public class ScopePatternOptions {
 
-        public string UserScopePrefix { get; internal set; }
+        public string UserScopePrefix { get; set; } = "user_";
 
-        public bool IsOidc { get; internal set; } = false;
+        public bool IsOidc { get; set; } = false;
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_Security {
 
         /// <summary>
-        /// NOTE: to avoid creating multiple copies of Configuration, pass in IHostingEnvironment and IConfiguration
+        /// NOTE: to avoid creating multiple copies of Configuration, pass in IWebHostEnvironment and IConfiguration
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
@@ -117,7 +118,9 @@ namespace EDennis.AspNetCore.Base.Web {
                    });
             }
 
+
         }
+
 
 
         private static Type GetIdentityServerApiType() {
@@ -134,5 +137,4 @@ namespace EDennis.AspNetCore.Base.Web {
     }
 
 }
-
 

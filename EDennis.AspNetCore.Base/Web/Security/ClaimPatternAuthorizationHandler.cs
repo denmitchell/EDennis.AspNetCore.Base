@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
@@ -22,9 +25,12 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationHandler(
-                string requirementScope, ScopePatternOptions options) {
+                string requirementScope, ScopePatternOptions options,
+                ConcurrentDictionary<string, bool> policyPatternCache,
+                ILogger logger) {
 
-            RequirementScope = requirementScope.ToLower();
+            RequirementScope = requirementScope;
+            PolicyPatternCache = policyPatternCache;
 
             if (options != null) {
 
@@ -34,6 +40,7 @@ namespace EDennis.AspNetCore.Base.Security {
                     UserScopePrefix = options.UserScopePrefix?.ToLower();
 
                 ExclusionPrefix = options.ExclusionPrefix;
+                Logger = logger;
             }
         }
 
@@ -45,6 +52,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
         public string UserScopePrefix { get; } = "user_";
         public bool IsOidc { get; }
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// NOTE: Exclusions are evaluated after all included scopes.
@@ -53,160 +61,287 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public string ExclusionPrefix { get; } = "-";
 
-
-        //list of previously matched patterns that indicate success against the policy
-        public List<string> PositiveMatches { get; } = new List<string> { };
-
-        //list of previous matched patterns that indicate failure against the policy
-        public List<string> NegativeMatches { get; } = new List<string> { };
+        //within a singleton, holds all previously matched patterns
+        //that indicate success or failure against the policy
+        public ConcurrentDictionary<string, bool> PolicyPatternCache { get; set; }
 
 
         /// <summary>
         /// Makes a decision if authorization is allowed based on the claims requirements specified.
         /// </summary>
         /// <param name="context">The authorization context.</param>
-        /// <param name="requirement">The requirement to evaluate.</param>
+        /// <param name="handler">The requirement to evaluate.</param>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-            ClaimPatternAuthorizationHandler requirement) {
+            ClaimPatternAuthorizationHandler handler) {
 
-            MatchType matchType = MatchType.Unmatched;
+            bool? isSuccess = EvaluateClaimsPrincipal(context.User, handler);
 
-            var scopeClaimType = $"{(IsOidc ? UserScopePrefix : "")}scope".ToLower();
-
-            if (context.User.Claims != null && context.User.Claims.Count() > 0) {
-
-                var scopeClaims = context.User.Claims
-                        .Where(c => c.Type.ToLower() == scopeClaimType)
-                        .Select(c => c.Value.ToLower());
-
-                //if the cache of positive matches contains one of the provided 
-                //scope patterns, the requirement will be met and no further processing will occur
-                matchType = scopeClaims.Any(c => PositiveMatches.Contains(c)) ? MatchType.Positive : MatchType.Unmatched;
-
-
-                //if unmatched and the cache of negative matches contains one of the 
-                //provided scope patterns, flag as a negative match
-                if (matchType == MatchType.Unmatched)
-                    matchType = scopeClaims.Any(c => NegativeMatches.Contains(c)) ? MatchType.Negative : MatchType.Unmatched;
-
-                //if still unmatched, evaluate the scopeClaims with pattern-matching algorithm
-                if (matchType == MatchType.Unmatched)
-                    matchType = EvaluatePattern(requirement.RequirementScope, scopeClaims);
-
-            }
-            if (matchType == MatchType.Positive) {
-                context.Succeed(requirement);
+            if (isSuccess == true) {
+                context.Succeed(handler);
             }
             return Task.CompletedTask;
         }
 
-        public MatchType EvaluatePattern(string requirementPattern, IEnumerable<string> scopeClaims) {
 
-            MatchType matchType = MatchType.Unmatched;
+        /// <summary>
+        /// For a given claims principal (user or client), 
+        /// evaluates all scope claims against the requirement scope,
+        /// using cached results when possible.
+        /// </summary>
+        /// <param name="claimsPrincipal">user or client</param>
+        /// <param name="handler">the current authorization handler</param>
+        /// <returns></returns>
+        public bool EvaluateClaimsPrincipal(ClaimsPrincipal claimsPrincipal, ClaimPatternAuthorizationHandler handler) {
 
-            //if the client (or user) has more than one scope (or user_scope) claim,
-            //only one of these scope values has to match (effectively, an OR condition)
-            foreach (var scopeClaim in scopeClaims) {
-                var scope = scopeClaim;
+            bool isSuccess = false;
+            List<string> scopeClaims;
 
-                //prepend a universally matching pattern to scopes that start with an exclusion 
-                if (scopeClaim.StartsWith(ExclusionPrefix))
-                    scope = "*," + scope;
+            //prepend user scope prefix if this is OIDC.
+            var scopeClaimType = $"{(IsOidc ? UserScopePrefix : "")}scope";
 
-                //logically, we will treat the last matching pattern in the array of patterns 
-                //as the pattern that determines the nature of match -- positive or negative
-                foreach (var pattern in scope.Split().Reverse()) {
-                    if (pattern.StartsWith(ExclusionPrefix)) {
-                        var match = requirementPattern.Matches(pattern.Substring(1));
-                        if (match) {
-                            matchType = MatchType.Negative;
-                            NegativeMatches.Add(scope); //register this pattern in cache as negative match
-                            break; //continue with outer loop if a negative match
-                        }
+            //only process if there are any claims
+            if (claimsPrincipal.Claims != null && claimsPrincipal.Claims.Count() > 0) {
+
+                //get relevant claims (case-insensitve match on this)
+                scopeClaims = claimsPrincipal.Claims
+                        .Where(c => c.Type.Equals(scopeClaimType, StringComparison.OrdinalIgnoreCase))
+                        .Select(c => c.Value)
+                        .ToList();
+
+                //iterate over all scope claims
+                foreach (var scopeClaim in scopeClaims) {
+
+                    //if scope claim exists in cache, use the cache result
+                    if (PolicyPatternCache.ContainsKey(scopeClaim)) {
+                        isSuccess = PolicyPatternCache[scopeClaim];
+                        Logger.LogTrace("For default policy requirement {PolicyRequirement}, Scope claim pattern {ScopeClaim} is cached, returning {Result}", RequirementScope, scopeClaim, isSuccess);
+
+                        //otherwise, evaluate the scope's pattern(s)
                     } else {
-                        var match = requirementPattern.Matches(pattern);
-                        if (match) {
-                            matchType = MatchType.Positive;
-                            PositiveMatches.Add(scope); //register this pattern in cache as positive match
-                            return matchType; //short-circuit if a positive match
-                        }
+                        Logger.LogTrace("For default policy requirement {PolicyRequirement}, evaluating {ScopeClaim} pattern(s)", RequirementScope, scopeClaim, isSuccess);
+                        isSuccess = EvaluateScopeClaim(handler.RequirementScope, scopeClaim);
+                        PolicyPatternCache.TryAdd(scopeClaim, isSuccess); //add to cache
+                    }
+
+                    //short-circuit if success
+                    if (isSuccess) {
+                        Logger.LogTrace("For default policy requirement {PolicyRequirement}, Scope claim pattern {ScopeClaim} matches, returning {Result}", RequirementScope, scopeClaim, isSuccess);
+                        return true;
                     }
                 }
             }
-            return matchType;
 
+            return false; //if no successful scope claim, then false
         }
 
-    }
 
-    public enum MatchType { Unmatched, Positive, Negative }
+        /// <summary>
+        /// Evaluates an individual scope claim against a requirement scope
+        /// </summary>
+        /// <param name="requirement">the policy requirement scope</param>
+        /// <param name="scopeClaim">the user/client's scope claim</param>
+        /// <returns></returns>
+        public bool EvaluateScopeClaim(string requirement, string scopeClaim) {
 
-    /// <summary>
-    /// From https://www.geeksforgeeks.org/wildcard-pattern-matching/
-    /// This supports ? (single char wildcard) and * (multi-character wildcard)
-    /// </summary>
-    public static class StringExtensions {
-        // Function that matches input str with 
-        // given wildcard pattern 
-        internal static bool Matches(this string str, string pattern) {
+            MatchContext context = scopeClaim.StartsWith(ExclusionPrefix) ? MatchContext.Exclusion : MatchContext.Inclusion;
 
-            int n = str.Length;
-            int m = str.Length;
+            //split each scope into a set of patterns
+            var patterns = scopeClaim.Split(',').Select(x=>x.Trim());
 
-            // empty pattern can only match with 
-            // empty string 
-            if (m == 0)
-                return (n == 0);
+            //handle special if just one pattern in scope claim and inclusion
+            if (patterns.Count() == 1 && context == MatchContext.Inclusion)
+                if (patterns.ElementAt(0) == "*")
+                    return true;
+                else
+                    return requirement.MatchesWildcardPattern(patterns.ElementAt(0));
 
-            // lookup table for storing results of 
-            // subproblems 
-            bool[,] lookup = new bool[n + 1, m + 1];
 
-            // initialize lookup table to false 
-            for (int i = 0; i < n + 1; i++)
-                for (int j = 0; j < m + 1; j++)
-                    lookup[i, j] = false;
+            //keeps track of how each character in the requirement scope matches
+            //initialize with wildcard matches of the other type
+            MatchType[] characterMatches = Enumerable.Repeat(                 
+                    (context==MatchContext.Inclusion) 
+                        ? MatchType.WildcardExclusion 
+                        : MatchType.WildcardInclusion, requirement.Length).ToArray();
 
-            // empty pattern can match with  
-            // empty string 
-            lookup[0, 0] = true;
 
-            // Only '*' can match with empty string 
-            for (int j = 1; j <= m; j++)
-                if (pattern[j - 1] == '*')
-                    lookup[0, j] = lookup[0, j - 1];
+            //evaluate each pattern
+            foreach (var pattern in patterns)
+                EvaluatePattern(requirement, pattern, ref characterMatches);
 
-            // fill the table in bottom-up fashion 
-            for (int i = 1; i <= n; i++) {
-                for (int j = 1; j <= m; j++) {
-                    // Two cases if we see a '*' 
-                    // a) We ignore '*'' character and move 
-                    // to next character in the pattern, 
-                    //     i.e., '*' indicates an empty sequence. 
-                    // b) '*' character matches with ith 
-                    //     character in input 
-                    if (pattern[j - 1] == '*')
-                        lookup[i, j] = lookup[i, j - 1] ||
-                                       lookup[i - 1, j];
 
-                    // Current characters are considered as 
-                    // matching in two cases 
-                    // (a) current character of pattern is '?' 
-                    // (b) characters actually match 
-                    else if (pattern[j - 1] == '?' ||
-                                 str[i - 1] == pattern[j - 1])
-                        lookup[i, j] = lookup[i - 1, j - 1];
+            //iterate over character matches, returning false if at least one character
+            //is still unmatched or matched with exclusion pattern only 
+            foreach (MatchType characterMatch in characterMatches)
+                if (characterMatch == MatchType.NonWildcardExclusion || characterMatch == MatchType.WildcardExclusion)
+                    return false;
 
-                    // If characters don't match 
-                    else lookup[i, j] = false;
+
+            return true;
+        }
+
+
+
+        /// <summary>
+        /// This method does nearly the same thing as the MatchesWildcardPattern method
+        /// below; however, rather than returning an immediate result, it conditionally
+        /// updates an array holding the type of match by each character.  The array
+        /// is updated only when the entire pattern matches
+        /// </summary>
+        /// <param name="source">source string</param>
+        /// <param name="pattern">pattern to use for matching</param>
+        /// <param name="context">whether inclusion or exclusion</param>
+        /// <param name="characterMatches">when more than one string is evaluated, nonStarMatches is used for reconciliation</param>
+        /// <returns></returns>
+        public void EvaluatePattern(string source, string patternPossiblyWithPrefix,
+            ref MatchType[] characterMatches) {
+
+            MatchContext context = patternPossiblyWithPrefix.StartsWith(ExclusionPrefix) ? MatchContext.Exclusion : MatchContext.Inclusion;
+            var pattern = patternPossiblyWithPrefix.Substring(context == MatchContext.Exclusion ? 1 : 0);
+
+            MatchType[] matches = new MatchType[characterMatches.Length]; 
+            Array.Copy(characterMatches,matches,characterMatches.Length);
+
+            MatchType wildcardForContext = (context==MatchContext.Inclusion) ? MatchType.WildcardInclusion : MatchType.WildcardExclusion;
+            MatchType nonWildcardForContext = (context == MatchContext.Inclusion) ? MatchType.NonWildcardInclusion : MatchType.NonWildcardExclusion;
+
+
+            //overwrite characterMatches, only if the overall pattern matches (inclusion or exclusion)
+            if (Matches())
+                characterMatches = matches;
+
+            bool Matches() {
+                //short-circuit for trivial results;
+                if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(pattern))
+                    return true;
+
+                //initialize string index variables
+                int s = 0;
+                int p = 0;
+
+                //iterate over source and pattern characters until end of source
+                //or pattern (short-circuiting if no match)
+                for (; s < source.Length || p < pattern.Length; s++, p++) {
+
+                    //return true if end of source and pattern
+                    if (s == source.Length && p == pattern.Length)
+                        return true;
+
+                    //handle matching characters without wildcard
+                    else if (s < source.Length && p < pattern.Length && source[s] == pattern[p]) {
+                        //overwrite when lower value
+                        if (matches[s] < nonWildcardForContext)
+                            matches[s] = nonWildcardForContext;
+                        continue;
+                    }
+
+                    //handle asterix in pattern
+                    else if (p < pattern.Length && pattern[p] == '*') {
+
+                        //advance through pattern string until non-asterix character is encountered or end of string
+                        while (p < pattern.Length && pattern[p] == '*')
+                            p++;
+
+
+                        //advance the source to the first character that matches the pattern's next (non-asterix) character
+                        while (s < source.Length && (p == pattern.Length || source[s] != pattern[p])) {
+                            //overwrite unmatched only with wildcard match
+                            if (matches[s] < wildcardForContext)
+                                matches[s] = wildcardForContext;
+                            s++;
+                        }
+                        //if end of pattern is reached and it ends with '*', it matches
+                        if (p == pattern.Length)
+                            return true;
+
+                        //back up one, as the counter will advance p and s at the top of the loop
+                        s--;
+                        p--;
+                        //corresponding characters don't match and pattern character isn't an asterix; so, non-match
+                    } else
+                        return false;
                 }
+                return s == source.Length && p == pattern.Length;
+
             }
-            return lookup[n, m];
+
         }
+
     }
 
+    public enum MatchType : byte {
+        WildcardExclusion = 0,
+        WildcardInclusion = 1,
+        NonWildcardExclusion = 2,
+        NonWildcardInclusion = 3
+    }
+
+    public enum MatchContext {
+        Exclusion = 0,
+        Inclusion = 1
+    }
+
+
+
+    public static class StringExtensions {
+
+        // Function that matches source string with given wildcard pattern (asterixes only) 
+        public static bool MatchesWildcardPattern(this string source, string pattern) {
+
+            //short-circuit for trivial results;
+            if (source == pattern)
+                return true;
+            else if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(pattern))
+                return false;
+            else if (pattern == "*")
+                return true;
+
+            //initialize string index variables
+            int s = 0;
+            int p = 0;
+
+            //iterate over source and pattern characters until end of source
+            //or pattern (short-circuiting if no match)
+            for (; s < source.Length || p < pattern.Length; s++, p++) {
+
+                //return true if end of source and pattern
+                if (s == source.Length && p == pattern.Length)
+                    return true;
+
+
+                //handle matching characters without wildcard
+                else if (s < source.Length && p < pattern.Length && source[s] == pattern[p])
+                    continue;
+
+                //handle asterix in pattern
+                else if (p < pattern.Length && pattern[p] == '*') {
+
+                    //advance through pattern string until non-asterix character is encountered or end of string
+                    while (p < pattern.Length && pattern[p] == '*')
+                        p++;
+
+                    //if end of pattern is reached and it ends with '*', it matches
+                    if (p == pattern.Length)
+                        return true;
+
+                    //advance the source to the first character that matches the pattern's next (non-asterix) character
+                    while (s < source.Length && source[s] != pattern[p])
+                        s++;
+
+                    //corresponding characters don't match and pattern character isn't an asterix; so, non-match
+                } else
+                    return false;
+            }
+
+            //with the asterix-consuming feature of the above loop, 
+            //at this point, the only way the input string matches the pattern 
+            //is if there are no more characters remaining to match from 
+            //both the input and pattern.
+            return s == source.Length && p == pattern.Length;
+
+
+        }
+    }
 
 }
-
 
 
