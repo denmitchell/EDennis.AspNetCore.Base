@@ -4,7 +4,74 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EDennis.AspNetCore.Base.Web.Extensions
 {
-    public static class IServiceCollectionExtensions_HttpClient {
+    public static class IServiceCollectionExtensions_ApiClients {
+
+
+
+        public static IServiceCollection AddRepo<TRepoImplementation, TContext>(this IServiceCollection services)
+            where TRepoImplementation : class, IRepo
+            where TContext : DbContext {
+            services.TryAddScoped<ScopeProperties>();
+            services.AddScoped<TRepoImplementation, TContext>();
+            return services;
+        }
+
+
+        public static IServiceCollection AddRepo<TRepoInterface, TRepoImplementation, TContext>(this IServiceCollection services)
+            where TRepoInterface : class
+            where TRepoImplementation : class, IRepo, TRepoInterface
+            where TContext : DbContext {
+            services.TryAddScoped<ScopeProperties>();
+            services.AddScoped<TRepoInterface, TRepoImplementation, TContext>();
+            return services;
+        }
+
+
+        /*
+    public SecureApiClient(HttpClient httpClient,
+        IConfiguration config,
+        ScopeProperties scopeProperties,
+        ApiClient identityServerApiClient,
+        SecureTokenCache secureTokenCache,
+        IWebHostEnvironment hostingEnvironment)
+        : base(httpClient, config, scopeProperties) {
+
+        */
+
+
+
+        private static IServiceCollection AddScoped<TSecureApiClient, TContext>(this IServiceCollection services)
+            where TRepoImplementation : class
+            where TContext : DbContext {
+            return services.AddScoped(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TRepoImplementation>>>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
+                var context = f.GetRequiredService<TContext>();
+                var repo = (TRepoImplementation)new ProxyGenerator()
+                    .CreateClassProxy(typeof(TRepoImplementation),
+                        new object[] { context, scopeProperties, activeLogger },
+                        new TraceInterceptor(activeLogger, scopeProperties));
+                return repo;
+            });
+        }
+
+        private static IServiceCollection AddScoped<TRepoInterface, TRepoImplementation, TContext>(this IServiceCollection services)
+            where TRepoInterface : class
+            where TRepoImplementation : class, TRepoInterface
+            where TContext : DbContext {
+            return services.AddScoped<TRepoInterface>(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<TRepoInterface>>>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
+                var activeLogger = loggers.ElementAt(scopeProperties.LoggerIndex);
+                var context = f.GetRequiredService<TContext>();
+                var repo = (TRepoImplementation)new ProxyGenerator()
+                    .CreateClassProxy(typeof(TRepoImplementation),
+                        new object[] { context, scopeProperties, activeLogger },
+                        new TraceInterceptor(activeLogger, scopeProperties));
+                return repo;
+            });
+        }
 
         public static IServiceCollection AddApiClient<TClientInterface, TClientImplementation>(this IServiceCollection services)
             where TClientImplementation : class, TClientInterface
