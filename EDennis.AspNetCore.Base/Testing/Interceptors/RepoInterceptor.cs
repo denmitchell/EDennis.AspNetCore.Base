@@ -57,7 +57,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(config);
 
-                if (operation == TESTING_HDR_USE_READONLY)
+                if (operation == TESTING_HDR_USE_RELATIONAL) {
+                    _logger.LogInformation($"Using Relational database");
+                } else if (operation == TESTING_HDR_USE_READONLY)
                     throw new ApplicationException("HDR_USE_READONLY not appropriate for Writeable Repo.");
                 else if (operation == TESTING_HDR_USE_INMEMORY) {
                     GetOrAddInMemoryDatabase(repo, cache, baseInstanceName, baseDatabaseName);
