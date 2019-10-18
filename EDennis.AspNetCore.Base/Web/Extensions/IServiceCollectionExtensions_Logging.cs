@@ -79,13 +79,28 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-
         public static IServiceCollection AddSecondaryLoggers(this IServiceCollection services,
             params Type[] types) {
 
-            services.TryAddSingleton<ILoggerChooser>(f => {
+            services.TryAddSingleton(f => {
                 var loggers = f.GetRequiredService<IEnumerable<ILogger<object>>>();
                 return new DefaultLoggerChooser(loggers);
+            });
+            for (int i = 0; i < types.Length; i++)
+                services.AddSingleton(typeof(ILogger<>), types[i]);
+
+            return services;
+        }
+
+
+        public static IServiceCollection AddSecondaryLoggers<TLoggerChooser>(this IServiceCollection services,
+            params Type[] types)
+            where TLoggerChooser : LoggerChooser{
+
+            services.TryAddSingleton(f => {
+                var loggers = f.GetRequiredService<IEnumerable<ILogger<object>>>();
+                var chooser = (ILoggerChooser)Activator.CreateInstance(typeof(TLoggerChooser), new object[] { loggers });
+                return chooser;
             });
             for (int i = 0; i < types.Length; i++)
                 services.AddSingleton(typeof(ILogger<>), types[i]);
