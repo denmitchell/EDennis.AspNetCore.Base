@@ -1,6 +1,7 @@
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.ScopedLogging.ColorsApi.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -33,14 +34,9 @@ namespace EDennis.Samples.ScopedLogging.ColorsApi {
             services.AddScoped<ScopeProperties>();
 
 
-            services.AddSingleton(typeof(ILogger<>), typeof(SerilogVerboseLogger<>));
-            services.AddSingleton(typeof(ILogger<>), typeof(SerilogDebugLogger<>));
+            //add secondary loggers for on-demand, per-user verbose and debug logging
+            services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
 
-
-            services.AddSingleton<ILoggerChooser>(f => {
-                var loggers = f.GetRequiredService<IEnumerable<ILogger<object>>>();
-                return new DefaultLoggerChooser(loggers);
-            });
 
             services.AddDbContext<ColorDbContext>(options =>
                             options.UseSqlite($"Data Source={Environment.ContentRootPath}/color.db")

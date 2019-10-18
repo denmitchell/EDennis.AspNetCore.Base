@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Security;
+﻿using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Hr.InternalApi2.Models;
@@ -53,6 +54,9 @@ namespace EDennis.Samples.Hr.InternalApi2 {
             services.AddControllers(options => {
                 options.Conventions.Add(new AddDefaultAuthorizationPolicyConvention(HostingEnvironment, Configuration));
             });
+
+            //add secondary loggers for on-demand, per-user verbose and debug logging
+            services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
 
 
             services.AddDbContexts<         //you can add 5 at a time.
