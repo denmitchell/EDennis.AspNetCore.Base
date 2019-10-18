@@ -1,3 +1,4 @@
+using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Colors.InternalApi.Models;
@@ -24,9 +25,12 @@ namespace EDennis.Samples.Colors.InternalApi {
 
             services.AddControllers();
 
+            //add secondary loggers for on-demand, per-user verbose and debug logging
+            services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
+
             //AspNetCore.Base config
             services.AddDbContexts<ColorDbContext,ColorHistoryDbContext>(Configuration, HostingEnvironment);
-            services.AddRepo<ColorRepo,ColorDbContext>();
+            services.AddRepo<ColorRepo>();
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Color API", Version = "v1" });

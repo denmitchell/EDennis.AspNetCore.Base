@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Security;
+﻿using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.AspNetCore.Base.Web.Extensions;
@@ -61,8 +62,12 @@ namespace EDennis.Samples.Hr.ExternalApi {
             //.ExcludeReferencedProjectControllers<A.Startup>()
             //.ExcludeReferencedProjectControllers<B.Startup>();
 
+            //add secondary loggers for on-demand, per-user verbose and debug logging
+            services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
+
+
             //AspNetCore.Base config
-            services.AddApiClients<IdentityServer,InternalApi1,InternalApi2>();
+            services.AddApiClients<InternalApi1,InternalApi2>();
 
             if (HostingEnvironment.EnvironmentName == "Development") {
 

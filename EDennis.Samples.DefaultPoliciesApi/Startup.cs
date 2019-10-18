@@ -84,11 +84,11 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             }).ExcludeReferencedProjectControllers<A.Startup>();
 
 
-            //Task.Run(() => {
-            //    CurrentDirectoryHelpers.SetCurrentDirectory();
-            //});
-
             services.AddScoped<ScopeProperties>();
+
+            //add secondary loggers for on-demand, per-user verbose and debug logging
+            services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
+
 
             //add an AuthorizationPolicyProvider which generates default
             //policies upon first access to any controller action

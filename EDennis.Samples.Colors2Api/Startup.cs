@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Testing;
+﻿using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.Samples.Colors2Api.Models;
 using Microsoft.AspNet.OData.Extensions;
@@ -44,6 +45,9 @@ namespace EDennis.Samples.Colors2Api {
             //    .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             //services.AddClientAuthenticationAndAuthorizationWithDefaultPolicies();
+
+            //add secondary loggers for on-demand, per-user verbose and debug logging
+            services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
 
             services.AddDbContexts<ColorsDbContext>(Configuration, HostingEnvironment);
             services.AddRepos<RgbRepo,HslRepo>();

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_Repos {
 
-        public static IServiceCollection AddRepos<TRepo>(this IServiceCollection services, bool traceable = true)
+        public static IServiceCollection AddRepo<TRepo>(this IServiceCollection services, bool traceable = true)
             where TRepo : class, IRepo {
             services.TryAddScoped<ScopeProperties>();
             if (traceable)
@@ -14,6 +14,11 @@ namespace EDennis.AspNetCore.Base.Web {
                 services.AddScoped<TRepo, TRepo>();
             return services;
         }
+
+        public static IServiceCollection AddRepos<TRepo>(this IServiceCollection services, bool traceable = true)
+            where TRepo : class, IRepo 
+            => services.AddRepo<TRepo>(traceable);
+
 
         public static IServiceCollection AddRepos<TRepo1, TRepo2>(this IServiceCollection services, bool traceable = true)
             where TRepo1 : class, IRepo
