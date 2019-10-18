@@ -8,7 +8,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
 
     public class PositionRepo
         : WriteableTemporalRepo<Position,HrContext,HrHistoryContext>{
-        public PositionRepo(HrContext context, HrHistoryContext historyContext, IScopeProperties scopeProperties, IEnumerable<ILogger<WriteableRepo<Position, HrContext>>> loggers) : base(context, historyContext, scopeProperties, loggers) {
+        public PositionRepo(HrContext context, HrHistoryContext historyContext, 
+            ScopeProperties scopeProperties, 
+            ILogger<WriteableRepo<Position, HrContext>> logger) 
+            : base(context, historyContext, scopeProperties, logger) {
         }
 
         public List<Position> GetByEmployeeId(int employeeId) {

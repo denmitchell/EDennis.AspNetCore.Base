@@ -6,11 +6,12 @@ using System.Net.Http;
 
 namespace EDennis.Samples.Hr.ExternalApi {
 
-    public class IdentityServer : ApiClient {
+    //NO LONGER NEEDED: USE IdentityServerApi BASE CLASS FROM LIBRARY
+    //public class IdentityServer : ApiClient {
 
-        public IdentityServer(HttpClient client, IConfiguration config, ScopeProperties scopeProperties) :
-            base(client, config, scopeProperties) {
-        }
+    //    public IdentityServer(HttpClient client, IConfiguration config, ScopeProperties scopeProperties) :
+    //        base(client, config, scopeProperties) {
+    //    }
 
-    }
+    //}
 }

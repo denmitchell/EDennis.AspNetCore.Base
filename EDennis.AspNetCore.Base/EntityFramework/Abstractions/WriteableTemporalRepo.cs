@@ -53,7 +53,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableTemporalRepo(TContext context, THistoryContext historyContext,
-            IScopeProperties scopeProperties, 
+            ScopeProperties scopeProperties, 
             ILogger<WriteableRepo<TEntity,TContext>> logger) 
             : base(context, scopeProperties, logger) {
             HistoryContext = historyContext;

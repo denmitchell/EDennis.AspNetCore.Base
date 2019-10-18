@@ -19,7 +19,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public abstract class ReadonlyRepo<TEntity, TContext> : IRepo
+    public abstract class ReadonlyRepo<TEntity, TContext> : IRepo, IHasILogger
             where TEntity : class, new()
             where TContext : DbContext {
 
@@ -27,17 +27,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         private List<StoredProcedureDef> _spDefs;
 
         public TContext Context { get; set; }
-        public IScopeProperties ScopeProperties { get; set; }
+        public ScopeProperties ScopeProperties { get; set; }
 
 
-        protected ILogger Logger;
+        public ILogger Logger { get; }
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public ReadonlyRepo(TContext context,
-                IScopeProperties scopeProperties,
+                ScopeProperties scopeProperties,
                 ILogger<ReadonlyRepo<TEntity, TContext>> logger) {
 
             Context = context;

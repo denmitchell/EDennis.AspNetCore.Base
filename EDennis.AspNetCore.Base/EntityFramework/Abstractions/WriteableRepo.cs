@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EDennis.AspNetCore.Base.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +15,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public abstract class WriteableRepo<TEntity, TContext> : IRepo
+    public abstract class WriteableRepo<TEntity, TContext> : IRepo, IHasILogger
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
 
 
         public TContext Context { get; set; }
-        public IScopeProperties ScopeProperties { get; set; }
+        public ScopeProperties ScopeProperties { get; set; }
 
-        protected ILogger _logger;
+        public ILogger Logger { get; }
 
 
         /// <summary>
@@ -30,13 +31,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableRepo(TContext context, 
-            IScopeProperties scopeProperties,
+            ScopeProperties scopeProperties,
             ILogger<WriteableRepo<TEntity, TContext>> logger) {
 
             Context = context;
             ScopeProperties = scopeProperties;
 
-            _logger = logger;
+            Logger = logger;
 
         }
 

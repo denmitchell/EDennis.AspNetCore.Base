@@ -5,6 +5,7 @@ using EDennis.Samples.Hr.ExternalApi.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -19,12 +20,13 @@ namespace EDennis.Samples.Hr.ExternalApi {
             HttpClient client, 
             IConfiguration config, 
             ScopeProperties scopeProperties,
-            IdentityServer identityServer,
+            IdentityServerApi identityServer,
             SecureTokenCache tokenCache,
-            IWebHostEnvironment env
+            IWebHostEnvironment env,
+            ILogger<InternalApi1> logger
             ) :
             base(client, config, scopeProperties,
-                identityServer,tokenCache, env) {
+                identityServer,tokenCache, env, logger) {
         }
 
         public ObjectResult CreateEmployee(Employee employee) {

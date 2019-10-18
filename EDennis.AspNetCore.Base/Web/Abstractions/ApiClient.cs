@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EDennis.AspNetCore.Base.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace EDennis.AspNetCore.Base.Web
 {
-    public abstract class ApiClient {
+    public abstract class ApiClient : IHasILogger {
 
         [Obsolete]
         public const string HEADER_KEY = "ApiClientHeaders";

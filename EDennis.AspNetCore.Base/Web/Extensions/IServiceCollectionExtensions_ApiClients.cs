@@ -12,8 +12,9 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
 
 
         public static IServiceCollection AddApiClient<TClientInterface, TClientImplementation>(this IServiceCollection services, bool traceable = true)
-            where TClientImplementation : class, TClientInterface
-            where TClientInterface : class {
+            where TClientInterface : class, IHasILogger
+            where TClientImplementation : ApiClient, TClientInterface
+             {
 
             services.AddDependencies<TClientImplementation>();
             services.AddApiClientInternal<TClientInterface, TClientImplementation>();
@@ -97,8 +98,9 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
         }
 
         private static IServiceCollection AddApiClientInternal<TClientInterface, TClientImplementation>(this IServiceCollection services, bool traceable = true)
-            where TClientImplementation : class, TClientInterface
-            where TClientInterface : class {
+            where TClientInterface : class, IHasILogger  
+            where TClientImplementation : ApiClient, TClientInterface
+            {
 
 
             if (traceable)

@@ -13,31 +13,31 @@ namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_Logging {
 
         public static IServiceCollection AddScopedTraceable<TInterface, TImplementation>(this IServiceCollection services)
-            where TInterface : class
+            where TInterface : class, IHasILogger
             where TImplementation : TInterface => services.AddTraceable<TInterface, TImplementation>(ServiceLifetime.Scoped);
 
         public static IServiceCollection AddSingletonTraceable<TInterface, TImplementation>(this IServiceCollection services)
-            where TInterface : class
+            where TInterface : class, IHasILogger
             where TImplementation : TInterface => services.AddTraceable<TInterface, TImplementation>(ServiceLifetime.Singleton);
 
         public static IServiceCollection AddTransientTraceable<TInterface, TImplementation>(this IServiceCollection services)
-            where TInterface : class
+            where TInterface : class, IHasILogger
             where TImplementation : TInterface => services.AddTraceable<TInterface, TImplementation>(ServiceLifetime.Transient);
 
 
         public static IServiceCollection AddScopedTraceable<TImplementation>(this IServiceCollection services)
-            where TImplementation : class => services.AddTraceable<TImplementation, TImplementation>(ServiceLifetime.Scoped);
+            where TImplementation : class, IHasILogger => services.AddTraceable<TImplementation, TImplementation>(ServiceLifetime.Scoped);
 
         public static IServiceCollection AddSingletonTraceable<TImplementation>(this IServiceCollection services)
-            where TImplementation : class => services.AddTraceable<TImplementation, TImplementation>(ServiceLifetime.Singleton);
+            where TImplementation : class, IHasILogger => services.AddTraceable<TImplementation, TImplementation>(ServiceLifetime.Singleton);
 
         public static IServiceCollection AddTransientTraceable<TImplementation>(this IServiceCollection services)
-            where TImplementation : class => services.AddTraceable<TImplementation, TImplementation>(ServiceLifetime.Transient);
+            where TImplementation : class, IHasILogger => services.AddTraceable<TImplementation, TImplementation>(ServiceLifetime.Transient);
 
 
         public static IServiceCollection AddTraceable<TInterface, TImplementation>(
             this IServiceCollection services, ServiceLifetime serviceLifetime)
-            where TInterface : class
+            where TInterface : class, IHasILogger
             where TImplementation : TInterface {
 
             var constructorParameters = typeof(TImplementation)

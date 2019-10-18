@@ -11,7 +11,10 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
     public class StateBackgroundCheckRepo
         : ReadonlyRepo<StateBackgroundCheckView,
             StateBackgroundCheckContext> {
-        public StateBackgroundCheckRepo(StateBackgroundCheckContext context, IScopeProperties scopeProperties, IEnumerable<ILogger<ReadonlyRepo<StateBackgroundCheckView, StateBackgroundCheckContext>>> loggers) : base(context, scopeProperties, loggers) {
+        public StateBackgroundCheckRepo(StateBackgroundCheckContext context, 
+            ScopeProperties scopeProperties, 
+            ILogger<ReadonlyRepo<StateBackgroundCheckView, StateBackgroundCheckContext>> logger) 
+            : base(context, scopeProperties, logger) {
         }
 
         public StateBackgroundCheckView GetLastCheck(int employeeId) {

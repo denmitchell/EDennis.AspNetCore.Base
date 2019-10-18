@@ -4,6 +4,7 @@ using EDennis.Samples.Colors.ExternalApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,8 +15,8 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
         private const string COLOR_URL = "iapi/color";
 
-        public InternalApi(HttpClient client, IConfiguration config, ScopeProperties scopeProperties):
-            base (client,config,scopeProperties){ }
+        public InternalApi(HttpClient client, IConfiguration config, ScopeProperties scopeProperties, ILogger<InternalApi> logger):
+            base (client,config,scopeProperties, logger){ }
 
 
         public ObjectResult Create(Color color) {

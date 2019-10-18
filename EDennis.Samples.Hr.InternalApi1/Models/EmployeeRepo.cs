@@ -7,7 +7,10 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
 
     public class EmployeeRepo
         : WriteableTemporalRepo<Employee, HrContext, HrHistoryContext> {
-        public EmployeeRepo(HrContext context, HrHistoryContext historyContext, IScopeProperties scopeProperties, IEnumerable<ILogger<WriteableRepo<Employee, HrContext>>> loggers) : base(context, historyContext, scopeProperties, loggers) {
+        public EmployeeRepo(HrContext context, HrHistoryContext historyContext, 
+            ScopeProperties scopeProperties, 
+            ILogger<WriteableRepo<Employee, HrContext>> logger) 
+            : base(context, historyContext, scopeProperties, logger) {
         }
     }
 }

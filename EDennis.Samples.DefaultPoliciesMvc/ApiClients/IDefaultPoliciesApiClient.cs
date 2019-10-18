@@ -1,8 +1,9 @@
-﻿using EDennis.Samples.DefaultPoliciesMvc.Models;
+﻿using EDennis.AspNetCore.Base.Logging;
+using EDennis.Samples.DefaultPoliciesMvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EDennis.Samples.DefaultPoliciesMvc.ApiClients {
-    public interface IDefaultPoliciesApiClient {
+    public interface IDefaultPoliciesApiClient : IHasILogger {
 
         ObjectResult CreatePerson(Person person);
         ObjectResult GetPersons();

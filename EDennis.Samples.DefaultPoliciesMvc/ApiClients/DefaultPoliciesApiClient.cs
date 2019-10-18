@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -19,10 +20,11 @@ namespace EDennis.Samples.DefaultPoliciesMvc.ApiClients {
 
         public DefaultPoliciesApiClient(HttpClient client, IConfiguration config,
             ScopeProperties scopeProperties, IdentityServerApi identityServerClient,
-            SecureTokenCache secureTokenCache, IWebHostEnvironment hostingEnvironment
+            SecureTokenCache secureTokenCache, IWebHostEnvironment hostingEnvironment,
+            ILogger<DefaultPoliciesApiClient> logger
             ) : base(client, config, scopeProperties,
                   identityServerClient,
-                secureTokenCache, hostingEnvironment) { }
+                secureTokenCache, hostingEnvironment, logger) { }
 
 
         public ObjectResult GetPersons() {

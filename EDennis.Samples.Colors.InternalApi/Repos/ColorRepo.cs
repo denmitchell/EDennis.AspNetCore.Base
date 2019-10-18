@@ -6,7 +6,10 @@ using Microsoft.Extensions.Logging;
 namespace EDennis.Samples.Colors.InternalApi.Models {
 
     public class ColorRepo : WriteableTemporalRepo<Color, ColorDbContext, ColorHistoryDbContext> {
-        public ColorRepo(ColorDbContext context, ColorHistoryDbContext historyContext, IScopeProperties scopeProperties, ILogger<WriteableRepo<Color, ColorDbContext>> logger) : base(context, historyContext, scopeProperties, logger) {
+        public ColorRepo(ColorDbContext context, ColorHistoryDbContext historyContext, 
+            ScopeProperties scopeProperties, 
+            ILogger<WriteableRepo<Color, ColorDbContext>> logger) 
+            : base(context, historyContext, scopeProperties, logger) {
         }
     }
 }

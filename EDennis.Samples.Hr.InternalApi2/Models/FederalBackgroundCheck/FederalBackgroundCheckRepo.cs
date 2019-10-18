@@ -12,7 +12,11 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         : ReadonlyTemporalRepo<FederalBackgroundCheckView,
             FederalBackgroundCheckContext,
             FederalBackgroundCheckHistoryContext> {
-        public FederalBackgroundCheckRepo(FederalBackgroundCheckContext context, FederalBackgroundCheckHistoryContext historyContext, IScopeProperties scopeProperties, IEnumerable<ILogger<ReadonlyRepo<FederalBackgroundCheckView, FederalBackgroundCheckContext>>> loggers) : base(context, historyContext, scopeProperties, loggers) {
+        public FederalBackgroundCheckRepo(FederalBackgroundCheckContext context, 
+            FederalBackgroundCheckHistoryContext historyContext, 
+            ScopeProperties scopeProperties, 
+            ILogger<ReadonlyRepo<FederalBackgroundCheckView, FederalBackgroundCheckContext>> logger) 
+            : base(context, historyContext, scopeProperties, logger) {
         }
 
         public FederalBackgroundCheckView GetLastCheck(int employeeId) {
