@@ -95,42 +95,24 @@ namespace EDennis.AspNetCore.Base.Testing {
                     cache.Remove(findResult.MatchingInstanceName);
                 }
 
+                var manager = new DbContextOptionsManager<TContext>();
                 if (findResult.MatchingInstanceName == null || findResult.ToggleComparisonResult == ToggleComparisonResult.Different) {
                     if (testConfig.ConnectionType == ConnectionType.InMemory) {
-                        dbContextOptionsProvider.DbContextOptions =
-                            new DbContextOptionsBuilder<TContext>()
-                            .UseInMemoryDatabase(testConfig.InstanceName)
-                            .Options;
+                        manager = manager.BuildOptions(testConfig.InstanceName)
+                            .UpdateCache(testConfig.InstanceName,cache)
+                            .UpdateProvider(dbContextOptionsProvider);
                     } else if (testConfig.ConnectionType == ConnectionType.Rollback) {
                         var connectionString = profile.ConnectionStrings[typeof(TContext).Name];
                         var provider = DatabaseProviderExtensions.InferProvider(connectionString);
-                        IDbConnection connection;
-                        IDbTransaction transaction;
-                        
-                        if (provider == DatabaseProvider.SqlServer) {
-                            connection = new SqlConnection(connectionString);
-                            connection.Open();
-                            transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                            dbContextOptionsProvider.DbContextOptions =
-                                new DbContextOptionsBuilder<TContext>()
-                                .UseSqlServer(connection as SqlConnection)
-                                .Options;
+                        if (provider == DatabaseProvider.SqlServer) { 
+                            manager = manager.BuildOptions<SqlConnection>(connectionString, testConfig.IsolationLevel)
+                                .UpdateCache(testConfig.InstanceName, cache)
+                                .UpdateProvider(dbContextOptionsProvider);
                         } else {
-                            if (!Regex.IsMatch(connectionString, "cache\\s*=\\s*shared", RegexOptions.IgnoreCase))
-                                connectionString = (connectionString + ";cache=shared").Replace(";;", ";");
-                            connection = new SqliteConnection(profile.ConnectionStrings[typeof(TContext).Name]);
-                            connection.Open();
-                            transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                            dbContextOptionsProvider.DbContextOptions =
-                                new DbContextOptionsBuilder<TContext>()
-                                .UseSqlite(connection as SqliteConnection)
-                                .Options;
+                            manager = manager.BuildOptions<SqliteConnection>(connectionString, testConfig.IsolationLevel)
+                                .UpdateCache(testConfig.InstanceName, cache)
+                                .UpdateProvider(dbContextOptionsProvider);
                         }
-                        cache[testConfig.InstanceName] = new DbConnection<TContext> {
-                            DbContextOptions = dbContextOptionsProvider.DbContextOptions,
-                            IDbConnection = connection,
-                            IDbTransaction = transaction
-                        };
                     }
                 }
 
