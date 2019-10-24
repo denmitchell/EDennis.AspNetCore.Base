@@ -75,19 +75,20 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
                 var findResult = testConfig.Find(cache.Keys);
+                var cachedCxn = cache[findResult.MatchingInstanceName];
 
                 //if asking for a cached DbContextOptions instance, retrieve and use it, regardless of type
                 if (findResult.ToggleComparisonResult == ToggleComparisonResult.Same) {
-                    dbContextOptionsProvider.DbContextOptions = cache[findResult.MatchingInstanceName].DbContextOptions;
+                    dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptions;
                 } else if (findResult.ToggleComparisonResult == ToggleComparisonResult.Reset
                     || findResult.ToggleComparisonResult == ToggleComparisonResult.Different) {
                     if (testConfig.ConnectionType != ConnectionType.InMemory) {
                         if (testConfig.ConnectionType == ConnectionType.Rollback) {
-                            if (cache[findResult.MatchingInstanceName].IDbConnection != null
-                                && cache[findResult.MatchingInstanceName].IDbConnection.State == ConnectionState.Open) {
-                                if (cache[findResult.MatchingInstanceName].IDbTransaction != null)
-                                    cache[findResult.MatchingInstanceName].IDbTransaction.Rollback();
-                                cache[findResult.MatchingInstanceName].IDbConnection.Close();
+                            if (cachedCxn.IDbConnection != null
+                                && cachedCxn.IDbConnection.State == ConnectionState.Open) {
+                                if (cachedCxn.IDbTransaction != null)
+                                    cachedCxn.IDbTransaction.Rollback();
+                                cachedCxn.IDbConnection.Close();
                             }
                         }
                     }
