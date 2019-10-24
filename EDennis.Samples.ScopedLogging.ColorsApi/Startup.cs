@@ -31,7 +31,7 @@ namespace EDennis.Samples.ScopedLogging.ColorsApi {
             services.AddControllers();
 
 
-            services.AddScoped<ScopeProperties>();
+            services.AddScoped<ScopeProperties22>();
 
 
             //add secondary loggers for on-demand, per-user verbose and debug logging

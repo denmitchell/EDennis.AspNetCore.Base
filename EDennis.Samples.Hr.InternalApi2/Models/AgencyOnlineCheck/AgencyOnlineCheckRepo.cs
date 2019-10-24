@@ -11,7 +11,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         : WriteableRepo<AgencyOnlineCheck,
             AgencyOnlineCheckContext> {
         public AgencyOnlineCheckRepo(AgencyOnlineCheckContext context, 
-            ScopeProperties scopeProperties, 
+            ScopeProperties22 scopeProperties, 
             ILogger<WriteableRepo<AgencyOnlineCheck, AgencyOnlineCheckContext>> logger) 
             : base(context, scopeProperties, logger) {
         }

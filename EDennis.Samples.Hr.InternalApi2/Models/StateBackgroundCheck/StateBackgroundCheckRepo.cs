@@ -12,7 +12,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
         : ReadonlyRepo<StateBackgroundCheckView,
             StateBackgroundCheckContext> {
         public StateBackgroundCheckRepo(StateBackgroundCheckContext context, 
-            ScopeProperties scopeProperties, 
+            ScopeProperties22 scopeProperties, 
             ILogger<ReadonlyRepo<StateBackgroundCheckView, StateBackgroundCheckContext>> logger) 
             : base(context, scopeProperties, logger) {
         }

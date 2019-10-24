@@ -70,7 +70,7 @@ namespace EDennis.AspNetCore.Base.Testing
                 databaseName, instanceName, out DbContextOptions<TContext> options, 
                 out TContext context);
 
-            var scopeProperties = new ScopeProperties {
+            var scopeProperties = new ScopeProperties22 {
                 User = testUser
             };
 
@@ -114,7 +114,7 @@ namespace EDennis.AspNetCore.Base.Testing
                 out DbContextOptions<THistoryContext> historyOptions,
                 out THistoryContext historyContext);
 
-            var scopeProperties = new ScopeProperties {
+            var scopeProperties = new ScopeProperties22 {
                 User = testUser
             };
 
@@ -207,7 +207,7 @@ namespace EDennis.AspNetCore.Base.Testing
             return GetInstanceName(repo.ScopeProperties);
         }
 
-        private static string GetInstanceName(ScopeProperties scopeProperties) {
+        private static string GetInstanceName(ScopeProperties22 scopeProperties) {
             return scopeProperties.OtherProperties["InstanceName"].ToString();
         }
 

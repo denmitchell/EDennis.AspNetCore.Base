@@ -21,7 +21,7 @@ namespace EDennis.Samples.ScopedLogging.ColorsApi.Controllers {
         private readonly ColorDbContext _context;
         public ColorsController(ColorDbContext context, 
             IEnumerable<ILogger<ColorsController>> loggers, 
-            ScopeProperties scopeProperties) : base (loggers,scopeProperties) {
+            ScopeProperties22 scopeProperties) : base (loggers,scopeProperties) {
             _context = context;
         }
 

@@ -66,7 +66,7 @@ namespace EDennis.AspNetCore.Base.Logging
         /// </summary>
         /// <param name="scopeProperties"></param>
         /// <returns></returns>
-        int GetLoggerIndex(ScopeProperties scopeProperties);
+        int GetLoggerIndex(ScopeProperties22 scopeProperties);
 
 
         /// <summary>

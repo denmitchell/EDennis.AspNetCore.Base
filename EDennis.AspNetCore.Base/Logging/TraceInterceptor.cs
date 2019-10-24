@@ -24,7 +24,7 @@ namespace EDennis.AspNetCore.Base.Logging {
         private readonly ILogger logger;
         private readonly string User;
 
-        public TraceInterceptor(ILogger logger, ScopeProperties scopeProperties = null) {
+        public TraceInterceptor(ILogger logger, ScopeProperties22 scopeProperties = null) {
             this.logger = logger;
             User = scopeProperties?.User ?? "Anonymous";
         }

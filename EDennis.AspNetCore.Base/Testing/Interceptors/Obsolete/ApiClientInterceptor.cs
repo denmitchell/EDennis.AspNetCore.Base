@@ -39,7 +39,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 string operation = header.Key;
                 string instanceName = header.Value;
 
-                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
+                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties22)) as ScopeProperties22;
 
                 var apiClientHeaders = context.Request.Headers.Where(x => x.Key.StartsWith("X-")).ToList();
                 var dict = new Dictionary<string, object> {

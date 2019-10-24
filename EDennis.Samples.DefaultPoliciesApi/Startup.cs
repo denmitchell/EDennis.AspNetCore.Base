@@ -84,7 +84,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             }).ExcludeReferencedProjectControllers<A.Startup>();
 
 
-            services.AddScoped<ScopeProperties>();
+            services.AddScoped<ScopeProperties22>();
 
             //add secondary loggers for on-demand, per-user verbose and debug logging
             services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));

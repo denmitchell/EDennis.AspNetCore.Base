@@ -21,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Logging
         /// </summary>
         /// <param name="scopeProperties"></param>
         /// <returns></returns>
-        protected override IEnumerable<string> GetInputData(ScopeProperties scopeProperties) {
+        protected override IEnumerable<string> GetInputData(ScopeProperties22 scopeProperties) {
             return new string[] { $"User:{scopeProperties.User}" };
         }
 

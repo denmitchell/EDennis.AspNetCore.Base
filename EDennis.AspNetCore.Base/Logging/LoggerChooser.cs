@@ -89,7 +89,7 @@ namespace EDennis.AspNetCore.Base.Logging
         /// </summary>
         /// <param name="scopeProperties"></param>
         /// <returns></returns>
-        protected abstract IEnumerable<string> GetInputData(ScopeProperties scopeProperties);
+        protected abstract IEnumerable<string> GetInputData(ScopeProperties22 scopeProperties);
 
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace EDennis.AspNetCore.Base.Logging
         /// </summary>
         /// <param name="scopeProperties"></param>
         /// <returns></returns>
-        public virtual int GetLoggerIndex(ScopeProperties scopeProperties) {
+        public virtual int GetLoggerIndex(ScopeProperties22 scopeProperties) {
 
             //for speed, short-circuit all processing if default index will be returned.
             if (_isReset)

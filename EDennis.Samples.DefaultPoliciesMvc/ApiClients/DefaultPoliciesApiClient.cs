@@ -19,7 +19,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc.ApiClients {
         private const string POSITION_URL = "api/Position";
 
         public DefaultPoliciesApiClient(HttpClient client, IConfiguration config,
-            ScopeProperties scopeProperties, IdentityServerApi identityServerClient,
+            ScopeProperties22 scopeProperties, IdentityServerApi identityServerClient,
             SecureTokenCache secureTokenCache, IWebHostEnvironment hostingEnvironment,
             ILogger<DefaultPoliciesApiClient> logger
             ) : base(client, config, scopeProperties,

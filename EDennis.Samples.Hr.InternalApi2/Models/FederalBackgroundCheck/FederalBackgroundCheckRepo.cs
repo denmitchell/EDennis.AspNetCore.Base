@@ -14,7 +14,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             FederalBackgroundCheckHistoryContext> {
         public FederalBackgroundCheckRepo(FederalBackgroundCheckContext context, 
             FederalBackgroundCheckHistoryContext historyContext, 
-            ScopeProperties scopeProperties, 
+            ScopeProperties22 scopeProperties, 
             ILogger<ReadonlyRepo<FederalBackgroundCheckView, FederalBackgroundCheckContext>> logger) 
             : base(context, historyContext, scopeProperties, logger) {
         }

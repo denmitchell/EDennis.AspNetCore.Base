@@ -27,7 +27,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
+                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties22)) as ScopeProperties22;
 
                 //set User property
                 scopeProperties.User = _options.UserSource switch

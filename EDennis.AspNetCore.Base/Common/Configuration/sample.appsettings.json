@@ -1,0 +1,135 @@
+﻿{
+  "Profiles": {
+    "Default": {
+      "Apis": {
+        "MyApi1": "http://localhost:6541",
+        "MyApi2": "http://localhost:6542"
+      },
+      "ConnectionStrings": {
+        "ColorDbContext": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+        "ColorHistoryDbContext": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+      },
+      "MockClient": "EDennis.Samples.DefaultPoliciesApi.Client1"
+    },
+    "yy1": {
+      "Apis": {
+        "MyApi1": "http://localhost:9541",
+        "MyApi2": "http://localhost:9542"
+      },
+      "ConnectionStrings": {
+        "ColorDbContext": "Server=YassirServer1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+        "ColorHistoryDbContext": "Server=YassirServer1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+      },
+      "MockClient": "EDennis.Samples.DefaultPoliciesApi.Client2"
+    }
+  },
+  "MockClients": {
+    "EDennis.Samples.DefaultPoliciesApi.Client1": {
+      "Secret": "secret",
+      "Scopes": [
+        "EDennis.Samples.DefaultPoliciesApi.*"
+      ]
+    },
+    "EDennis.Samples.DefaultPoliciesApi.Client2": {
+      "Secret": "secret",
+      "Scopes": [
+        "EDennis.Samples.DefaultPoliciesApi.Person"
+      ]
+    }
+  },
+  "AutoLogins": {
+    "Moe": {
+      "Default": true,
+      "Claims": [
+        {
+          "Type": "Name",
+          "Value": "moe@stooges.org"
+        }
+      ]
+    },
+    "Larry": {
+      "Default": true,
+      "Claims": [
+        {
+          "Type": "Name",
+          "Value": "larry@stooges.org"
+        }
+      ]
+    }
+  },
+  "Security": {
+    "ClientSecret": "secret",
+    "ClearDefaultInboundClaimTypeMap": true,
+    "ScopePatternOptions": {
+      "ExclusionPrefix": "-"
+    },
+    "OidcOptions": {
+      "UserScopePrefix": "user_",
+      "ResponseType": "code id_token",
+      "RequireHttpsMetadata": false,
+      "SaveTokens": true,
+      "GetClaimsFromUserInfoEndpoint": true,
+      "OidcScopeOptions": {
+        "AddOfflineAccess": true,
+        "AdditionalScopes": [
+          "name"
+        ]
+      }
+    }
+  },
+  "Logging": {
+    "Loggers": {
+      "Default": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Seq" ],
+        "MinimumLevel": {
+          "Default": "Information",
+          "Override": {
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" }
+        ],
+        "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
+        "Properties": {
+          "Application": "ColorsApi"
+        }
+      },
+      "SerilogDebugLogger": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Seq" ],
+        "MinimumLevel": {
+          "Default": "Debug",
+          "Override": {
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" }
+        ],
+        "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
+        "Properties": {
+          "Application": "ColorsApi"
+        }
+      },
+      "SerilogVerboseLogger": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Seq" ],
+        "MinimumLevel": {
+          "Default": "Verbose",
+          "Override": {
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" }
+        ],
+        "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
+        "Properties": {
+          "Application": "ColorsApi"
+        }
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ namespace EDennis.Samples.Hr.InternalApi1.Models {
     public class PositionRepo
         : WriteableTemporalRepo<Position,HrContext,HrHistoryContext>{
         public PositionRepo(HrContext context, HrHistoryContext historyContext, 
-            ScopeProperties scopeProperties, 
+            ScopeProperties22 scopeProperties, 
             ILogger<WriteableRepo<Position, HrContext>> logger) 
             : base(context, historyContext, scopeProperties, logger) {
         }

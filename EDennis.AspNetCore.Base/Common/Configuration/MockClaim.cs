@@ -1,4 +1,4 @@
-﻿namespace EDennis.AspNetCore.Base.Testing
+﻿namespace EDennis.AspNetCore.Base
 {
     /// <summary>
     /// This class is designed to support IdentityServerMockDataLoader.

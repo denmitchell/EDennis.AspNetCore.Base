@@ -98,7 +98,7 @@ namespace EDennis.Samples.DefaultPoliciesMvc {
             });
 
 
-            services.AddScoped<ScopeProperties>();
+            services.AddScoped<ScopeProperties22>();
             services.AddApiClients<IdentityServerApi>();
             services.AddApiClient<IDefaultPoliciesApiClient, DefaultPoliciesApiClient>();
 

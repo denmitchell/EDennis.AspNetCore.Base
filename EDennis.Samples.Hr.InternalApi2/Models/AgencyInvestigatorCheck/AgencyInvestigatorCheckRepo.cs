@@ -13,7 +13,7 @@ namespace EDennis.Samples.Hr.InternalApi2.Models {
             AgencyInvestigatorCheckHistoryContext>{
         public AgencyInvestigatorCheckRepo(AgencyInvestigatorCheckContext context, 
             AgencyInvestigatorCheckHistoryContext historyContext, 
-            ScopeProperties scopeProperties, 
+            ScopeProperties22 scopeProperties, 
             ILogger<WriteableRepo<AgencyInvestigatorCheck, 
                 AgencyInvestigatorCheckContext>> logger) 
             : base(context, historyContext, scopeProperties, logger) {

@@ -87,7 +87,7 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
         private static void AddDependencies<TClientImplementation>(this IServiceCollection services)
             where TClientImplementation : class {
 
-            services.TryAddScoped<ScopeProperties, ScopeProperties>();
+            services.TryAddScoped<ScopeProperties22, ScopeProperties22>();
 
             bool isSecureClient = typeof(SecureApiClient).IsAssignableFrom(typeof(TClientImplementation));
 

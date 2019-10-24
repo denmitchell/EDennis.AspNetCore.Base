@@ -65,11 +65,11 @@ namespace EDennis.AspNetCore.Base.Logging {
         public AutoJson D(dynamic data) => new AutoJson(data);
 
         protected ILogger Logger;
-        protected ScopeProperties ScopeProperties;
+        protected ScopeProperties22 ScopeProperties;
 
         public LoggableControllerBase(
             IEnumerable<ILogger<T>> loggers,
-            ScopeProperties scopeProperties) {
+            ScopeProperties22 scopeProperties) {
             Logger = loggers.ElementAt(scopeProperties.LoggerIndex);
             ScopeProperties = scopeProperties;
         }

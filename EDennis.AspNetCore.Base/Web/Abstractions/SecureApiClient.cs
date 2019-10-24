@@ -22,7 +22,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
         public SecureApiClient(HttpClient httpClient,
             IConfiguration config,
-            ScopeProperties scopeProperties,
+            ScopeProperties22 scopeProperties,
             ApiClient identityServerApiClient,
             SecureTokenCache secureTokenCache,
             IWebHostEnvironment hostingEnvironment,

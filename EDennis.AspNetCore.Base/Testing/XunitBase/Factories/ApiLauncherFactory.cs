@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.Http;
@@ -26,19 +27,14 @@ namespace EDennis.AspNetCore.Base.Testing {
         public ApiLauncherFactory() {
 
             Port = PortInspector.GetRandomAvailablePorts(1)[0];
-            var classInfo = new ClassInfo<TStartup>();
-            var dir = classInfo.ProjectDirectory;
-
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseStartup<TStartup>()
-                .UseContentRoot(dir)
                 .UseUrls($"http://localhost:{Port}")
                 .ConfigureAppConfiguration(options => {
-                    options.SetBasePath(dir);
-                    options.AddJsonFile($"appsettings.{env}.json", true);
+                    options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.{env}.json", true, true);
                     options.AddEnvironmentVariables();
                     options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
                 })
@@ -57,7 +53,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
-                    if(Host != null)
+                    if (Host != null)
                         Host.StopAsync();
                 }
                 disposedValue = true;

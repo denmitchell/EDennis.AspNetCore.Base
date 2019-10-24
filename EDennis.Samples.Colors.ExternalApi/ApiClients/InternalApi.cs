@@ -15,7 +15,7 @@ namespace EDennis.Samples.Colors.ExternalApi {
 
         private const string COLOR_URL = "iapi/color";
 
-        public InternalApi(HttpClient client, IConfiguration config, ScopeProperties scopeProperties, ILogger<InternalApi> logger):
+        public InternalApi(HttpClient client, IConfiguration config, ScopeProperties22 scopeProperties, ILogger<InternalApi> logger):
             base (client,config,scopeProperties, logger){ }
 
 

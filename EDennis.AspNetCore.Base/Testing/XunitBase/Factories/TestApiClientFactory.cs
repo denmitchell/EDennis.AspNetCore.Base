@@ -31,7 +31,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .AddInMemoryCollection(baseAddressConfig)
                 .Build();
 
-            var scopeProperties = new ScopeProperties { };
+            var scopeProperties = new ScopeProperties22 { };
 
             var apiClientHeaders = new List<KeyValuePair<string, StringValues>> {
                 new KeyValuePair<string, StringValues>(
@@ -80,7 +80,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .Build();
 
             var instanceName = Guid.NewGuid().ToString();
-            var scopeProperties = new ScopeProperties {
+            var scopeProperties = new ScopeProperties22 {
                 User = testUser
             };
 

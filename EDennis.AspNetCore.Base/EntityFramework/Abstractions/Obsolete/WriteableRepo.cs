@@ -15,13 +15,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public abstract class WriteableRepo<TEntity, TContext> : IRepo, IHasILogger
+    public abstract class WriteableRepo<TEntity, TContext> : IRepo22, IHasILogger
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
 
 
         public TContext Context { get; set; }
-        public ScopeProperties ScopeProperties { get; set; }
+        public ScopeProperties22 ScopeProperties { get; set; }
 
         public ILogger Logger { get; }
 
@@ -31,7 +31,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public WriteableRepo(TContext context, 
-            ScopeProperties scopeProperties,
+            ScopeProperties22 scopeProperties,
             ILogger<WriteableRepo<TEntity, TContext>> logger) {
 
             Context = context;

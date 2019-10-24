@@ -142,7 +142,7 @@ namespace EDennis.AspNetCore.Base.Testing
                 }
 
 
-                var scopeProperties = provider.GetRequiredService<ScopeProperties>();
+                var scopeProperties = provider.GetRequiredService<ScopeProperties22>();
                 scopeProperties.User = autologinArg;
                 scopeProperties.UpdateLoggerIndex();
 

@@ -19,7 +19,7 @@ namespace EDennis.Samples.Hr.ExternalApi {
 
         public InternalApi2(HttpClient client,
             IConfiguration config,
-            ScopeProperties scopeProperties,
+            ScopeProperties22 scopeProperties,
             IdentityServerApi identityServer,
             SecureTokenCache tokenCache,
             IWebHostEnvironment env, ILogger<InternalApi2> logger

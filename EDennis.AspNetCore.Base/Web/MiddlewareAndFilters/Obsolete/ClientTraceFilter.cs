@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.Web
             IServiceProvider provider, IWebHostEnvironment hostingEnvironment) {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties)) as ScopeProperties;
+                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties22)) as ScopeProperties22;
 
                 context.Request.Headers.TryGetValue("X-ClientTrace", out StringValues clientTraceEntries);
 

@@ -1,4 +1,6 @@
-﻿using EDennis.AspNetCore.Base.Logging;
+﻿using EDennis.AspNetCore.Base.Common;
+using EDennis.AspNetCore.Base.Logging;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,43 +9,9 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace EDennis.AspNetCore.Base {
-    public class ScopeProperties {
-        private readonly ILoggerChooser _loggerChooser;
-
-        public ScopeProperties(ILoggerChooser loggerChooser = null) {
-            _loggerChooser = loggerChooser;
-            UpdateLoggerIndex();
-        }
-
-        public int LoggerIndex { get; set; } = 0;
+    public class ScopeProperties : Dictionary<string, object>, IScopeProperties {
         public string User { get; set; }
-        public Claim[] Claims { get; set; }
-        public HttpHeaders Headers { get; set; }
-        public Dictionary<string, object> OtherProperties { get; set; }
-            = new Dictionary<string, object>();
-
-
-        public void UpdateLoggerIndex() {
-            if (_loggerChooser == null)
-                LoggerIndex = ILoggerChooser.DefaultIndex;
-            else
-                LoggerIndex = _loggerChooser.GetLoggerIndex(this);
-        }
-
-
-
+        public HeaderDictionary Headers { get; set; }
+        public List<Claim> Claims { get; set; }
     }
-
-
-    public static class HttpHeadersExtensions {
-        public static void AddOrReplace(this HttpHeaders headers, string key, IEnumerable<string> values) {
-            headers.Remove(key);
-            headers.Add(key, values);
-        }
-        public static void AddOrReplace(this HttpHeaders headers, string key, string value) {
-            headers.Remove(key);
-            headers.Add(key, value);
-        }
-    }
-
 }
