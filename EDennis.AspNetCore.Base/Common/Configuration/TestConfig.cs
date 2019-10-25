@@ -8,6 +8,7 @@ namespace EDennis.AspNetCore.Base {
     public class TestConfig {
 
 
+        public const string TESTCONFIG_HEADER = "X-TestConfig";
 
         public string ProfileName { get; set; } = "Default";
 

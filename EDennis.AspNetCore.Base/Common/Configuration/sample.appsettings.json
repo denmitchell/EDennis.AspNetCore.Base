@@ -58,6 +58,7 @@
     }
   },
   "Security": {
+    "IdentityServerApi":  "https://localhost:55555",
     "ClientSecret": "secret",
     "ClearDefaultInboundClaimTypeMap": true,
     "ScopePatternOptions": {

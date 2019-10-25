@@ -2,6 +2,7 @@
 
 namespace EDennis.AspNetCore.Base.Web {
 
+
     public enum UserSource {
         CLAIMS_PRINCIPAL_IDENTITY_NAME,
         NAME_CLAIM,
@@ -16,6 +17,9 @@ namespace EDennis.AspNetCore.Base.Web {
     }
 
     public class ScopePropertiesOptions {
+
+        public const string HOSTPATH_HEADER = "X-HostPath";
+
         public UserSource UserSource { get; set; } = UserSource.CLAIMS_PRINCIPAL_IDENTITY_NAME;
         public string UserSourceClaimType { get; set; }
         public string StoreHeadersWithPattern { get; set; } = "^X-";

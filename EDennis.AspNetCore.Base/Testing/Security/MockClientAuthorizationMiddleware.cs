@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="context">The HttpContext</param>
         /// <param name="config">The Configuration</param>
         /// <returns></returns>
-        public async Task InvokeAsync(HttpContext context, IConfiguration config) {
+        public async Task InvokeAsync(HttpContext context, IConfiguration config, 
+            IScopeProperties scopeProperties) {
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 //get a reference to the request headers
@@ -65,7 +67,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     var client = new HttpClient();
 
                     //get parameters for building the token request
-                    var tokenRequestData = GetClientCredentialsTokenRequestData(config);
+                    var tokenRequestData = GetClientCredentialsTokenRequestData(config, scopeProperties);
 
                     //get the discovery document from Identity Server
                     var disco = await client.GetDiscoveryDocumentAsync(tokenRequestData.Authority as string);
@@ -112,7 +114,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        private dynamic GetClientCredentialsTokenRequestData(IConfiguration config) {
+        private dynamic GetClientCredentialsTokenRequestData(IConfiguration config,
+                IScopeProperties scopeProperties ) {
 
             //get command-line arguments
             var args = config.GetCommandLineArguments();
@@ -125,17 +128,26 @@ namespace EDennis.AspNetCore.Base.Testing {
             dynamic tokenRequestData;
             string authority;
 
-            if (mockClientArg != null) {
-                var mockClientProperties = new MockClientProperties();
-                config.GetSection($"MockClient:{mockClientArg}").Bind(mockClientProperties);
+            var mockClientDictionary = new MockClientDictionary();
+            config.GetSection("MockClients").Bind(mockClientDictionary);
+            if (mockClientDictionary == null || mockClientDictionary.Count() == 0)
+                config.GetSection("MockClient").Bind(mockClientDictionary);
+
+            var mockClientProperties = new MockClientProperties();
+
+            if (scopeProperties.ActiveProfile != "Default" || mockClientArg == null) 
+                mockClientArg = scopeProperties.Profiles[scopeProperties.ActiveProfile].MockClient;                
+
+
+                //Get either MockClients or MockClient section
+                if (mockClientProperties == null)
+                    config.GetSection($"MockClient:{mockClientArg}").Bind(mockClientProperties);
                 if (mockClientProperties == null)
                     throw new ArgumentException($"MockClientAuthorizationMiddleware requires 'MockClient:{mockClientArg}' configuration key, which is missing.");
                 else {
                     tokenRequestData = GetClientCredentialsTokenRequestData(mockClientArg, mockClientProperties);
                 }
             } else {
-                var mockClientDictionary = new MockClientDictionary();
-                config.GetSection("MockClient").Bind(mockClientDictionary);
                 var defaultMockClient = mockClientDictionary
                     .OrderByDescending(x => x.Value.Default)
                     .ThenBy(x => x.Key)

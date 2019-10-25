@@ -12,26 +12,38 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
+    /// <summary>
+    /// This middleware is designed to retrieve and store important data for later processing by
+    /// ApiClients, Repos, and perhaps other classes.  In particular, the middleware retrieves
+    /// and stores:
+    /// <list type="bullet">
+    /// <item>User name from any of a variety of sources</item>
+    /// <item>An X-TestConfig header or claim type that determines the Active Profile from Configuration</item>
+    /// <item>Other Claims that match a prespecified pattern</item>
+    /// <item>Other Headers that match a prespecified pattern</item>
+    /// </list>
+    /// </summary>
     public class ScopePropertiesMiddleware {
 
         private readonly RequestDelegate _next;
         private readonly ScopePropertiesOptions _options;
+
 
         public ScopePropertiesMiddleware(RequestDelegate next, IOptions<ScopePropertiesOptions> options) {
             _next = next;
             _options = options?.Value ?? new ScopePropertiesOptions();
         }
 
-        public async Task InvokeAsync(HttpContext context/*, IServiceProvider provider*/) {
+        public async Task InvokeAsync(HttpContext context) {
 
-            
 
+            //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+
+                //get a reference to scope properties
                 var scopeProperties = context.RequestServices.GetRequiredService<IScopeProperties>();
 
-                //var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties22)) as ScopeProperties22;
-
-                //set User property
+                //update the Scope Properties User with identity, claim or header data
                 scopeProperties.User = _options.UserSource switch
                 {
                     UserSource.CLAIMS_PRINCIPAL_IDENTITY_NAME => context.User?.Identity?.Name,
@@ -47,21 +59,27 @@ namespace EDennis.AspNetCore.Base.Web {
                     _ => null
                 };
 
+                //copy headers to ScopeProperties headers, based upon the provided match expession
                 context.Request.Headers
                     .Where(h=>Regex.IsMatch(h.Key,_options.StoreHeadersWithPattern, RegexOptions.IgnoreCase))
                     .ToList()
                     .ForEach(h => scopeProperties.Headers
                     .Add(h.Key, h.Value.ToArray()));
 
+                //append the host path to a ScopeProperties header, if configured 
                 if (_options.AppendHostPath)
-                        scopeProperties.Headers.Add("X-HostPath",
-                            $"{context.Request.Headers["X-HostPath"].ToString()}>{context.Request.Headers["Host"]}");
+                        scopeProperties.Headers.Add(ScopePropertiesOptions.HOSTPATH_HEADER,
+                            $"{context.Request.Headers[ScopePropertiesOptions.HOSTPATH_HEADER].ToString()}>" +
+                            $"{context.Request.Headers["Host"]}");
 
+
+                //add user claims, if configured
                 if (context?.User?.Claims != null) {
                     scopeProperties.Claims = context.User.Claims
                         .Where(c => Regex.IsMatch(c.Type, _options.StoreClaimTypesWithPattern, RegexOptions.IgnoreCase))
                         .ToArray();
-                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == "X-TestConfig");
+                    //update the test config claim and ActiveProfile, if needed
+                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == TestConfig.TESTCONFIG_HEADER);
                     if (testConfigClaim != null) {
                         scopeProperties.TestConfig = new TestConfigParser().Parse(testConfigClaim.Value);
                         scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
@@ -69,8 +87,9 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
 
 
-                if (context.Request.Headers.ContainsKey("X-TestConfig")) {
-                    scopeProperties.TestConfig = new TestConfigParser().Parse(context.Request.Headers["X-TestConfig"]);
+                //update the test config claim and ActiveProfile, if needed
+                if (context.Request.Headers.ContainsKey(TestConfig.TESTCONFIG_HEADER)) {
+                    scopeProperties.TestConfig = new TestConfigParser().Parse(context.Request.Headers[TestConfig.TESTCONFIG_HEADER]);
                     scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
                 }
 
