@@ -29,6 +29,11 @@
 
   <ItemGroup>
     <None Remove="Common\Configuration\sample.appsettings.json" />
+    <None Remove="Web\Security\TODO.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Web\Security\TODO.txt" />
   </ItemGroup>
 
   <ItemGroup>

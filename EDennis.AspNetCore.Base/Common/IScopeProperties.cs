@@ -3,9 +3,14 @@ using System.Security.Claims;
 using EDennis.AspNetCore.Base.Common;
 
 namespace EDennis.AspNetCore.Base {
-    public interface IScopeProperties : IDictionary<string,object>{
-        List<Claim> Claims { get; set; }
-        HeaderDictionary Headers { get; set; }
+    public interface IScopeProperties {
         string User { get; set; }
+        Claim[] Claims { get; set; }
+        HeaderDictionary Headers { get; set; }
+        Profiles Profiles { get; set; }
+        string ActiveProfile { get; set; }
+        TestConfig TestConfig { get; set; }
+        Dictionary<string, object> OtherProperties { get; set; }
+
     }
 }

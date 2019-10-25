@@ -22,12 +22,14 @@ namespace EDennis.AspNetCore.Base.Web {
             _options = options?.Value ?? new ScopePropertiesOptions();
         }
 
-        public async Task InvokeAsync(HttpContext context, IServiceProvider provider) {
+        public async Task InvokeAsync(HttpContext context/*, IServiceProvider provider*/) {
 
-
+            
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-                var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties22)) as ScopeProperties22;
+                var scopeProperties = context.RequestServices.GetRequiredService<IScopeProperties>();
+
+                //var scopeProperties = provider.GetRequiredService(typeof(ScopeProperties22)) as ScopeProperties22;
 
                 //set User property
                 scopeProperties.User = _options.UserSource switch
@@ -55,11 +57,22 @@ namespace EDennis.AspNetCore.Base.Web {
                         scopeProperties.Headers.Add("X-HostPath",
                             $"{context.Request.Headers["X-HostPath"].ToString()}>{context.Request.Headers["Host"]}");
 
-                if (context?.User?.Claims != null)
+                if (context?.User?.Claims != null) {
                     scopeProperties.Claims = context.User.Claims
                         .Where(c => Regex.IsMatch(c.Type, _options.StoreClaimTypesWithPattern, RegexOptions.IgnoreCase))
                         .ToArray();
+                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == "X-TestConfig");
+                    if (testConfigClaim != null) {
+                        scopeProperties.TestConfig = new TestConfigParser().Parse(testConfigClaim.Value);
+                        scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
+                    }
+                }
 
+
+                if (context.Request.Headers.ContainsKey("X-TestConfig")) {
+                    scopeProperties.TestConfig = new TestConfigParser().Parse(context.Request.Headers["X-TestConfig"]);
+                    scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
+                }
 
             }
             await _next(context);

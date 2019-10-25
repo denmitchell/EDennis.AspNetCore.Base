@@ -1,0 +1,11 @@
+﻿1. Examine possibility of reworking the security code (especially 
+   IServiceCollectionExtensions_Security) to take advantage of
+   the fact that the built-in Microsoft OauthHandler and OidcHandler
+   use IOptionsMonitor to inject security options.
+   see :
+   a. https://github.com/aspnet/AspNetCore/blob/master/src/Security/Authentication/OAuth/src/OAuthHandler.cs
+   b. https://github.com/aspnet/AspNetCore/blob/master/src/Security/Authentication/OAuth/src/OAuthOptions.cs
+   c. https://github.com/aspnet/AspNetCore/blob/master/src/Security/Authentication/OpenIdConnect/src/OpenIdConnectHandler.cs
+   d. https://github.com/aspnet/AspNetCore/blob/master/src/Security/Authentication/OpenIdConnect/src/OpenIdConnectOptions.cs
+   e. https://joonasw.net/view/creating-auth-scheme-in-aspnet-core-2
+   f. https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.0
