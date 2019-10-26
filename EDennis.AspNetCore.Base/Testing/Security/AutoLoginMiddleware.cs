@@ -85,7 +85,7 @@ namespace EDennis.AspNetCore.Base.Testing
 
 
             if (!httpContext.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-                var autologinDict = new AutoLoginDictionary();
+                var autologinDict = new AutoLoginDictionary22();
 
                 config.GetSection("AutoLogin").Bind(autologinDict);
 

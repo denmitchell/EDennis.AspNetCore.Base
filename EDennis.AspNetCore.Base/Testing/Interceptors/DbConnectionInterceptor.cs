@@ -57,7 +57,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 _logger.LogInformation("RepoInterceptor processing header {Header}",$"{TESTING_HDR}:{testConfigUnparsed}");
 
 
-                var parser = new TestConfigParser();
+                var parser = new RequestConfigParser();
                 var testConfig = parser.Parse(testConfigUnparsed);
 
                 var profileConfig = parser.GetProfileConfiguration(testConfig, appConfig);

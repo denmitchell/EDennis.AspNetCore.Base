@@ -24,13 +24,13 @@ namespace EDennis.AspNetCore.Base {
     /// <summary>
     /// Holds Test Configuration data transmitted via claims or headers.
     /// </summary>
-    public class TestConfigParser {
+    public class RequestConfigParser {
 
-        public TestConfigParser() { }
+        public RequestConfigParser() { }
 
-        public TestConfig Parse(string testConfigUnparsed) {
+        public RequestConfig Parse(string testConfigUnparsed) {
 
-            var testConfig = new TestConfig();
+            var testConfig = new RequestConfig();
 
             var components = testConfigUnparsed.Split('-');
 
@@ -64,9 +64,9 @@ namespace EDennis.AspNetCore.Base {
 
 
         //TODO: explore use of IOptionsMonitor here, rather than direct access to IConfiguration
-        public ProfileConfiguration GetProfileConfiguration(TestConfig testConfig, IConfiguration appConfig) {
+        public ResolvedProfile GetProfileConfiguration(RequestConfig testConfig, IConfiguration appConfig) {
 
-            var profileConfiguration = new ProfileConfiguration();
+            var profileConfiguration = new ResolvedProfile();
             var profile = new Profile();
 
             try {

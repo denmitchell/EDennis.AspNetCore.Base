@@ -79,17 +79,17 @@ namespace EDennis.AspNetCore.Base.Web {
                         .Where(c => Regex.IsMatch(c.Type, _options.StoreClaimTypesWithPattern, RegexOptions.IgnoreCase))
                         .ToArray();
                     //update the test config claim and ActiveProfile, if needed
-                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == TestConfig.TESTCONFIG_HEADER);
+                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == RequestConfig.REQUEST_CONFIG_HEADER);
                     if (testConfigClaim != null) {
-                        scopeProperties.TestConfig = new TestConfigParser().Parse(testConfigClaim.Value);
+                        scopeProperties.TestConfig = new RequestConfigParser().Parse(testConfigClaim.Value);
                         scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
                     }
                 }
 
 
                 //update the test config claim and ActiveProfile, if needed
-                if (context.Request.Headers.ContainsKey(TestConfig.TESTCONFIG_HEADER)) {
-                    scopeProperties.TestConfig = new TestConfigParser().Parse(context.Request.Headers[TestConfig.TESTCONFIG_HEADER]);
+                if (context.Request.Headers.ContainsKey(RequestConfig.REQUEST_CONFIG_HEADER)) {
+                    scopeProperties.TestConfig = new RequestConfigParser().Parse(context.Request.Headers[RequestConfig.REQUEST_CONFIG_HEADER]);
                     scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
                 }
 

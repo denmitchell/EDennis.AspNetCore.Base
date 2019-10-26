@@ -19,6 +19,7 @@ namespace EDennis.AspNetCore.Base.Web {
     /// </summary>
     public static class IServiceCollectionExtensions_Security {
 
+
         /// <summary>
         /// NOTE: to avoid creating multiple copies of Configuration, pass in IWebHostEnvironment and IConfiguration
         /// </summary>
@@ -28,6 +29,9 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="configuration"></param>
         public static void AddAuthentication(this IServiceCollection services,
             SecurityOptions options = null, IWebHostEnvironment environment = null, IConfiguration configuration = null) {
+
+            services.Configure<SecurityOptions>(configuration.GetSection("SecurityOptions"));
+
 
             var settings = options ?? new SecurityOptions();
 

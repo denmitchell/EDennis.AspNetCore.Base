@@ -10,7 +10,7 @@ namespace EDennis.AspNetCore.Base {
         public Claim[] Claims { get; set; }
         public Profiles Profiles { get; set; }
         public string ActiveProfile { get; set; } = "Default";
-        public TestConfig TestConfig {get; set;}
+        public RequestConfig TestConfig {get; set;}
         public Dictionary<string, object> OtherProperties { get; set; }
             = new Dictionary<string, object>();
         public ScopeProperties(IOptionsMonitor<Profiles> profiles) {

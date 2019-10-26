@@ -7,13 +7,13 @@ namespace EDennis.AspNetCore.Base.Testing
     /// This class is designed to support IdentityServerMockDataLoader.
     /// *** Special Note: this class is not yet tested.
     /// </summary>
-    public class MockClientDictionary : Dictionary<string,MockClientProperties> {}
+    public class MockClientDictionary22 : Dictionary<string,MockClientProperties22> {}
 
     /// <summary>
     /// This class is designed to support IdentityServerMockDataLoader.
     /// *** Special Note: this class is not yet tested.
     /// </summary>
-    public class MockClientProperties {
+    public class MockClientProperties22 {
 
         public string ClientId { get; set; }
         public bool Default { get; set; } = false;

@@ -11,6 +11,10 @@ namespace EDennis.AspNetCore.Base.Web
 {
     public static class IConfigurationExtensions {
 
+
+        public static bool ContainsKey(this IConfiguration config, string key) => config.GetSection(key) != null;
+
+
         /// <summary>
         /// Gets the database name associated with a named DbContext having
         /// a ConnectionStrings entry.  NOTE: this assumes that the DbContext
@@ -106,6 +110,7 @@ namespace EDennis.AspNetCore.Base.Web
             return entries;
         }
 
+        [Obsolete("Apis have a new structure configuration.  See Profiles class.")]
         public static Dictionary<string, ApiConfig> GetApiConfig(this IConfiguration config) {
 
             var env = config["ASPNETCORE_ENVIRONMENT"] ?? "Development";

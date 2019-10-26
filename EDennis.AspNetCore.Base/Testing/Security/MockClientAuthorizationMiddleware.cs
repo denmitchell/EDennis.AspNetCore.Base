@@ -39,6 +39,9 @@ namespace EDennis.AspNetCore.Base.Testing {
     /// </summary>
     public class MockClientAuthorizationMiddleware {
 
+
+        public const string LAUNCHSETTINGS_PROFILE_KEY = "LaunchSettings:Profile";
+
         private readonly RequestDelegate _next;
 
         public MockClientAuthorizationMiddleware(RequestDelegate next) {
@@ -53,6 +56,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <returns></returns>
         public async Task InvokeAsync(HttpContext context, IConfiguration config, 
             IScopeProperties scopeProperties) {
+
+            ConfigurationBinder.
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
                 //get a reference to the request headers
@@ -116,24 +121,20 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         private dynamic GetClientCredentialsTokenRequestData(IConfiguration config,
                 IScopeProperties scopeProperties ) {
-
-            //get command-line arguments
-            var args = config.GetCommandLineArguments();
-
-            //get AutoLogin entry, if it exists
-            var mockClientArg = config.GetCommandLineArguments()
-                .FirstOrDefault(a => a.Key.ToLower() == "mockclient")
-                .Value;
-
+          
             dynamic tokenRequestData;
-            string authority;
 
-            var mockClientDictionary = new MockClientDictionary();
-            config.GetSection("MockClients").Bind(mockClientDictionary);
-            if (mockClientDictionary == null || mockClientDictionary.Count() == 0)
-                config.GetSection("MockClient").Bind(mockClientDictionary);
+            try {
+                var mockClientDictionary = new Dictionary<string,MockClient>();
+                config.GetSection("MockClients").Bind(mockClientDictionary);
+                //as a backup look for MockClient
+                if (mockClientDictionary == null || mockClientDictionary.Count() == 0)
+                    config.GetSection("MockClient").Bind(mockClientDictionary);
+            } catch {
+                throw new ApplicationException($"Configuration does not contain a valid MockClients section.  MockClients must be a top-level key, followed by named (string) MockClients, each with a valid structure (see MockClientDictionary")
+            }
 
-            var mockClientProperties = new MockClientProperties();
+            var mockClientProperties = new MockClientProperties22();
 
             if (scopeProperties.ActiveProfile != "Default" || mockClientArg == null) 
                 mockClientArg = scopeProperties.Profiles[scopeProperties.ActiveProfile].MockClient;                

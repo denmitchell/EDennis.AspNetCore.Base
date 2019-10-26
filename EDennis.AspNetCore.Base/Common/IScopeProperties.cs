@@ -11,7 +11,7 @@ namespace EDennis.AspNetCore.Base {
         HeaderDictionary Headers { get; set; }
         Profiles Profiles { get; set; }
         string ActiveProfile { get; set; }
-        TestConfig TestConfig { get; set; }
+        RequestConfig TestConfig { get; set; }
         Dictionary<string, object> OtherProperties { get; set; }
 
     }
