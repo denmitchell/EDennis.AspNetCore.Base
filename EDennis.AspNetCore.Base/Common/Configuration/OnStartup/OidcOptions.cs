@@ -1,4 +1,4 @@
-﻿namespace EDennis.AspNetCore.Base.Security {
+﻿namespace EDennis.AspNetCore.Base {
     public class OidcOptions {
         public string ResponseType { get; set; } = "code id_token";
         public bool RequireHttpsMetadata { get; set; } = true;

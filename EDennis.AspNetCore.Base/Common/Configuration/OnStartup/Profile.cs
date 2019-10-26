@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class Profile {
+    public class CompactProfile {
         public Dictionary<string,string> Apis { get; set; }
         public Dictionary<string,string> ConnectionStrings { get; set; }
         public string MockClient { get; set; }

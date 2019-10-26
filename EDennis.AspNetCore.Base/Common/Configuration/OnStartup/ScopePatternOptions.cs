@@ -1,4 +1,4 @@
-﻿namespace EDennis.AspNetCore.Base.Security {
+﻿namespace EDennis.AspNetCore.Base {
     public class ScopePatternOptions {
 
         public string UserScopePrefix { get; set; } = "user_";

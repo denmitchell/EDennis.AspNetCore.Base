@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EDennis.AspNetCore.Base {
 
@@ -28,51 +25,51 @@ namespace EDennis.AspNetCore.Base {
 
         public RequestConfigParser() { }
 
-        public RequestConfig Parse(string testConfigUnparsed) {
+        public RequestConfig Parse(string requestConfigUnparsed) {
 
-            var testConfig = new RequestConfig();
+            var requestConfig = new RequestConfig();
 
-            var components = testConfigUnparsed.Split('-');
+            var components = requestConfigUnparsed.Split('-');
 
-            testConfig.ProfileName = components[0];
+            requestConfig.ProfileName = components[0];
 
 
             if (components.Length > 1) {
                 try {
-                    testConfig.ConnectionType = ConnectionTypeExtensions.EnumValue(components[1][0]);
+                    requestConfig.ConnectionType = ConnectionTypeExtensions.EnumValue(components[1][0]);
                 } catch {
-                    throw new ApplicationException($"For the provided TestConfig ({testConfigUnparsed}), the second component (connection type) does not have a valid value (A, R, or M)");
+                    throw new ApplicationException($"For the provided RequestConfig ({requestConfigUnparsed}), the second component (connection type) does not have a valid value (A, R, or M)");
                 }
                 try {
-                    testConfig.ToggleValue = ToggleValueExtensions.EnumValue(components[1][1]);
+                    requestConfig.ToggleValue = ToggleValueExtensions.EnumValue(components[1][1]);
                 } catch {
-                    throw new ApplicationException($"For the provided TestConfig ({testConfigUnparsed}), the second component does not have a valid toggle value (0, 1, or *)");
+                    throw new ApplicationException($"For the provided RequestConfig ({requestConfigUnparsed}), the second component does not have a valid toggle value (0, 1, or *)");
                 }
             }
 
             if (components.Length > 2) {
                 try {
-                    testConfig.IsolationLevel = IsolationLevelExtensions.EnumValue(components[1][0]);
+                    requestConfig.IsolationLevel = IsolationLevelExtensions.EnumValue(components[1][0]);
                 } catch {
-                    throw new ApplicationException($"For the provided TestConfig ({testConfigUnparsed}), the third component (isolation level) does not have a valid value (U, C, or S)");
+                    throw new ApplicationException($"For the provided RequestConfig ({requestConfigUnparsed}), the third component (isolation level) does not have a valid value (U, C, or S)");
                 }
             }
 
-            return testConfig;
+            return requestConfig;
 
         }
 
 
         //TODO: explore use of IOptionsMonitor here, rather than direct access to IConfiguration
-        public ResolvedProfile GetProfileConfiguration(RequestConfig testConfig, IConfiguration appConfig) {
+        public ResolvedProfile GetProfileConfiguration(RequestConfig requestConfig, IConfiguration appConfig) {
 
             var profileConfiguration = new ResolvedProfile();
-            var profile = new Profile();
+            var profile = new CompactProfile();
 
             try {
-                appConfig.Bind($"Profiles:{testConfig.ProfileName}", profile);
+                appConfig.Bind($"Profiles:{requestConfig.ProfileName}", profile);
             } catch {
-                throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {testConfig.ProfileName}");
+                throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {requestConfig.ProfileName}");
             }
 
 

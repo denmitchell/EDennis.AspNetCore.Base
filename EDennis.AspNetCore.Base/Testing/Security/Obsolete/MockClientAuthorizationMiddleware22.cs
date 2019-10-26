@@ -37,14 +37,14 @@ namespace EDennis.AspNetCore.Base.Testing {
     ///   }
     /// }
     /// </summary>
-    public class MockClientAuthorizationMiddleware {
+    public class MockClientAuthorizationMiddleware22 {
 
 
         public const string LAUNCHSETTINGS_PROFILE_KEY = "LaunchSettings:Profile";
 
         private readonly RequestDelegate _next;
 
-        public MockClientAuthorizationMiddleware(RequestDelegate next) {
+        public MockClientAuthorizationMiddleware22(RequestDelegate next) {
             _next = next;
         }
 
