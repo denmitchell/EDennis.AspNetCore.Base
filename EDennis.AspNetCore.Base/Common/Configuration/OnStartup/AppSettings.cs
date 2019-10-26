@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base {
     public class AppSettings {
-        public string ProfileName { get; set; }
+        public string LaunchProfile { get; set; }
     }
 }

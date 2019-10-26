@@ -1,4 +1,5 @@
 ﻿{
+  "LaunchProfile":  "Default",
   "Profiles": {
     "Default": {
       "Apis": {
@@ -9,7 +10,7 @@
         "ColorDbContext": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
         "ColorHistoryDbContext": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
       },
-      "MockClient": "EDennis.Samples.DefaultPoliciesApi.Client1"
+      "MockClientId": "EDennis.Samples.DefaultPoliciesApi.Client1"
     },
     "yy1": {
       "Apis": {
@@ -20,7 +21,7 @@
         "ColorDbContext": "Server=YassirServer1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
         "ColorHistoryDbContext": "Server=YassirServer1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
       },
-      "MockClient": "EDennis.Samples.DefaultPoliciesApi.Client2"
+      "MockClientId": "EDennis.Samples.DefaultPoliciesApi.Client2"
     }
   },
   "MockClients": {
@@ -58,7 +59,7 @@
     }
   },
   "Security": {
-    "IdentityServerApi":  "https://localhost:55555",
+    "IdentityServerApi": "https://localhost:55555",
     "ClientSecret": "secret",
     "ClearDefaultInboundClaimTypeMap": true,
     "ScopePatternOptions": {

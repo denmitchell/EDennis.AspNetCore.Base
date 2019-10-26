@@ -59,42 +59,5 @@ namespace EDennis.AspNetCore.Base {
 
         }
 
-
-        //TODO: explore use of IOptionsMonitor here, rather than direct access to IConfiguration
-        public ResolvedProfile GetProfileConfiguration(RequestConfig requestConfig, IConfiguration appConfig) {
-
-            var profileConfiguration = new ResolvedProfile();
-            var profile = new CompactProfile();
-
-            try {
-                appConfig.Bind($"Profiles:{requestConfig.ProfileName}", profile);
-            } catch {
-                throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {requestConfig.ProfileName}");
-            }
-
-
-            try {
-                if (profile.MockClient != null) {
-                    profileConfiguration.MockClient = new MockClient();
-                    appConfig.Bind($"MockClients:{profile.MockClient}", profileConfiguration.MockClient);
-                }
-            } catch {
-                throw new ApplicationException($"Profiles section in Configuration does not contain a valid MockClient section with key {profile.MockClient}");
-            }
-
-            try {
-                if (profile.AutoLogin != null) {
-                    profileConfiguration.AutoLogin = new AutoLogin();
-                    appConfig.Bind($"AutoLogins:{profile.AutoLogin}", profileConfiguration.AutoLogin);
-                }
-            } catch {
-                throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {profile.AutoLogin}");
-            }
-
-            return profileConfiguration;
-
-        }
-
-
     }
 }

@@ -136,8 +136,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var mockClientProperties = new MockClientProperties22();
 
-            if (scopeProperties.ActiveProfile != "Default" || mockClientArg == null) 
-                mockClientArg = scopeProperties.Profiles[scopeProperties.ActiveProfile].MockClient;                
+            if (scopeProperties.ActiveProfileName != "Default" || mockClientArg == null) 
+                mockClientArg = scopeProperties.Profiles[scopeProperties.ActiveProfileName].MockClientId;                
 
 
                 //Get either MockClients or MockClient section

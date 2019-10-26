@@ -9,9 +9,8 @@ namespace EDennis.AspNetCore.Base {
         string User { get; set; }
         Claim[] Claims { get; set; }
         HeaderDictionary Headers { get; set; }
-        Profiles Profiles { get; set; }
-        string ActiveProfile { get; set; }
-        RequestConfig TestConfig { get; set; }
+        ResolvedProfile ActiveProfile { get; set; }
+        RequestConfig RequestConfig { get; set; }
         Dictionary<string, object> OtherProperties { get; set; }
 
     }

@@ -34,11 +34,21 @@ namespace EDennis.AspNetCore.Base.Web {
             _options = options?.Value ?? new ScopePropertiesOptions();
         }
 
-        public async Task InvokeAsync(HttpContext context) {
+        public async Task InvokeAsync(HttpContext context,
+            IOptionsMonitor<AppSettings> appSettings,
+            IOptionsMonitor<Profiles> profiles,
+            IOptionsMonitor<MockClients> mockClients,
+            IOptionsMonitor<AutoLogins> autoLogins) {
 
 
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+
+                var activeProfileName = "Default";
+
+                //get active profile name from launch profile setting, when provided
+                if (string.IsNullOrWhiteSpace(appSettings.CurrentValue.LaunchProfile))
+                    activeProfileName = appSettings.CurrentValue.LaunchProfile;
 
                 //get a reference to scope properties
                 var scopeProperties = context.RequestServices.GetRequiredService<IScopeProperties>();
@@ -81,17 +91,20 @@ namespace EDennis.AspNetCore.Base.Web {
                     //update the test config claim and ActiveProfile, if needed
                     var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == RequestConfig.REQUEST_CONFIG_HEADER);
                     if (testConfigClaim != null) {
-                        scopeProperties.TestConfig = new RequestConfigParser().Parse(testConfigClaim.Value);
-                        scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
+                        scopeProperties.RequestConfig = new RequestConfigParser().Parse(testConfigClaim.Value);
+                        activeProfileName = scopeProperties.RequestConfig.ProfileName;
                     }
                 }
 
 
                 //update the test config claim and ActiveProfile, if needed
                 if (context.Request.Headers.ContainsKey(RequestConfig.REQUEST_CONFIG_HEADER)) {
-                    scopeProperties.TestConfig = new RequestConfigParser().Parse(context.Request.Headers[RequestConfig.REQUEST_CONFIG_HEADER]);
-                    scopeProperties.ActiveProfile = scopeProperties.TestConfig.ProfileName;
+                    scopeProperties.RequestConfig = new RequestConfigParser().Parse(context.Request.Headers[RequestConfig.REQUEST_CONFIG_HEADER]);
+                    activeProfileName = scopeProperties.RequestConfig.ProfileName;
                 }
+
+                scopeProperties.ActiveProfile = new ResolvedProfile();
+                scopeProperties.ActiveProfile.Load(activeProfileName, profiles?.CurrentValue[activeProfileName], mockClients?.CurrentValue, autoLogins?.CurrentValue);
 
             }
             await _next(context);

@@ -21,9 +21,12 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
         ///    authentication, microsoft authorization, and IdentityServer4.
         /// The MockClients section provides a dictionary of OAuth clients that can be used 
         ///    for testing with IdentityServer4.  It is designed to be used with
-        ///    MockClientAuthorizationMiddleware
-        /// The AutoLogins section
-        /// All top-level, simple key-value pair settings can be accessed with <code>IOptionsMonitor<AppSettings>()</code>
+        ///    MockClientMiddleware
+        /// The AutoLogins section provides a dictionary of AutoLogin user objects that
+        ///    can be used to populate the ClaimsPrincipal with claims.  It is designed to
+        ///    be used with AutoLoginMiddleware
+        /// All top-level, simple key-value pair settings can be accessed with <code>IOptionsMonitor<AppSettings>()</code>.
+        ///    One of the most important top-level settings is the LaunchProfile
         /// The logging settings only capture the logger names.  Logging frameworks typically access appsettings directly for settings.
         /// 
         /// </summary>
@@ -37,7 +40,7 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
         /// <returns></returns>
         public static IServiceCollection ConfigureApp(
             this IServiceCollection services, IConfiguration config,
-            string profilesSectionKey = "Profiles", 
+            string profilesSectionKey = "Profiles",
             string loggersSectionKey = "Logging:Loggers", string securitySectionKey = "Security",  
             string mockClientsSectionKey = "MockClients", string autoLoginsSectionKey = "AutoLogins"
             ) {
