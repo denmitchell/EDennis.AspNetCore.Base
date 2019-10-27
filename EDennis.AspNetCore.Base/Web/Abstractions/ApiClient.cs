@@ -30,7 +30,9 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
-        public virtual string Name { get; set; } = MethodBase.GetCurrentMethod().DeclaringType.Name;
+        public virtual string Name { get; set; } 
+            = MethodBase.GetCurrentMethod().DeclaringType.FullName;
+
 
         private void BuildClient(IConfiguration config) {
              
