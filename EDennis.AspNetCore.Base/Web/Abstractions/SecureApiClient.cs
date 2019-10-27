@@ -79,7 +79,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             HttpClient.SetBearerToken(tokenResponse.AccessToken);
 
             if (ScopeProperties.User != null)
-                HttpClient.DefaultRequestHeaders.Add("User", ScopeProperties.User);
+                HttpClient.DefaultRequestHeaders.Add("X-User", ScopeProperties.User);
 
         }
 

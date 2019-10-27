@@ -10,6 +10,7 @@ namespace EDennis.AspNetCore.Base
 
         public string ClientSecret { get; set; }
         public string IdentityServerApi { get; set; }
+        public int IdentityServerPingFrequency { get; set; } = 5 * 60; // default = every 5 minutes
         public bool ClearDefaultInboundClaimTypeMap { get; set; } = true;
         public ScopePatternOptions ScopePatternOptions { get; set; }
         public OidcOptions OidcOptions { 

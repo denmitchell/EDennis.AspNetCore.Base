@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace EDennis.AspNetCore.Base.Web
@@ -17,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Web
         public ScopeProperties22 ScopeProperties { get; set; }
         public IConfiguration Configuration { get; set; }
         public ILogger Logger { get; }
-        public ApiClient(HttpClient httpClient, IConfiguration config, 
+        public ApiClient(HttpClient httpClient, IConfiguration config,
             ScopeProperties22 scopeProperties, ILogger logger) {
 
             HttpClient = httpClient;
@@ -28,8 +29,11 @@ namespace EDennis.AspNetCore.Base.Web
             BuildClient(config);
         }
 
-        private void BuildClient(IConfiguration config) {
 
+        public virtual string Name { get; set; } = MethodBase.GetCurrentMethod().DeclaringType.Name;
+
+        private void BuildClient(IConfiguration config) {
+             
             var apiClientConfig = new ApiConfig();
             try {
                 config.Bind($"Apis:{GetType().Name}", apiClientConfig);
