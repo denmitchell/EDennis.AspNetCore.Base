@@ -7,30 +7,52 @@ namespace EDennis.AspNetCore.Base {
     public class ResolvedProfile {
         public string ProfileName { get; set; }
         public Profile Profile { get; set; }
-        public string MockClientId { get; set; }
+        public Apis Apis { get; set; }
+        public ConnectionStrings ConnectionStrings { get; set; }
         public MockClient MockClient { get; set; }
-        public string AutoLoginId { get; set; }
         public AutoLogin AutoLogin { get; set; }
 
-        public void Load(string profileName, Profile profile, MockClients mockClients, AutoLogins autoLogins) {
+        public void Load(string profileName, Profile profile, Apis apis, ConnectionStrings connectionStrings, MockClients mockClients, AutoLogins autoLogins) {
 
             ProfileName = profileName;
-            MockClientId = profile.MockClientId;
-            AutoLoginId = profile.AutoLoginId;
 
-            try {
-                if (MockClientId != null)
-                    MockClient = mockClients[MockClientId];
-            } catch {
-                throw new ApplicationException($"Profiles section in Configuration does not contain a valid MockClient section with key {MockClientId}");
+            if (profile.ApiKeys != null && profile.ApiKeys.Count > 0) {
+                Apis = new Apis();
+                foreach (var entry in profile.ApiKeys) {
+                    try {
+                        Apis.Add(entry.Key, Apis[entry.Value]);
+                    } catch {
+                        throw new ApplicationException($"Error trying to find Api with key = {entry.Value} in Apis section of Configuration");
+                    }
+                }
             }
 
-            try {
-                if (AutoLoginId != null)
-                    AutoLogin = autoLogins[AutoLoginId];                
-            } catch {
-                throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {AutoLoginId}");
+
+            if (profile.ConnectionStringKeys != null && profile.ConnectionStringKeys.Count > 0) {
+                ConnectionStrings = new ConnectionStrings();
+                foreach (var entry in profile.ConnectionStringKeys) {
+                    try {
+                        ConnectionStrings.Add(entry.Key, ConnectionStrings[entry.Value]);
+                    } catch {
+                        throw new ApplicationException($"Error trying to find ConnectionString with key = {entry.Value} in ConnectionStrings section of Configuration");
+                    }
+                }
             }
+
+
+            if (profile.MockClientKey != null)
+                try {
+                    MockClient = mockClients[profile.MockClientKey];
+                } catch {
+                    throw new ApplicationException($"Profiles section in Configuration does not contain a valid MockClient section with key {MockClientId}");
+                }
+
+            if (profile.AutoLoginKey != null)
+                try {
+                    AutoLogin = autoLogins[profile.AutoLoginKey];
+                } catch {
+                    throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {AutoLoginId}");
+                }
 
         }
 

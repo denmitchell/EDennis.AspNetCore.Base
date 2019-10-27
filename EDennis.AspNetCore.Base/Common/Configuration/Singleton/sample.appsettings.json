@@ -1,28 +1,46 @@
 ﻿{
-  "LaunchProfile":  "Default",
+  "LaunchProfile": "Default",
   "Profiles": {
     "Default": {
       "Apis": {
-        "MyApi1": "http://localhost:6541",
-        "MyApi2": "http://localhost:6542"
+        "MyApi1": "MyApi1-Default",
+        "MyApi2": "MyApi2-Default"
       },
       "ConnectionStrings": {
-        "ColorDbContext": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
-        "ColorHistoryDbContext": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+        "ColorDbContext": "Default",
+        "ColorHistoryDbContext": "Default"
       },
       "MockClientId": "EDennis.Samples.DefaultPoliciesApi.Client1"
     },
     "yy1": {
       "Apis": {
-        "MyApi1": "http://localhost:9541",
-        "MyApi2": "http://localhost:9542"
+        "MyApi1": "MyApi1-Default",
+        "MyApi2": "MyApi2-yy1"
       },
       "ConnectionStrings": {
-        "ColorDbContext": "Server=YassirServer1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
-        "ColorHistoryDbContext": "Server=YassirServer1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+        "ColorDbContext": "yy1",
+        "ColorHistoryDbContext": "yy1"
       },
       "MockClientId": "EDennis.Samples.DefaultPoliciesApi.Client2"
     }
+  },
+  "Apis": {
+    "MyApi1-Default": {
+      "BaseAddress": "http://localhost:6541",
+      "Scopes": [ "My.Api1.*" ]
+    },
+    "MyApi2-Default": {
+      "BaseAddress": "http://localhost:6542",
+      "Scopes": [ "My.Api2.*" ]
+    },
+    "MyApi2-yy1": {
+      "BaseAddress": "http://localhost:6543",
+      "Scopes": [ "My.Api2.*" ]
+    }
+  },
+  "ConnectionStrings": {
+    "Default": "Server=(localdb)\\mssqllocaldb;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+    "yy1": "Server=yy1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
   },
   "MockClients": {
     "EDennis.Samples.DefaultPoliciesApi.Client1": {

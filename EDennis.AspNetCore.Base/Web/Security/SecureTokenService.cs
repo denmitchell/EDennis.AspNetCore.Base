@@ -30,6 +30,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         private Timer _timer;
         private readonly IWebHostEnvironment _environment;
         private readonly Profiles _profiles;
+        private readonly Apis _apis;
 
         /// <summary>
         /// This buffer period is used to explicitly invalidate a token that is requested
@@ -49,11 +50,13 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         #region public api
         public SecureTokenService(HttpClient httpClient, ILogger<SecureTokenService> logger, 
             IOptionsMonitor<SecurityOptions> options,
-            IOptionsMonitor<Profiles> profiles, IWebHostEnvironment environment) {
+            IOptionsMonitor<Profiles> profiles, IOptionsMonitor<Apis> apis,
+            IWebHostEnvironment environment) {
 
             Logger = logger;
             
             _profiles = profiles.CurrentValue;
+            _apis = apis.CurrentValue;
             _httpClient = httpClient;
             var currentOptions = options.CurrentValue;
             _httpClient.BaseAddress = new Uri(currentOptions.IdentityServerApi);
@@ -85,7 +88,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
             //build the logger scope for comprehensive logging capabilities
             IEnumerable<KeyValuePair<string, object>> loggerScope = new List<KeyValuePair<string, object>> {
                 KeyValuePair.Create<string,object>("IdentityServerUrl",_httpClient.BaseAddress.ToString()),
-                KeyValuePair.Create<string,object>("ApiClientName",client.Name),
+                KeyValuePair.Create<string,object>("ApiClientName",client.ApiKey),
                 KeyValuePair.Create<string,object>("ApiClientUrl",client.HttpClient.BaseAddress.ToString()),
                 KeyValuePair.Create<string,object>("ProfileName",profileName),
                 KeyValuePair.Create<string,object>("ScopeProfileInstruction",scopeProfileInstruction)
@@ -97,8 +100,8 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 //if the cache has an unexpired token for the profile and client, return it.
                 if (_tokenCache.ContainsKey(profileName)) {
                     var cachedTokens = _tokenCache[profileName];
-                    if (cachedTokens.ContainsKey(client.Name)) {
-                        cachedToken = cachedTokens[client.Name];
+                    if (cachedTokens.ContainsKey(client.ApiKey)) {
+                        cachedToken = cachedTokens[client.ApiKey];
                         if (cachedToken != null && cachedToken.Expiration < DateTime.Now) {
                             //note: don't update cache expiration, because IdentityServer's expiration isn't updated
                             Logger.LogDebug("Obtaining cached security token");
@@ -118,7 +121,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 //the cache doesn't have an appropriate token, so ...
 
                 //get a new token
-                tokenResponse = await GetTokenResponse(client.Name, profileName, scopeProfileInstruction);
+                tokenResponse = await GetTokenResponse(client.ApiKey, profileName, scopeProfileInstruction);
 
                 //update cache
                 Logger.LogDebug("Updating security token cache");
@@ -131,10 +134,10 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 };
                 if (!_tokenCache.ContainsKey(profileName))
                     _tokenCache.Add(profileName, new Dictionary<string, CachedToken>());
-                if (!_tokenCache[profileName].ContainsKey(client.Name))
-                    _tokenCache[profileName].Add(client.Name, cachedToken);
+                if (!_tokenCache[profileName].ContainsKey(client.ApiKey))
+                    _tokenCache[profileName].Add(client.ApiKey, cachedToken);
                 else
-                    _tokenCache[profileName][client.Name] = cachedToken;
+                    _tokenCache[profileName][client.ApiKey] = cachedToken;
 
             }
             return tokenResponse;
@@ -144,9 +147,9 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         private async Task InvalidateToken(TokenResponse tokenResponse) {
 
             await _httpClient.RevokeTokenAsync(new TokenRevocationRequest {
-                Address = "https://demo.identityserver.io/connect/revocation",
-                ClientId = "client",
-                ClientSecret = "secret",
+                Address = _disco.RevocationEndpoint,
+                ClientId = _environment.ApplicationName,
+                ClientSecret = _clientSecret,
 
                 Token = tokenResponse.AccessToken
             });
@@ -183,18 +186,50 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         /// <summary>
         /// Gets a new token from IdentityServer
         /// </summary>
-        /// <param name="apiClientName">The name of the SecureApiClient for which to obtain the token</param>
+        /// <param name="apiKey">The api key of the SecureApiClient for which to obtain the token.
+        /// This is the key used in Profiles:{SomeProfile}:Apis section of Configuration</param>
         /// <param name="profileName">The (active) profile that contains the url for the SecureApiClient</param>
         /// <param name="scopeProfileInstruction">An instruction for the API to use a particular profile when accessed by the client</param>
         /// <returns></returns>
-        private async Task<TokenResponse> GetTokenResponse(string apiClientName, string profileName,
+        private async Task<TokenResponse> GetTokenResponse(string apiKey, string profileName,
             string scopeProfileInstruction) {
 
-            //privileged scope because this is internal API.
-            var apiScope = $"{_profiles[profileName ?? default].Apis[apiClientName]}.*";
+
+            Profile profile = null;
+            try {
+                profile = _profiles[profileName];
+            } catch {
+                var ex = new ApplicationException($"Cannot find key Profiles:{profileName} setting in configuration");
+                Logger.LogError(ex, ex.Message);
+            }
+
+            string apiName = null;
+            try {
+                apiName = profile.ApiKeys[apiKey];
+            } catch {
+                var ex = new ApplicationException($"Cannot find key Profiles:{profileName}:Apis:{apiKey} setting in configuration");
+                Logger.LogError(ex, ex.Message);
+            }
+
+            Api matchingApi = null;
+            try {
+                matchingApi = _apis[apiName];
+            } catch {
+                var ex = new ApplicationException($"Cannot find key Apis:{apiName} setting in configuration");
+                Logger.LogError(ex, ex.Message);
+            }
+
+            string scope = "";
+
+            //get api scope            
+            try {
+                scope = String.Join(' ', matchingApi.Scopes);
+            } catch {
+                var ex = new ApplicationException($"Cannot parse Scopes property for Apis:{apiName} in configuration");
+                Logger.LogError(ex, ex.Message);
+            }
 
             //add ScopeProfileInstruction to scope, when present
-            string scope = apiScope;
             if (scopeProfileInstruction != null)
                 scope += $" spi:{scopeProfileInstruction}";
 

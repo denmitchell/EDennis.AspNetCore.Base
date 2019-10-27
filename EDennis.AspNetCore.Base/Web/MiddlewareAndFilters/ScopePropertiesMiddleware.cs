@@ -37,6 +37,8 @@ namespace EDennis.AspNetCore.Base.Web {
         public async Task InvokeAsync(HttpContext context,
             IOptionsMonitor<AppSettings> appSettings,
             IOptionsMonitor<Profiles> profiles,
+            IOptionsMonitor<Apis> apis,
+            IOptionsMonitor<ConnectionStrings> connectionStrings,
             IOptionsMonitor<MockClients> mockClients,
             IOptionsMonitor<AutoLogins> autoLogins) {
 
@@ -104,7 +106,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
 
                 scopeProperties.ActiveProfile = new ResolvedProfile();
-                scopeProperties.ActiveProfile.Load(activeProfileName, profiles?.CurrentValue[activeProfileName], mockClients?.CurrentValue, autoLogins?.CurrentValue);
+                scopeProperties.ActiveProfile.Load(activeProfileName, 
+                    profiles?.CurrentValue[activeProfileName], 
+                    apis?.CurrentValue, connectionStrings?.CurrentValue, 
+                    mockClients?.CurrentValue, autoLogins?.CurrentValue);
 
             }
             await _next(context);

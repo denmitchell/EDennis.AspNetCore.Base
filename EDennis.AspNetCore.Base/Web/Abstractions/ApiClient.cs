@@ -10,6 +10,8 @@ using System.Text.RegularExpressions;
 
 namespace EDennis.AspNetCore.Base.Web
 {
+    //note: use ApiAttribute(ApiKey) to specify a key for the configuration file that
+    //      differs from the class name
     public abstract class ApiClient : IHasILogger {
 
         [Obsolete]
@@ -27,11 +29,20 @@ namespace EDennis.AspNetCore.Base.Web
             Logger = logger;
 
             BuildClient(config);
+
+
+
+        public virtual string ApiKey { get; set; } = GetApiKey();
+
+
+        private static string GetApiKey() {
+            var type = MethodBase.GetCurrentMethod().DeclaringType;
+            var attr =(ApiAttribute)Attribute.GetCustomAttribute(type, typeof(ApiAttribute));
+            if (attr != null)
+                return attr.Key;
+            else
+                return type.Name;
         }
-
-
-        public virtual string Name { get; set; } 
-            = MethodBase.GetCurrentMethod().DeclaringType.FullName;
 
 
         private void BuildClient(IConfiguration config) {
