@@ -10,7 +10,7 @@ namespace EDennis.AspNetCore.Base {
         Claim[] Claims { get; set; }
         HeaderDictionary Headers { get; set; }
         ResolvedProfile ActiveProfile { get; set; }
-        RequestConfig RequestConfig { get; set; }
+        Instruction Instruction { get; set; }
         Dictionary<string, object> OtherProperties { get; set; }
 
     }

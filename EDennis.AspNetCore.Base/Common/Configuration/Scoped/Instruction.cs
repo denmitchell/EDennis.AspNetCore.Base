@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class RequestConfig {
+    public class Instruction {
 
-
-        public const string REQUEST_CONFIG_HEADER = "X-RequestConfig";
+        public const string HEADER = "X-Instruction";
+        public const string SCOPE_PREFIX = "Instruction:";
 
         public string ProfileName { get; set; } = "Default";
 
@@ -61,7 +61,7 @@ namespace EDennis.AspNetCore.Base {
             if (ToggleValue == ToggleValue.Reset)
                 toggleComparisonResult = ToggleComparisonResult.Reset;
             else {
-                var matchingConfig = new RequestConfigParser().Parse(match);
+                var matchingConfig = new InstructionParser().Parse(match);
                 if (matchingConfig.ToggleValue == ToggleValue)
                     toggleComparisonResult = ToggleComparisonResult.Same;
                 else

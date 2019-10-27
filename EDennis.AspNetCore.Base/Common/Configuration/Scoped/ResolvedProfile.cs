@@ -12,9 +12,16 @@ namespace EDennis.AspNetCore.Base {
         public MockClient MockClient { get; set; }
         public AutoLogin AutoLogin { get; set; }
 
-        public void Load(string profileName, Profile profile, Apis apis, ConnectionStrings connectionStrings, MockClients mockClients, AutoLogins autoLogins) {
+        public void Load(string profileKey, Profiles profiles, Apis apis, ConnectionStrings connectionStrings, MockClients mockClients, AutoLogins autoLogins) {
 
-            ProfileName = profileName;
+            ProfileName = profileKey;
+            Profile profile = null;
+
+            try {
+                profile = profiles[profileKey];
+            } catch { 
+                throw new ApplicationException($"Cannot find configuration entry for Profiles:{profileKey}.");
+            }
 
             if (profile.ApiKeys != null && profile.ApiKeys.Count > 0) {
                 Apis = new Apis();
@@ -44,14 +51,14 @@ namespace EDennis.AspNetCore.Base {
                 try {
                     MockClient = mockClients[profile.MockClientKey];
                 } catch {
-                    throw new ApplicationException($"Profiles section in Configuration does not contain a valid MockClient section with key {MockClientId}");
+                    throw new ApplicationException($"Profiles section in Configuration does not contain a valid MockClient section with key {profile.MockClientKey}");
                 }
 
             if (profile.AutoLoginKey != null)
                 try {
                     AutoLogin = autoLogins[profile.AutoLoginKey];
                 } catch {
-                    throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {AutoLoginId}");
+                    throw new ApplicationException($"Profiles section in Configuration does not contain a valid profile section with key {profile.MockClientKey}");
                 }
 
         }

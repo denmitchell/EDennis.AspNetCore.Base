@@ -189,10 +189,10 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         /// <param name="apiKey">The api key of the SecureApiClient for which to obtain the token.
         /// This is the key used in Profiles:{SomeProfile}:Apis section of Configuration</param>
         /// <param name="profileName">The (active) profile that contains the url for the SecureApiClient</param>
-        /// <param name="scopeProfileInstruction">An instruction for the API to use a particular profile when accessed by the client</param>
+        /// <param name="instruction">An instruction for the API to use a particular profile when accessed by the client</param>
         /// <returns></returns>
         private async Task<TokenResponse> GetTokenResponse(string apiKey, string profileName,
-            string scopeProfileInstruction) {
+            string instruction) {
 
 
             Profile profile = null;
@@ -229,9 +229,9 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 Logger.LogError(ex, ex.Message);
             }
 
-            //add ScopeProfileInstruction to scope, when present
-            if (scopeProfileInstruction != null)
-                scope += $" spi:{scopeProfileInstruction}";
+            //add Instruction to scope, when present
+            if (instruction != null)
+                scope += $" {Instruction.SCOPE_PREFIX}:{instruction}";
 
 
             Logger.LogDebug("Obtaining new security token...");

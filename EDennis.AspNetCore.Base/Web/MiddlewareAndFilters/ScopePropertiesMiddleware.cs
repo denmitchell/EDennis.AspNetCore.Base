@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Web {
     /// and stores:
     /// <list type="bullet">
     /// <item>User name from any of a variety of sources</item>
-    /// <item>An X-TestConfig header or claim type that determines the Active Profile from Configuration</item>
+    /// <item>An "spi:" prefixed scope that determines the Active Profile from Configuration</item>
     /// <item>Other Claims that match a prespecified pattern</item>
     /// <item>Other Headers that match a prespecified pattern</item>
     /// </list>
@@ -91,18 +91,18 @@ namespace EDennis.AspNetCore.Base.Web {
                         .Where(c => Regex.IsMatch(c.Type, _options.StoreClaimTypesWithPattern, RegexOptions.IgnoreCase))
                         .ToArray();
                     //update the test config claim and ActiveProfile, if needed
-                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == RequestConfig.REQUEST_CONFIG_HEADER);
+                    var testConfigClaim = context.User.Claims.FirstOrDefault(c => c.Type == Instruction.HEADER);
                     if (testConfigClaim != null) {
-                        scopeProperties.RequestConfig = new RequestConfigParser().Parse(testConfigClaim.Value);
-                        activeProfileName = scopeProperties.RequestConfig.ProfileName;
+                        scopeProperties.Instruction = new InstructionParser().Parse(testConfigClaim.Value);
+                        activeProfileName = scopeProperties.Instruction.ProfileName;
                     }
                 }
 
 
                 //update the test config claim and ActiveProfile, if needed
-                if (context.Request.Headers.ContainsKey(RequestConfig.REQUEST_CONFIG_HEADER)) {
-                    scopeProperties.RequestConfig = new RequestConfigParser().Parse(context.Request.Headers[RequestConfig.REQUEST_CONFIG_HEADER]);
-                    activeProfileName = scopeProperties.RequestConfig.ProfileName;
+                if (context.Request.Headers.ContainsKey(Instruction.HEADER)) {
+                    scopeProperties.Instruction = new InstructionParser().Parse(context.Request.Headers[Instruction.HEADER]);
+                    activeProfileName = scopeProperties.Instruction.ProfileName;
                 }
 
                 scopeProperties.ActiveProfile = new ResolvedProfile();

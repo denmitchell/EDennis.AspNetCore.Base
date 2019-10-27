@@ -17,11 +17,11 @@ namespace EDennis.AspNetCore.Base.Web
         [Obsolete]
         public const string HEADER_KEY = "ApiClientHeaders";
         public HttpClient HttpClient { get; set; }
-        public ScopeProperties22 ScopeProperties { get; set; }
+        public IScopeProperties ScopeProperties { get; set; }
         public IConfiguration Configuration { get; set; }
         public ILogger Logger { get; }
         public ApiClient(HttpClient httpClient, IConfiguration config,
-            ScopeProperties22 scopeProperties, ILogger logger) {
+            IScopeProperties scopeProperties, ILogger logger) {
 
             HttpClient = httpClient;
             ScopeProperties = scopeProperties;
