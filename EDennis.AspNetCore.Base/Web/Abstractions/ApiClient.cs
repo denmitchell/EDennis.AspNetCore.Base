@@ -14,23 +14,20 @@ namespace EDennis.AspNetCore.Base.Web
     //      differs from the class name
     public abstract class ApiClient : IHasILogger {
 
-        [Obsolete]
-        public const string HEADER_KEY = "ApiClientHeaders";
         public HttpClient HttpClient { get; set; }
         public IScopeProperties ScopeProperties { get; set; }
-        public IConfiguration Configuration { get; set; }
         public ILogger Logger { get; }
-        public ApiClient(HttpClient httpClient, IConfiguration config,
+
+        public ApiClient(HttpClient httpClient,
             IScopeProperties scopeProperties, ILogger logger) {
 
             HttpClient = httpClient;
             ScopeProperties = scopeProperties;
-            Configuration = config;
             Logger = logger;
 
-            BuildClient(config);
+            BuildClient();
 
-
+        }
 
         public virtual string ApiKey { get; set; } = GetApiKey();
 
@@ -45,52 +42,33 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
-        private void BuildClient(IConfiguration config) {
-             
-            var apiClientConfig = new ApiConfig();
-            try {
-                config.Bind($"Apis:{GetType().Name}", apiClientConfig);
-            } catch (Exception ex) {
-                string msg;
-                if (string.IsNullOrEmpty(config[$"Apis:{GetType().Name}"]))
-                    msg = $"Configuration does not contain an entry for Apis:{GetType().Name}";
-                else
-                    msg = $"Unable to bind Apis:{GetType().Name} as ApiConfig object.";
-                throw new ApplicationException(msg,ex);
-            }
+        private void BuildClient() {
 
             #region BaseAddress
-            var baseAddress = apiClientConfig.BaseAddress;
+            string baseAddress = null;
+            Api api = null;
 
-            var env = config["ASPNETCORE_ENVIRONMENT"];
+            try {
+                api = ScopeProperties.ActiveProfile.Apis[ApiKey];
+            } catch {
+                var ex = new ApplicationException($"Api key {ApiKey} missing in profile {ScopeProperties.ActiveProfile.Name}");
+                Logger.LogError(ex, ex.Message);
+            }
 
-            if (string.IsNullOrEmpty(baseAddress))
-                throw new ApplicationException($"Cannot find entry for 'Apis:{GetType().Name}:BaseAddress' in the configuration (e.g., appsettings.{env}.json).  Each ApiClient and SecureApiClient must have an entry in the configuration that corresponds to the class name of the ApiClient or SecureApiClient.");
-
+            if (api.Embedded) {
+                baseAddress = $"{ScopeProperties.Scheme}://{ScopeProperties.Host}:{ScopeProperties.Port}/{ApiKey}";
+            }
 
             HttpClient.BaseAddress = new Uri(baseAddress);
             #endregion
             #region DefaultRequestHeaders
 
-            var pOpt = apiClientConfig.ScopePropertiesOptions;
-
+            //create headers from list
             ScopeProperties.Headers
-                .Where(h => Regex.IsMatch(h.Key, pOpt.PropagateHeadersWithPattern, RegexOptions.IgnoreCase))
                 .ToList()
                 .ForEach(x => HttpClient.DefaultRequestHeaders
-                .Add(x.Key, x.Value.ToArray()));
+                .AddOrReplace(x.Key, x.Value.ToArray()));
 
-            ScopeProperties.Claims
-                .Where(c => Regex.IsMatch(c.Type, pOpt.PropagateClaimTypesWithPattern, RegexOptions.IgnoreCase))
-                .GroupBy(c => c.Type)
-                .Select(g => KeyValuePair.Create(g.Key, g.Select(v => v.Value)))
-                .ToList()
-                .ForEach(x => HttpClient.DefaultRequestHeaders
-                .AddOrReplace($"X-{x.Key}", x.Value));
-
-            if (ScopeProperties.User != null && pOpt.PropagateUser)
-                HttpClient.DefaultRequestHeaders
-                    .AddOrReplace("X-User", ScopeProperties.User);
 
             #endregion
 

@@ -19,6 +19,7 @@ namespace EDennis.AspNetCore.Base.Web {
     public class ScopePropertiesOptions {
 
         public const string HOSTPATH_HEADER = "X-HostPath";
+        public const string USER_HEADER = "X-User";
 
         public UserSource UserSource { get; set; } = UserSource.CLAIMS_PRINCIPAL_IDENTITY_NAME;
         public string UserSourceClaimType { get; set; }

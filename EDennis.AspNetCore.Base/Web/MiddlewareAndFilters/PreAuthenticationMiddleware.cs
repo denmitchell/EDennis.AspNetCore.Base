@@ -101,9 +101,6 @@ namespace EDennis.AspNetCore.Base.Web {
             
             httpContext.Request.Headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
 
-            httpContext.User.Claims
-
-            return;
         }
 
         private async Task ConfigureAutoLogin(HttpContext httpContext, Profile activeProfile, Instruction instruction) {
