@@ -5,6 +5,10 @@ using System.Linq;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
+
+    /// <summary>
+    /// Scope-level processing instruction.
+    /// </summary>
     public class Instruction {
 
         public const string HEADER = "X-Instruction";
@@ -12,26 +16,9 @@ namespace EDennis.AspNetCore.Base {
 
         public string ProfileName { get; set; } = "Default";
 
-        /// <summary>
-        /// Valid values are 'AC', 'R' and 'M'
-        /// Whether AutoCommit (normal), Rollback, or In-Memory
-        /// </summary>
         public ConnectionType ConnectionType { get; set; } = ConnectionType.AutoCommit;
-
-
-        /// <summary>
-        /// Valid values are 'AC', 'R' and 'M'
-        /// Whether AutoCommit (normal), Rollback, or In-Memory
-        /// </summary>
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
-
-
-        /// <summary>
-        /// Valid values are '0', '1', and '*'
-        /// When changed, the old connection with the same ConnectionStringKey and ConnectionType is dropped
-        /// </summary>
         public ToggleValue ToggleValue { get; set; } = ToggleValue._0;
-
 
         /// <summary>
         /// The instance name used as a key for the TestDbContextOptionsCache
@@ -42,6 +29,9 @@ namespace EDennis.AspNetCore.Base {
             }
         }
 
+        public override string ToString() {
+            return InstanceName;
+        }
 
 
         /// <summary>

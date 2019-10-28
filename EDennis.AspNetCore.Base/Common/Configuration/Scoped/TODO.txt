@@ -1,6 +1,7 @@
 ﻿Middleware Pipeline
-	1. PreAuthenticationMiddleware (combines AutoLogin and MockClient)
+	1. InstructionMiddleware
 		- *** ENVIRONMENT GUARD - NEVER IN PRODUCTION
+		- checks for X-Instruction configuration setting and header
 		- Checks for SPI header 
 			-- if present 
 				--- creates ActiveProfile based upon SPI header
@@ -8,20 +9,23 @@
 				--- creates ActiveProfile based upon ...
 					---- LaunchProfile, if present
 					---- Default, otherwise
+	2. PreAuthenticationMiddleware (combines AutoLogin and MockClient)
+		- checks for X-PreAuthentication configuration setting and header
+		- *** ENVIRONMENT GUARD - NEVER IN PRODUCTION
 		- Based upon PreAuthenticationMiddleware Options either ...
 			-- Adds a MockClient with requested scope for the current application,
 		       as well as a special 'spi:{SPI}' scope
 			   OR
 			-- Adds an AutoLogin ClaimsPrincipal with designated claims
-	2. AuthenticationMiddleware
-	3. AuthorizationMiddleware
-	4. ScopePropertiesMiddleware
+	3. AuthenticationMiddleware
+	4. AuthorizationMiddleware
+	5. ScopePropertiesMiddleware
 		- Stores the user
 		- Stores claims with designated patterns
 		- Stores headers with designated patterns
 		- Parses and stores the ScopeProfileInstruction (SPI)
-		- Creates/updates and stores the ActiveProfile
-			
-	5. DbConnectionMiddleware
-		Replaces DbContextOptions in DbContextOptionsProvider to change databases/connections dynamically
+		- Creates/updates and stores the ActiveProfile			
+	6. DbConnectionMiddleware
+		- Only for apis with repos or dbcontexts
+		- Replaces DbContextOptions in DbContextOptionsProvider to change databases/connections dynamically
 

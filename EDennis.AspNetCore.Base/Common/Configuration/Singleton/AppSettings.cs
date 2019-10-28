@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base {
     public class AppSettings {
-        public string LaunchProfile { get; set; }
+        public string Instruction { get; set; }
+        public bool PreAuthentication { get; set; }
     }
 }

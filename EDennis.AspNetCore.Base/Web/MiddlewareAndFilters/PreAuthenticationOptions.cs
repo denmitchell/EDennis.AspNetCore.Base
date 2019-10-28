@@ -5,7 +5,6 @@ using System.Text;
 namespace EDennis.AspNetCore.Base.Web {
 
     public enum PreAuthenticationType {
-        None,
         MockClient,
         AutoLogin
     }

@@ -34,8 +34,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ILogger _logger;
 
         public async Task InvokeAsync(HttpContext context, IServiceProvider serviceProvider,
-            IConfiguration appConfig,
-
+            IConfiguration appConfig, IScopeProperties scopeProperties,
             ILogger<DbConnectionInterceptor<TContext>> logger) {
 
 
@@ -46,22 +45,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                 _logger.LogInformation("RepoInterceptor handling request: {RequestPath}", context.Request.Path);
 
 
-                var scopeProperties = serviceProvider.GetRequiredService<ScopeProperties>();
-
-                string testConfigUnparsed;
-                try {
-                    testConfigUnparsed = scopeProperties.Headers[TESTING_HDR].ToString();
-                } catch (Exception) {
-                    throw new ApplicationException($"ScopeProperties is missing {TESTING_HDR} key.  Please ensure that ScopeProperties is configured in Startup and ScopePropertiesMiddleware precedes this interceptor in the request pipeline (in Startup.Configure).");
-                }
-                _logger.LogInformation("RepoInterceptor processing header {Header}",$"{TESTING_HDR}:{testConfigUnparsed}");
-
-
-                var parser = new InstructionParser();
-                var testConfig = parser.Parse(testConfigUnparsed);
-
-                var profileConfig = parser.GetProfileConfiguration(testConfig, appConfig);
-                var profile = profileConfig.Profile;
+                var instruction = scopeProperties.Instruction;
+                var profile = scopeProperties.ActiveProfile;
 
                 //get the database name and cache
                 var baseDatabaseName = TestDbContextManager<TContext>.BaseDatabaseName(appConfig);
@@ -74,7 +59,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-                var findResult = testConfig.Find(cache.Keys);
+                var findResult = instruction.Find(cache.Keys);
                 var cachedCxn = cache[findResult.MatchingInstanceName];
 
                 //if asking for a cached DbContextOptions instance, retrieve and use it, regardless of type
@@ -82,8 +67,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                     dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptions;
                 } else if (findResult.ToggleComparisonResult == ToggleComparisonResult.Reset
                     || findResult.ToggleComparisonResult == ToggleComparisonResult.Different) {
-                    if (testConfig.ConnectionType != ConnectionType.InMemory) {
-                        if (testConfig.ConnectionType == ConnectionType.Rollback) {
+                    if (instruction.ConnectionType != ConnectionType.InMemory) {
+                        if (instruction.ConnectionType == ConnectionType.Rollback) {
                             if (cachedCxn.IDbConnection != null
                                 && cachedCxn.IDbConnection.State == ConnectionState.Open) {
                                 if (cachedCxn.IDbTransaction != null)
@@ -97,20 +82,20 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var manager = new DbContextOptionsManager<TContext>();
                 if (findResult.MatchingInstanceName == null || findResult.ToggleComparisonResult == ToggleComparisonResult.Different) {
-                    if (testConfig.ConnectionType == ConnectionType.InMemory) {
-                        manager = manager.BuildOptions(testConfig.InstanceName)
-                            .UpdateCache(testConfig.InstanceName,cache)
+                    if (instruction.ConnectionType == ConnectionType.InMemory) {
+                        manager = manager.BuildOptions(instruction.InstanceName)
+                            .UpdateCache(instruction.InstanceName,cache)
                             .UpdateProvider(dbContextOptionsProvider);
-                    } else if (testConfig.ConnectionType == ConnectionType.Rollback) {
+                    } else if (instruction.ConnectionType == ConnectionType.Rollback) {
                         var connectionString = profile.ConnectionStrings[typeof(TContext).Name];
                         var provider = DatabaseProviderExtensions.InferProvider(connectionString);
                         if (provider == DatabaseProvider.SqlServer) { 
-                            manager = manager.BuildOptions<SqlConnection>(connectionString, testConfig.IsolationLevel)
-                                .UpdateCache(testConfig.InstanceName, cache)
+                            manager = manager.BuildOptions<SqlConnection>(connectionString, instruction.IsolationLevel)
+                                .UpdateCache(instruction.InstanceName, cache)
                                 .UpdateProvider(dbContextOptionsProvider);
                         } else {
-                            manager = manager.BuildOptions<SqliteConnection>(connectionString, testConfig.IsolationLevel)
-                                .UpdateCache(testConfig.InstanceName, cache)
+                            manager = manager.BuildOptions<SqliteConnection>(connectionString, instruction.IsolationLevel)
+                                .UpdateCache(instruction.InstanceName, cache)
                                 .UpdateProvider(dbContextOptionsProvider);
                         }
                     }

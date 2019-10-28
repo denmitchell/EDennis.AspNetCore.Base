@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using EDennis.AspNetCore.Base.Web.Security;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -12,25 +13,28 @@ namespace EDennis.AspNetCore.Base.Web {
 
     /// <summary>
     ///- *** ENVIRONMENT GUARD - NEVER IN PRODUCTION
-    ///- Checks for X-Instruction header
-	///	-- if present 
-	///		--- creates ActiveProfile based upon Instruction header
-	///	-- else
-	///		--- creates ActiveProfile based upon ...
-	///			---- LaunchProfile, if present
-	///			---- Default, otherwise
-	///- Based upon PreAuthenticationMiddleware Options either ...
-	///	-- Adds a MockClient with requested scope for the current application,
-	///       as well as a special 'spi:{SPI}' scope
+    ///
+    ///- Checks for X-PreAuthentication header or AppSettings.PreAuthentication
+	///	-- if present and true, then based upon PreAuthenticationMiddleware 
+    ///	   Options either ...
+	///	   ---  Adds a MockClient with requested scope for the current application,
+	///         as well as a special 'Instruction:{Instruction}' scope
     ///             OR
-	///	-- Adds an AutoLogin ClaimsPrincipal with designated claims
+	///	   --- Adds an AutoLogin ClaimsPrincipal with designated claims
     /// 
     /// NOTE: Place in pipeline just before Authentication middleware
+    /// NOTE: If using MockClient, ensure that the MockClient has been configured
+    ///       in IdentityServer, also.  The IdentityServer configuration for the 
+    ///       MockClient must include all scopes configured in appsettings.
+    ///       It must also include the Instruction:{Instruction} scope, if
+    ///       the app has been configured to process Instructions (either
+    ///       with InstructionMiddleware or DbContextOptionsInterceptor).
     /// </summary>
     public class PreAuthenticationMiddleware {
 
         private readonly RequestDelegate _next;
         private readonly PreAuthenticationOptions _options;
+
 
         public PreAuthenticationMiddleware(RequestDelegate next, 
             IOptionsMonitor<PreAuthenticationOptions> options) {
@@ -42,41 +46,31 @@ namespace EDennis.AspNetCore.Base.Web {
         public async Task InvokeAsync(HttpContext context,
             IScopeProperties scopeProperties,
             IOptionsMonitor<AppSettings> appSettings,
-            IOptionsMonitor<Profiles> profiles,
-            IOptionsMonitor<Apis> apis,
-            IOptionsMonitor<ConnectionStrings> connectionStrings,
-            IOptionsMonitor<MockClients> mockClients,
-            IOptionsMonitor<AutoLogins> autoLogins) {
+            SecureTokenService tokenService) {
 
 
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
-                scopeProperties.ActiveProfile = new ResolvedProfile();
-                var profileName = "Default";
-
-                var instructionHeader = GetHeaderValue(context, Instruction.HEADER);
-                if(instructionHeader != null) {
-                    var parser = new InstructionParser();
-                    scopeProperties.Instruction = parser.Parse(instructionHeader);
-                    profileName = scopeProperties.Instruction.ProfileName;
+                bool preAuth = false;
+                var preAuthHeader = GetHeaderValue(context, PreAuthentication.HEADER);
+                if (preAuthHeader != null) {
+                    if (preAuthHeader.Equals("true", StringComparison.OrdinalIgnoreCase))
+                        preAuth = true;
+                    else if (preAuthHeader.Trim().Equals(""))
+                        preAuth = true;
                 } else {
-                    var launchProfile = appSettings?.CurrentValue?.LaunchProfile;
-                    if (launchProfile != null)
-                        profileName = launchProfile;
+                    var appSettingsPreAuth = appSettings?.CurrentValue?.PreAuthentication;
+                    if (appSettingsPreAuth != null)
+                        preAuth = appSettingsPreAuth.Value;
                 }
 
-                scopeProperties.ActiveProfile.Load(profileName,
-                    profiles?.CurrentValue, apis?.CurrentValue,
-                    connectionStrings?.CurrentValue, mockClients?.CurrentValue,
-                    autoLogins?.CurrentValue);
-
-                if (_options.PreAuthenticationType == PreAuthenticationType.AutoLogin) {
-                    var autoLoginKey = profiles.CurrentValue[profileName].AutoLoginKey;
-                    await ConfigureAutoLogin(context, scopeProperties, autoLogins.CurrentValue[autoLoginKey], autoLoginKey);
-                } else if (_options.PreAuthenticationType == PreAuthenticationType.MockClient) {
-                    var mockClientKey = profiles.CurrentValue[profileName].MockClientKey;
-                    await ConfigureMockClient(context, scopeProperties, mockClients, mockClientKey);
+                if (preAuth) {
+                    if (_options.PreAuthenticationType == PreAuthenticationType.AutoLogin) {
+                        await ConfigureAutoLogin(context, scopeProperties);
+                    } else if (_options.PreAuthenticationType == PreAuthenticationType.MockClient) {
+                        await ConfigureMockClient(context, scopeProperties, tokenService);
+                    }
                 }
 
             }
@@ -85,12 +79,25 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
-        private Task ConfigureMockClient(HttpContext context, IScopeProperties scopeProperties, IOptionsMonitor<MockClients> mockClients, object mockClientKey) {
-            throw new NotImplementedException();
+        private async Task ConfigureMockClient(HttpContext httpContext, IScopeProperties scopeProperties,
+            SecureTokenService tokenService) {
+            var mockClient = scopeProperties.ActiveProfile.MockClient;
+            var mockClientKey = scopeProperties.ActiveProfile.MockClientKey;
+            var instruction = scopeProperties.Instruction;
+
+            var tokenResponse = await tokenService.GetTokenResponse(
+                mockClient.ClientId ?? mockClientKey,
+                mockClient.ClientSecret, mockClient.Scopes, instruction.ToString());
+            
+            httpContext.Request.Headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
+
+            return;
         }
 
-        private async Task ConfigureAutoLogin(HttpContext httpContext, IScopeProperties scopeProperties, 
-            AutoLogin autoLogin, string autoLoginKey) {
+        private async Task ConfigureAutoLogin(HttpContext httpContext, IScopeProperties scopeProperties) {
+
+            var autoLogin = scopeProperties.ActiveProfile.AutoLogin;
+            var autoLoginKey = scopeProperties.ActiveProfile.AutoLoginKey;
 
             List<Claim> claims = new List<Claim>();
 
@@ -119,6 +126,7 @@ namespace EDennis.AspNetCore.Base.Web {
             //sign the user on and serialize the user principal to a cookie
             await httpContext.SignInAsync(httpContext.User);
 
+            return;
         }
 
 

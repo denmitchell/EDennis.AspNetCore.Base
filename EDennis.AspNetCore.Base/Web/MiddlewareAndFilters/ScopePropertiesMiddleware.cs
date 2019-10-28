@@ -49,8 +49,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 var activeProfileName = "Default";
 
                 //get active profile name from launch profile setting, when provided
-                if (string.IsNullOrWhiteSpace(appSettings.CurrentValue.LaunchProfile))
-                    activeProfileName = appSettings.CurrentValue.LaunchProfile;
+                if (string.IsNullOrWhiteSpace(appSettings.CurrentValue.Instruction))
+                    activeProfileName = appSettings.CurrentValue.Instruction;
 
                 //get a reference to scope properties
                 var scopeProperties = context.RequestServices.GetRequiredService<IScopeProperties>();

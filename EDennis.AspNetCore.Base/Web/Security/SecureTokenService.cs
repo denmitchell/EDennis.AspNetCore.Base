@@ -31,6 +31,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         private readonly IWebHostEnvironment _environment;
         private readonly Profiles _profiles;
         private readonly Apis _apis;
+        private readonly MockClients _mockClients;
 
         /// <summary>
         /// This buffer period is used to explicitly invalidate a token that is requested
@@ -48,9 +49,12 @@ namespace EDennis.AspNetCore.Base.Web.Security {
             = new Dictionary<string,Dictionary<string, CachedToken>>();
 
         #region public api
-        public SecureTokenService(HttpClient httpClient, ILogger<SecureTokenService> logger, 
+        public SecureTokenService(HttpClient httpClient, 
+            ILogger<SecureTokenService> logger, 
             IOptionsMonitor<SecurityOptions> options,
-            IOptionsMonitor<Profiles> profiles, IOptionsMonitor<Apis> apis,
+            IOptionsMonitor<Profiles> profiles, 
+            IOptionsMonitor<Apis> apis,
+            IOptionsMonitor<MockClients> mockClients,
             IWebHostEnvironment environment) {
 
             Logger = logger;
@@ -76,11 +80,11 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         /// <typeparam name="TClient">the type of SecureApiClient for whom to obtain the token</typeparam>
         /// <param name="client">the SecureApiClient for whom to obtain the token</param>
         /// <param name="profileName">The scope profile that the SecureApiClient uses</param>
-        /// <param name="scopeProfileInstruction">the SPI instruction to transmit securely to 
+        /// <param name="instruction">the SPI instruction to transmit securely to 
         /// the called API via requested scope</param>
         /// <returns>access token as an IdentityModel TokenResponse object</returns>
         public async Task<TokenResponse> GetToken<TClient>(TClient client, string profileName = "Default",
-                string scopeProfileInstruction = null)
+                string instruction = null)
             where TClient : SecureApiClient {
             TokenResponse tokenResponse;
             CachedToken cachedToken;
@@ -91,7 +95,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 KeyValuePair.Create<string,object>("ApiClientName",client.ApiKey),
                 KeyValuePair.Create<string,object>("ApiClientUrl",client.HttpClient.BaseAddress.ToString()),
                 KeyValuePair.Create<string,object>("ProfileName",profileName),
-                KeyValuePair.Create<string,object>("ScopeProfileInstruction",scopeProfileInstruction)
+                KeyValuePair.Create<string,object>("Instruction",instruction)
             };
 
 
@@ -121,7 +125,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 //the cache doesn't have an appropriate token, so ...
 
                 //get a new token
-                tokenResponse = await GetTokenResponse(client.ApiKey, profileName, scopeProfileInstruction);
+                tokenResponse = await GetTokenResponse(client.ApiKey, profileName, instruction);
 
                 //update cache
                 Logger.LogDebug("Updating security token cache");
@@ -191,7 +195,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         /// <param name="profileName">The (active) profile that contains the url for the SecureApiClient</param>
         /// <param name="instruction">An instruction for the API to use a particular profile when accessed by the client</param>
         /// <returns></returns>
-        private async Task<TokenResponse> GetTokenResponse(string apiKey, string profileName,
+        public async Task<TokenResponse> GetTokenResponse(string apiKey, string profileName,
             string instruction) {
 
 
@@ -219,15 +223,19 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 Logger.LogError(ex, ex.Message);
             }
 
-            string scope = "";
 
-            //get api scope            
-            try {
-                scope = String.Join(' ', matchingApi.Scopes);
-            } catch {
-                var ex = new ApplicationException($"Cannot parse Scopes property for Apis:{apiName} in configuration");
-                Logger.LogError(ex, ex.Message);
-            }
+            return await GetTokenResponse(_environment.ApplicationName, _clientSecret, matchingApi.Scopes, instruction);
+
+        }
+
+        public async Task<TokenResponse> GetTokenResponse(
+            string clientId, string clientSecret, string[] scopes, string instruction) {
+
+            if (_disco == null)
+                await GetDiscoveryDocumentResponse();
+
+            string scope = String.Join(' ', scopes);
+
 
             //add Instruction to scope, when present
             if (instruction != null)
@@ -240,10 +248,10 @@ namespace EDennis.AspNetCore.Base.Web.Security {
             var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest {
                 Address = _disco.TokenEndpoint,
 
-                ClientId = _environment.ApplicationName,
-                ClientSecret = _clientSecret,
+                ClientId = clientId,
+                ClientSecret = clientSecret,
                 Scope = scope,
-                 
+
             });
 
 
@@ -256,7 +264,6 @@ namespace EDennis.AspNetCore.Base.Web.Security {
             }
 
             return tokenResponse;
-
         }
 
 
