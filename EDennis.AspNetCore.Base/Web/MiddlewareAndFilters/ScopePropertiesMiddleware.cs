@@ -27,33 +27,36 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly ScopePropertiesOptions _options;
+        private readonly AppSettings _appSettings;
+        private readonly Profiles _profiles;
 
-
-        public ScopePropertiesMiddleware(RequestDelegate next, IOptions<ScopePropertiesOptions> options) {
+        public ScopePropertiesMiddleware(RequestDelegate next, 
+            IOptionsMonitor<ScopePropertiesOptions> options,
+            IOptionsMonitor<AppSettings> appSettings,
+            IOptionsMonitor<Profiles> profiles
+            ) {
             _next = next;
-            _options = options?.Value ?? new ScopePropertiesOptions();
+            _options = options?.CurrentValue ?? new ScopePropertiesOptions();
+            _appSettings = appSettings.CurrentValue;
+            _profiles = profiles.CurrentValue;
+            if (!_profiles.NamesUpdated)
+                _profiles.UpdateNames();
         }
 
-        public async Task InvokeAsync(HttpContext context,
-            IOptionsMonitor<AppSettings> appSettings,
-            IOptionsMonitor<Profiles> profiles,
-            IOptionsMonitor<Apis> apis,
-            IOptionsMonitor<ConnectionStrings> connectionStrings,
-            IOptionsMonitor<MockClients> mockClients,
-            IOptionsMonitor<AutoLogins> autoLogins) {
+        public async Task InvokeAsync(HttpContext context, IScopeProperties scopeProperties) {
 
 
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
-                var activeProfileName = "Default";
+                var activeProfile = scopeProperties.ActiveProfile ?? _profiles[Profile.DEFAULT_NAME];
+
+                var activeProfileName = Profile.DEFAULT_NAME;
 
                 //get active profile name from launch profile setting, when provided
-                if (string.IsNullOrWhiteSpace(appSettings.CurrentValue.Instruction))
-                    activeProfileName = appSettings.CurrentValue.Instruction;
+                if (string.IsNullOrWhiteSpace(_appSettings.Instruction))
+                    activeProfileName = _appSettings.Instruction;
 
-                //get a reference to scope properties
-                var scopeProperties = context.RequestServices.GetRequiredService<IScopeProperties>();
 
                 //update the Scope Properties User with identity, claim or header data
                 scopeProperties.User = _options.UserSource switch
@@ -105,7 +108,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     activeProfileName = scopeProperties.Instruction.ProfileName;
                 }
 
-                scopeProperties.ActiveProfile = new ResolvedProfile();
+                scopeProperties.ActiveProfile = new ActiveProfile();
                 scopeProperties.ActiveProfile.Load(activeProfileName, 
                     profiles?.CurrentValue[activeProfileName], 
                     apis?.CurrentValue, connectionStrings?.CurrentValue, 

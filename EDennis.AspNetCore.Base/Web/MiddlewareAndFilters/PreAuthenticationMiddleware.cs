@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.Web.Security;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -34,20 +35,31 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly PreAuthenticationOptions _options;
-
+        private readonly AppSettings _appSettings;
+        private readonly Profiles _profiles;
+        private readonly SecureTokenService _tokenService;
 
         public PreAuthenticationMiddleware(RequestDelegate next, 
-            IOptionsMonitor<PreAuthenticationOptions> options) {
+            IOptionsMonitor<PreAuthenticationOptions> options,
+            IOptionsMonitor<AppSettings> appSettings,
+            IOptionsMonitor<Profiles> profiles,
+            SecureTokenService tokenService) {
             _next = next;
             _options = options?.CurrentValue ?? new PreAuthenticationOptions();
+            _appSettings = appSettings.CurrentValue;
+            _profiles = profiles.CurrentValue;
+            _tokenService = tokenService;
+
+            if (!_profiles.NamesUpdated)
+                _profiles.UpdateNames();
         }
 
 
         public async Task InvokeAsync(HttpContext context,
-            IScopeProperties scopeProperties,
-            IOptionsMonitor<AppSettings> appSettings,
-            SecureTokenService tokenService) {
+            IScopeProperties scopeProperties) {
 
+            var activeProfile = scopeProperties.ActiveProfile ?? _profiles["Default"];
+            var instruction = scopeProperties.Instruction;
 
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
@@ -60,16 +72,16 @@ namespace EDennis.AspNetCore.Base.Web {
                     else if (preAuthHeader.Trim().Equals(""))
                         preAuth = true;
                 } else {
-                    var appSettingsPreAuth = appSettings?.CurrentValue?.PreAuthentication;
+                    var appSettingsPreAuth = _appSettings?.PreAuthentication;
                     if (appSettingsPreAuth != null)
                         preAuth = appSettingsPreAuth.Value;
                 }
 
                 if (preAuth) {
                     if (_options.PreAuthenticationType == PreAuthenticationType.AutoLogin) {
-                        await ConfigureAutoLogin(context, scopeProperties);
+                        await ConfigureAutoLogin(context, activeProfile, instruction);
                     } else if (_options.PreAuthenticationType == PreAuthenticationType.MockClient) {
-                        await ConfigureMockClient(context, scopeProperties, tokenService);
+                        await ConfigureMockClient(context, activeProfile, instruction);
                     }
                 }
 
@@ -79,49 +91,45 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
-        private async Task ConfigureMockClient(HttpContext httpContext, IScopeProperties scopeProperties,
-            SecureTokenService tokenService) {
-            var mockClient = scopeProperties.ActiveProfile.MockClient;
-            var mockClientKey = scopeProperties.ActiveProfile.MockClientKey;
-            var instruction = scopeProperties.Instruction;
+        private async Task ConfigureMockClient(HttpContext httpContext, Profile activeProfile, Instruction instruction) {
 
-            var tokenResponse = await tokenService.GetTokenResponse(
-                mockClient.ClientId ?? mockClientKey,
-                mockClient.ClientSecret, mockClient.Scopes, instruction.ToString());
+            var mockClient = activeProfile.MockClient;
+
+            var tokenResponse = await _tokenService.GetTokenResponse(
+                mockClient.ClientId, mockClient.ClientSecret, 
+                mockClient.Scopes, instruction?.ToString());
             
             httpContext.Request.Headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
+
+            httpContext.User.Claims
 
             return;
         }
 
-        private async Task ConfigureAutoLogin(HttpContext httpContext, IScopeProperties scopeProperties) {
+        private async Task ConfigureAutoLogin(HttpContext httpContext, Profile activeProfile, Instruction instruction) {
 
-            var autoLogin = scopeProperties.ActiveProfile.AutoLogin;
-            var autoLoginKey = scopeProperties.ActiveProfile.AutoLoginKey;
+            var autoLogin = activeProfile.AutoLogin;
 
             List<Claim> claims = new List<Claim>();
 
-            if (autoLogin.Claims == null || !autoLogin.Claims.Any(c => c.Type == "name"))
-                claims.Add(new Claim("name", autoLoginKey)); //jwt/simple type
-
-            if (autoLogin.Claims == null || !autoLogin.Claims.Any(c => c.Type == ClaimTypes.Name))
-                claims.Add(new Claim(ClaimTypes.Name, autoLoginKey)); //microsoft uri
-
+            //add all claims specified in configuration
             foreach (var claim in autoLogin.Claims) {
                 claims.Add(new Claim(claim.Type, claim.Value));
             }
 
             //ensure microsoft URI name claim is added, when JWT name claim is provided
-            if (claims.Any(c => c.Type == "name") && !claims.Any(c => c.Type == ClaimTypes.Name))
+            if (claims.Any(c => c.Type == JwtClaimTypes.Name) && !claims.Any(c => c.Type == ClaimTypes.Name))
                 claims.Add(new Claim(ClaimTypes.Name, claims.FirstOrDefault(c=>c.Type=="name").Value)); //microsoft uri
 
-
-            scopeProperties.User = autoLoginKey;
+            //add Instruction scope, if relevant
+            if (instruction != null)
+                claims.Add(new Claim(JwtClaimTypes.Scope, $"{Instruction.SCOPE_PREFIX}{instruction.ToString()}"));
 
             //create the new user object
             var identity = new ClaimsIdentity(claims,
                   CookieAuthenticationDefaults.AuthenticationScheme);
             httpContext.User = new ClaimsPrincipal(identity);
+
 
             //sign the user on and serialize the user principal to a cookie
             await httpContext.SignInAsync(httpContext.User);

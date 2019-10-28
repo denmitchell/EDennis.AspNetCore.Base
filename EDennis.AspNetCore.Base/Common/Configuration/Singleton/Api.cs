@@ -4,7 +4,10 @@ using System.Text;
 
 namespace EDennis.AspNetCore.Base {
     public class Api {
-        public string BaseAddress { get; set; }
+        public string Scheme { get; set; }
+        public string Host { get; set; }
+        public int Port { get; set; }
+        public bool Embedded { get; set; }
         public string[] Scopes { get; set; }
     }
 }

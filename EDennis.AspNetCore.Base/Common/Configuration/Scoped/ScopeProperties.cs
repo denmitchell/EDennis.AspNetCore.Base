@@ -8,7 +8,7 @@ namespace EDennis.AspNetCore.Base {
         public string User { get; set; }
         public HeaderDictionary Headers { get; set; }
         public Claim[] Claims { get; set; }
-        public ResolvedProfile ActiveProfile { get; set; }
+        public Profile ActiveProfile { get; set; }
         public Instruction Instruction {get; set;}
         public Dictionary<string, object> OtherProperties { get; set; }
             = new Dictionary<string, object>();

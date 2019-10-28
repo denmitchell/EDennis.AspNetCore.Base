@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -21,26 +17,32 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
 
-        public InstructionMiddleware(RequestDelegate next) {
+        private readonly AppSettings _appSettings;
+        private readonly Profiles _profiles;
+
+
+        public InstructionMiddleware(RequestDelegate next,
+            IOptionsMonitor<AppSettings> appSettings,
+            IOptionsMonitor<Profiles> profiles) {
             _next = next;
+            _appSettings = appSettings.CurrentValue;
+            _profiles = profiles.CurrentValue;
+    
+            if(!_profiles.NamesUpdated)
+                _profiles.UpdateNames();
         }
 
 
         public async Task InvokeAsync(HttpContext context,
-            IScopeProperties scopeProperties,
-            IOptionsMonitor<AppSettings> appSettings,
-            IOptionsMonitor<Profiles> profiles,
-            IOptionsMonitor<Apis> apis,
-            IOptionsMonitor<ConnectionStrings> connectionStrings,
-            IOptionsMonitor<MockClients> mockClients,
-            IOptionsMonitor<AutoLogins> autoLogins) {
+            IScopeProperties scopeProperties) {
 
 
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
-                scopeProperties.ActiveProfile = new ResolvedProfile();
-                var profileName = "Default";
+
+                scopeProperties.ActiveProfile = new Profile();
+                var profileName = Profile.DEFAULT_NAME;
 
                 var instructionHeader = GetHeaderValue(context, Instruction.HEADER);
                 if(instructionHeader != null) {
@@ -48,7 +50,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     scopeProperties.Instruction = parser.Parse(instructionHeader);
                     profileName = scopeProperties.Instruction.ProfileName;
                 } else {
-                    var appSettingsInstruction = appSettings?.CurrentValue?.Instruction;
+                    var appSettingsInstruction = _appSettings.Instruction;
                     if (appSettingsInstruction != null) {
                         profileName = appSettingsInstruction;
                         var parser = new InstructionParser();
@@ -56,10 +58,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     }
                 }
 
-                scopeProperties.ActiveProfile.Load(profileName,
-                    profiles?.CurrentValue, apis?.CurrentValue,
-                    connectionStrings?.CurrentValue, mockClients?.CurrentValue,
-                    autoLogins?.CurrentValue);
+                scopeProperties.ActiveProfile = _profiles[profileName];
 
             }
 

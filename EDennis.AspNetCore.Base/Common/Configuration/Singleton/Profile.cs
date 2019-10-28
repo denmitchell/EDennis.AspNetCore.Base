@@ -4,9 +4,11 @@ using System.Text;
 
 namespace EDennis.AspNetCore.Base {
     public class Profile {
-        public Dictionary<string,string> ApiKeys { get; set; }
-        public Dictionary<string,string> ConnectionStringKeys { get; set; }
-        public string MockClientKey { get; set; }
-        public string AutoLoginKey { get; set; }
+        public const string DEFAULT_NAME = "Default";
+        public string Name { get; set; }
+        public Apis Apis { get; set; }
+        public ConnectionStrings ConnectionStrings { get; set; }
+        public MockClient MockClient { get; set; }
+        public AutoLogin AutoLogin { get; set; }
     }
 }
