@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -26,5 +27,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         TEntity Update(TEntity entity, params object[] keyValues);
         Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues);
         Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues);
+
+        void Check(string checkLabel, dynamic pre, dynamic post, Func<dynamic, dynamic, bool> isExpectedChange);
+        void Check(DynamicLinqParameters check);
     }
 }

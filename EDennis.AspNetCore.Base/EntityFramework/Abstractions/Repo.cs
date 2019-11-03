@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
@@ -21,6 +24,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     public class Repo<TEntity, TContext> : IRepo<TEntity, TContext>
             where TEntity : class, new()
             where TContext : DbContext {
+
+
 
 
         /// <summary>
@@ -56,7 +61,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var type = MethodBase.GetCurrentMethod().DeclaringType;
             var isEfTemporal = typeof(TemporalRepo<,,>).IsAssignableFrom(type);
 
-            var attTypes = new Dictionary<Type,bool>{
+            var attTypes = new Dictionary<Type, bool>{
                 { typeof(SysUserAttribute), true },
                 { typeof(SysUserNextAttribute), true },
                 { typeof(SysStartAttribute), true },
@@ -175,17 +180,23 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public ILogger Logger { get; }
 
+        private readonly RecordLocker _recordLocker;
+
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public Repo(TContext context, ScopeProperties scopeProperties,
+        public Repo(TContext context,
+            RecordLocker recordLocker,
+            ScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger) {
 
             Context = context;
+            _recordLocker = recordLocker;
             ScopeProperties = scopeProperties;
             Logger = logger;
+
 
         }
 
@@ -248,6 +259,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
+        public virtual List<dynamic> GetFromDynamicLinq(DynamicLinqParameters parms) {
+            return GetFromDynamicLinq(parms.Where, parms.OrderBy, parms.Select, parms.Skip, parms.Take);
+        }
+
+
+
         /// <summary>
         /// Get by Dynamic Linq Expression
         /// https://github.com/StefH/System.Linq.Dynamic.Core
@@ -281,6 +298,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             return await qry.ToDynamicListAsync();
 
+        }
+
+        public virtual async Task<List<dynamic>> GetFromDynamicLinqAsync(DynamicLinqParameters parms) {
+            return await GetFromDynamicLinqAsync(parms.Where, parms.OrderBy, parms.Select, parms.Skip, parms.Take);
         }
 
 
@@ -340,7 +361,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterCreate(entity);
                 return entity;
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
 
@@ -368,7 +389,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterCreate(entity);
                 return entity;
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
 
@@ -400,7 +421,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterUpdate(existing, keyValues);
                 return existing;
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
         }
@@ -433,7 +454,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterUpdate(existing, keyValues);
                 return existing;
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
         }
@@ -462,7 +483,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterUpdate(existing, keyValues);
                 return existing; //updated entity
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
 
@@ -490,7 +511,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterUpdate(existing, keyValues);
                 return existing; //updated entity
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
         }
@@ -514,8 +535,32 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.SaveChanges();
                 AfterDelete(keyValues);
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "?");
             }
+
+        }
+
+        public virtual void SafeDelete<TCheckEntity, TCheckContext>(
+            IRepo<TCheckEntity, TCheckContext> checkRepo,
+            DynamicLinqParameters preState, 
+            Func<dynamic, bool> isExpectedPreState,
+            DynamicLinqParameters postState, 
+            Func<dynamic,dynamic,bool> isExpectedChange,
+            int timeoutInSeconds,
+            params object[] keyValues)
+
+            where TCheckEntity : class, new()
+            where TCheckContext : DbContext {
+
+            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
+            try {
+                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
+                var pre = CheckPreState("SafeDelete",preState, isExpectedPreState);
+                checkRepo.Delete(keyValues);
+                CheckChange("SafeDelete",pre,postState,isExpectedChange);
+                scope.Complete();
+            } catch { }
+            _recordLocker.UnlockRecord(keyValues);
 
         }
 
@@ -537,10 +582,53 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 AfterDelete(keyValues);
                 return;
             } else {
-                Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "");
+                Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "?");
                 return;
             }
         }
+
+
+        public virtual dynamic CheckPreState(string checkContext, 
+            DynamicLinqParameters preStateParameters, 
+            Func<dynamic,bool> isExpectedPreState) {
+            var pre = GetFromDynamicLinq(preStateParameters);
+            if (!isExpectedPreState(pre)) {
+                var preJson = JsonSerializer.Serialize<dynamic>(pre);
+                IEnumerable<KeyValuePair<string, object>> dict = new List<KeyValuePair<string, object>> {
+                    KeyValuePair.Create("PreState",(object)preJson),
+                };
+                var ex = new ApplicationException($"{GetType().Name} pre-state check failed for {checkContext}");
+                using (Logger.BeginScope(dict)) {
+                    Logger.LogError(ex, "For user {User}, {Repo} pre-state check failed for {CheckContext}", ScopeProperties?.User ?? "?", GetType().Name, checkContext);
+                }
+                throw ex;
+            }
+            return pre;
+        }
+
+
+        public virtual void CheckChange(string checkContext, dynamic pre,
+            DynamicLinqParameters postStateParameters, 
+            Func<dynamic,dynamic,bool> isExpectedChange) {
+
+            var post = GetFromDynamicLinq(postStateParameters);
+
+            if (!isExpectedChange(pre, post)) {
+                var preJson = JsonSerializer.Serialize<dynamic>(pre);
+                var postJson = JsonSerializer.Serialize<dynamic>(post);
+                IEnumerable<KeyValuePair<string, object>> dict = new List<KeyValuePair<string, object>> {
+                    KeyValuePair.Create("PreState",(object)preJson),
+                    KeyValuePair.Create("PostState",(object)postJson),
+                };
+                var ex = new ApplicationException($"{GetType().Name} check failed for {checkContext}");
+                using (Logger.BeginScope(dict)) {
+                    Logger.LogError(ex, "For user {User}, {Repo} Check failed for {CheckContext}", ScopeProperties?.User ?? "?", GetType().Name, checkContext);
+                }
+                throw ex;
+            }
+        }
+
+
 
 
 
