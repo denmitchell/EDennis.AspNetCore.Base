@@ -1,0 +1,119 @@
+﻿1. Add documentation for OIDC/OAuth2 setup
+
+* Need to try new MockClient and AutoLogin with QuickStart
+	** Can we have option with MockClient to bypass IdentityServer interaction?
+	** Can we have option with AutoLogin to get claims from profile service?
+
+
+2. Starting with Hybrid Flow Quickstart solution
+	a. Modify the solution such that each project is self-hosted (not using IIS)
+	b. Add the configurations below, noting especially ...
+		-> Add Claims with ClaimType.Name to Clients
+		-> Overwrite default setting for ClientClaimPrefix to be "", rather than "client_"
+		-> AlwaysIncludeUserClaimsInIdToken = true
+
+3. Then, the following will hold ...
+	a. When running the IdentityServer project, the MVC project, and the Api project ...
+		-> User.Name (ClaimsPrincipal Name) will be "alice" or "bob" in both MVC and API endpoints
+	b. When bypassing the MVC project (running the Client project instead) ...
+		-> User.Name will be the client_id (or whatever was used as ClaimType.Name in Client config)
+
+CONFIGURATIONS:
+	- Ensure that IdentityServer has a reference to StaticClaimsProfileService class
+	- Ensure IdentityServer Startup.ConfigureServices has
+            var builder = services.AddIdentityServer()
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetApis())
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(Config.GetUsers())
+                .AddProfileService<StaticClaimsProfileService>();
+
+	- Ensure Config.cs has ...
+
+        public class UserClientClaimSpec
+        {
+            public string ClientId { get; set; }
+            public string Username { get; set; }
+            public List<Claim> Claims { get; set; }
+        }
+
+        public static IEnumerable<UserClientClaimSpec> UserClientClaims { get; } =
+            new UserClientClaimSpec[] {
+                new UserClientClaimSpec {
+                    ClientId = "mvc",
+                    Username="bob",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","api1.*"),
+                        new Claim(ClaimTypes.Name,"bob"),
+                        new Claim(ClaimTypes.Role,"user")
+                    }
+                },
+                new UserClientClaimSpec {
+                    ClientId = "mvc",
+                    Username="alice",
+                    Claims = new List<Claim> {
+                        new Claim("user_scope","api1.*"),
+                        new Claim(ClaimTypes.Name,"alice"),
+                        new Claim(ClaimTypes.Role,"admin")
+                    }
+                }
+            };
+			...
+                new Client
+                {
+                    ClientId = "client",
+
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = { 
+                        "api1"
+                    },
+                    Claims =
+                    {
+                        new Claim(ClaimTypes.Name,"client")
+                    },
+                    ClientClaimsPrefix = ""
+                },
+                new Client
+                {
+                    ClientId = "mvc",
+                    ClientName = "MVC Client",
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    RedirectUris           = { "http://localhost:5002/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        ClaimTypes.Name,
+                        ClaimTypes.Role,
+                        "user_scope",
+                        "api1"
+                    },
+                    Claims =
+                    {
+                        new Claim(ClaimTypes.Name,"mvc")
+                    },
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AllowAccessTokensViaBrowser = true,
+
+                    AllowOfflineAccess = true,
+                    ClientClaimsPrefix = ""
+                }
+
+
