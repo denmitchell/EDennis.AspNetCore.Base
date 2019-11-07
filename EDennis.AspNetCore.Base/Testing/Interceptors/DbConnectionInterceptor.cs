@@ -34,10 +34,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         ILogger _logger;
 
-        public async Task InvokeAsync(HttpContext context, IServiceProvider serviceProvider,
+        public async Task InvokeAsync(HttpContext context,
             IScopeProperties scopeProperties, IOptionsMonitor<AppSettings> appSettings,
             DbContextOptionsProvider<TContext> dbContextOptionsProvider,
-            DbContextOptionsBuilder<TContext> dbContextOptionsBuilder,
             DbConnectionCache<TContext> cache,
             ILogger<DbConnectionInterceptor<TContext>> logger) {
 
@@ -53,51 +52,20 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var newConnection = scopeProperties.NewConnection;
 
+                bool added = false;
 
                 var cachedCxn = cache.GetOrAdd(scopeProperties.User,(key)=> {
-                    var manager = new DbConnectionManager<TContext>(efContextSettings, scopeProperties.User);
-                    _ = manager.BuildConnection()
-                        .UpdateCache(scopeProperties.User)
+                    added = true;
+                    return DbConnectionManager.GetDbConnection<TContext>(efContextSettings);
                 });
 
-                //if asking for a cached DbContextOptions instance, retrieve and use it, regardless of type
-                if (cachedCxn != null)
-                    dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptions;
-                else {
-                }
+                if (!added && scopeProperties.NewConnection)
+                    if (efContextSettings.ProviderName.Equals("inmemory", StringComparison.OrdinalIgnoreCase))
+                        cache[scopeProperties.User] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
+                    else if (efContextSettings.TransactionType == TransactionType.Rollback)
+                        cachedCxn.IDbTransaction.Rollback();
 
-            } else if (findResult.ToggleComparisonResult == ToggleComparisonResult.Reset
-                    || findResult.ToggleComparisonResult == ToggleComparisonResult.Different) {
-                    if (instruction.ConnectionType == TransactionType.Rollback) {
-                        if (cachedCxn.IDbConnection != null
-                            && cachedCxn.IDbConnection.State == ConnectionState.Open) {
-                            if (cachedCxn.IDbTransaction != null)
-                                cachedCxn.IDbTransaction.Rollback();
-                            cachedCxn.IDbConnection.Close();
-                        }
-                    }
-                    cache.Remove(findResult.MatchingInstanceName);
-                }
-
-                if (findResult.MatchingInstanceName == null || findResult.ToggleComparisonResult == ToggleComparisonResult.Different) {
-                    if (instruction.ConnectionType == TransactionType.Rollback) {
-                        var provider = efContextSettings.ProviderName;
-                        _ = manager.BuildOptions<SqlConnection>(
-                                efContextSettings.ConnectionString, instruction.IsolationLevel)
-                                .UpdateCache(instruction.InstanceName, cache)
-                                .UpdateProvider(dbContextOptionsProvider);
-
-                        if (provider == DatabaseProvider.SqlServer) {
-                            manager = manager.BuildOptions<SqlConnection>(connectionString, instruction.IsolationLevel)
-                                .UpdateCache(instruction.InstanceName, cache)
-                                .UpdateProvider(dbContextOptionsProvider);
-                        } else {
-                            manager = manager.BuildOptions<SqliteConnection>(connectionString, instruction.IsolationLevel)
-                                .UpdateCache(instruction.InstanceName, cache)
-                                .UpdateProvider(dbContextOptionsProvider);
-                        }
-                    }
-                }
+                dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptions;
 
             }
 

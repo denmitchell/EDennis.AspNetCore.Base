@@ -1,84 +1,83 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class DbConnectionManager<TContext> where TContext : DbContext {
+    public class DbConnectionManager {
 
 
 
 
-        public DbConnection<TContext> GetDbConnection(EFContext efContextSettings, string instanceName) {
-            UseProvider(efContextSettings, instanceName, out DbContextOptions<TContext> options, out IDbConnection connection, out IDbTransaction transaction);
+        public static DbConnection<TContext> GetDbConnection<TContext>(EFContext efContextSettings)
+            where TContext : DbContext {
+
+            return (efContextSettings.ProviderName.ToLower()) switch
+            {
+                "sqlserver" => GetSqlServerDbConnection<TContext>(efContextSettings),
+                "sqlite" => GetSqliteDbConnection<TContext>(efContextSettings),
+                "inmemory" => GetInMemoryDbConnection<TContext>(),
+                _ => null,
+            };
+        }
+
+
+
+        public static DbConnection<TContext> GetInMemoryDbConnection<TContext>()
+            where TContext: DbContext{
+
+            var builder = new DbContextOptionsBuilder<TContext>();
+            builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
+
             return
                 new DbConnection<TContext> {
-                    DbContextOptions = options,
-                    IDbConnection = connection,
-                    IDbTransaction = transaction
+                    DbContextOptions = builder.Options,
+                    IDbConnection = null,
+                    IDbTransaction = null
                 };
+
         }
 
+        public static DbConnection<TContext> GetSqlServerDbConnection<TContext>(EFContext efContextSettings)
+            where TContext: DbContext{
 
-        public virtual void UseProvider(EFContext efContextSettings, string instanceName, 
-            out DbContextOptions<TContext> options,
-            out IDbConnection connection, out IDbTransaction transaction) {
-            switch (efContextSettings.ProviderName.ToLower()) {
-                case "sqlserver":
-                    UseSqlServer(efContextSettings, out options, out connection, out transaction);
-                    return;
-                case "sqlite":
-                    UseSqlite(efContextSettings, out options, out connection, out transaction);
-                    return;
-                case "inmemory":
-                    UseInMemory(instanceName, out options, out connection, out transaction);
-                    return;
-            }
-            options = null;
-            connection = null;
-            transaction = null;
-            return;
-        }
+            var dbConnection = new DbConnection<TContext> {
+                IDbConnection = new SqlConnection(efContextSettings.ConnectionString)
+            };
+            dbConnection.IDbConnection.Open();
 
-        private void UseInMemory(string instanceName, out DbContextOptions<TContext> options, out IDbConnection connection, out IDbTransaction transaction) {
-            connection = null;
-            transaction = null;
+            if (efContextSettings.TransactionType == TransactionType.Rollback)
+                dbConnection.IDbTransaction = dbConnection.IDbConnection.BeginTransaction(efContextSettings.IsolationLevel);
+
             var builder = new DbContextOptionsBuilder<TContext>();
-            builder.UseInMemoryDatabase($"{typeof(TContext).Name}-{instanceName}");
-            options = builder.Options;
+            builder.UseSqlServer(dbConnection.IDbConnection as SqlConnection);
+            dbConnection.DbContextOptions = builder.Options;
+
+            return dbConnection;
         }
 
-        public void UseSqlServer(EFContext efContextSettings, out DbContextOptions<TContext> options, out IDbConnection connection, out IDbTransaction transaction) {
-            connection = new SqlConnection(efContextSettings.ConnectionString);
-            connection.Open();
-
-            if (efContextSettings.TransactionType == TransactionType.Rollback) {
-                transaction = connection.BeginTransaction(efContextSettings.IsolationLevel);
-            } else {
-                transaction = null;
-            }
-            var builder = new DbContextOptionsBuilder<TContext>();
-            builder.UseSqlServer(connection as SqlConnection);
-            options = builder.Options;
-        }
-
-        public void UseSqlite(EFContext efContextSettings, out DbContextOptions<TContext> options, out IDbConnection connection, out IDbTransaction transaction) {
+        public static DbConnection<TContext> GetSqliteDbConnection<TContext>(EFContext efContextSettings)
+            where TContext : DbContext {
 
             var connectionString = FixSqliteConnectionString(efContextSettings.ConnectionString, efContextSettings.IsolationLevel);
-            connection = new SqliteConnection(connectionString);
-            connection.Open();
 
-            if (efContextSettings.TransactionType == TransactionType.Rollback) {
-                transaction = connection.BeginTransaction(efContextSettings.IsolationLevel);
-            } else {
-                transaction = null;
-            }
+            var dbConnection = new DbConnection<TContext> {
+                IDbConnection = new SqliteConnection(connectionString)
+            };
+            dbConnection.IDbConnection.Open();
+
+            if (efContextSettings.TransactionType == TransactionType.Rollback)
+                dbConnection.IDbTransaction = dbConnection.IDbConnection.BeginTransaction(efContextSettings.IsolationLevel);
+
             var builder = new DbContextOptionsBuilder<TContext>();
-            builder.UseSqlite(connection as SqliteConnection);
-            options = builder.Options;
+            builder.UseSqlite(dbConnection.IDbConnection as SqliteConnection);
+            dbConnection.DbContextOptions = builder.Options;
+
+            return dbConnection;
         }
 
 
