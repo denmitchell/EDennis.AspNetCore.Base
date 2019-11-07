@@ -55,7 +55,7 @@ namespace EDennis.AspNetCore.Base.Web
                 Logger.LogError(ex, ex.Message);
             }
 
-            if (api.Embedded) {
+            if (api.ApiLauncher) {
                 baseAddress = $"{ScopeProperties.Scheme}://{ScopeProperties.Host}:{ScopeProperties.Port}/{ApiKey}";
             }
 

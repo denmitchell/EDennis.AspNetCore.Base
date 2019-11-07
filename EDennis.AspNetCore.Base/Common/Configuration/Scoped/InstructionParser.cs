@@ -3,19 +3,16 @@ using System;
 
 namespace EDennis.AspNetCore.Base {
 
-    //X-Instruction: YY1-A0    -- only used for testing scenarios where entire db can be restored
-    //X-Instruction: YY1-R0-U  -- new read-uncommitted transaction; preceded by rollback if R1 is active
-    //                            -- most performant; useful for single-connection dbs and SQL Server RLS  
-    //X-Instruction: YY1-R1-C  -- new read-committed transaction; preceeded by rollback if R0 is active
-    //                            -- SQL Server default  
-    //X-Instruction: YY1-R1    -- transaction-level not specified -- use database default
+    //X-Instruction: moe@stoogest.org-A0    -- only used for testing scenarios where entire db can be restored
+    //X-Instruction: moe@stoogest.org-R0-U  -- new read-uncommitted transaction; preceded by rollback if R1 is active
+    //                                      -- most performant; useful for single-connection dbs and SQL Server RLS  
+    //X-Instruction: moe@stoogest.org-R1-C  -- new read-committed transaction; preceeded by rollback if R0 is active
+    //                                      -- SQL Server default  
+    //X-Instruction: moe@stoogest.org-R1    -- transaction-level not specified -- use database default
     //                            
-    //X-Instruction: YY1-R0-S  -- new serializable transaction; preceeded by rollback if R1 is active
-    //                            -- most likely to create deadlocks; SQLite default  
-    //X-Instruction: YY1-R*    -- rollback only; no new transaction
-    //X-Instruction: YY1-M0    -- new in
-    //X-Instruction: YY1-M1
-    //X-Instruction: YY1-M*
+    //X-Instruction: moe@stoogest.org-R0-S  -- new serializable transaction; preceeded by rollback if R1 is active
+    //                                      -- most likely to create deadlocks; SQLite default  
+    //X-Instruction: moe@stoogest.org-R*    -- rollback only; no new transaction
 
 
     /// <summary>

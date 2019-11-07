@@ -239,7 +239,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
 
             //add Instruction to scope, when present
             if (instruction != null)
-                scope += $" {Instruction.SCOPE_PREFIX}:{instruction}";
+                scope += $" {Instruction.CLAIM_TYPE}:{instruction}";
 
 
             Logger.LogDebug("Obtaining new security token...");

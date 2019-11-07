@@ -2,7 +2,7 @@
 
 namespace EDennis.AspNetCore.Base
 {
-    public class AutoLogin {
+    public class MockUser {
         public bool IsActive { get; set; }
         public MockClaim[] Claims { get; set; }
     }

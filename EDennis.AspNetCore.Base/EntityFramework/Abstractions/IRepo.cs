@@ -70,5 +70,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         TEntity Update(TEntity entity, params object[] keyValues);
         Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues);
         Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues);
+
+        Task<TEntity> ExecuteAsync(Operation operation, dynamic entity, params object[] keyValues);
+
     }
-}

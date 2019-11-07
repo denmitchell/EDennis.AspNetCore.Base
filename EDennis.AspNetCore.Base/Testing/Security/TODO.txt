@@ -5,6 +5,13 @@
 	** Can we have option with AutoLogin to get claims from profile service?
 
 
+Questions: 
+	- When cookie is set in HttpClient that calls IdentityServer Auth Endpoint,
+		will that be enough to return the appropriate id_token?
+	- In MockUser scenario, do I need to get the authorization code or is it enough to 
+	    retrieve all tokens -- since it is backchannel
+
+
 2. Starting with Hybrid Flow Quickstart solution
 	a. Modify the solution such that each project is self-hosted (not using IIS)
 	b. Add the configurations below, noting especially ...

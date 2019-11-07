@@ -21,7 +21,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public class Repo<TEntity, TContext> : IRepo<TEntity, TContext> where TEntity : class, new()
+    public partial class Repo<TEntity, TContext> : IRepo<TEntity, TContext> 
+            where TEntity : class, IHasSysUser, IHasKeyValues, new()
             where TContext : DbContext {
 
 
@@ -46,88 +47,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         protected static Dictionary<string, PropertyInfo> specialProperties;
 
 
-        /// <summary>
-        /// Statically builds mapping for SysUser, SysUserNext, SysStart, and 
-        /// SysEnd -- when present;
-        /// </summary>
-        static Repo() {
-            specialProperties = GetSpecialProperties<TEntity>();
-        }
-
-
-
-        private static Dictionary<string, PropertyInfo> GetSpecialProperties<T>() {
-            var type = MethodBase.GetCurrentMethod().DeclaringType;
-            var isEfTemporal = typeof(TemporalRepo<,,>).IsAssignableFrom(type);
-
-            var attTypes = new Dictionary<Type, bool>{
-                { typeof(SysUserAttribute), true },
-                { typeof(SysUserNextAttribute), true },
-                { typeof(SysStartAttribute), true },
-                { typeof(SysEndAttribute), true },
-                { typeof(SysCreatedAttribute), false }
-                };
-
-            var specialProps = new Dictionary<string, PropertyInfo>();
-            var props = typeof(T).GetProperties();
-            foreach (var attType in attTypes.Keys) {
-                var name = attType.Name.Replace("Attribute", "");
-                var prop = props.FirstOrDefault(
-                    p => p.Name == name
-                    || Attribute.IsDefined(p, attType));
-                if (isEfTemporal && attTypes[attType] && prop == default)
-                    throw new ApplicationException($"Application does not define property or attribute {name} for temporal repo of type {type.Name}");
-                if (prop != null) {
-                    if (Attribute.IsDefined(prop, attType))
-                        specialProperties.Add(name, prop);
-                    else if (isEfTemporal || (name != "SysStart" && name != "SysEnd"))
-                        specialProperties.Add(name, prop);
-                }
-            }
-            return specialProps;
-        }
-
-
-        protected void SetPropertyValue(TEntity entity, string property, object newValue, bool onlyIfNull = false) {
-            if (onlyIfNull == false || entity.GetType().GetProperties().Any(p => p.Name == property))
-                entity.GetType().GetProperty(property).SetValue(entity, newValue, null);
-        }
-
-
-        protected void SetSpecialPropertyValue(TEntity entity, string property, object newValue, bool onlyIfNull = false, bool optional = true) {
-            if (specialProperties.ContainsKey(property) || !optional) {
-                var prop = GetSpecialProperty(property);
-                if (!onlyIfNull || prop.GetValue(entity) == null)
-                    prop.SetValue(entity, newValue, null);
-            }
-        }
-
-        protected void SetSpecialPropertyValueDynamic(dynamic partialEntity, string property, object newValue, bool onlyIfNull = false, bool optional = true) {
-            if (specialProperties.ContainsKey(property) || !optional) {
-                var prop = GetSpecialProperty(property);
-                var dynProp = ((Type)partialEntity).GetType().GetProperties().FirstOrDefault(p => p.Name == prop.Name);
-                if (!onlyIfNull || dynProp == null || dynProp.GetValue(partialEntity) == null)
-                    dynProp.SetValue(partialEntity, newValue, null);
-            }
-        }
-
-
-        protected object GetSpecialPropertyValue(TEntity entity, string property) {
-            var prop = GetSpecialProperty(property);
-            return prop.GetValue(entity);
-        }
-
-        protected PropertyInfo GetSpecialProperty(string property) {
-            if (specialProperties.ContainsKey(property)) {
-                return specialProperties[property];
-            } else {
-                throw new ApplicationException($"{typeof(TEntity).Name} does not contain a property named {property} or a property with a [{property}] attribute.");
-            }
-        }
-
-
-
-
         protected static string PrintKeys(params object[] keyValues) {
             return "[" + string.Join(",", keyValues) + "]";
         }
@@ -138,26 +57,28 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Lifecycle method, called before SaveChanges in Create methods.
         /// if this method returns false, then bypass save operation
         /// </summary>
-        public virtual bool BeforeCreate(TEntity entity) { return true; }
+        public virtual bool BeforeCreate(TEntity inputEntity) { return true; }
 
 
         /// <summary>
         /// Lifecycle method, called after SaveChanges in Create methods
         /// </summary>
-        public virtual void AfterCreate(TEntity entity) { return; }
+        public virtual void AfterCreate(TEntity inputEntity, TEntity resultEntity) {
+            _undoStack.Push(resultEntity.SysUser, resultEntity, Operation.Delete, resultEntity.KeyValues);       
+        }
 
 
         /// <summary>
         /// Lifecycle method, called before SaveChanges in Update methods.
         /// if this method returns false, then bypass save operation
         /// </summary>
-        public virtual bool BeforeUpdate(dynamic entityOrPartialEntity, params object[] keyValues) { return true; }
+        public virtual bool BeforeUpdate(dynamic inputEntity, params object[] keyValues) { return true; }
 
 
         /// <summary>
         /// Lifecycle method, called after SaveChanges in Update methods
         /// </summary>
-        public virtual void AfterUpdate(dynamic entityOrPartialEntity, params object[] keyValues) { return; }
+        public virtual void AfterUpdate(dynamic inputEntity, TEntity resultEntity, params object[] keyValues) { return; }
 
 
         /// <summary>
@@ -170,7 +91,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Lifecycle method, called after SaveChanges in Delete methods
         /// </summary>
-        public virtual void AfterDelete(params object[] keyValues) { return; }
+        public virtual void AfterDelete(TEntity deletedEntity, params object[] keyValues) { return; }
 
 
 
@@ -179,7 +100,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public ILogger Logger { get; }
 
-        private readonly RecordLocker _recordLocker;
+        private readonly UndoStack<TEntity, TContext> _undoStack;
 
 
         /// <summary>
@@ -187,12 +108,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public Repo(TContext context,
-            RecordLocker recordLocker,
+            UndoStack<TEntity,TContext> undoStack,
             ScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger) {
 
             Context = context;
-            _recordLocker = recordLocker;
+            _undoStack = undoStack;
             ScopeProperties = scopeProperties;
             Logger = logger;
 
@@ -343,179 +264,52 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Creates a new entity from the provided input
         /// </summary>
-        /// <param name="entity">The entity to create</param>
+        /// <param name="inputEntity">The entity to create</param>
         /// <returns>The created entity</returns>
-        public virtual TEntity Create(TEntity entity) {
-            if (entity == null)
+        public virtual TEntity Create(TEntity inputEntity) {
+            if (inputEntity == null)
                 throw new MissingEntityException(
-                    $"Cannot create a null {entity.GetType().Name}");
+                    $"Cannot create a null {inputEntity.GetType().Name}");
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValue(entity, "SysCreated", DateTime.Now, true, true);
+            inputEntity.SysUser ??= ScopeProperties.User;
 
-            if (BeforeCreate(entity)) {
-                Context.Add(entity);
+            if (BeforeCreate(inputEntity)) {
+                var originalInputEntity = inputEntity.DeepClone();
+                Context.Add(inputEntity);
                 Context.SaveChanges();
-                AfterCreate(entity);
-                return entity;
+
+                AfterCreate(originalInputEntity,inputEntity);
+                return inputEntity;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
 
         }
-
-
-
-        /// <summary>
-        /// Performs a create with pre-condition test and and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        public virtual TEntity SafeCreate(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity) {
-            return SafeCreate(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, entity);
-        }
-
-
-        /// <summary>
-        /// Performs a create with pre-condition test and and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to update</param>
-        public virtual TEntity SafeCreate<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            TEntity createdEntity = null;
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = CheckPreState("SafeCreate", preState, isExpectedPreState);
-                createdEntity = Create(entity);
-                CheckChange("SafeCreate", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-
-            return createdEntity;
-        }
-
-
-
-
 
         /// <summary>
         /// Asynchronously creates a new entity from the provided input
         /// </summary>
-        /// <param name="entity">The entity to create</param>
+        /// <param name="inputEntity">The entity to create</param>
         /// <returns>The created entity</returns>
-        public virtual async Task<TEntity> CreateAsync(TEntity entity) {
-            if (entity == null)
+        public virtual async Task<TEntity> CreateAsync(TEntity inputEntity) {
+            if (inputEntity == null)
                 throw new MissingEntityException(
-                    $"Cannot create a null {entity.GetType().Name}");
+                    $"Cannot create a null {inputEntity.GetType().Name}");
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValue(entity, "SysCreated", DateTime.Now, true, true);
+            inputEntity.SysUser ??= ScopeProperties.User;
 
-            if (BeforeCreate(entity)) {
-                Context.Add(entity);
+            if (BeforeCreate(inputEntity)) {
+                var originalInputEntity = inputEntity.DeepClone();
+                Context.Add(inputEntity);
                 await Context.SaveChangesAsync();
-                AfterCreate(entity);
-                return entity;
+                AfterCreate(originalInputEntity, inputEntity);
+                return inputEntity;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
 
-        }
-
-
-
-        /// <summary>
-        /// Performs a create with pre-condition test and and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        public virtual async Task<TEntity> SafeCreateAsync(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity) {
-            return await SafeCreateAsync(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, entity);
-        }
-
-
-        /// <summary>
-        /// Performs a create with pre-condition test and and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to update</param>
-        public virtual async Task<TEntity> SafeCreateAsync<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            TEntity createdEntity = null;
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = await CheckPreStateAsync("SafeCreateAsync", preState, isExpectedPreState);
-                createdEntity = await CreateAsync(entity);
-                await CheckChange("SafeCreateAsync", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-
-            return createdEntity;
         }
 
 
@@ -524,125 +318,57 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Updates the provided entity
         /// </summary>
-        /// <param name="entity">The new data for the entity</param>
+        /// <param name="inputEntity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-        public virtual TEntity Update(TEntity entity, params object[] keyValues) {
-            if (entity == null)
+        public virtual TEntity Update(TEntity inputEntity, params object[] keyValues) {
+            if (inputEntity == null)
                 throw new MissingEntityException(
-                    $"Cannot update a null {entity.GetType().Name}");
+                    $"Cannot update a null {inputEntity.GetType().Name}");
 
             //retrieve the existing entity
-            var existing = Context.Find<TEntity>(keyValues);
+            var resultEntity = Context.Find<TEntity>(keyValues);
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
+            inputEntity.SysUser ??= ScopeProperties.User;
 
-            //copy property values from entity to existing
-            Context.Entry(existing).CurrentValues.SetValues(entity);
+            //copy property values from entity to existing (resultEntity)
+            Context.Entry(resultEntity).CurrentValues.SetValues(inputEntity);
 
-            if (BeforeUpdate(entity, keyValues)) {
-                Context.Update(entity);
+            if (BeforeUpdate(inputEntity, keyValues)) {
+                Context.Update(inputEntity);
                 Context.SaveChanges();
-                AfterUpdate(existing, keyValues);
-                return existing;
+                AfterUpdate(inputEntity, resultEntity, keyValues);
+                return resultEntity;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
         }
 
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual TEntity SafeUpdate(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity, params object[] keyValues) {
-            return SafeUpdate(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, entity, keyValues);
-        }
 
-
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to update</param>
-        public virtual TEntity SafeUpdate<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity, params object[] keyValues)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            TEntity updatedEntity = null;
-            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = CheckPreState("SafeUpdate", preState, isExpectedPreState);
-                updatedEntity = Update(entity, keyValues);
-                CheckChange("SafeUpdate", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-            _recordLocker.UnlockRecord(keyValues);
-
-            return updatedEntity;
-        }
-
-
-
-
-        /// <summary>
+       /// <summary>
         /// Asynchronously updates the provided entity
         /// </summary>
-        /// <param name="entity">The new data for the entity</param>
+        /// <param name="inputEntity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-        public virtual async Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues) {
+        public virtual async Task<TEntity> UpdateAsync(TEntity inputEntity, params object[] keyValues) {
 
-            if (entity == null)
+            if (inputEntity == null)
                 throw new MissingEntityException(
-                    $"Cannot update a null {entity.GetType().Name}");
+                    $"Cannot update a null {inputEntity.GetType().Name}");
 
-            //retrieve the existing entity
-            var existing = await Context.FindAsync<TEntity>(keyValues);
+            //retrieve the existing entity (resultEntity)
+            var resultEntity = await Context.FindAsync<TEntity>(keyValues);
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
+            inputEntity.SysUser ??= ScopeProperties.User;
 
             //copy property values from entity to existing
-            Context.Entry(existing).CurrentValues.SetValues(entity);
+            Context.Entry(resultEntity).CurrentValues.SetValues(inputEntity);
 
-            if (BeforeUpdate(entity, keyValues)) {
-                Context.Update(entity);
+            if (BeforeUpdate(inputEntity, keyValues)) {
+                Context.Update(inputEntity);
                 await Context.SaveChangesAsync();
-                AfterUpdate(existing, keyValues);
-                return existing;
+                AfterUpdate(inputEntity, resultEntity, keyValues);
+                return resultEntity;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
@@ -652,91 +378,27 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual async Task<TEntity> SafeUpdateAsync(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity, params object[] keyValues) {
-            return await SafeUpdateAsync(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, entity, keyValues);
-        }
-
-
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to update</param>
-        public virtual async Task<TEntity> SafeUpdateAsync<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, TEntity entity, params object[] keyValues)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            TEntity updatedEntity = null;
-            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = await CheckPreStateAsync("SafeUpdateAsync", preState, isExpectedPreState);
-                updatedEntity = await UpdateAsync(entity, keyValues);
-                await CheckChangeAsync("SafeUpdateAsync", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-            _recordLocker.UnlockRecord(keyValues);
-            return updatedEntity;
-        }
-
-
-
+  
 
         public virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-            SetSpecialPropertyValueDynamic(partialEntity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValueDynamic(partialEntity, "SysStart", DateTime.Now, true, true);
-
+          
             //retrieve the existing entity
-            var existing = Context.Find<TEntity>(keyValues);
+            var resultEntity = Context.Find<TEntity>(keyValues);
+
+            partialEntity.SysUser ??= ScopeProperties.User;
 
             //copy property values from entity to existing
-            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            DynamicExtensions.Populate<TEntity>(resultEntity, partialEntity);
 
             if (BeforeUpdate(partialEntity, keyValues)) {
-                Context.Update(existing);
+                Context.Update(resultEntity);
                 Context.SaveChanges();
-                AfterUpdate(existing, keyValues);
-                return existing; //updated entity
+                AfterUpdate(partialEntity, resultEntity, keyValues);
+                return resultEntity; //updated entity
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
@@ -795,7 +457,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TCheckContext : DbContext {
 
             TEntity updatedEntity = null;
-            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
+            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
             try {
                 using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
                 var pre = CheckPreState("SafeUpdate", preState, isExpectedPreState);
@@ -804,7 +466,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 if (!isTestOnly)
                     scope.Complete();
             } catch { }
-            _recordLocker.UnlockRecord(keyValues);
+            _undoStack.UnlockRecord(keyValues);
             return updatedEntity;
         }
 
@@ -889,7 +551,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TCheckContext : DbContext {
 
             TEntity updatedEntity = null;
-            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
+            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
             try {
                 using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
                 var pre = await CheckPreStateAsync("SafeUpdateAsync", preState, isExpectedPreState);
@@ -898,7 +560,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 if (!isTestOnly)
                     scope.Complete();
             } catch { }
-            _recordLocker.UnlockRecord(keyValues);
+            _undoStack.UnlockRecord(keyValues);
             return updatedEntity;
         }
 
@@ -973,7 +635,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TCheckEntity : class, new()
             where TCheckContext : DbContext {
 
-            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
+            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
             try {
                 using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
                 var pre = CheckPreState("SafeDelete", preState, isExpectedPreState);
@@ -982,7 +644,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 if (!isTestOnly)
                     scope.Complete();
             } catch { }
-            _recordLocker.UnlockRecord(keyValues);
+            _undoStack.UnlockRecord(keyValues);
 
         }
 
@@ -1057,7 +719,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             where TCheckEntity : class, new()
             where TCheckContext : DbContext {
 
-            _recordLocker.LockRecord(timeoutInSeconds * 1000, keyValues);
+            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
             try {
                 using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
                 var pre = await CheckPreStateAsync("SafeDeleteAsync", preState, isExpectedPreState);
@@ -1066,7 +728,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 if (!isTestOnly)
                     scope.Complete();
             } catch { }
-            _recordLocker.UnlockRecord(keyValues);
+            _undoStack.UnlockRecord(keyValues);
             return;
         }
 
@@ -1154,6 +816,21 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             }
         }
 
+
+
+        public virtual async Task<TEntity> ExecuteAsync(Operation operation, dynamic entity, params object[] keyValues) {
+            switch (operation) {
+                case Operation.Create:
+                    return await CreateAsync(entity);
+                case Operation.Update:
+                    return await UpdateAsync(entity, keyValues);
+                case Operation.Delete:
+                    await DeleteAsync(keyValues);
+                    return await Task.FromResult<TEntity>(null);
+                default:
+                    return await Task.FromResult<TEntity>(null);
+            }
+        }
 
     }
 

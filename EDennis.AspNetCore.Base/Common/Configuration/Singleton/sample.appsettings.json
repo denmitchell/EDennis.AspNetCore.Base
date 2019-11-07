@@ -1,72 +1,69 @@
 ﻿{
-  "Profiles": {
-    "Default": {
-      "Apis": {
-        "MyApi1": {
-          "Scheme": "http",
-          "Host": "localhost",
-          "Port": 6542,
-          "Scopes": [ "My.Api1.*" ]
-        },
-        "MyApi2": {
-          "Scheme": "http",
-          "Host": "localhost",
-          "Port": 6543,
-          "Scopes": [ "My.Api2.*" ]
-        }
-      },
-      "ConnectionStrings": {
-        "SomeDbContext": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true",
-        "SomeHistoryDbContext": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-      },
-      "MockClient": {
-        "ClientId": "EDennis.Samples.SomeExternalApi",
-        "ClientSecret": "secret",
-        "Scopes": [
-          "EDennis.Samples.SomeExternalApi.*"
-        ]
-      },
-      "AutoLogin": {
-        "UserName": "Moe",
-        "Claims": [
-          {
-            "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-            "Value": "moe@stooges.org"
-          }
-        ]
-      }
+  "Preauthentication": "C", //U, CU, null
+  "ConnectionType": "R", //A: production
+  "IsolationType": "C", //U, S
+  "ConnectionStrings": {
+    "SomeDbContext": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+    "SomeHistoryDbContext": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+  "Apis": {
+    "MyApi1": {
+      "Scheme": "https",
+      "Host": "localhost",
+      "HttpsPort": 6542,
+      "HttpPort": 6543,
+      "ApiLauncher": true,
+      "Scopes": [ "My.Api1.*" ]
     },
-    "yy1": {
-      "Apis": {
-        "MyApi1": {
-          "Embedded": true,
-          "Scopes": [ "My.Api1.*" ]
-        },
-        "MyApi2": {
-          "Embedded": true,
-          "Scopes": [ "My.Api1.*" ]
+    "MyApi2": {
+      "Scheme": "https",
+      "Host": "localhost",
+      "HttpsPort": 6544,
+      "HttpPort": 6544,
+      "ApiLauncher": true,
+      "Scopes": [ "My.Api2.*" ]
+    }
+  },
+  "MockClients": {
+    "EDennis.Samples.SomeExternalApi": {
+      "IsActive": true,
+      "ClientId": "EDennis.Samples.SomeExternalApi",
+      "ClientSecret": "secret",
+      "Scopes": [
+        "EDennis.Samples.SomeExternalApi.*"
+      ],
+      "Claims": [
+        {
+          "Type": "X-Instruction",
+          "Value":  ""
         }
-      },
-      "ConnectionStrings": {
-        "ColorDbContext": "Server=yy1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true",
-        "ColorHistoryDbContext": "Server=yy1;Database=ColorDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-      },
-      "MockClient": {
-        "ClientId": "EDennis.Samples.SomeExternalApi",
-        "ClientSecret": "secret",
-        "Scopes": [
-          "EDennis.Samples.SomeExternalApi.*"
-        ]
-      },
-      "AutoLogin": {
-        "UserName": "Larry",
-        "Claims": [
-          {
-            "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-            "Value": "larry@stooges.org"
-          }
-        ]
-      }
+      ]
+    },
+    "EDennis.Samples.SomeExternalApi2": {
+      "ClientId": "EDennis.Samples.SomeExternalApi2",
+      "ClientSecret": "secret",
+      "Scopes": [
+        "EDennis.Samples.SomeExternalApi2.*"
+      ]
+    }
+  },
+  "MockUsers": {
+    "Moe": {
+      "IsActive": true,
+      "Claims": [
+        {
+          "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+          "Value": "moe@stooges.org"
+        }
+      ]
+    },
+    "Larry": {
+      "Claims": [
+        {
+          "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+          "Value": "larry@stooges.org"
+        }
+      ]
     }
   },
   "Security": {

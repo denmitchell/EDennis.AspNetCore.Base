@@ -120,7 +120,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             //add Instruction scope, if relevant
             if (instruction != null)
-                claims.Add(new Claim(JwtClaimTypes.Scope, $"{Instruction.SCOPE_PREFIX}{instruction.ToString()}"));
+                claims.Add(new Claim(JwtClaimTypes.Scope, $"{Instruction.CLAIM_TYPE}{instruction.ToString()}"));
 
             //create the new user object
             var identity = new ClaimsIdentity(claims,

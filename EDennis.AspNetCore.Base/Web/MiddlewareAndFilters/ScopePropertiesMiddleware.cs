@@ -103,7 +103,7 @@ namespace EDennis.AspNetCore.Base.Web {
                         //look for `Instruction:`-prefixed scope claim
                         var instructionClaim = context.User.Claims.FirstOrDefault(
                                 c => c.Type == JwtClaimTypes.Scope 
-                                && c.Value.StartsWith(Instruction.SCOPE_PREFIX));
+                                && c.Value.StartsWith(Instruction.CLAIM_TYPE));
                         if (instructionClaim != null) {
                             scopeProperties.Instruction = new InstructionParser().Parse(instructionClaim.Value);
                             activeProfileName = scopeProperties.Instruction.ProfileName;

@@ -12,10 +12,10 @@ namespace EDennis.AspNetCore.Base {
     public class Instruction {
 
         public const string HEADER = "X-Instruction";
-        public const string SCOPE_PREFIX = "Instruction:";
+        public const string CLAIM_TYPE = "X-Instruction";
+        public const string CLAIM_VALUE_SEPARATOR = "::";
 
-        public string ProfileName { get; set; } = "Default";
-
+        public string SysUser { get; set; }
         public ConnectionType ConnectionType { get; set; } = ConnectionType.AutoCommit;
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
         public ToggleValue ToggleValue { get; set; } = ToggleValue._0;
@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base {
         /// </summary>
         public string InstanceName {
             get {
-                return $"{ProfileName}-{ConnectionType.CodeValue()}{ToggleValue}-{IsolationLevel.CodeValue()}";
+                return $"{SysUser}-{ConnectionType.CodeValue()}{ToggleValue}-{IsolationLevel.CodeValue()}";
             }
         }
 
@@ -41,7 +41,7 @@ namespace EDennis.AspNetCore.Base {
         /// <returns></returns>
         public FindResult Find(IEnumerable<string> instanceNames) {
             var match = instanceNames
-                .FirstOrDefault(x => x.StartsWith($"{ProfileName}-{ConnectionType.CodeValue()}"));
+                .FirstOrDefault(x => x.StartsWith($"{SysUser}-{ConnectionType.CodeValue()}"));
 
             if (match == null)
                 return new FindResult();

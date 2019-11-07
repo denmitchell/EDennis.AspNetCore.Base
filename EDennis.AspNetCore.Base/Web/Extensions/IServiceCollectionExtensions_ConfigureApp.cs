@@ -60,7 +60,7 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
                 services.Configure<MockClients>(config.GetSection(mockClientsSectionKey));
 
             if (config.ContainsKey(autoLoginsSectionKey))
-                services.Configure<AutoLogins>(config.GetSection(autoLoginsSectionKey));
+                services.Configure<MockUsers>(config.GetSection(autoLoginsSectionKey));
 
 
             return services;

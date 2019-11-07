@@ -2,7 +2,7 @@
 
 namespace EDennis.AspNetCore.Base
 {
-    public class AutoLogins : Dictionary<string, AutoLogin> { }
+    public class MockUsers : Dictionary<string, MockUser> { }
 
 
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base {
     public class AppSettings {
         public string Instruction { get; set; }
+        public TimeSpan UndoTimeSpan { get; set; }
         public bool PreAuthentication { get; set; }
         public Apis Apis { get; set; }
         public ConnectionStrings ConnectionStrings { get; set; }
@@ -15,13 +16,13 @@ namespace EDennis.AspNetCore.Base {
                 return MockClients?.FirstOrDefault(x => x.Value.IsActive).Value;
             }
         }
-        public AutoLogin ActiveAutoLogin {
+        public MockUser ActiveMockUser {
             get {
-                return AutoLogins?.FirstOrDefault(x => x.Value.IsActive).Value;
+                return MockUsers?.FirstOrDefault(x => x.Value.IsActive).Value;
             }
         }
 
         public MockClients MockClients { get; set; }
-        public AutoLogins AutoLogins { get; set; }
+        public MockUsers MockUsers { get; set; }
     }
 }

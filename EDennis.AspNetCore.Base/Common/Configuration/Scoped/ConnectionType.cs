@@ -3,8 +3,8 @@
 namespace EDennis.AspNetCore.Base {
     public enum ConnectionType {
         AutoCommit,
-        Rollback, 
-        InMemory 
+        Rollback//, 
+//        InMemory 
     }
 
     public static class ConnectionTypeExtensions {
@@ -13,7 +13,7 @@ namespace EDennis.AspNetCore.Base {
             {
                 ConnectionType.AutoCommit => "A",
                 ConnectionType.Rollback => "R",
-                ConnectionType.InMemory => "M",
+                //ConnectionType.InMemory => "M",
                 _ => throw new ArgumentException(message: "Invalid enum value", paramName: nameof(connectionType))
             };
 
@@ -24,14 +24,14 @@ namespace EDennis.AspNetCore.Base {
                 "a" => ConnectionType.AutoCommit,
                 "R" => ConnectionType.Rollback,
                 "r" => ConnectionType.Rollback,
-                "M" => ConnectionType.InMemory,
-                "m" => ConnectionType.InMemory,
+                //"M" => ConnectionType.InMemory,
+                //"m" => ConnectionType.InMemory,
                 'A' => ConnectionType.AutoCommit,
                 'a' => ConnectionType.AutoCommit,
                 'R' => ConnectionType.Rollback,
                 'r' => ConnectionType.Rollback,
-                'M' => ConnectionType.InMemory,
-                'm' => ConnectionType.InMemory,
+                //'M' => ConnectionType.InMemory,
+                //'m' => ConnectionType.InMemory,
                 _ => throw new ArgumentException(message: "Invalid enum value", paramName: typeof(ConnectionType).Name)
             };
 
