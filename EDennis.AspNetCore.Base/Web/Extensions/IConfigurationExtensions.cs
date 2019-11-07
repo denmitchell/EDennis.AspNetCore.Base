@@ -15,24 +15,6 @@ namespace EDennis.AspNetCore.Base.Web
         public static bool ContainsKey(this IConfiguration config, string key) => config.GetSection(key) != null;
 
 
-        /// <summary>
-        /// Gets the database name associated with a named DbContext having
-        /// a ConnectionStrings entry.  NOTE: this assumes that the DbContext
-        /// class name is the key for the connection string.
-        /// </summary>
-        /// <typeparam name="TContext"></typeparam>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        public static string GetDatabaseName<TContext>(this IConfiguration config)
-            where TContext: DbContext{
-
-            var connectionString = config[$"ConnectionStrings:{typeof(TContext).Name}"];
-            var builder = new SqlConnectionStringBuilder {
-                ConnectionString = connectionString
-            };
-            return builder.InitialCatalog;
-        }
-
 
         /// <summary>
         /// Gets a configuration enumeration for a particular

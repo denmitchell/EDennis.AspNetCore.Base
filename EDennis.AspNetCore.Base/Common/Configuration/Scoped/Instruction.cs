@@ -16,7 +16,7 @@ namespace EDennis.AspNetCore.Base {
         public const string CLAIM_VALUE_SEPARATOR = "::";
 
         public string SysUser { get; set; }
-        public ConnectionType ConnectionType { get; set; } = ConnectionType.AutoCommit;
+        public TransactionType ConnectionType { get; set; } = TransactionType.AutoCommit;
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
         public ToggleValue ToggleValue { get; set; } = ToggleValue._0;
 

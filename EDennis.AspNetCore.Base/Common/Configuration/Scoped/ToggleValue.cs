@@ -26,7 +26,7 @@ namespace EDennis.AspNetCore.Base {
                 '0' => ToggleValue._0,
                 '1' => ToggleValue._1,
                 '*' => ToggleValue.Reset,
-                _ => throw new ArgumentException(message: "Invalid enum value", paramName: typeof(ConnectionType).Name)
+                _ => throw new ArgumentException(message: "Invalid enum value", paramName: typeof(TransactionType).Name)
             };
     }
 

@@ -28,7 +28,7 @@ namespace EDennis.AspNetCore.Base {
                 'c' => IsolationLevel.ReadCommitted,
                 'S' => IsolationLevel.Serializable,
                 's' => IsolationLevel.Serializable,
-                _ => throw new ArgumentException(message: "Invalid enum value", paramName: typeof(ConnectionType).Name)
+                _ => throw new ArgumentException(message: "Invalid enum value", paramName: typeof(TransactionType).Name)
             };
 
 

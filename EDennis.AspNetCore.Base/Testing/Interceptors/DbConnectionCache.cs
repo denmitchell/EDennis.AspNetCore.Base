@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 
@@ -12,6 +13,6 @@ namespace EDennis.AspNetCore.Base.Testing {
 
     }
     public class DbConnectionCache<TContext> : 
-            Dictionary<string,DbConnection<TContext>>
+            ConcurrentDictionary<string,DbConnection<TContext>>
         where TContext : DbContext { }
 }

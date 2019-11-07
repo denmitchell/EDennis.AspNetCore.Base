@@ -22,7 +22,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     public partial class Repo<TEntity, TContext> : IRepo<TEntity, TContext> 
-            where TEntity : class, IHasSysUser, IHasKeyValues, new()
+            where TEntity : class, IHasSysUser,  new()
             where TContext : DbContext {
 
 
@@ -63,8 +63,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Lifecycle method, called after SaveChanges in Create methods
         /// </summary>
-        public virtual void AfterCreate(TEntity inputEntity, TEntity resultEntity) {
-            _undoStack.Push(resultEntity.SysUser, resultEntity, Operation.Delete, resultEntity.KeyValues);       
+        public virtual void AfterCreate(TEntity inputEntity, TEntity resultEntity) {       
         }
 
 
@@ -99,26 +98,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public ScopeProperties ScopeProperties { get; set; }
 
         public ILogger Logger { get; }
-
-        private readonly UndoStack<TEntity, TContext> _undoStack;
-
-
-        /// <summary>
-        /// Constructs a new RepoBase object using the provided DbContext
-        /// </summary>
-        /// <param name="context">Entity Framework DbContext</param>
-        public Repo(TContext context,
-            UndoStack<TEntity,TContext> undoStack,
-            ScopeProperties scopeProperties,
-            ILogger<Repo<TEntity, TContext>> logger) {
-
-            Context = context;
-            _undoStack = undoStack;
-            ScopeProperties = scopeProperties;
-            Logger = logger;
-
-
-        }
 
 
 
@@ -357,18 +336,18 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     $"Cannot update a null {inputEntity.GetType().Name}");
 
             //retrieve the existing entity (resultEntity)
-            var resultEntity = await Context.FindAsync<TEntity>(keyValues);
+            var existing = await Context.FindAsync<TEntity>(keyValues);
 
             inputEntity.SysUser ??= ScopeProperties.User;
 
             //copy property values from entity to existing
-            Context.Entry(resultEntity).CurrentValues.SetValues(inputEntity);
+            Context.Entry(existing).CurrentValues.SetValues(inputEntity);
 
             if (BeforeUpdate(inputEntity, keyValues)) {
                 Context.Update(inputEntity);
                 await Context.SaveChangesAsync();
-                AfterUpdate(inputEntity, resultEntity, keyValues);
-                return resultEntity;
+                AfterUpdate(inputEntity, existing, keyValues);
+                return existing;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
@@ -387,87 +366,23 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
           
             //retrieve the existing entity
-            var resultEntity = Context.Find<TEntity>(keyValues);
+            var existing = Context.Find<TEntity>(keyValues);
 
             partialEntity.SysUser ??= ScopeProperties.User;
 
             //copy property values from entity to existing
-            DynamicExtensions.Populate<TEntity>(resultEntity, partialEntity);
+            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
 
             if (BeforeUpdate(partialEntity, keyValues)) {
-                Context.Update(resultEntity);
+                Context.Update(existing);
                 Context.SaveChanges();
-                AfterUpdate(partialEntity, resultEntity, keyValues);
-                return resultEntity; //updated entity
+                AfterUpdate(partialEntity, existing, keyValues);
+                return existing; //updated entity
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
                 return null;
             }
 
-        }
-
-
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual TEntity SafeUpdate(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, dynamic partialEntity, params object[] keyValues) {
-            return SafeUpdate(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, partialEntity, keyValues);
-        }
-
-
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to update</param>
-        public virtual TEntity SafeUpdate<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, dynamic partialEntity, params object[] keyValues)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            TEntity updatedEntity = null;
-            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = CheckPreState("SafeUpdate", preState, isExpectedPreState);
-                updatedEntity = Update(partialEntity, keyValues);
-                CheckChange("SafeUpdate", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-            _undoStack.UnlockRecord(keyValues);
-            return updatedEntity;
         }
 
 
@@ -477,8 +392,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-            SetSpecialPropertyValueDynamic(partialEntity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValueDynamic(partialEntity, "SysStart", DateTime.Now, true, true);
+            partialEntity.SysUser ??= ScopeProperties.User;
 
             //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
@@ -489,7 +403,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (BeforeUpdate(partialEntity, keyValues)) {
                 Context.Update(existing);
                 await Context.SaveChangesAsync();
-                AfterUpdate(existing, keyValues);
+                AfterUpdate(partialEntity, existing, keyValues);
                 return existing; //updated entity
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "?");
@@ -500,69 +414,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual async Task<TEntity> SafeUpdateAsync(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, dynamic partialEntity, params object[] keyValues) {
-            return await SafeUpdateAsync(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, partialEntity, keyValues);
-        }
-
-
-        /// <summary>
-        /// Performs an update with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="entity">the entity to update and its updated values</param>
-        /// <param name="keyValues">the primary key of the record to update</param>
-        public virtual async Task<TEntity> SafeUpdateAsync<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, dynamic partialEntity, params object[] keyValues)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            TEntity updatedEntity = null;
-            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = await CheckPreStateAsync("SafeUpdateAsync", preState, isExpectedPreState);
-                updatedEntity = await UpdateAsync(partialEntity, keyValues);
-                await CheckChangeAsync("SafeUpdateAsync", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-            _undoStack.UnlockRecord(keyValues);
-            return updatedEntity;
-        }
 
 
 
@@ -581,7 +432,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (BeforeDelete(keyValues)) {
                 Context.Remove(existing);
                 Context.SaveChanges();
-                AfterDelete(keyValues);
+                AfterDelete(existing, keyValues);
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "?");
             }
@@ -589,64 +440,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        /// <summary>
-        /// Performs a delete with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual void SafeDelete(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, params object[] keyValues) {
-            SafeDelete(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, keyValues);
-        }
-
-        /// <summary>
-        /// Performs a delete with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual void SafeDelete<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, params object[] keyValues)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = CheckPreState("SafeDelete", preState, isExpectedPreState);
-                Delete(keyValues);
-                CheckChange("SafeDelete", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-            _undoStack.UnlockRecord(keyValues);
-
-        }
 
 
         /// <summary>
@@ -662,7 +455,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (BeforeDelete(keyValues)) {
                 Context.Remove(existing);
                 await Context.SaveChangesAsync();
-                AfterDelete(keyValues);
+                AfterDelete(existing, keyValues);
                 return;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "?");
@@ -670,67 +463,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             }
         }
 
-
-
-        /// <summary>
-        /// Performs a delete with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual async Task SafeDeleteAsync(DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, params object[] keyValues) {
-            await SafeDeleteAsync(this, preState, isExpectedPreState, postState, isExpectedChange, timeoutInSeconds, isTestOnly, keyValues);
-            return;
-        }
-
-        /// <summary>
-        /// Performs a delete with application-level record "locking" (see RecordLocker), 
-        /// pre-condition test, and post-condition/change test.  
-        /// This overload allows for checks to be done using another repo (and hence, possibly
-        /// a different context/database).
-        /// NOTE: while this method provides some transaction-like capabilities, it does not
-        /// provide isolation and record locking at the database level.  
-        /// </summary>
-        /// <typeparam name="TCheckEntity">Entity type that defines the checkRepo</typeparam>
-        /// <typeparam name="TCheckContext">DbContext type that defines the checkRepo</typeparam>
-        /// <param name="checkRepo">This repo or another repo</param>
-        /// <param name="preState">Some queried result prior to execution</param>
-        /// <param name="isExpectedPreState">Some provided function that checks whether the preState is expected</param>
-        /// <param name="postState">Some queried result after execution</param>
-        /// <param name="isExpectedChange">Some provided function that checks whether the postState represents an expected change from the preState</param>
-        /// <param name="timeoutInSeconds">the amount of time to wait before rolling back the transaction</param>
-        /// <param name="isTestOnly">Whether to automatically rollback the transaction after performing the checks</param>
-        /// <param name="keyValues">the primary key of the record to delete</param>
-        public virtual async Task SafeDeleteAsync<TCheckEntity, TCheckContext>(
-            IRepo<TCheckEntity, TCheckContext> checkRepo,
-            DynamicLinqParameters preState, Func<dynamic, bool> isExpectedPreState,
-            DynamicLinqParameters postState, Func<dynamic, dynamic, bool> isExpectedChange,
-            int timeoutInSeconds, bool isTestOnly, params object[] keyValues)
-
-            where TCheckEntity : class, new()
-            where TCheckContext : DbContext {
-
-            _undoStack.LockRecord(timeoutInSeconds * 1000, keyValues);
-            try {
-                using var scope = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 0, timeoutInSeconds));
-                var pre = await CheckPreStateAsync("SafeDeleteAsync", preState, isExpectedPreState);
-                await DeleteAsync(keyValues);
-                await CheckChangeAsync("SafeDeleteAsync", pre, postState, isExpectedChange);
-                if (!isTestOnly)
-                    scope.Complete();
-            } catch { }
-            _undoStack.UnlockRecord(keyValues);
-            return;
-        }
 
 
 
@@ -816,6 +548,20 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             }
         }
 
+
+        public virtual TEntity Execute(Operation operation, dynamic entity, params object[] keyValues) {
+            switch (operation) {
+                case Operation.Create:
+                    return Create(entity);
+                case Operation.Update:
+                    return UpdateAsync(entity, keyValues);
+                case Operation.Delete:
+                    Delete(keyValues);
+                    return null;
+                default:
+                    return null;
+            }
+        }
 
 
         public virtual async Task<TEntity> ExecuteAsync(Operation operation, dynamic entity, params object[] keyValues) {

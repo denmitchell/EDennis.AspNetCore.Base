@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base {
     public class AppSettings {
+
         public string Instruction { get; set; }
-        public TimeSpan UndoTimeSpan { get; set; }
         public bool PreAuthentication { get; set; }
+
         public Apis Apis { get; set; }
-        public ConnectionStrings ConnectionStrings { get; set; }
+
+        public EFContexts EFContexts { get; set; }
+
         public MockClient ActiveMockClient {
             get {
                 return MockClients?.FirstOrDefault(x => x.Value.IsActive).Value;
