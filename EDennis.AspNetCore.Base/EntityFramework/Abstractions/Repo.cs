@@ -21,8 +21,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public partial class Repo<TEntity, TContext> : IRepo<TEntity, TContext> 
-            where TEntity : class, IHasSysUser,  new()
+    public partial class Repo<TEntity, TContext> : IRepo<TEntity, TContext> where TEntity : class, IHasSysUser, IHasLongId, new()
             where TContext : DbContext {
 
 
@@ -63,7 +62,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Lifecycle method, called after SaveChanges in Create methods
         /// </summary>
-        public virtual void AfterCreate(TEntity inputEntity, TEntity resultEntity) {       
+        public virtual void AfterCreate(TEntity inputEntity, TEntity resultEntity) {
         }
 
 
@@ -98,6 +97,21 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public ScopeProperties ScopeProperties { get; set; }
 
         public ILogger Logger { get; }
+
+
+        /// <summary>
+        /// Constructs a new RepoBase object using the provided DbContext
+        /// </summary>
+        /// <param name="context">Entity Framework DbContext</param>
+        public Repo(TContext context,
+            ScopeProperties scopeProperties,
+            ILogger<Repo<TEntity, TContext>> logger) {
+
+            Context = context;
+            ScopeProperties = scopeProperties;
+            Logger = logger;
+
+        }
 
 
 
@@ -257,7 +271,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Add(inputEntity);
                 Context.SaveChanges();
 
-                AfterCreate(originalInputEntity,inputEntity);
+                AfterCreate(originalInputEntity, inputEntity);
                 return inputEntity;
             } else {
                 Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "?");
@@ -324,7 +338,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-       /// <summary>
+        /// <summary>
         /// Asynchronously updates the provided entity
         /// </summary>
         /// <param name="inputEntity">The new data for the entity</param>
@@ -357,14 +371,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-  
+
 
         public virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-          
+
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
 
@@ -463,6 +477,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             }
         }
 
+        public Dictionary<string, long> GetNextCompoundIdBlock() {
+            var dict = new Dictionary<string, long> {
+                { "", Query.Max(x => x.Id) }
+            };
+            var dict2 = Query
+                .GroupBy(x => x.SysUser)
+                .Select(g => KeyValuePair.Create(g.Key, g.Max(x => x.Id)));
+            foreach (var entry in dict2)
+                dict.Add(entry.Key, entry.Value);
+            return dict;
+        }
 
 
 

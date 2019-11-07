@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EDennis.Samples.Hr.InternalApi1.Models {
 
-    public class Position : IHasIntegerId, IEFCoreTemporalModel {
+    public class Position : IHasLongId, IEFCoreTemporalModel {
         public int Id { get; set; }
         public DateTime SysStart { get; set; }
         public string Title { get; set; }

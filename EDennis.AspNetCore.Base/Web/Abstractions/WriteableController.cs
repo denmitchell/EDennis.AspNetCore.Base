@@ -11,7 +11,7 @@ namespace EDennis.AspNetCore.Base.Web
     [ApiController]
     [Route("api/[controller]")]
     public abstract class WriteableController<TEntity, TContext> : ControllerBase
-            where TEntity : class, IHasSysUser, IHasIntegerId, new()
+            where TEntity : class, IHasSysUser, IHasLongId, new()
             where TContext : DbContext {
 
         private readonly WriteableRepo<TEntity,TContext> _repo;

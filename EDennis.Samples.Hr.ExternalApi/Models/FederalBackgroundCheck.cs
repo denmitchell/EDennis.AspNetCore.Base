@@ -2,7 +2,7 @@
 using System;
 
 namespace EDennis.Samples.Hr.ExternalApi.Models {
-    public class FederalBackgroundCheck : IHasIntegerId {
+    public class FederalBackgroundCheck : IHasLongId {
         public int Id { get; set; }
         public int EmployeeId { get; set; }
         public DateTime DateCompleted { get; set; }

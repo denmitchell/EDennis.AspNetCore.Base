@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EDennis.Samples.Colors.InternalApi.Models
 {
-    public partial class Color : IHasIntegerId, IEFCoreTemporalModel
+    public partial class Color : IHasLongId, IEFCoreTemporalModel
     {
         public int Id { get; set; }
         public DateTime SysStart { get; set; } //NOTE: ALWAYS POSITION SysStart immediately after the primary key

@@ -4,7 +4,7 @@
     /// a sequence or identity field are expected
     /// to implement this interface.
     /// </summary>
-    public interface IHasIntegerId {
-        int Id { get; set; } //primary key field
+    public interface IHasLongId {
+        long Id { get; set; } //primary key field
     }
 }

@@ -2,7 +2,7 @@
 using System;
 
 namespace EDennis.Samples.Hr.ExternalApi.Models {
-    public class AgencyOnlineCheck : IHasIntegerId {
+    public class AgencyOnlineCheck : IHasLongId {
         public int Id { get; set; }
         public int EmployeeId { get; set; }
         public DateTime DateCompleted { get; set; }

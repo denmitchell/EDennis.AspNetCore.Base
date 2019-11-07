@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing{
     /// by Author Vickers (https://github.com/aspnet/EntityFrameworkCore/issues/6872#issuecomment-258025241)
     /// </summary>
     public class MaxPlusOneValueGenerator<TEntity> : ValueGenerator<int> 
-        where TEntity : class, IHasIntegerId {
+        where TEntity : class, IHasLongId {
 
         private static readonly MethodInfo generic;
 

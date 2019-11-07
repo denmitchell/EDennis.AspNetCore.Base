@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 namespace EDennis.Samples.Hr.ExternalApi.Models {
-    public class Employee : IHasIntegerId {
+    public class Employee : IHasLongId {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public DateTime SysStart { get; set; }

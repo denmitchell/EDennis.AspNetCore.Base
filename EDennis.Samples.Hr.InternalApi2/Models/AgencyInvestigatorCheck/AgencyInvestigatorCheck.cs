@@ -2,7 +2,7 @@
 using System;
 
 namespace EDennis.Samples.Hr.InternalApi2.Models {
-    public class AgencyInvestigatorCheck : IHasIntegerId, IEFCoreTemporalModel {
+    public class AgencyInvestigatorCheck : IHasLongId, IEFCoreTemporalModel {
         public int Id { get; set; }
         public DateTime SysStart { get; set; }
         public int EmployeeId { get; set; }

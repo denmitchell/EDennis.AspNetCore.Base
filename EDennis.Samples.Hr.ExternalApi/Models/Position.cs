@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace EDennis.Samples.Hr.ExternalApi.Models {
 
-    public class Position : IHasIntegerId {
+    public class Position : IHasLongId {
         public int Id { get; set; }
         public string Title { get; set; }
         public bool IsManager { get; set; }
