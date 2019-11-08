@@ -22,6 +22,8 @@ namespace EDennis.AspNetCore.Base {
         }
 
         public MockClients MockClients { get; set; }
-        public MockClaim[] MockClaims { get; set; }
+        public MockClaims MockClaims { get; set; }
+
+        public SecurityOptions Security { get; set; }
     }
 }

@@ -28,10 +28,8 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         private DiscoveryDocumentResponse _disco;
         private readonly string _clientSecret;
         private Timer _timer;
-        private readonly IWebHostEnvironment _environment;
-        private readonly Profiles _profiles;
         private readonly Apis _apis;
-        private readonly MockClients _mockClients;
+        private readonly IWebHostEnvironment _environment;
 
         /// <summary>
         /// This buffer period is used to explicitly invalidate a token that is requested
@@ -44,6 +42,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
 
         protected ILogger Logger { get; }
 
+
         //outer key is profile, inner key is the ApiClientType
         private readonly Dictionary<string, Dictionary<string, CachedToken>> _tokenCache 
             = new Dictionary<string,Dictionary<string, CachedToken>>();
@@ -51,21 +50,18 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         #region public api
         public SecureTokenService(HttpClient httpClient, 
             ILogger<SecureTokenService> logger, 
-            IOptionsMonitor<SecurityOptions> options,
-            IOptionsMonitor<Profiles> profiles, 
-            IOptionsMonitor<Apis> apis,
-            IOptionsMonitor<MockClients> mockClients,
+            IOptionsMonitor<AppSettings> appSettings,
             IWebHostEnvironment environment) {
 
             Logger = logger;
-            
-            _profiles = profiles.CurrentValue;
-            _apis = apis.CurrentValue;
+
+            var security = appSettings.CurrentValue.Security;
+            _apis = appSettings.CurrentValue.Apis;
+
             _httpClient = httpClient;
-            var currentOptions = options.CurrentValue;
-            _httpClient.BaseAddress = new Uri(currentOptions.IdentityServerApi);
-            _clientSecret = currentOptions.ClientSecret;
-            _pingFrequency = currentOptions.IdentityServerPingFrequency;
+            _httpClient.BaseAddress = new Uri(security.IdentityServerApi);
+            _clientSecret = security.ClientSecret;
+            _pingFrequency = security.IdentityServerPingFrequency;
             _environment = environment;
 
             if(_pingFrequency > 0)
@@ -125,7 +121,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 //the cache doesn't have an appropriate token, so ...
 
                 //get a new token
-                tokenResponse = await GetTokenResponse(client.ApiKey, profileName, instruction);
+                tokenResponse = await GetTokenResponse(client.ApiKey);
 
                 //update cache
                 Logger.LogDebug("Updating security token cache");
@@ -191,55 +187,33 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         /// Gets a new token from IdentityServer
         /// </summary>
         /// <param name="apiKey">The api key of the SecureApiClient for which to obtain the token.
-        /// This is the key used in Profiles:{SomeProfile}:Apis section of Configuration</param>
-        /// <param name="profileName">The (active) profile that contains the url for the SecureApiClient</param>
-        /// <param name="instruction">An instruction for the API to use a particular profile when accessed by the client</param>
+        /// This is the key used in the Apis section of Configuration</param>
         /// <returns></returns>
-        public async Task<TokenResponse> GetTokenResponse(string apiKey, string profileName,
-            string instruction) {
+        public async Task<TokenResponse> GetTokenResponse(string apiKey) {
 
-
-            Profile profile = null;
-            try {
-                profile = _profiles[profileName];
-            } catch {
-                var ex = new ApplicationException($"Cannot find key Profiles:{profileName} setting in configuration");
-                Logger.LogError(ex, ex.Message);
-            }
-
-            string apiName = null;
-            try {
-                apiName = profile.ApiKeys[apiKey];
-            } catch {
-                var ex = new ApplicationException($"Cannot find key Profiles:{profileName}:Apis:{apiKey} setting in configuration");
-                Logger.LogError(ex, ex.Message);
-            }
 
             Api matchingApi = null;
             try {
-                matchingApi = _apis[apiName];
+                matchingApi = _apis[apiKey];
             } catch {
-                var ex = new ApplicationException($"Cannot find key Apis:{apiName} setting in configuration");
+                var ex = new ApplicationException($"Cannot find key Apis:{apiKey} setting in configuration");
                 Logger.LogError(ex, ex.Message);
             }
 
 
-            return await GetTokenResponse(_environment.ApplicationName, _clientSecret, matchingApi.Scopes, instruction);
+            return await GetTokenResponse(_environment.ApplicationName, _clientSecret, matchingApi.Scopes);
 
         }
 
+
         public async Task<TokenResponse> GetTokenResponse(
-            string clientId, string clientSecret, string[] scopes, string instruction) {
+            string clientId, string clientSecret, string[] scopes) {
 
             if (_disco == null)
                 await GetDiscoveryDocumentResponse();
 
             string scope = String.Join(' ', scopes);
 
-
-            //add Instruction to scope, when present
-            if (instruction != null)
-                scope += $" {Instruction.CLAIM_TYPE}:{instruction}";
 
 
             Logger.LogDebug("Obtaining new security token...");
