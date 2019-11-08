@@ -8,8 +8,9 @@ namespace EDennis.AspNetCore.Base {
         public string Host { get; set; }
         public int HttpsPort { get; set; }
         public int HttpPort { get; set; }
-        public bool ApiLauncher { get; set; }
         public decimal Version { get; set; }
         public string[] Scopes { get; set; }
+        public bool ApiLauncher { get; set; }
+        public string ProjectName { get; set; }
     }
 }
