@@ -11,23 +11,24 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace EDennis.AspNetCore.Base.Web.Abstractions {
+namespace EDennis.AspNetCore.Base.Web {
 
     public abstract class SecureApiClient : ApiClient {
 
         private readonly SecureTokenCache _secureTokenCache;
-        private readonly ApiClient _identityServerApiClient;
+        private readonly IdentityServerApi _identityServerApiClient;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         public SecureApiClient(HttpClient httpClient,
-            IConfiguration config,
-            ScopeProperties22 scopeProperties,
-            ApiClient identityServerApiClient,
+            IOptionsMonitor<AppSettings> appSettings,
+            IScopeProperties scopeProperties,
+            IdentityServerApi identityServerApiClient,
             SecureTokenCache secureTokenCache,
             IWebHostEnvironment hostingEnvironment,
             ILogger logger)
-            : base(httpClient, config, scopeProperties, logger) {
+            : base(httpClient, appSettings, scopeProperties, logger) {
 
             _secureTokenCache = secureTokenCache;
             _identityServerApiClient = identityServerApiClient;
