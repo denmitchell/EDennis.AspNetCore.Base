@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class DbConnectionInterceptor<TContext>
         where TContext : DbContext {
 
-        public const string TESTING_HDR = "X-Testing-Config";
+        public const string ROLLBACK_HDR = "X-Testing-Rollback";
 
         //TODO: Have ScopePropertiesMiddleware translate this claim header into above TESTING_HDR
         //TODO: Also have ScopePropertiesMiddleware translate X-Testing-Config claim into above TESTING_HDR -- simpler                

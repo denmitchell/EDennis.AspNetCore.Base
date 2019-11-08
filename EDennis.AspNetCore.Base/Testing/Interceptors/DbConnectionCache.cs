@@ -14,5 +14,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     }
     public class DbConnectionCache<TContext> : 
             ConcurrentDictionary<string,DbConnection<TContext>>
-        where TContext : DbContext { }
+        where TContext : DbContext { 
+    
+    }
 }

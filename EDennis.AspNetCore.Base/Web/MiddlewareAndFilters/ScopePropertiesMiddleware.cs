@@ -42,6 +42,12 @@ namespace EDennis.AspNetCore.Base.Web {
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
+                if (context.Request.Headers.ContainsKey(Constants.ROLLBACK_HEADER_KEY))
+                    scopeProperties.NewConnection = true;
+                else if (context.Request.Query.ContainsKey(Constants.ROLLBACK_QUERY_KEY))
+                    scopeProperties.NewConnection = true;
+
+
                 var appSettings = _appSettings.CurrentValue;
 
                 //update the Scope Properties User with identity, claim or header data
