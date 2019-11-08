@@ -8,9 +8,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
-    public class TemporalRepo<TEntity, TContext, THistoryContext> : Repo<TEntity,TContext>,
-        ITemporalRepo<TEntity, TContext, THistoryContext> 
-        where TEntity : class, new()
+    public class TemporalRepo<TEntity, TContext, THistoryContext> : Repo<TEntity, TContext>,
+        ITemporalRepo<TEntity, TContext, THistoryContext>
+        where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
         where THistoryContext : DbContext {
 
@@ -28,7 +28,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             Context = context;
             HistoryContext = historyContext;
             ScopeProperties = scopeProperties;
-        } 
+        }
 
 
         public virtual bool WriteUpdate(TEntity next, TEntity current)
@@ -60,20 +60,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValue(entity, "SysEnd", DateTime.MaxValue, true, true);
-            SetSpecialPropertyValue(entity, "SysCreated", DateTime.Now, true, true);
+            SetSysProps(entity);
 
-            if (BeforeCreate(entity)) {
-                Context.Add(entity);
-                Context.SaveChanges();
-                AfterCreate(entity);
-                return entity;
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "");
-                return null;
-            }
+            Context.Add(entity);
+            Context.SaveChanges();
+            return entity;
 
         }
 
@@ -88,20 +79,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot create a null {entity.GetType().Name}");
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValue(entity, "SysEnd", DateTime.MaxValue, true, true);
-            SetSpecialPropertyValue(entity, "SysCreated", DateTime.Now, true, true);
+            SetSysProps(entity);
 
-            if (BeforeCreate(entity)) {
-                Context.Add(entity);
-                await Context.SaveChangesAsync();
-                AfterCreate(entity);
-                return entity;
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeCreate() returning false", ScopeProperties?.User ?? "");
-                return null;
-            }
+            Context.Add(entity);
+            await Context.SaveChangesAsync();
+            return entity;
         }
 
 
@@ -110,16 +92,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-        public new virtual TEntity Update(TEntity entity, params object[] keyValues){
+        public new virtual TEntity Update(TEntity entity, params object[] keyValues) {
             if (entity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {entity.GetType().Name}");
 
             var existing = Context.Find<TEntity>(keyValues);
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValue(entity, "SysEnd", DateTime.MaxValue, true, true);
+            SetSysProps(entity);
+
 
             if (WriteUpdate(entity, existing))
                 WriteToHistory(existing);
@@ -127,15 +108,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             //copy property values from entity to existing
             Context.Entry(existing).CurrentValues.SetValues(entity);
 
-            if (BeforeUpdate(entity, keyValues)) {
-                Context.Update(existing);
-                Context.SaveChanges();
-                AfterUpdate(existing, keyValues);
-                return existing;
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
-                return null;
-            }
+            Context.Update(existing);
+            Context.SaveChanges();
+            return existing;
 
         }
 
@@ -152,37 +127,26 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = await Context.FindAsync<TEntity>(keyValues);
 
-            SetSpecialPropertyValue(entity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValue(entity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValue(entity, "SysEnd", DateTime.MaxValue, true, true);
+            SetSysProps(entity);
 
             if (WriteUpdate(entity, existing))
                 await WriteToHistoryAsync(existing);
 
-            //copy property values from entity to existing
             Context.Entry(existing).CurrentValues.SetValues(entity);
 
-            if (BeforeUpdate(entity, keyValues)) {
-                Context.Update(entity);
-                await Context.SaveChangesAsync();
-                AfterUpdate(existing, keyValues);
-                return existing;
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
-                return null;
-            }
+            Context.Update(entity);
+            await Context.SaveChangesAsync();
+            return existing;
         }
 
 
 
-        public new virtual TEntity Update(dynamic partialEntity, params object[] keyValues){
+        public new virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-            SetSpecialPropertyValueDynamic(partialEntity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValueDynamic(partialEntity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValueDynamic(partialEntity, "SysEnd", DateTime.MaxValue, true, true);
+            SetSysProps(partialEntity);
 
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
@@ -193,28 +157,20 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
 
-            if (BeforeUpdate(partialEntity, keyValues)) {
-                Context.Update(existing);
-                Context.SaveChanges();
-                AfterUpdate(existing, keyValues);
-                return existing; //updated entity
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
-                return null;
-            }
+            Context.Update(existing);
+            Context.SaveChanges();
+            return existing; //updated entity
 
         }
 
 
-        public new virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues){
+        public new virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
 
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-            SetSpecialPropertyValueDynamic(partialEntity, "SysUser", ScopeProperties?.User, true, true);
-            SetSpecialPropertyValueDynamic(partialEntity, "SysStart", DateTime.Now, true, true);
-            SetSpecialPropertyValueDynamic(partialEntity, "SysEnd", DateTime.MaxValue, true, true);
+            SetSysProps(partialEntity);
 
             //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
@@ -225,15 +181,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
 
-            if (BeforeUpdate(partialEntity, keyValues)) {
-                Context.Update(existing);
-                await Context.SaveChangesAsync();
-                AfterUpdate(existing, keyValues);
-                return existing; //updated entity
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeUpdate() returning false", ScopeProperties?.User ?? "");
-                return null;
-            }
+            Context.Update(existing);
+            await Context.SaveChangesAsync();
+            return existing; //updated entity
 
         }
 
@@ -248,15 +198,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
-            if (BeforeDelete(keyValues)) {
                 if (WriteDelete(existing))
                     WriteToHistory(existing);
+
                 Context.Remove(existing);
                 Context.SaveChanges();
-                AfterDelete(keyValues);
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "");
-            }
 
         }
 
@@ -264,23 +210,18 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchrously deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
-        public new virtual async Task DeleteAsync(params object[] keyValues){
+        public new virtual async Task DeleteAsync(params object[] keyValues) {
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
                 throw new MissingEntityException(
                     $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
-            if (BeforeDelete(keyValues)) {
                 if (WriteDelete(existing))
                     await WriteToHistoryAsync(existing);
+
                 Context.Remove(existing);
                 await Context.SaveChangesAsync();
-                AfterDelete(keyValues);
                 return;
-            } else {
-                Logger.LogDebug("For user {User}, call to BeforeDelete() returning false", ScopeProperties?.User ?? "");
-                return;
-            }
         }
 
 
@@ -429,14 +370,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public virtual Expression<Func<TEntity, bool>> GetAsOfBetweenPredicate(DateTime asOf) { 
+        public virtual Expression<Func<TEntity, bool>> GetAsOfBetweenPredicate(DateTime asOf) {
 
             var type = typeof(TEntity);
 
             var pe = Expression.Parameter(type, "e");
 
-            var sysStartProp = GetSpecialProperty("SysStart");
-            var sysEndProp = GetSpecialProperty("SysEnd");
+            var sysStartProp = type.GetProperty("SysStart");
+            var sysEndProp = type.GetProperty("SysEnd");
 
             var left1 = Expression.Property(pe, sysStartProp);
             var right1 = Expression.Constant(asOf);
@@ -455,14 +396,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public virtual Expression<Func<TEntity, bool>> GetAsOfRangePredicate(DateTime from, DateTime to){
+        public virtual Expression<Func<TEntity, bool>> GetAsOfRangePredicate(DateTime from, DateTime to) {
 
             var type = typeof(TEntity);
 
             var pe = Expression.Parameter(type, "e");
 
-            var sysStartProp = GetSpecialProperty("SysStart");
-            var sysEndProp = GetSpecialProperty("SysEnd");
+            var sysStartProp = type.GetProperty("SysStart");
+            var sysEndProp = type.GetProperty("SysEnd");
 
             var left1 = Expression.Property(pe, sysStartProp);
             var right1 = Expression.Constant(to);
@@ -481,35 +422,48 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public virtual void WriteToHistory(TEntity existing){
+        public virtual void WriteToHistory(TEntity existing) {
             if (Context.Entry(existing).State != EntityState.Detached)
                 Context.Entry(existing).State = EntityState.Detached;
-            var sysEnd = GetSpecialPropertyValue(existing,"SysEnd");
-            var sysUserNext = GetSpecialPropertyValue(existing, "SysUserNext");
-            SetSpecialPropertyValue(existing,"SysEnd",DateTime.Now.AddTicks(-1));
-            SetSpecialPropertyValue(existing, "SysUserNext",ScopeProperties.User);
+            var sysEnd = existing.SysEnd;
+            var sysUserNext = existing.SysUserNext;
+            existing.SysEnd = DateTime.Now.AddTicks(-1);
+            existing.SysUserNext = ScopeProperties.User;
             HistoryContext.Add(existing);
             HistoryContext.SaveChanges();
             HistoryContext.Entry(existing).State = EntityState.Detached;
-            SetSpecialPropertyValue(existing, "SysEnd", sysEnd);
-            SetSpecialPropertyValue(existing, "SysUserNext", sysUserNext);
+            existing.SysEnd = sysEnd;
+            existing.SysUserNext = sysUserNext;
         }
 
 
-        public virtual async Task WriteToHistoryAsync(TEntity existing){
-            var sysEnd = GetSpecialPropertyValue(existing, "SysEnd");
-            var sysUserNext = GetSpecialPropertyValue(existing, "SysUserNext");
-            SetSpecialPropertyValue(existing, "SysEnd", DateTime.Now.AddTicks(-1));
-            SetSpecialPropertyValue(existing, "SysUserNext", ScopeProperties.User);
+        public virtual async Task WriteToHistoryAsync(TEntity existing) {
+            if (Context.Entry(existing).State != EntityState.Detached)
+                Context.Entry(existing).State = EntityState.Detached;
+            var sysEnd = existing.SysEnd;
+            var sysUserNext = existing.SysUserNext;
+            existing.SysEnd = DateTime.Now.AddTicks(-1);
+            existing.SysUserNext = ScopeProperties.User;
             HistoryContext.Add(existing);
             await HistoryContext.SaveChangesAsync();
             HistoryContext.Entry(existing).State = EntityState.Detached;
-            SetSpecialPropertyValue(existing, "SysEnd", sysEnd);
-            SetSpecialPropertyValue(existing, "SysUserNext", sysUserNext);
+            existing.SysEnd = sysEnd;
+            existing.SysUserNext = sysUserNext;
         }
 
 
 
+
+        #region helper methods
+        protected void SetSysProps(dynamic entity) { SetSysUser(entity); SetSysStart(entity); SetSysEnd(entity); }
+        protected void SetSysProps(TEntity entity) { SetSysUser(entity); SetSysStart(entity); SetSysEnd(entity); }
+        protected void SetSysUserNext(TEntity entity) { entity.SysUserNext = entity.SysUser; }
+        protected void SetSysUserNext(dynamic entity) { entity.SysUserNext = entity.SysUser; }
+        protected void SetSysStart(TEntity entity) { entity.SysStart = DateTime.Now; }
+        protected void SetSysStart(dynamic entity) { entity.SysStart = DateTime.Now; }
+        protected void SetSysEnd(TEntity entity) { entity.SysEnd = DateTime.MaxValue; }
+        protected void SetSysEnd(dynamic entity) { entity.SysEnd = DateTime.MaxValue; }
+        #endregion region
 
 
 

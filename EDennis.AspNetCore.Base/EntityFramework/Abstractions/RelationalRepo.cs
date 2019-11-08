@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    public class RelationalRepo<TEntity, TContext> : Repo<TEntity, TContext>, IRelationalRepo<TEntity> 
-        where TEntity : class, new()
+    public class RelationalRepo<TEntity, TContext> : Repo<TEntity, TContext>, IRelationalRepo<TEntity, TContext> 
+        where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
         public RelationalRepo(TContext context,

@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    public class SqlServerRepo<TEntity, TContext> : RelationalRepo<TEntity, TContext>, ISqlServerRepo 
-        where TEntity : class, new()
+    public class SqlServerRepo<TEntity, TContext> : RelationalRepo<TEntity, TContext>, ISqlServerRepo<TEntity,TContext> 
+        where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
         protected List<StoredProcedureDef> _spDefs;
 
-        public SqlServerRepo(TContext context, ScopeProperties scopeProperties, ILogger<Repo<TEntity, TContext>> logger) 
+        public SqlServerRepo(TContext context, ScopeProperties scopeProperties, ILogger<Repo<TEntity, TContext>> logger)
             : base(context, scopeProperties, logger) {
         }
 
@@ -28,7 +28,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public virtual string GetFromJsonSql(string fromJsonSql){
+        public virtual string GetFromJsonSql(string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
             var cxn = Context.Database.GetDbConnection();
@@ -53,7 +53,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public virtual async Task<string> GetFromJsonSqlAsync(string fromJsonSql){
+        public virtual async Task<string> GetFromJsonSqlAsync(string fromJsonSql) {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
             var cxn = Context.Database.GetDbConnection();
@@ -78,7 +78,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// result (e.g., using FOR JSON with SQL Server)
         /// </summary>
         public virtual string GetJsonColumnFromStoredProcedure(string spName,
-            IEnumerable<KeyValuePair<string, string>> parms){
+            IEnumerable<KeyValuePair<string, string>> parms) {
 
 
             if (_spDefs == null) {
@@ -125,7 +125,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// result (e.g., using FOR JSON with SQL Server)
         /// </summary>
         public virtual async Task<string> GetJsonColumnFromStoredProcedureAsync(string spName,
-            IEnumerable<KeyValuePair<string, string>> parms){
+            IEnumerable<KeyValuePair<string, string>> parms) {
 
 
             if (_spDefs == null) {
@@ -171,7 +171,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
         public virtual dynamic GetFromStoredProcedure(string spName,
-            IEnumerable<KeyValuePair<string, string>> parms){
+            IEnumerable<KeyValuePair<string, string>> parms) {
 
             if (_spDefs == null) {
                 BuildStoredProcedureDefs();
@@ -212,7 +212,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
         public virtual async Task<dynamic> GetFromStoredProcedureAsync(string spName,
-            IEnumerable<KeyValuePair<string, string>> parms){
+            IEnumerable<KeyValuePair<string, string>> parms) {
 
             if (_spDefs == null) {
                 BuildStoredProcedureDefs();
