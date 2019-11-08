@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EDennis.AspNetCore.Base {
     public class ApiSettings {
+        public string ProjectName { get; set; }
         public string Scheme { get; set; }
         public string Host { get; set; }
         public int HttpsPort { get; set; }
@@ -11,6 +12,5 @@ namespace EDennis.AspNetCore.Base {
         public decimal Version { get; set; }
         public string[] Scopes { get; set; }
         public bool ApiLauncher { get; set; }
-        public string ProjectName { get; set; }
     }
 }

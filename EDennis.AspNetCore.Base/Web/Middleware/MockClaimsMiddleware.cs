@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -33,4 +34,12 @@ namespace EDennis.AspNetCore.Base.Web {
             await _next(context);
         }
     }
+
+    public static partial class IApplicationBuilderExtensions_Middleware {
+        public static IApplicationBuilder UseMockClaims(this IApplicationBuilder app){
+            app.UseMiddleware<MockClaimsMiddleware>();
+            return app;
+        }
+    }
+
 }

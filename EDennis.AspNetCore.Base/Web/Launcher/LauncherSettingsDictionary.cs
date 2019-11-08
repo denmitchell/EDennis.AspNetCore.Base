@@ -6,23 +6,25 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
-    public class ProjectPorts : ConcurrentDictionary<string, ProjectPortAssignment> {
+    public class LauncherSettingsDictionary : ConcurrentDictionary<string, LauncherSettings> {
 
-        public void GetOrAddRandomPorts(Type startupClass, out int[] ports, out string[] portArgs, out bool alreadyAssigned) {
-            var assembly = startupClass.Assembly.GetName().Name;
+        public LauncherSettings GetOrAddLauncherSettings(ApiSettings apiSettings) {
             int[] portsArray = null;
-            var projectPortAssignment = GetOrAdd(assembly, key => {
+            var launcherSettings = GetOrAdd(apiSettings.ProjectName, key => {
                 portsArray = PortInspector.GetRandomAvailablePorts(2).ToArray();
-                return new ProjectPortAssignment {
-                    Version = GetAssemblyVersion(startupClass.Assembly),
+                return new LauncherSettings {
+                    ProjectName = apiSettings.ProjectName,
+                    Scheme = apiSettings.Scheme,
+                    Host = apiSettings.Host,
                     HttpsPort = portsArray[0],
                     HttpPort = portsArray[1],
-                    AlreadyAssigned = false
+                    Scopes = apiSettings.Scopes,
+                    Version = apiSettings.Version,
+                    ApiLauncher = apiSettings.ApiLauncher,
+                    Launched = false
                 };
             });
-            ports = portsArray;
-            alreadyAssigned = projectPortAssignment.AlreadyAssigned;
-            portArgs = new string[] { $"ASPNETCORE_URLS=https://localhost:{ports[0]};http://localhost:{ports[1]}" };
+            return launcherSettings;
         }
 
 

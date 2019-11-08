@@ -1,14 +1,10 @@
 ﻿using IdentityModel;
 using IdentityServer4;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
-using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -20,7 +16,6 @@ namespace EDennis.AspNetCore.Base.Web {
     /// and stores:
     /// <list type="bullet">
     /// <item>User name from any of a variety of sources</item>
-    /// <item>An "spi:" prefixed scope that determines the Active Profile from Configuration</item>
     /// <item>Other Claims that match a prespecified pattern</item>
     /// <item>Other Headers that match a prespecified pattern</item>
     /// </list>
@@ -61,7 +56,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     UserSource.JwtPhoneClaim => GetClaimValue(context, IdentityServerConstants.StandardScopes.Phone),
                     UserSource.JwtClientIdClaim => GetClaimValue(context, JwtClaimTypes.ClientId),
                     UserSource.SessionId => context.Session?.Id,
-                    UserSource.XUserHeader => GetHeaderValue(context,ScopePropertiesSettings.USER_HEADER),
+                    UserSource.XUserHeader => GetHeaderValue(context,Constants.USER_HEADER),
                     _ => null
                 };
 
@@ -77,8 +72,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 //append the host path to a ScopeProperties header, if configured 
                 if (appSettings.ScopeProperties.AppendHostPath)
-                        scopeProperties.Headers.Add(ScopePropertiesSettings.HOSTPATH_HEADER,
-                            $"{context.Request.Headers[ScopePropertiesSettings.HOSTPATH_HEADER].ToString()}>" +
+                        scopeProperties.Headers.Add(Constants.HOSTPATH_HEADER,
+                            $"{context.Request.Headers[Constants.HOSTPATH_HEADER].ToString()}>" +
                             $"{context.Request.Headers["Host"]}");
 
 
@@ -107,9 +102,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
     }
 
-    public static class IApplicationBuilderExtensionsForScopePropertiesMiddleware {
-        public static IApplicationBuilder UseScopeProperties(this IApplicationBuilder app, IOptionsMonitor<ScopePropertiesOptions> options) {
-            app.UseMiddleware<ScopePropertiesMiddleware>(options);
+    public static partial class IApplicationBuilderExtensions_Middleware {
+        public static IApplicationBuilder UseScopeProperties(this IApplicationBuilder app) {
+            app.UseMiddleware<ScopePropertiesMiddleware>();
             return app;
         }
     }

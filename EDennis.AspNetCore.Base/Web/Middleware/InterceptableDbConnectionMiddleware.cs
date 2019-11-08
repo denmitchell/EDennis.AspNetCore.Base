@@ -17,18 +17,12 @@ using System.Threading.Tasks;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class DbConnectionInterceptor<TContext>
+    public class InterceptableDbConnectionMiddleware<TContext>
         where TContext : DbContext {
-
-        public const string ROLLBACK_HDR = "X-Testing-Rollback";
-
-        //TODO: Have ScopePropertiesMiddleware translate this claim header into above TESTING_HDR
-        //TODO: Also have ScopePropertiesMiddleware translate X-Testing-Config claim into above TESTING_HDR -- simpler                
-        public const string TESTING_CLAIM_HDR = "X-Claim-X-Testing-Config";
 
         protected readonly RequestDelegate _next;
 
-        public DbConnectionInterceptor(RequestDelegate next) {
+        public InterceptableDbConnectionMiddleware(RequestDelegate next) {
             _next = next;
         }
 
@@ -38,7 +32,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             IScopeProperties scopeProperties, IOptionsMonitor<AppSettings> appSettings,
             DbContextOptionsProvider<TContext> dbContextOptionsProvider,
             DbConnectionCache<TContext> cache,
-            ILogger<DbConnectionInterceptor<TContext>> logger) {
+            ILogger<InterceptableDbConnectionMiddleware<TContext>> logger) {
 
             DbContextSettings dbContextSettings = appSettings.CurrentValue.DbContexts[typeof(TContext).Name];
 
@@ -77,10 +71,10 @@ namespace EDennis.AspNetCore.Base.Testing {
     }
 
 
-    public static partial class IApplicationBuilderExtensions_RepoInterceptorMiddleware {
-        public static IApplicationBuilder UseDbContextInterceptor<TContext>(this IApplicationBuilder app)
+    public static partial class IApplicationBuilderExtensions_Middleware {
+        public static IApplicationBuilder UseInterceptableDbConnection<TContext>(this IApplicationBuilder app)
         where TContext : DbContext {
-            app.UseMiddleware<DbConnectionInterceptor<TContext>>();
+            app.UseMiddleware<InterceptableDbConnectionMiddleware<TContext>>();
             return app;
         }
     }

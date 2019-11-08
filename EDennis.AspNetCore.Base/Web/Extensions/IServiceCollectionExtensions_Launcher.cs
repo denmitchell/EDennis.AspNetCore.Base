@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Web
         public IServiceCollection Services { get; set; }
         public ILogger Logger { get; set; }
         public IConfiguration Configuration { get; set; }
-        public ProjectPorts ProjectPorts { get; set; }
+        public LauncherSettingsDictionary ProjectPorts { get; set; }
 
         public ApiLauncherService AddLauncher<TStartup>()
             where TStartup : class {
@@ -56,11 +56,11 @@ namespace EDennis.AspNetCore.Base.Web
             //use EventWaitHandle to prevent multiple threads/processes
             //from trying to simultaneously create the singleton.
             using EventWaitHandle ewh = new EventWaitHandle(
-                true, EventResetMode.AutoReset, ProjectPorts.WAIT_HANDLE_NAME);
+                true, EventResetMode.AutoReset, LauncherSettingsDictionary.WAIT_HANDLE_NAME);
             ewh.WaitOne();
             var provider = services.BuildServiceProvider();
-            if (!(provider.GetService(typeof(ProjectPorts)) is ProjectPorts projectPorts)) {
-                projectPorts = new ProjectPorts(config);
+            if (!(provider.GetService(typeof(LauncherSettingsDictionary)) is LauncherSettingsDictionary projectPorts)) {
+                projectPorts = new LauncherSettingsDictionary(config);
             }
             ewh.Set();
 

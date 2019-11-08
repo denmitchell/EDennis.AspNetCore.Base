@@ -2,6 +2,7 @@
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
@@ -56,4 +57,13 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
     }
+
+    public static partial class IApplicationBuilderExtensions_Middleware {
+        public static IApplicationBuilder UseMockClient(this IApplicationBuilder app) {
+            app.UseMiddleware<MockClientMiddleware>();
+            return app;
+        }
+    }
+
+
 }

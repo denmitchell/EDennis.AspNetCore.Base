@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing
     public class ApiLauncher<TStartup> : IDisposable
         where TStartup : class {
 
-        public ApiLauncher(IConfiguration config, ILogger logger, ProjectPorts projectPorts) {
+        public ApiLauncher(IConfiguration config, ILogger logger, LauncherSettingsDictionary projectPorts) {
             _config = config;
             _apis = config.GetApiConfig();
             _args = config.GetCommandLineArguments()
@@ -36,7 +36,7 @@ namespace EDennis.AspNetCore.Base.Testing
         private string _projectName;
         private int _port;
         private readonly ILogger _logger;
-        private readonly ProjectPorts _projectPorts;
+        private readonly LauncherSettingsDictionary _projectPorts;
 
         public async Task StartAsync() {
 
