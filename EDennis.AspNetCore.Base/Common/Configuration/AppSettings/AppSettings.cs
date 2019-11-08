@@ -7,23 +7,26 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base {
     public class AppSettings {
 
-        public string Instruction { get; set; }
-        public bool PreAuthentication { get; set; }
+        public ScopePropertiesSettings ScopeProperties { get; set; } = new ScopePropertiesSettings();
 
-        public Apis Apis { get; set; }
+        public ApiSettingsDictionary Apis { get; set; }
 
-        public EFContexts EFContexts { get; set; }
+        public DbContextSettingsDictionary DbContexts { get; set; }
 
         public string ActiveMockClientKey { get; set; }
-        public MockClient ActiveMockClient {
+
+        public MockClientSettings ActiveMockClient {
             get {
+                if (MockClients == null || ActiveMockClientKey == null || !MockClients.ContainsKey(ActiveMockClientKey))
+                    return null;
+                else
                 return MockClients[ActiveMockClientKey];
             }
         }
 
-        public MockClients MockClients { get; set; }
-        public MockClaims MockClaims { get; set; }
+        public MockClientSettingsDictionary MockClients { get; set; }
+        public MockClaimSettingsCollection MockClaims { get; set; }
 
-        public SecurityOptions Security { get; set; }
+        public SecuritySettings Security { get; set; }
     }
 }

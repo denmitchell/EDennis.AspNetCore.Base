@@ -41,13 +41,14 @@ namespace EDennis.AspNetCore.Base.Web {
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
                 var mockClient = _appSettings.CurrentValue.ActiveMockClient;
+                if (mockClient != null) {
 
-                var tokenResponse = await _tokenService.GetTokenResponse(
-                    mockClient.ClientId, mockClient.ClientSecret,
-                    mockClient.Scopes);
+                    var tokenResponse = await _tokenService.GetTokenResponse(
+                        mockClient.ClientId, mockClient.ClientSecret,
+                        mockClient.Scopes);
 
-                context.Request.Headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
-
+                    context.Request.Headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
+                }
             }
 
             await _next(context);

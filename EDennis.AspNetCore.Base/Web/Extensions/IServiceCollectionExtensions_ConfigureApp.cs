@@ -54,10 +54,10 @@ namespace EDennis.AspNetCore.Base.Web.Extensions {
                 services.Configure<NamedLoggers>(config.GetSection(loggersSectionKey));
 
             if (config.ContainsKey(securitySectionKey))
-                services.Configure<SecurityOptions>(config.GetSection(securitySectionKey));
+                services.Configure<SecuritySettings>(config.GetSection(securitySectionKey));
 
             if (config.ContainsKey(mockClientsSectionKey))
-                services.Configure<MockClients>(config.GetSection(mockClientsSectionKey));
+                services.Configure<MockClientSettingsDictionary>(config.GetSection(mockClientsSectionKey));
 
             if (config.ContainsKey(autoLoginsSectionKey))
                 services.Configure<MockUsers>(config.GetSection(autoLoginsSectionKey));

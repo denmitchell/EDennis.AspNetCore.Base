@@ -7,7 +7,7 @@ namespace EDennis.AspNetCore.Base
     /// This class is designed to support IdentityServerMockDataLoader.
     /// *** Special Note: this class is not yet tested.
     /// </summary>
-    public class MockClient {
+    public class MockClientSettings {
         public bool IsActive { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }

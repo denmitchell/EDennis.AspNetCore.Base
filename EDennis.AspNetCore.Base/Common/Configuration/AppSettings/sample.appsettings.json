@@ -1,6 +1,12 @@
 ﻿{
   "ActiveMockClientKey": "EDennis.Samples.SomeExternalApi",
-  "EFContexts": {
+  "ScopeProperties": {
+    "UserSource": "ClaimsPrincipalIdentityName",
+    "Headers": [ "X-User", "X-HostPath", "X-Testing-Rollback" ],
+    "ClaimTypes": [ "role", "client_id", "subject" ],
+    "AppendHostPath": false
+  },
+  "DbContexts": {
     "SomeDbContext": {
       "DatabaseProvider": "SqlServer",
       "TransactionType": "Rollback",
@@ -12,6 +18,7 @@
     "MyApi1": {
       "Scheme": "https",
       "Host": "localhost",
+      "Version": 1.0,
       "HttpsPort": 6542,
       "HttpPort": 6543,
       "ApiLauncher": true,
@@ -20,6 +27,7 @@
     "MyApi2": {
       "Scheme": "https",
       "Host": "localhost",
+      "Version": 1.1,
       "HttpsPort": 6544,
       "HttpPort": 6544,
       "ApiLauncher": true,

@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationHandler(
-                string requirementScope, ScopePatternOptions options,
+                string requirementScope, ScopePatternSettings options,
                 ConcurrentDictionary<string, bool> policyPatternCache,
                 ILogger logger) {
 

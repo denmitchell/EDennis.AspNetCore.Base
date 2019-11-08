@@ -82,7 +82,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
             var mockLogger = new Mock<ILogger>();
             var handler = new ClaimPatternAuthorizationHandler(policyScope,
-                new ScopePatternOptions()/*use defaults*/, new ConcurrentDictionary<string, bool>(),
+                new ScopePatternSettings()/*use defaults*/, new ConcurrentDictionary<string, bool>(),
                 mockLogger.Object);
 
             var input = data[IO.I];
@@ -107,7 +107,7 @@ namespace EDennis.AspNetCore.Base.Security {
         public void TestEvaluateScopeClaim(string requirement, string scopeClaim, bool expected) {
             var mockLogger = new Mock<ILogger>();
             var handler = new ClaimPatternAuthorizationHandler(requirement,
-                new ScopePatternOptions()/*use defaults*/, new ConcurrentDictionary<string, bool>(),
+                new ScopePatternSettings()/*use defaults*/, new ConcurrentDictionary<string, bool>(),
                 mockLogger.Object);
 
             var actual = handler.EvaluateScopeClaim(requirement, scopeClaim);
@@ -137,7 +137,7 @@ namespace EDennis.AspNetCore.Base.Security {
         public void TestEvaluateScope(string policyScope, string[] scopeClaims, 
             bool expected, bool isOidc, bool[] cachedValues, int[] expectedLogMessageFrequency) {
 
-            var scopePatternOptions = new ScopePatternOptions { IsOidc = isOidc };
+            var scopePatternOptions = new ScopePatternSettings { IsOidc = isOidc };
             var claimType = $"{(isOidc ? scopePatternOptions.UserScopePrefix : "")}scope";
 
             var mockClaimsPrincipal = new Mock<ClaimsPrincipal>();

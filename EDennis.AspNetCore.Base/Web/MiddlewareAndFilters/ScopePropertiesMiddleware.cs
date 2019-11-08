@@ -28,18 +28,12 @@ namespace EDennis.AspNetCore.Base.Web {
     public class ScopePropertiesMiddleware {
 
         private readonly RequestDelegate _next;
-        private readonly ScopePropertiesOptions _options;
-        private readonly Profiles _profiles;
+        private readonly IOptionsMonitor<AppSettings> _appSettings;
 
         public ScopePropertiesMiddleware(RequestDelegate next, 
-            IOptionsMonitor<ScopePropertiesOptions> options,
-            IOptionsMonitor<Profiles> profiles
-            ) {
+            IOptionsMonitor<AppSettings> appSettings) {
             _next = next;
-            _options = options?.CurrentValue ?? new ScopePropertiesOptions();
-            _profiles = profiles.CurrentValue;
-            if (!_profiles.NamesUpdated)
-                _profiles.UpdateNames();
+            _appSettings = appSettings;
         }
 
         public async Task InvokeAsync(HttpContext context, IScopeProperties scopeProperties) {
@@ -48,73 +42,46 @@ namespace EDennis.AspNetCore.Base.Web {
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
-                var activeProfile = scopeProperties.ActiveProfile;
+                var appSettings = _appSettings.CurrentValue;
 
                 //update the Scope Properties User with identity, claim or header data
-                scopeProperties.User = _options.UserSource switch
+                scopeProperties.User = appSettings.ScopeProperties.UserSource switch
                 {
-                    UserSource.CLAIMS_PRINCIPAL_IDENTITY_NAME => context.User?.Identity?.Name,
-                    UserSource.NAME_CLAIM => GetClaimValue(context, JwtClaimTypes.Name),
-                    UserSource.PREFERRED_USERNAME_CLAIM => GetClaimValue(context, JwtClaimTypes.PreferredUserName),
-                    UserSource.SUBJECT_CLAIM => GetClaimValue(context, JwtClaimTypes.Subject),
-                    UserSource.EMAIL_CLAIM => GetClaimValue(context, IdentityServerConstants.StandardScopes.Email),
-                    UserSource.PHONE_CLAIM => GetClaimValue(context, IdentityServerConstants.StandardScopes.Phone),
-                    UserSource.CLIENT_ID_CLAIM => GetClaimValue(context, JwtClaimTypes.ClientId),
-                    UserSource.CUSTOM_CLAIM => GetClaimValue(context, _options.UserSourceClaimType),
-                    UserSource.SESSION_ID => context.Session?.Id,
-                    UserSource.X_USER_HEADER => GetHeaderValue(context,ScopePropertiesOptions.USER_HEADER),
+                    UserSource.ClaimsPrincipalIdentityName => context.User?.Identity?.Name,
+                    UserSource.JwtNameClaim => GetClaimValue(context, JwtClaimTypes.Name),
+                    UserSource.JwtPreferredUserNameClaim => GetClaimValue(context, JwtClaimTypes.PreferredUserName),
+                    UserSource.JwtSubjectClaim => GetClaimValue(context, JwtClaimTypes.Subject),
+                    UserSource.JwtEmailClaim => GetClaimValue(context, IdentityServerConstants.StandardScopes.Email),
+                    UserSource.JwtPhoneClaim => GetClaimValue(context, IdentityServerConstants.StandardScopes.Phone),
+                    UserSource.JwtClientIdClaim => GetClaimValue(context, JwtClaimTypes.ClientId),
+                    UserSource.SessionId => context.Session?.Id,
+                    UserSource.XUserHeader => GetHeaderValue(context,ScopePropertiesSettings.USER_HEADER),
                     _ => null
                 };
 
 
 
-                //get host/protocol information
-                scopeProperties.Host = context.Request.Host.Host;
-                scopeProperties.Port = context.Request.Host.Port.Value;
-                scopeProperties.Scheme = context.Request.Scheme;
-
-
                 //copy headers to ScopeProperties headers, based upon the provided match expession
                 context.Request.Headers
-                    .Where(h=>Regex.IsMatch(h.Key,_options.StoreHeadersWithPattern, RegexOptions.IgnoreCase))
+                    .Where(h=> appSettings.ScopeProperties.Headers.Any(s=> s == h.Key))
                     .ToList()
                     .ForEach(h => scopeProperties.Headers
                     .Add(h.Key, h.Value.ToArray()));
 
 
                 //append the host path to a ScopeProperties header, if configured 
-                if (_options.AppendHostPath)
-                        scopeProperties.Headers.Add(ScopePropertiesOptions.HOSTPATH_HEADER,
-                            $"{context.Request.Headers[ScopePropertiesOptions.HOSTPATH_HEADER].ToString()}>" +
+                if (appSettings.ScopeProperties.AppendHostPath)
+                        scopeProperties.Headers.Add(ScopePropertiesSettings.HOSTPATH_HEADER,
+                            $"{context.Request.Headers[ScopePropertiesSettings.HOSTPATH_HEADER].ToString()}>" +
                             $"{context.Request.Headers["Host"]}");
 
 
                 //add user claims, if configured
                 if (context.User?.Claims != null) {
                     scopeProperties.Claims = context.User.Claims
-                        .Where(c => Regex.IsMatch(c.Type, _options.StoreClaimTypesWithPattern, RegexOptions.IgnoreCase))
+                        .Where(c => appSettings.ScopeProperties.ClaimTypes.Any(s => s == c.Type))
                         .ToArray();
                 }
-
-                //if the active profile is null, look to see if the user has an `Instruction:` scope claim
-                if (activeProfile == null) {
-                    string activeProfileName = null;
-                    if (context.User?.Claims != null) {
-                        //look for `Instruction:`-prefixed scope claim
-                        var instructionClaim = context.User.Claims.FirstOrDefault(
-                                c => c.Type == JwtClaimTypes.Scope 
-                                && c.Value.StartsWith(Instruction.CLAIM_TYPE));
-                        if (instructionClaim != null) {
-                            scopeProperties.Instruction = new InstructionParser().Parse(instructionClaim.Value);
-                            activeProfileName = scopeProperties.Instruction.ProfileName;
-                        }
-                    }
-                    if (activeProfileName == null)
-                        activeProfileName = Profile.DEFAULT_NAME;
-
-                    scopeProperties.ActiveProfile = _profiles[activeProfileName];
-                }
-
 
             }
             await _next(context);
@@ -135,7 +102,7 @@ namespace EDennis.AspNetCore.Base.Web {
     }
 
     public static class IApplicationBuilderExtensionsForScopePropertiesMiddleware {
-        public static IApplicationBuilder UseScopeProperties(this IApplicationBuilder app, IOptions<ScopePropertiesOptions> options) {
+        public static IApplicationBuilder UseScopeProperties(this IApplicationBuilder app, IOptionsMonitor<ScopePropertiesOptions> options) {
             app.UseMiddleware<ScopePropertiesMiddleware>(options);
             return app;
         }

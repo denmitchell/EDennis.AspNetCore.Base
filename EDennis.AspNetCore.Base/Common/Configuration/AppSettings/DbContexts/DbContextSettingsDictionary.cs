@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class EFContexts : Dictionary<string,EFContext> {
+    public class DbContextSettingsDictionary : Dictionary<string,DbContextSettings> {
     }
 }

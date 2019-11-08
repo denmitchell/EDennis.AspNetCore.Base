@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class MockClaims : List<MockClaim> {
+    public class MockClaimSettingsCollection : List<MockClaimSettings> {
     }
 }

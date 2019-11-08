@@ -4,23 +4,23 @@ using System.Text;
 
 namespace EDennis.AspNetCore.Base
 {
-    public class SecurityOptions
+    public class SecuritySettings
     {
-        private OidcOptions _oidcOptions;
+        private OidcSettings _oidc;
 
         public string ClientSecret { get; set; }
         public string IdentityServerApi { get; set; }
         public int IdentityServerPingFrequency { get; set; } = 5 * 60; // default = every 5 minutes
         public bool ClearDefaultInboundClaimTypeMap { get; set; } = true;
-        public ScopePatternOptions ScopePatternOptions { get; set; }
-        public OidcOptions OidcOptions { 
+        public ScopePatternSettings ScopePattern { get; set; }
+        public OidcSettings Oidc { 
             get {
-                return _oidcOptions;
+                return _oidc;
             } set {
-                _oidcOptions = value;
+                _oidc = value;
                 //copy userScopePrefix to main security options to pass to policy requirement handler
-                ScopePatternOptions.UserScopePrefix = _oidcOptions?.OidcScopeOptions?.UserScopePrefix ?? "_scope";
-                ScopePatternOptions.IsOidc = true;
+                ScopePattern.UserScopePrefix = _oidc?.OidcScope?.UserScopePrefix ?? "_scope";
+                ScopePattern.IsOidc = true;
             } 
         }
     }

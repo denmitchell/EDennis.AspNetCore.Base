@@ -40,7 +40,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             DbConnectionCache<TContext> cache,
             ILogger<DbConnectionInterceptor<TContext>> logger) {
 
-            EFContext efContextSettings = appSettings.CurrentValue.EFContexts[typeof(TContext).Name];
+            DbContextSettings dbContextSettings = appSettings.CurrentValue.DbContexts[typeof(TContext).Name];
 
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
@@ -56,13 +56,13 @@ namespace EDennis.AspNetCore.Base.Testing {
 
                 var cachedCxn = cache.GetOrAdd(scopeProperties.User,(key)=> {
                     added = true;
-                    return DbConnectionManager.GetDbConnection<TContext>(efContextSettings);
+                    return DbConnectionManager.GetDbConnection<TContext>(dbContextSettings);
                 });
 
                 if (!added && scopeProperties.NewConnection)
-                    if (efContextSettings.DatabaseProvider.Equals("inmemory", StringComparison.OrdinalIgnoreCase))
+                    if (dbContextSettings.DatabaseProvider == DatabaseProvider.InMemory)
                         cache[scopeProperties.User] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
-                    else if (efContextSettings.TransactionType == TransactionType.Rollback)
+                    else if (dbContextSettings.TransactionType == TransactionType.Rollback)
                         cachedCxn.IDbTransaction.Rollback();
 
                 dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptions;

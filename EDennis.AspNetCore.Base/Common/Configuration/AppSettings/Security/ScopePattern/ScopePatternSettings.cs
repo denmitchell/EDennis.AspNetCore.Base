@@ -1,5 +1,5 @@
 ﻿namespace EDennis.AspNetCore.Base {
-    public class ScopePatternOptions {
+    public class ScopePatternSettings {
 
         public string UserScopePrefix { get; set; } = "user_";
 

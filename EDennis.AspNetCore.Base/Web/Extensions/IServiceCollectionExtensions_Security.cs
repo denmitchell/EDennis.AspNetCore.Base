@@ -28,12 +28,12 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="environment"></param>
         /// <param name="configuration"></param>
         public static void AddAuthentication(this IServiceCollection services,
-            SecurityOptions options = null, IWebHostEnvironment environment = null, IConfiguration configuration = null) {
+            SecuritySettings options = null, IWebHostEnvironment environment = null, IConfiguration configuration = null) {
 
-            services.Configure<SecurityOptions>(configuration.GetSection("SecurityOptions"));
+            services.Configure<SecuritySettings>(configuration.GetSection("SecurityOptions"));
 
 
-            var settings = options ?? new SecurityOptions();
+            var settings = options ?? new SecuritySettings();
 
             IConfiguration config = configuration;
             IWebHostEnvironment env = environment;
@@ -74,7 +74,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
             // If Oidc isn't configured, use bearer tokens for security
-            if (settings.OidcOptions == null) {
+            if (settings.Oidc == null) {
 
                 services.AddAuthentication("Bearer")
                     .AddJwtBearer("Bearer", opt => {
@@ -101,19 +101,19 @@ namespace EDennis.AspNetCore.Base.Web {
                    .AddOpenIdConnect("oidc", opt => {
                        opt.SignInScheme = "Cookies";
                        opt.Authority = authority;
-                       opt.RequireHttpsMetadata = settings.OidcOptions.RequireHttpsMetadata;
+                       opt.RequireHttpsMetadata = settings.Oidc.RequireHttpsMetadata;
                        opt.ClientId = audience;
                        opt.ClientSecret = settings.ClientSecret;
-                       opt.ResponseType = settings.OidcOptions.ResponseType;
-                       opt.SaveTokens = settings.OidcOptions.SaveTokens;
-                       opt.GetClaimsFromUserInfoEndpoint = settings.OidcOptions.GetClaimsFromUserInfoEndpoint;
+                       opt.ResponseType = settings.Oidc.ResponseType;
+                       opt.SaveTokens = settings.Oidc.SaveTokens;
+                       opt.GetClaimsFromUserInfoEndpoint = settings.Oidc.GetClaimsFromUserInfoEndpoint;
 
                        var scopes = new List<string>();
 
-                       if (settings.OidcOptions.OidcScopeOptions.AddOfflineAccess)
+                       if (settings.Oidc.OidcScope.AddOfflineAccess)
                            scopes.Add("offline_access");
 
-                       scopes.AddRange(settings.OidcOptions.OidcScopeOptions.AdditionalScopes);
+                       scopes.AddRange(settings.Oidc.OidcScope.AdditionalScopes);
 
                        for (int i = 0; i < scopes.Count(); i++) {
                            opt.Scope.Add(scopes[i]);

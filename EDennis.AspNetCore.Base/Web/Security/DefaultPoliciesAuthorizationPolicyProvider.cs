@@ -12,7 +12,7 @@ namespace EDennis.AspNetCore.Base.Security {
         private AuthorizationOptions _options;
         private Task<AuthorizationPolicy> _cachedPolicyTask;
         private readonly IConfiguration _configuration;
-        private readonly ScopePatternOptions _scopePatternOptions;
+        private readonly ScopePatternSettings _scopePatternOptions;
         //outerkey is the scope policy (the default policy associated with the action method)
         //inner key is the pattern that matches either negatively or positively
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, bool>> _policyPatternCacheSet;
@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
 
         public DefaultPoliciesAuthorizationPolicyProvider(IConfiguration configuration,
-            ScopePatternOptions scopePatternOptions,
+            ScopePatternSettings scopePatternOptions,
             ILogger logger) {
 
             _configuration = configuration;

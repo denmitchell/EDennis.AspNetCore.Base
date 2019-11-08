@@ -74,7 +74,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
                 //AwaitApis() blocks the main thread until the Apis are ready
             }
 
-            var securityOptions = new SecurityOptions();
+            var securityOptions = new SecuritySettings();
             Configuration.GetSection("Security").Bind(securityOptions);
 
             services.AddAuthentication(securityOptions);
@@ -95,7 +95,7 @@ namespace EDennis.Samples.DefaultPoliciesApi {
             services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
                 var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
                 return new DefaultPoliciesAuthorizationPolicyProvider(
-                    Configuration, securityOptions.ScopePatternOptions, logger);
+                    Configuration, securityOptions.ScopePattern, logger);
                 }
             );
 

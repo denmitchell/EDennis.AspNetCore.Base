@@ -13,7 +13,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        public static DbConnection<TContext> GetDbConnection<TContext>(EFContext efContextSettings)
+        public static DbConnection<TContext> GetDbConnection<TContext>(DbContextSettings efContextSettings)
             where TContext : DbContext {
 
             return (efContextSettings.DatabaseProvider) switch
@@ -42,7 +42,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         }
 
-        public static DbConnection<TContext> GetSqlServerDbConnection<TContext>(EFContext efContextSettings)
+        public static DbConnection<TContext> GetSqlServerDbConnection<TContext>(DbContextSettings efContextSettings)
             where TContext: DbContext{
 
             var dbConnection = new DbConnection<TContext> {
@@ -60,7 +60,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             return dbConnection;
         }
 
-        public static DbConnection<TContext> GetSqliteDbConnection<TContext>(EFContext efContextSettings)
+        public static DbConnection<TContext> GetSqliteDbConnection<TContext>(DbContextSettings efContextSettings)
             where TContext : DbContext {
 
             var connectionString = FixSqliteConnectionString(efContextSettings.ConnectionString, efContextSettings.IsolationLevel);

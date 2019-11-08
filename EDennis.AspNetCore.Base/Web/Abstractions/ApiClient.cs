@@ -16,7 +16,7 @@ namespace EDennis.AspNetCore.Base.Web
     public abstract class ApiClient : IHasILogger {
 
         public HttpClient HttpClient { get; set; }
-        public Api Api { get; set; }
+        public ApiSettings Api { get; set; }
         public ILogger Logger { get; }
         public IScopeProperties ScopeProperties { get; set; }
 
