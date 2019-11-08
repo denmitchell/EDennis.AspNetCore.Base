@@ -5,9 +5,9 @@ using System.Text;
 
 namespace EDennis.AspNetCore.Base {
     public class EFContext {
-        public string ProviderName { get; set; } = "SqlServer";
-        public string ConnectionString { get; set; }
+        public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.SqlServer;
         public TransactionType TransactionType { get; set; } = TransactionType.AutoCommit;
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
+        public string ConnectionString { get; set; }
     }
 }

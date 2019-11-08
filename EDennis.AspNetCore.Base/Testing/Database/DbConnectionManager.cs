@@ -16,11 +16,11 @@ namespace EDennis.AspNetCore.Base.Testing {
         public static DbConnection<TContext> GetDbConnection<TContext>(EFContext efContextSettings)
             where TContext : DbContext {
 
-            return (efContextSettings.ProviderName.ToLower()) switch
+            return (efContextSettings.DatabaseProvider) switch
             {
-                "sqlserver" => GetSqlServerDbConnection<TContext>(efContextSettings),
-                "sqlite" => GetSqliteDbConnection<TContext>(efContextSettings),
-                "inmemory" => GetInMemoryDbConnection<TContext>(),
+                DatabaseProvider.SqlServer => GetSqlServerDbConnection<TContext>(efContextSettings),
+                DatabaseProvider.Sqlite => GetSqliteDbConnection<TContext>(efContextSettings),
+                DatabaseProvider.InMemory => GetInMemoryDbConnection<TContext>(),
                 _ => null,
             };
         }

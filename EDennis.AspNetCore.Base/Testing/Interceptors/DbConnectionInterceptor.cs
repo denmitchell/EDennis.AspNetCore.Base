@@ -60,7 +60,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 });
 
                 if (!added && scopeProperties.NewConnection)
-                    if (efContextSettings.ProviderName.Equals("inmemory", StringComparison.OrdinalIgnoreCase))
+                    if (efContextSettings.DatabaseProvider.Equals("inmemory", StringComparison.OrdinalIgnoreCase))
                         cache[scopeProperties.User] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
                     else if (efContextSettings.TransactionType == TransactionType.Rollback)
                         cachedCxn.IDbTransaction.Rollback();

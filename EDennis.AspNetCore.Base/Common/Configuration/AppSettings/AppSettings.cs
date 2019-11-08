@@ -14,18 +14,14 @@ namespace EDennis.AspNetCore.Base {
 
         public EFContexts EFContexts { get; set; }
 
+        public string ActiveMockClientKey { get; set; }
         public MockClient ActiveMockClient {
             get {
-                return MockClients?.FirstOrDefault(x => x.Value.IsActive).Value;
-            }
-        }
-        public MockUser ActiveMockUser {
-            get {
-                return MockUsers?.FirstOrDefault(x => x.Value.IsActive).Value;
+                return MockClients[ActiveMockClientKey];
             }
         }
 
         public MockClients MockClients { get; set; }
-        public MockUsers MockUsers { get; set; }
+        public MockClaim[] MockClaims { get; set; }
     }
 }

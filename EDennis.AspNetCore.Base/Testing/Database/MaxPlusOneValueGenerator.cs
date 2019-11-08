@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing{
     /// by Author Vickers (https://github.com/aspnet/EntityFrameworkCore/issues/6872#issuecomment-258025241)
     /// </summary>
     public class MaxPlusOneValueGenerator<TEntity> : ValueGenerator<int> 
-        where TEntity : class, IHasLongId {
+        where TEntity : class {
 
         private static readonly MethodInfo generic;
 
@@ -36,6 +36,7 @@ namespace EDennis.AspNetCore.Base.Testing{
         /// <summary>
         /// Gets the next value for the ID of the entity. The
         /// next value is always 1 + current maximum
+        /// from https://github.com/aspnet/EntityFrameworkCore/issues/6872#issuecomment-519544807
         /// </summary>
         /// <param name="entry">The entry that will be written to the test database</param>
         /// <returns>max plus 1</returns>
@@ -43,13 +44,19 @@ namespace EDennis.AspNetCore.Base.Testing{
             var context = entry.Context;
             var qry = generic.Invoke(context, null) as DbSet<TEntity>;
 
-            var max = 0;
+            var key1Name = entry.Metadata
+                                .FindPrimaryKey()
+                                .Properties
+                                .First()
+                                .Name;
 
-            if (qry.AsNoTracking().Count() != 0)
-                max = qry.Select(x => x.Id).Max();
+            var currentMax = qry.Max(e =>
+                (int)e.GetType()
+                      .GetProperty(key1Name)
+                      .GetValue(e));
 
             //return max plus one
-            return max + 1;
+            return currentMax + 1;
         }
 
     }

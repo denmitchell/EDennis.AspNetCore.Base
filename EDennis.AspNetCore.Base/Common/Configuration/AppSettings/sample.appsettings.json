@@ -1,10 +1,12 @@
 ﻿{
-  "Preauthentication": "C", //U, CU, null
-  "ConnectionType": "R", //A: production
-  "IsolationType": "C", //U, S
-  "ConnectionStrings": {
-    "SomeDbContext": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true",
-    "SomeHistoryDbContext": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+  "ActiveMockClientKey": "EDennis.Samples.SomeExternalApi",
+  "EFContexts": {
+    "SomeDbContext": {
+      "DatabaseProvider": "SqlServer",
+      "TransactionType": "Rollback",
+      "IsolationType": "ReadUncommitted",
+      "ConnectionStrings": "Server=(localdb)\\mssqllocaldb;Database=SomeDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+    }
   },
   "Apis": {
     "MyApi1": {
@@ -31,12 +33,6 @@
       "ClientSecret": "secret",
       "Scopes": [
         "EDennis.Samples.SomeExternalApi.*"
-      ],
-      "Claims": [
-        {
-          "Type": "X-Instruction",
-          "Value":  ""
-        }
       ]
     },
     "EDennis.Samples.SomeExternalApi2": {
@@ -47,25 +43,12 @@
       ]
     }
   },
-  "MockUsers": {
-    "Moe": {
-      "IsActive": true,
-      "Claims": [
-        {
-          "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-          "Value": "moe@stooges.org"
-        }
-      ]
-    },
-    "Larry": {
-      "Claims": [
-        {
-          "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-          "Value": "larry@stooges.org"
-        }
-      ]
+  "MockClaims": [
+    {
+      "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+      "Value": "moe@stooges.org"
     }
-  },
+  ],
   "Security": {
     "IdentityServerApi": "https://localhost:55555",
     "ClientSecret": "secret",

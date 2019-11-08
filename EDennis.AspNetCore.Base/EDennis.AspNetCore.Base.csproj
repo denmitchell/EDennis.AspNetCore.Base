@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Common\Configuration\Singleton\sample.appsettings.json" />
+    <Content Include="Common\Configuration\AppSettings\sample.appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
