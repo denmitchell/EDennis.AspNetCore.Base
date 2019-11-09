@@ -17,12 +17,12 @@ using System.Threading.Tasks;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class InterceptableDbConnectionMiddleware<TContext>
+    public class DbInterceptorMiddleware<TContext>
         where TContext : DbContext {
 
         protected readonly RequestDelegate _next;
 
-        public InterceptableDbConnectionMiddleware(RequestDelegate next) {
+        public DbInterceptorMiddleware(RequestDelegate next) {
             _next = next;
         }
 
@@ -32,7 +32,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             IScopeProperties scopeProperties, IOptionsMonitor<AppSettings> appSettings,
             DbContextOptionsProvider<TContext> dbContextOptionsProvider,
             DbConnectionCache<TContext> cache,
-            ILogger<InterceptableDbConnectionMiddleware<TContext>> logger) {
+            ILogger<DbInterceptorMiddleware<TContext>> logger) {
 
             DbContextSettings dbContextSettings = appSettings.CurrentValue.DbContexts[typeof(TContext).Name];
 
@@ -72,9 +72,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
     public static partial class IApplicationBuilderExtensions_Middleware {
-        public static IApplicationBuilder UseInterceptableDbConnection<TContext>(this IApplicationBuilder app)
+        public static IApplicationBuilder UseDbInterceptor<TContext>(this IApplicationBuilder app)
         where TContext : DbContext {
-            app.UseMiddleware<InterceptableDbConnectionMiddleware<TContext>>();
+            app.UseMiddleware<DbInterceptorMiddleware<TContext>>();
             return app;
         }
     }
