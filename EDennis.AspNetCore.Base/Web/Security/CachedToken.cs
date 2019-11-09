@@ -1,7 +1,7 @@
 ﻿using IdentityModel.Client;
 using System;
 
-namespace EDennis.AspNetCore.Base.Web
+namespace EDennis.AspNetCore.Base.Security
 {
     /// <summary>
     /// If Expiration is in the past, then check LastActive

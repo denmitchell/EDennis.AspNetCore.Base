@@ -1,4 +1,4 @@
-﻿using EDennis.AspNetCore.Base.Web.Abstractions;
+﻿using EDennis.AspNetCore.Base.Web;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web.Security {
+namespace EDennis.AspNetCore.Base.Security {
 
     /// <summary>
     /// This service should be registered as a singleton because it maintains a cache.
@@ -43,13 +43,13 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         protected ILogger Logger { get; }
 
 
-        //outer key is profile, inner key is the ApiClientType
-        private readonly Dictionary<string, Dictionary<string, CachedToken>> _tokenCache 
-            = new Dictionary<string,Dictionary<string, CachedToken>>();
+        private readonly Dictionary<string, CachedToken> _tokenCache
+            = new Dictionary<string, CachedToken>();
+
 
         #region public api
-        public SecureTokenService(HttpClient httpClient, 
-            ILogger<SecureTokenService> logger, 
+        public SecureTokenService(HttpClient httpClient,
+            ILogger<SecureTokenService> logger,
             IOptionsMonitor<AppSettings> appSettings,
             IWebHostEnvironment environment) {
 
@@ -64,7 +64,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
             _pingFrequency = security.IdentityServerPingFrequency;
             _environment = environment;
 
-            if(_pingFrequency > 0)
+            if (_pingFrequency > 0)
                 SchedulePing();
         }
 
@@ -79,8 +79,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
         /// <param name="instruction">the SPI instruction to transmit securely to 
         /// the called API via requested scope</param>
         /// <returns>access token as an IdentityModel TokenResponse object</returns>
-        public async Task<TokenResponse> GetToken<TClient>(TClient client, string profileName = "Default",
-                string instruction = null)
+        public async Task<TokenResponse> GetTokenAsync<TClient>(TClient client)
             where TClient : SecureApiClient {
             TokenResponse tokenResponse;
             CachedToken cachedToken;
@@ -90,31 +89,26 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                 KeyValuePair.Create<string,object>("IdentityServerUrl",_httpClient.BaseAddress.ToString()),
                 KeyValuePair.Create<string,object>("ApiClientName",client.ApiKey),
                 KeyValuePair.Create<string,object>("ApiClientUrl",client.HttpClient.BaseAddress.ToString()),
-                KeyValuePair.Create<string,object>("ProfileName",profileName),
-                KeyValuePair.Create<string,object>("Instruction",instruction)
             };
 
 
             using (Logger.BeginScope(loggerScope)) {
 
                 //if the cache has an unexpired token for the profile and client, return it.
-                if (_tokenCache.ContainsKey(profileName)) {
-                    var cachedTokens = _tokenCache[profileName];
-                    if (cachedTokens.ContainsKey(client.ApiKey)) {
-                        cachedToken = cachedTokens[client.ApiKey];
-                        if (cachedToken != null && cachedToken.Expiration < DateTime.Now) {
-                            //note: don't update cache expiration, because IdentityServer's expiration isn't updated
-                            Logger.LogDebug("Obtaining cached security token");
-                            tokenResponse = cachedToken.TokenResponse;
-                            return tokenResponse;
-                        }
-                        else if (cachedToken != null) {
-                            //if expired within buffer period, explicitly invalidate the old token, just
-                            //   in case the old token is still valid and would be retrieved again 
-                            if(cachedToken.Expiration.Add(TOKEN_EXPIRATION_BUFFER_PERIOD) < DateTime.Now)
-                                await InvalidateToken(cachedToken.TokenResponse);
-                        }
+                if (_tokenCache.ContainsKey(client.ApiKey)) {
+                    cachedToken = _tokenCache[client.ApiKey];
+                    if (cachedToken != null && cachedToken.Expiration < DateTime.Now) {
+                        //note: don't update cache expiration, because IdentityServer's expiration isn't updated
+                        Logger.LogDebug("Obtaining cached security token");
+                        tokenResponse = cachedToken.TokenResponse;
+                        return tokenResponse;
+                    } else if (cachedToken != null) {
+                        //if expired within buffer period, explicitly invalidate the old token, just
+                        //   in case the old token is still valid and would be retrieved again 
+                        if (cachedToken.Expiration.Add(TOKEN_EXPIRATION_BUFFER_PERIOD) < DateTime.Now)
+                            await InvalidateToken(cachedToken.TokenResponse);
                     }
+
                 }
 
 
@@ -132,12 +126,10 @@ namespace EDennis.AspNetCore.Base.Web.Security {
                         .Add(TimeSpan.FromSeconds(tokenResponse.ExpiresIn))
                         .Subtract(TOKEN_EXPIRATION_BUFFER_PERIOD)
                 };
-                if (!_tokenCache.ContainsKey(profileName))
-                    _tokenCache.Add(profileName, new Dictionary<string, CachedToken>());
-                if (!_tokenCache[profileName].ContainsKey(client.ApiKey))
-                    _tokenCache[profileName].Add(client.ApiKey, cachedToken);
+                if (!_tokenCache.ContainsKey(client.ApiKey))
+                    _tokenCache.Add(client.ApiKey, cachedToken);
                 else
-                    _tokenCache[profileName][client.ApiKey] = cachedToken;
+                    _tokenCache[client.ApiKey] = cachedToken;
 
             }
             return tokenResponse;
@@ -266,7 +258,7 @@ namespace EDennis.AspNetCore.Base.Web.Security {
             }
 
             // This method is called by the timer delegate.
-            #pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable IDE0060 // Remove unused parameter
             public void InvokeCallback(Object stateInfo) {
                 callback();
             }
