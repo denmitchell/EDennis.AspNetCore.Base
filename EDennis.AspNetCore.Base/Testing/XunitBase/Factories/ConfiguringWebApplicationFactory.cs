@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using System;
 
 namespace EDennis.AspNetCore.Base.Testing
 {
-
+    //TODO: Determine if this is still needed
     public class ConfiguringWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup>
         where TStartup : class{
 
@@ -16,19 +17,16 @@ namespace EDennis.AspNetCore.Base.Testing
 
         protected override void ConfigureWebHost(IWebHostBuilder builder) {
 
-            var classInfo = new ClassInfo<TStartup>();
-            var dir = classInfo.ProjectDirectory;
 
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
             builder
                 .UseKestrel()
                 .UseStartup<TStartup>()
-                .UseContentRoot(dir)
                 .UseEnvironment(env)
                 .ConfigureAppConfiguration(options => {
-                    options.SetBasePath(dir);
-                    options.AddJsonFile($"appsettings.{env}.json", true);
+                    options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.json", true, true);
+                    options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.{env}.json", true, true);
                     options.AddEnvironmentVariables();
                     options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
                 });

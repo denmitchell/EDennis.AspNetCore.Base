@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using EDennis.AspNetCore.Base.Web;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +35,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 .UseStartup<TStartup>()
                 .UseUrls($"http://localhost:{Port}")
                 .ConfigureAppConfiguration(options => {
+                    options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.json", true, true);
                     options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.{env}.json", true, true);
                     options.AddEnvironmentVariables();
                     options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
