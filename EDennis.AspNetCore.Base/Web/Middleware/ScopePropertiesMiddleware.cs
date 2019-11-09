@@ -1,10 +1,10 @@
 ﻿using IdentityModel;
-using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
@@ -48,15 +48,16 @@ namespace EDennis.AspNetCore.Base.Web {
                 //update the Scope Properties User with identity, claim or header data
                 scopeProperties.User = appSettings.ScopeProperties.UserSource switch
                 {
-                    UserSource.ClaimsPrincipalIdentityName => context.User?.Identity?.Name,
                     UserSource.JwtNameClaim => GetClaimValue(context, JwtClaimTypes.Name),
+                    UserSource.OasisNameClaim => GetClaimValue(context, ClaimTypes.Name),
+                    UserSource.OasisEmailClaim => GetClaimValue(context, ClaimTypes.Email),
                     UserSource.JwtPreferredUserNameClaim => GetClaimValue(context, JwtClaimTypes.PreferredUserName),
                     UserSource.JwtSubjectClaim => GetClaimValue(context, JwtClaimTypes.Subject),
-                    UserSource.JwtEmailClaim => GetClaimValue(context, IdentityServerConstants.StandardScopes.Email),
-                    UserSource.JwtPhoneClaim => GetClaimValue(context, IdentityServerConstants.StandardScopes.Phone),
+                    UserSource.JwtEmailClaim => GetClaimValue(context, JwtClaimTypes.Email),
+                    UserSource.JwtPhoneClaim => GetClaimValue(context, JwtClaimTypes.PhoneNumber),
                     UserSource.JwtClientIdClaim => GetClaimValue(context, JwtClaimTypes.ClientId),
                     UserSource.SessionId => context.Session?.Id,
-                    UserSource.XUserHeader => GetHeaderValue(context,Constants.USER_HEADER),
+                    UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_HEADER),
                     _ => null
                 };
 

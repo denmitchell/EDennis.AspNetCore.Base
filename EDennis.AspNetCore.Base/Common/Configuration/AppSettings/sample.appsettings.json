@@ -1,8 +1,8 @@
 ﻿{
   "ActiveMockClientKey": "EDennis.Samples.SomeExternalApi",
   "ScopeProperties": {
-    "UserSource": "ClaimsPrincipalIdentityName",
-    "Headers": [ "X-User", "X-HostPath", "X-Testing-Rollback" ],
+    "UserSource": "OasisNameClaim",
+    "Headers": [ "X-User", "X-HostPath", "X-Testing-Rollback", "X-Claim:role", "X-Claim:client_id", "X-Claim:subject" ],
     "ClaimTypes": [ "role", "client_id", "subject" ],
     "AppendHostPath": false
   },

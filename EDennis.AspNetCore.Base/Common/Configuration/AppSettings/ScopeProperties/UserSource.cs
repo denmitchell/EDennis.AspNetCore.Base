@@ -1,6 +1,7 @@
 ﻿namespace EDennis.AspNetCore.Base {
     public enum UserSource {
-        ClaimsPrincipalIdentityName,
+        OasisNameClaim,
+        OasisEmailClaim,
         JwtNameClaim,
         JwtPreferredUserNameClaim,
         JwtSubjectClaim,
@@ -8,6 +9,6 @@
         JwtPhoneClaim,
         JwtClientIdClaim,
         SessionId,
-        XUserHeader,
+        XUserHeader
     }
 }
