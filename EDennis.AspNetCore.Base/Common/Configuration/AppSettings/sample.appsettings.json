@@ -15,22 +15,31 @@
     }
   },
   "Apis": {
-    "MyApi1": {
+    "My.EntryPointApp": {
+      "Scheme": "https",
+      "Host": "localhost",
+      "Version": 2.0,
+      "HttpsPort": 5511,
+      "HttpPort": 5512,
+      "NeedsLaunched": true,
+      "Scopes": [ "My.EntryPointApp.*" ]
+    },
+    "My.ChildApi1": {
       "Scheme": "https",
       "Host": "localhost",
       "Version": 1.0,
       "HttpsPort": 6542,
       "HttpPort": 6543,
-      "ApiLauncher": true,
+      "NeedsLaunched": true,
       "Scopes": [ "My.Api1.*" ]
     },
-    "MyApi2": {
+    "My.ChildApi2": {
       "Scheme": "https",
       "Host": "localhost",
       "Version": 1.1,
       "HttpsPort": 6544,
       "HttpPort": 6544,
-      "ApiLauncher": true,
+      "NeedsLaunched": true,
       "Scopes": [ "My.Api2.*" ]
     }
   },

@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Web
             string baseAddress = null;
 
 
-            if (Api.ApiLauncher) {
+            if (Api.NeedsLaunched) {
                 baseAddress = $"{Api.Scheme}://{Api.Host}:{Api.HttpsPort}";
             }
 

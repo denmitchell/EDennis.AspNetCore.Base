@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,9 +16,6 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public class Launcher<TStartup>
         where TStartup : class {
-
-        public virtual async Task<bool> RunAsync(LauncherSettingsDictionary dict, ILogger logger)
-                    => await RunAsync(dict, logger, CreateHostBuilder);
 
         public virtual IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
@@ -40,32 +38,70 @@ namespace EDennis.AspNetCore.Base.Web {
                 });
 
 
-        public async Task<bool> RunAsync(
-            LauncherSettingsDictionary dict, ILogger logger, Func<string[], IHostBuilder> createHostBuilder) {
+        public void Run(string[] args) {
+            CreateHostBuilder(args).Build().Run();
+        }
 
-            dict.GetOrAddLauncherSettings(dict);
+        public async Task RunAsync(string[] args) {
+            var host = CreateHostBuilder(args).Build();
+            await host.WaitForShutdownAsync();
+            await host.RunAsync();
+        }
+
+
+        public async Task<bool> RunAsync(ApiSettingsFacade api, ILogger logger) {
 
             IEnumerable<KeyValuePair<string, object>> scope = new List<KeyValuePair<string, object>> {
-                    { KeyValuePair.Create("HttpsPort",(object)ports[0]) },
-                    { KeyValuePair.Create("HttpPort",(object)ports[1]) }
+                    { KeyValuePair.Create("ProjectName",(object)api.ProjectName) },
+                    { KeyValuePair.Create("HttpsPort",(object)api.HttpsPort) },
+                    { KeyValuePair.Create("HttpPort",(object)api.HttpPort) }
                 };
 
             using (logger.BeginScope(scope)) {
 
-                if (alreadyAssigned) {
-                    logger.LogInformation("{ProjectName} (a child app) already listening on HTTPS: {HttpsPort}, HTTP: {HttpPort}", typeof(TStartup).Assembly.GetName().Name, ports[0], ports[1]);
+                if (!api.NeedsLaunched) {
+                    logger.LogInformation("Skipping launch of {ProjectName}.  Already launched.", typeof(TStartup).Assembly.GetName().Name);
                     return await Task.FromResult(true);
                 }
+                _ = await UpdatePortsAndVersion(api);
 
-                var host = createHostBuilder(portArgs).Build();
+                var host = CreateHostBuilder(api.PortArgs).Build();
                 await Task.Run(() => {
                     host.WaitForShutdownAsync();
                     host.RunAsync();
-                    logger.LogInformation("Starting {ProjectName} on HTTPS: {HttpsPort}, HTTP: {HttpPort}", typeof(TStartup).Assembly.GetName().Name, ports[0], ports[1]);
+                    if(api.Scheme.Equals("http",StringComparison.OrdinalIgnoreCase))
+                        logger.LogInformation("Starting {ProjectName} on HTTPS: {HttpsPort}, HTTP: {HttpPort}", typeof(TStartup).Assembly.GetName().Name, api.HttpsPort, api.HttpPort);
+                    else
+                        logger.LogInformation("Starting {ProjectName} on HTTP: {HttpPort}", typeof(TStartup).Assembly.GetName().Name, api.HttpsPort);
                 });
-                return await IsReady("localhost", ports[0], logger);
+                return await IsReady("localhost", api.MainPort, logger);
             }
         }
+
+
+        private async Task<bool> UpdatePortsAndVersion(ApiSettingsFacade api) {
+            if ((api.Scheme ?? "https").Equals("https", StringComparison.OrdinalIgnoreCase)) {
+                api.Scheme = "https"; 
+                if (api.HttpsPort == default || api.HttpPort == default) {
+                    var ports = await PortInspector.GetRandomAvailablePortsAsync(2);
+                    if (api.HttpsPort == default)
+                        api.HttpsPort = ports[0];
+                    if (api.HttpPort == default)
+                        api.HttpPort = ports[1];
+                }
+            } else {
+                api.Scheme = "http";
+                if (api.HttpPort == default) {
+                    var ports = await PortInspector.GetRandomAvailablePortsAsync(1);
+                    api.HttpPort = ports[0];
+                }
+            }
+
+            api.Version = GetAssemblyVersion(typeof(TStartup).Assembly);
+
+            return true;
+        }
+
 
         private async Task<bool> IsReady(string host, int port, ILogger logger, int timeoutSeconds = 5) {
 
@@ -91,6 +127,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
+        public static decimal GetAssemblyVersion(Assembly assembly) {
+            return decimal.Parse($"{assembly.GetName().Version.Major}.{assembly.GetName().Version.Minor}");
+        }
 
     }
 }

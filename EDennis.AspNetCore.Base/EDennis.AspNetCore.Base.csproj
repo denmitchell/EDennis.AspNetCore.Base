@@ -28,6 +28,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\Configuration\OptionsBuilder\**" />
+    <EmbeddedResource Remove="Common\Configuration\OptionsBuilder\**" />
+    <None Remove="Common\Configuration\OptionsBuilder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Common\Configuration\sample.appsettings.json" />
   </ItemGroup>
 
@@ -76,10 +82,6 @@
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
-  </ItemGroup>  
-  
-  <ItemGroup>
-    <Folder Include="Common\Configuration\OptionsBuilder\" />
   </ItemGroup>  
   
 

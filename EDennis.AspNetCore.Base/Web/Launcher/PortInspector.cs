@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -12,13 +13,25 @@ namespace EDennis.AspNetCore.Base.Web {
     /// </summary>
     public class PortInspector {
 
-        public static List<int> GetRandomAvailablePorts(int portCount) {
-            Random rand = new Random();
-            var startingPorts = Enumerable.Range(0, portCount)
-                                    .Select(r => rand.Next(10001,63000)).ToList();
-            return GetAvailablePorts(startingPorts, portCount);
+        public static async Task<List<int>> GetRandomAvailablePortsAsync(int portCount) {
+
+            return await Task.Run(() => {
+                Random rand = new Random();
+                var startingPorts = Enumerable.Range(0, portCount)
+                                        .Select(r => rand.Next(10001, 63000)).ToList();
+                return GetAvailablePorts(startingPorts, portCount);
+            });
+
         }
 
+        public static List<int> GetRandomAvailablePorts(int portCount) {
+
+                Random rand = new Random();
+                var startingPorts = Enumerable.Range(0, portCount)
+                                        .Select(r => rand.Next(10001, 63000)).ToList();
+                return GetAvailablePorts(startingPorts, portCount);
+
+        }
 
         public static int GetRandomAvailablePort(int[] portsToExclude) {
             Random rand = new Random();

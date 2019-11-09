@@ -11,6 +11,6 @@ namespace EDennis.AspNetCore.Base {
         public int HttpPort { get; set; }
         public decimal Version { get; set; }
         public string[] Scopes { get; set; }
-        public bool ApiLauncher { get; set; }
+        public bool NeedsLaunched { get; set; }
     }
 }
