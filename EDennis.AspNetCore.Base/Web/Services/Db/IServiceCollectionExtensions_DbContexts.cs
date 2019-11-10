@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace EDennis.AspNetCore.Base.Web {
     public static class IServiceCollectionExtensions_DbContexts {
 
-        public static IServiceCollection AddDbContext<TContext>(this IServiceCollection services, 
+        public static IServiceCollection AddDbContexts<TContext>(this IServiceCollection services, 
             IConfiguration configuration, string configurationKey)
             where TContext : DbContext {
 
@@ -22,15 +22,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var settings = new DbContextSettings<TContext>();
             configSection.Bind(settings);
 
-            var options = settings.DatabaseProvider switch
-            {
-                DatabaseProvider.SqlServer => new Action<DbContextOptionsBuilder>(options=> { options.UseSqlServer(settings.ConnectionString); }),
-                DatabaseProvider.Sqlite => new Action<DbContextOptionsBuilder>(options => { options.UseSqlite(settings.ConnectionString); }),
-                DatabaseProvider.InMemory => new Action<DbContextOptionsBuilder>(options => { options.UseInMemoryDatabase(settings.ConnectionString ?? Guid.NewGuid().ToString()); }),
-                _ => new Action<DbContextOptionsBuilder>(options => { })
-                };
-
-            services.AddDbContext<TContext>(options);
+            services.AddDbContext<TContext>(builder => { DbConnectionManager.ConfigureDbContextOptionsBuilder(builder, settings); });
             services.AddScoped<DbContextOptionsProvider<TContext>>();
 
             services.TryAddSingleton<DbConnectionCache<TContext>>();

@@ -34,7 +34,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             DbConnectionCache<TContext> cache,
             ILogger<DbInterceptorMiddleware<TContext>> logger) {
 
-            DbContextSettings dbContextSettings = appSettings.CurrentValue.DbContexts[typeof(TContext).Name];
+            DbContextSettings<TContext> dbContextSettings = appSettings.CurrentValue.DbContexts[typeof(TContext).Name];
 
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
@@ -59,7 +59,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     else if (dbContextSettings.TransactionType == TransactionType.Rollback)
                         cachedCxn.IDbTransaction.Rollback();
 
-                dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptions;
+                dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptionsBuilder.Options;
 
             }
 

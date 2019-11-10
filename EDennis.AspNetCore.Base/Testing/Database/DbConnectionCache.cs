@@ -7,7 +7,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
     public class DbConnection<TContext>
         where TContext: DbContext {
-        public DbContextOptions<TContext> DbContextOptions { get; set; }
+        public DbContextOptionsBuilder<TContext> DbContextOptionsBuilder { get; set; }
         public IDbConnection IDbConnection { get; set; }
         public IDbTransaction IDbTransaction { get; set; }
 
