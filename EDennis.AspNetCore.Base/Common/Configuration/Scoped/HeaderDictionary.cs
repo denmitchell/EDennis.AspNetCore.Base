@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace EDennis.AspNetCore.Base.Common {
+namespace EDennis.AspNetCore.Base {
     public class HeaderDictionary : Dictionary<string,StringValues> {
 
         public void LoadHeaderDictionary(IHeaderDictionary dict) {
@@ -21,5 +21,6 @@ namespace EDennis.AspNetCore.Base.Common {
                     client.DefaultRequestHeaders.Add(key, this[key].ToString());
             }
         }
+
     }
 }

@@ -16,34 +16,32 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly ApiSettingsFacade _api;
+        private readonly ILauncher<TStartup> _launcher;
         private readonly ILogger _logger;
 
         private static bool _called = false;
 
         public ApiLauncherMiddleware(RequestDelegate next,
-            IOptionsMonitor<AppSettings> appSettings, IConfiguration config,
+            IOptionsMonitor<AppSettings> appSettings,
+            ILauncher<TStartup> launcher,
+            IConfiguration config,
             ILogger<ApiLauncherMiddleware<TStartup>> logger) {
             _next = next;
             _api = appSettings.CurrentValue.GetApiSettingsFacade<TStartup>(config);
+            _launcher = launcher;
             _logger = logger;
         }
 
 
         public async Task InvokeAsync(HttpContext context) {
+
             //ignore, if called already or swagger meta-data processing
             if (!_called && !context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-
-                Type classType = typeof(Launcher<>);
-                Type[] typeParams = new Type[] { typeof(TStartup) };
-                Type constructedType = classType.MakeGenericType(typeParams);
-
-                if (_api.NeedsLaunched) {
-                    var launcher = (Launcher<TStartup>)Activator.CreateInstance(constructedType);
-                    await launcher.RunAsync(_api, _logger);
-                }
+                if (_api.NeedsLaunched)
+                    await _launcher.RunAsync(_api, _logger);
+                _called = true;
             }
             await _next(context);
-            _called = true;
         }
     }
 

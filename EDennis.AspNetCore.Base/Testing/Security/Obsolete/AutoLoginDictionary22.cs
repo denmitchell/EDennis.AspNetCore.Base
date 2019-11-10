@@ -6,7 +6,7 @@ namespace EDennis.AspNetCore.Base.Testing
 
     public class AutoLoginProperties22 {
         public bool Default { get; set; }
-        public MockClaimSettings[] Claims { get; set; }
+        public MockHeaderSettings[] Claims { get; set; }
     }
 
 

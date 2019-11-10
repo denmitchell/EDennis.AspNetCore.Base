@@ -63,9 +63,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-                //copy headers to ScopeProperties headers, based upon the provided match expession
+                //copy all headers to ScopeProperties headers
                 context.Request.Headers
-                    .Where(h=> appSettings.ScopeProperties.Headers.Any(s=> s == h.Key))
                     .ToList()
                     .ForEach(h => scopeProperties.Headers
                     .Add(h.Key, h.Value.ToArray()));
@@ -78,12 +77,10 @@ namespace EDennis.AspNetCore.Base.Web {
                             $"{context.Request.Headers["Host"]}");
 
 
-                //add user claims, if configured
-                if (context.User?.Claims != null) {
-                    scopeProperties.Claims = context.User.Claims
-                        .Where(c => appSettings.ScopeProperties.ClaimTypes.Any(s => s == c.Type))
-                        .ToArray();
-                }
+                //add user claims
+                if (context.User?.Claims != null) 
+                    scopeProperties.Claims = context.User.Claims.ToArray();
+                
 
             }
             await _next(context);

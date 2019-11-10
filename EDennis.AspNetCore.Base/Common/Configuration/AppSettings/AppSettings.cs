@@ -21,12 +21,14 @@ namespace EDennis.AspNetCore.Base {
                 if (MockClients == null || ActiveMockClientKey == null || !MockClients.ContainsKey(ActiveMockClientKey))
                     return null;
                 else
-                return MockClients[ActiveMockClientKey];
+                    return MockClients[ActiveMockClientKey];
             }
         }
 
         public MockClientSettingsDictionary MockClients { get; set; }
-        public MockClaimSettingsCollection MockClaims { get; set; }
+        public MockHeaderSettingsCollection MockHeaders { get; set; }
+
+        public AppSettingsMappings Mappings { get; set; }
 
         public SecuritySettings Security { get; set; }
 

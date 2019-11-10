@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class MockClaimSettingsCollection : List<MockClaimSettings> {
+    public enum MockHeaderConflictResolution {
+        Overwrite,
+        Skip,
+        Union
     }
 }

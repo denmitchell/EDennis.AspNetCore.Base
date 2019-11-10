@@ -1,4 +1,21 @@
 ﻿{
+  "MockHeaders": {
+    "X-User": {
+      "Values": [ "moe@stooges.org" ],
+      "ConflictResolution": "Skip"
+    }
+  },
+  "Mappings": {
+    "HeadersToClaims": {
+      "PreAuthentication": {
+        "X-User": "name",
+        "X-Role": "role"
+      },
+      "PostAuthentication": {
+        "X-UserScope": "user_scope"
+      }
+    }
+  },
   "ActiveMockClientKey": "EDennis.Samples.SomeExternalApi",
   "ScopeProperties": {
     "UserSource": "OasisNameClaim",
@@ -15,32 +32,43 @@
     }
   },
   "Apis": {
-    "My.EntryPointApp": {
-      "Scheme": "https",
-      "Host": "localhost",
-      "Version": 2.0,
-      "HttpsPort": 5511,
-      "HttpPort": 5512,
-      "NeedsLaunched": true,
-      "Scopes": [ "My.EntryPointApp.*" ]
-    },
-    "My.ChildApi1": {
+    "ChildApi1": {
+      "ProjectName": "My.ChildApi1",
       "Scheme": "https",
       "Host": "localhost",
       "Version": 1.0,
       "HttpsPort": 6542,
       "HttpPort": 6543,
       "NeedsLaunched": true,
-      "Scopes": [ "My.Api1.*" ]
+      "Scopes": [ "My.Api1.*" ],
+      "Mappings": {
+        "ClaimsToHeaders": {
+          "name": "X-User",
+          "role": "X-Role"
+        },
+        "HeadersToHeaders": {
+          "X-Testing-Rollback": "X-Testing-Rollback"
+        }
+      }
     },
-    "My.ChildApi2": {
+    "ChildApi2": {
+      "ProjectName": "My.ChildApi2",
       "Scheme": "https",
       "Host": "localhost",
       "Version": 1.1,
       "HttpsPort": 6544,
       "HttpPort": 6544,
       "NeedsLaunched": true,
-      "Scopes": [ "My.Api2.*" ]
+      "Scopes": [ "My.Api2.*" ],
+      "Mappings": {
+        "ClaimsToHeaders": {
+          "name": "X-User",
+          "role": "X-Role"
+        },
+        "HeadersToHeaders": {
+          "X-Testing-Rollback": "X-Testing-Rollback"
+        }
+      }
     }
   },
   "MockClients": {
@@ -60,12 +88,7 @@
       ]
     }
   },
-  "MockClaims": [
-    {
-      "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-      "Value": "moe@stooges.org"
-    }
-  ],
+
   "Security": {
     "IdentityServerApi": "https://localhost:55555",
     "ClientSecret": "secret",

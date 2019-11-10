@@ -8,34 +8,44 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
-    public class Launcher<TStartup>
+    /// <summary>
+    /// This class moves configuration code from Program.cs
+    /// into a separate class that can be packaged into NuGet
+    /// and called from a parent application via ApiLauncher middleware.
+    /// 
+    /// In a typical use case, you would subclass Launcher and then
+    /// override the ConfigureDelegate property, if needed.
+    /// 
+    /// Note that the default implementation of ConfigureDelegate
+    /// uses the ManifestEmbeddedFileProvider to load appsettings.json
+    /// and appsettings.{env}.json.  This file provider requires 
+    /// special setup in the .csproj file.
+    /// 
+    /// See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/file-providers?view=aspnetcore-2.1#manifestembeddedfileprovider-1
+    /// 
+    /// </summary>
+    /// <typeparam name="TStartup"></typeparam>
+    public abstract class Launcher<TStartup> : ILauncher<TStartup> 
         where TStartup : class {
 
-        public virtual IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => {
-                    foreach (var arg in args) {
-                        if (arg.StartsWith("ASPNETCORE_URLS=", StringComparison.OrdinalIgnoreCase)) {
-                            var urls = arg.Split('=')[1];
-                            webBuilder.UseUrls(urls);
-                            break;
-                        }
-                    }
-                    webBuilder.ConfigureAppConfiguration((context, options) => {
-                        var env = context.HostingEnvironment;
-                        options.AddJsonFile(new ManifestEmbeddedFileProvider(GetType().Assembly), $"appsettings.{env}.json", true, true);
-                        options.AddEnvironmentVariables();
-                        options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env.EnvironmentName}" });
-                    });
+        public virtual Action<WebHostBuilderContext, IConfigurationBuilder> ConfigureDelegate { get; set; }
+            = delegate (WebHostBuilderContext context, IConfigurationBuilder options) {
 
-                    webBuilder.UseStartup<TStartup>();
-                });
+                var type = MethodBase.GetCurrentMethod().DeclaringType;
+                var env = context.HostingEnvironment;
+
+                options.AddJsonFile(new ManifestEmbeddedFileProvider(type.Assembly), $"appsettings.json", true, true);
+                options.AddJsonFile(new ManifestEmbeddedFileProvider(type.Assembly), $"appsettings.{env}.json", true, true);
+                options.AddEnvironmentVariables();
+                options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env.EnvironmentName}" });
+
+            };
+
 
 
         public void Run(string[] args) {
@@ -69,7 +79,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 await Task.Run(() => {
                     host.WaitForShutdownAsync();
                     host.RunAsync();
-                    if(api.Scheme.Equals("http",StringComparison.OrdinalIgnoreCase))
+                    if (api.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase))
                         logger.LogInformation("Starting {ProjectName} on HTTPS: {HttpsPort}, HTTP: {HttpPort}", typeof(TStartup).Assembly.GetName().Name, api.HttpsPort, api.HttpPort);
                     else
                         logger.LogInformation("Starting {ProjectName} on HTTP: {HttpPort}", typeof(TStartup).Assembly.GetName().Name, api.HttpsPort);
@@ -79,9 +89,26 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+        private IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => {
+                    foreach (var arg in args) {
+                        if (arg.StartsWith("ASPNETCORE_URLS=", StringComparison.OrdinalIgnoreCase)) {
+                            var urls = arg.Split('=')[1];
+                            webBuilder.UseUrls(urls);
+                            break;
+                        }
+                    }
+                    webBuilder.ConfigureAppConfiguration(ConfigureDelegate);
+
+                    webBuilder.UseStartup<TStartup>();
+                });
+
+
+
         private async Task<bool> UpdatePortsAndVersion(ApiSettingsFacade api) {
             if ((api.Scheme ?? "https").Equals("https", StringComparison.OrdinalIgnoreCase)) {
-                api.Scheme = "https"; 
+                api.Scheme = "https";
                 if (api.HttpsPort == default || api.HttpPort == default) {
                     var ports = await PortInspector.GetRandomAvailablePortsAsync(2);
                     if (api.HttpsPort == default)
@@ -127,7 +154,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
-        public static decimal GetAssemblyVersion(Assembly assembly) {
+        private static decimal GetAssemblyVersion(Assembly assembly) {
             return decimal.Parse($"{assembly.GetName().Version.Major}.{assembly.GetName().Version.Minor}");
         }
 

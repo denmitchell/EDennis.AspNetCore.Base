@@ -12,5 +12,7 @@ namespace EDennis.AspNetCore.Base {
         public decimal Version { get; set; }
         public string[] Scopes { get; set; }
         public bool NeedsLaunched { get; set; }
+
+        public ApiMappings Mappings { get; set; }
     }
 }
