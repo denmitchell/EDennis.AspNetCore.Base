@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,11 +67,22 @@ namespace EDennis.AspNetCore.Base.Web
             #endregion
             #region DefaultRequestHeaders
 
-            //create headers from list
-            ScopeProperties.Headers
-                .ToList()
-                .ForEach(x => HttpClient.DefaultRequestHeaders
-                .AddOrReplace(x.Key, x.Value.ToArray()));
+            var headersToTransfer = Api.Mappings.HeadersToHeaders;
+            var claimsToTransfer = Api.Mappings.ClaimsToHeaders;
+
+            var claimsDictionary = ScopeProperties.Claims
+                        .GroupBy(x => x.Type)
+                        .ToDictionary(g => g.Key, g => new StringValues(g.Select(x => x.Value).ToArray()));
+
+            //add claims as headers
+            foreach (var key in claimsToTransfer.Keys)
+                foreach(var claim in claimsDictionary.Where(d=>d.Key == key))
+                    HttpClient.DefaultRequestHeaders.AddOrReplace(key, claim.Value.ToArray());
+
+            //add additional headers
+            foreach (var key in headersToTransfer.Keys)
+                foreach(var hdr in ScopeProperties.Headers.Where(d=>d.Key == key))
+                    HttpClient.DefaultRequestHeaders.AddOrReplace(key, hdr.Value.ToArray());
 
 
             #endregion
