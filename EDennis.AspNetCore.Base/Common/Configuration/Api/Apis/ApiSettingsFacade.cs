@@ -8,72 +8,72 @@ namespace EDennis.AspNetCore.Base {
     public class ApiSettingsFacade {
 
         public IConfiguration Configuration { get; set; }
-        public string ParentConfigurationKey { get; set; }
+        public string ConfigurationKey { get; set; }
 
         public string ProjectName {
             get {
-                return Configuration[$"{ParentConfigurationKey}:ProjectName"];
+                return Configuration[$"{ConfigurationKey}:ProjectName"];
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:ProjectName"] = value;
+                Configuration[$"{ConfigurationKey}:ProjectName"] = value;
             } 
         }
         public string Scheme {
             get {
-                return Configuration[$"{ParentConfigurationKey}:Scheme"];
+                return Configuration[$"{ConfigurationKey}:Scheme"];
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:Scheme"] = value;
+                Configuration[$"{ConfigurationKey}:Scheme"] = value;
             }
         }
         public string Host {
             get {
-                return Configuration[$"{ParentConfigurationKey}:Host"];
+                return Configuration[$"{ConfigurationKey}:Host"];
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:Host"] = value;
+                Configuration[$"{ConfigurationKey}:Host"] = value;
             }
         }
         public int HttpsPort {
             get {
-                return int.Parse(Configuration[$"{ParentConfigurationKey}:HttpsPort"]);
+                return int.Parse(Configuration[$"{ConfigurationKey}:HttpsPort"]);
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:HttpsPort"] = value.ToString();
+                Configuration[$"{ConfigurationKey}:HttpsPort"] = value.ToString();
             }
         }
         public int HttpPort {
             get {
-                return int.Parse(Configuration[$"{ParentConfigurationKey}:HttpPort"]);
+                return int.Parse(Configuration[$"{ConfigurationKey}:HttpPort"]);
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:HttpPort"] = value.ToString();
+                Configuration[$"{ConfigurationKey}:HttpPort"] = value.ToString();
             }
         }
         public decimal Version {
             get {
-                return decimal.Parse(Configuration[$"{ParentConfigurationKey}:Version"]);
+                return decimal.Parse(Configuration[$"{ConfigurationKey}:Version"]);
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:Version"] = value.ToString();
+                Configuration[$"{ConfigurationKey}:Version"] = value.ToString();
             }
         }
         public string[] Scopes {
             get {
-                return Configuration.GetSection($"{ParentConfigurationKey}:Scopes")
+                return Configuration.GetSection($"{ConfigurationKey}:Scopes")
                     .GetChildren().ToArray().Select(c => c.Value).ToArray();
             }
             set {
                 for (int i = 0; i < value.Length; i++)
-                    Configuration[$"{ParentConfigurationKey}:Scopes:{i}"] = value[i];
+                    Configuration[$"{ConfigurationKey}:Scopes:{i}"] = value[i];
             }
         }
         public bool NeedsLaunched {
             get {
-                return bool.Parse(Configuration[$"{ParentConfigurationKey}:NeedsLaunched"]);
+                return bool.Parse(Configuration[$"{ConfigurationKey}:NeedsLaunched"]);
             }
             set {
-                Configuration[$"{ParentConfigurationKey}:NeedsLaunched"] = value.ToString();
+                Configuration[$"{ConfigurationKey}:NeedsLaunched"] = value.ToString();
             }
         }
 

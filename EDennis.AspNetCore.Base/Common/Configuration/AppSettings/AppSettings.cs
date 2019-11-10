@@ -32,12 +32,5 @@ namespace EDennis.AspNetCore.Base {
 
         public SecuritySettings Security { get; set; }
 
-        public ApiSettingsFacade GetApiSettingsFacade<TStartup>(IConfiguration configuration) {
-            var key = Apis.FirstOrDefault(a => a.Value.ProjectName == typeof(TStartup).Assembly.GetName().Name);
-            return new ApiSettingsFacade {
-                Configuration = configuration,
-                ParentConfigurationKey = $"Apis:{key}"
-            };
-        }
     }
 }

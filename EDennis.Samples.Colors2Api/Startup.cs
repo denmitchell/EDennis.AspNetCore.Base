@@ -49,7 +49,7 @@ namespace EDennis.Samples.Colors2Api {
             //add secondary loggers for on-demand, per-user verbose and debug logging
             services.AddSecondaryLoggers(typeof(SerilogVerboseLogger<>), typeof(SerilogDebugLogger<>));
 
-            services.AddDbContexts<ColorsDbContext>(Configuration, HostingEnvironment);
+            services.AddDbContext<ColorsDbContext>(Configuration, HostingEnvironment);
             services.AddRepos<RgbRepo,HslRepo>();
 
             if (HostingEnvironment.EnvironmentName == "Development") {

@@ -14,5 +14,6 @@ namespace EDennis.AspNetCore.Base {
         public bool NeedsLaunched { get; set; }
 
         public ApiMappings Mappings { get; set; }
+        public ApiSettingsFacade Facade { get; set; }
     }
 }
