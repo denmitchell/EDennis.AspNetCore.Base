@@ -28,10 +28,6 @@ namespace EDennis.AspNetCore.Base.Web {
             
             services.Configure<AuthenticationSettings>(configuration.GetSection(configurationKey));
 
-            var assembly = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.Contains(environment.ApplicationName + ","))
-                .FirstOrDefault();
-
 
             string authority = settings.IdentityServerBaseAddress;
 
@@ -67,7 +63,7 @@ namespace EDennis.AspNetCore.Base.Web {
                    .AddCookie("Cookies")
                    // Identity Server settings
                    .AddOpenIdConnect("oidc", opt => {
-                       opt.SignInScheme = "Cookies";
+                       opt.SignInScheme = "Cookies";                       
                        opt.Authority = authority;
                        opt.RequireHttpsMetadata = settings.Oidc.RequireHttpsMetadata;
                        opt.ClientId = audience;
@@ -75,13 +71,12 @@ namespace EDennis.AspNetCore.Base.Web {
                        opt.ResponseType = settings.Oidc.ResponseType;
                        opt.SaveTokens = settings.Oidc.SaveTokens;
                        opt.GetClaimsFromUserInfoEndpoint = settings.Oidc.GetClaimsFromUserInfoEndpoint;
-
                        var scopes = new List<string>();
 
-                       if (settings.Oidc.OidcScope.AddOfflineAccess)
+                       if (settings.Oidc.AddOfflineAccess)
                            scopes.Add("offline_access");
 
-                       scopes.AddRange(settings.Oidc.OidcScope.AdditionalScopes);
+                       scopes.AddRange(settings.Oidc.AdditionalScopes);
 
                        for (int i = 0; i < scopes.Count(); i++) {
                            opt.Scope.Add(scopes[i]);

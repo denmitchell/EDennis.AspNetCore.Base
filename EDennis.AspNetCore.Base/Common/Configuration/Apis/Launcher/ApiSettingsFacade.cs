@@ -95,6 +95,12 @@ namespace EDennis.AspNetCore.Base {
             }
         }
 
+        public string BaseAddress {
+            get {
+                return $"{Scheme}://{Host}:{MainPort}";
+            }
+        }
+
 
     }
 }

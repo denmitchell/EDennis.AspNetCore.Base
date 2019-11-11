@@ -25,23 +25,47 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static class IApiSettingsBuilder_Extensions {
 
-        public static IApiSettingsBuilder AddLauncher<TStartup>(this IApiSettingsBuilder builder) {
+        public static IApiSettingsBuilder AddApi<TApiClient, TStartup>(this IApiSettingsBuilder builder, string configurationKey)
+            => builder.ServiceCollection.AddApi<TApiClient, TStartup>(builder.Configuration, configurationKey);
+
+        public static ISecureTokenServiceSettingsBuilder AddTokenService(this IApiSettingsBuilder builder, string configurationKey) {
+
+            //for services that inject in SecureTokenServiceSettings
+            builder.ServiceCollection.Configure<SecureTokenServiceSettings>(builder.Configuration.GetSection(configurationKey));
+            builder.ServiceCollection.PostConfigure<SecureTokenServiceSettings>(options => {
+                options.Host = builder.ApiSettings.Host;
+                options.Scheme = builder.ApiSettings.Scheme;
+                options.HttpsPort = builder.ApiSettings.HttpsPort;
+                options.HttpPort = builder.ApiSettings.HttpPort;
+                options.Version = builder.ApiSettings.Version;
+                options.Facade = builder.ApiSettings.Facade;
+            });
+            builder.ServiceCollection.AddSingleton<SecureTokenService>();
+
+            //for pre-DI services
+            var settings = new SecureTokenServiceSettings();
+            builder.Configuration.GetSection(configurationKey).Bind(settings);
+            return new SecureTokenServiceSettingsBuilder {
+                ApiSettings = builder.ApiSettings,
+                ServiceCollection = builder.ServiceCollection,
+                Configuration = builder.Configuration,
+                SecureTokenServiceSettings = settings
+            };
+
+        }
+
+        public static IApiSettingsBuilder AddLauncher<TStartup>(this IApiSettingsBuilder builder, string configurationKey) {
             builder.ServiceCollection.Configure<ApiLauncherSettings>(options => {
                 options.Host = builder.ApiSettings.Host;
                 options.Version = builder.ApiSettings.Version;
                 options.Scheme = builder.ApiSettings.Scheme;
                 options.HttpsPort = builder.ApiSettings.HttpsPort;
                 options.HttpPort = builder.ApiSettings.HttpPort;
+                options.Facade = builder.ApiSettings.Facade;
                 options.NeedsLaunched = builder.ApiSettings.Launcher.NeedsLaunched;
                 options.ProjectName = builder.ApiSettings.Launcher.ProjectName;
             });
 
-            builder.ServiceCollection.PostConfigure<ApiLauncherSettings>(options => {
-                options.Facade = new ApiSettingsFacade {
-                    Configuration = builder.Configuration,
-                    ConfigurationKey = builder.ConfigurationKey
-                };
-            });
             return builder;
         }
 

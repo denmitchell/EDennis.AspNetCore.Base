@@ -9,6 +9,7 @@ namespace EDennis.AspNetCore.Base {
         public int HttpsPort { get; set; }
         public int HttpPort { get; set; }
         public decimal Version { get; set; }
+        public ApiSettingsFacade Facade {get; set; }
 
     }
 }
