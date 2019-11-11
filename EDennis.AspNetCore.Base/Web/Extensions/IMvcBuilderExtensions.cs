@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.Web {
-    public static class IMvcBuilderExtensions {
+    public static partial class IMvcBuilderExtensions {
 
         public static IMvcBuilder ExcludeReferencedProjectControllers<TStartup>(this IMvcBuilder builder)
             where TStartup : class {

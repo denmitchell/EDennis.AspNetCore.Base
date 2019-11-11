@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    public class SqlServerRepo<TEntity, TContext> : RelationalRepo<TEntity, TContext>, ISqlServerRepo<TEntity,TContext> 
+    public class SqlServerRepo<TEntity, TContext> : RelationalRepo<TEntity, TContext> 
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 

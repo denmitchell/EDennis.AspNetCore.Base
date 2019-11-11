@@ -8,8 +8,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
-    public class TemporalRepo<TEntity, TContext, THistoryContext> : Repo<TEntity, TContext>,
-        ITemporalRepo<TEntity, TContext, THistoryContext>
+    public class TemporalRepo<TEntity, TContext, THistoryContext> : Repo<TEntity, TContext>
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
         where THistoryContext : DbContext {

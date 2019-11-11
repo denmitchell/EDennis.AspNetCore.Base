@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace EDennis.AspNetCore.Base.Web
 {
-    public static class IConfigurationExtensions {
+    public static partial class IConfigurationExtensions {
 
 
         public static bool ContainsKey(this IConfiguration config, string key) => config.GetSection(key) != null;

@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.Web {
-    public static class IServiceCollectionExtensions_Logging {
+    public static partial class IServiceCollectionExtensions {
 
         public static IServiceCollection AddScopedTraceable<TInterface, TImplementation>(this IServiceCollection services)
             where TInterface : class, IHasILogger

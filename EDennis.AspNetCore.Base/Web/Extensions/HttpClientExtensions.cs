@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
-    public static class HttpClientExtensions {
+    public static partial class HttpClientExtensions {
 
         public static ObjectResult Get<TResponseObject>(this HttpClient client, string relativeUrlFromBase) {
             return client.GetAsync<TResponseObject>(relativeUrlFromBase).Result;

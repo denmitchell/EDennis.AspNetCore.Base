@@ -34,11 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Common\Configuration\sample.appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Common\Configuration\AppSettings\sample.appsettings.json" />
+    <Content Include="Common\Configuration\sample.appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
