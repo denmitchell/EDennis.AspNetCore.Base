@@ -38,7 +38,7 @@ In Child APIs, ensure that Program.cs configuration uses ManifestEmbeddedFilePro
 
             var fileProvider = new ManifestEmbeddedFileProvider(GetType().Assembly);
             Configuration = new ConfigurationBuilder()
-                .AddJsonFile(fileProvider, "appsettings.{env}.json", true, true)
+                .AddJsonFile(fileProvider, $"appsettings.{env}.json", true, true)
                 .AddJsonFile("appsettings.Shared.json", true)
                 .Build();
 
