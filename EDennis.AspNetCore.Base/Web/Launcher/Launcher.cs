@@ -43,7 +43,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 options.AddJsonFile(new ManifestEmbeddedFileProvider(type.Assembly), $"appsettings.{env}.json", true, true);
                 options.AddEnvironmentVariables();
                 options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env.EnvironmentName}" });
-
             };
 
 
