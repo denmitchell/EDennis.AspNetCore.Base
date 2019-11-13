@@ -34,6 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Common\Configuration\README.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Common\Configuration\README.txt" />
     <Content Include="Common\Configuration\sample.appsettings.json" />
   </ItemGroup>
 
