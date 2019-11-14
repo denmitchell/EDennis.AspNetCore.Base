@@ -1,0 +1,17 @@
+﻿services.GetAppConfig(config)
+		.GetSection("Apis")
+			.AddApi<MyApi>("MyApi") //defaults to Type parameter name
+			.AddApi<IdentityServer>("IdentityServer") //defaults to Type parameter name
+				//.AddOath() //or ...
+				//.AddOidc()
+		.GetSection("DbContext")
+			.AddDbContext<MyDbContext>("MyDbContext") //defaults to Type parameter name
+				.AddRepo<MyRepo>()
+			.AddDbContext<MyHistoryDbContext>("MyHistoryDbContext") //defaults to Type parameter name
+				.AddRepo<MyHistoryRepo>()
+		.AddHeadersToClaims("HeadersToClaims") //defaults to HeadersToClaims
+		.AddMockClient("MockClient") //defaults to MockClient
+		.AddMockHeaders("MockHeaders") //defaults to MockHeaders
+		.AddScopeProperties("ScopeProperties"); //defaults to ScopeProperties
+
+

@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace EDennis.AspNetCore.Base.Web {
 
     public interface IApiSettingsBuilder { 
-        ApiSettings ApiSettings { get; set; }
+        Api ApiSettings { get; set; }
         IServiceCollection ServiceCollection { get; set; } 
         IConfiguration Configuration { get; set; }
         string ConfigurationKey { get; set; }
     }
 
     public class ApiSettingsBuilder : IApiSettingsBuilder {
-        public ApiSettings ApiSettings { get; set; }
+        public Api ApiSettings { get; set; }
         public IServiceCollection ServiceCollection { get; set; }
         public IConfiguration Configuration { get; set; }
         public string ConfigurationKey { get; set; }

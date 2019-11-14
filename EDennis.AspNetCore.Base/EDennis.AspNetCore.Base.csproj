@@ -34,10 +34,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Common\Configuration\Apis\apis.appsettings.Embedded.json" />
+    <None Remove="Common\Configuration\Apis\apis.appsettings.Shared.json" />
     <None Remove="Common\Configuration\README.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Common\Configuration\Apis\apis.appsettings.Shared.json" />
+    <Content Include="Common\Configuration\Apis\apis.appsettings.Embedded.json" />
     <Content Include="Common\Configuration\README.txt" />
     <Content Include="Common\Configuration\sample.appsettings.json" />
   </ItemGroup>

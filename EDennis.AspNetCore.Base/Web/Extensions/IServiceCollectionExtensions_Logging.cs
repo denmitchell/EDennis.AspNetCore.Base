@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Web {
             
             services.Add(new ServiceDescriptor(typeof(TInterface), f => {
                 var loggers = f.GetRequiredService(loggersType) as IEnumerable<object>;
-                var scopeProperties = f.GetRequiredService<ScopeProperties22>();
+                var scopeProperties = f.GetRequiredService<ScopeProperties>();
                 ILogger activeLogger = (ILogger)loggers.ElementAt(scopeProperties.LoggerIndex);
                 for (int i = 0; i < args.Length; i++) {
 

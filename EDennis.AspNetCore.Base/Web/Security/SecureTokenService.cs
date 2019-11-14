@@ -28,7 +28,7 @@ namespace EDennis.AspNetCore.Base.Security {
         private DiscoveryDocumentResponse _disco;
         private readonly string _clientSecret;
         private Timer _timer;
-        private readonly ApiSettingsDictionary _apis;
+        private readonly Apis _apis;
         private readonly IWebHostEnvironment _environment;
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace EDennis.AspNetCore.Base.Security {
         public async Task<TokenResponse> GetTokenResponse(string apiKey) {
 
 
-            ApiSettings matchingApi = null;
+            Api matchingApi = null;
             try {
                 matchingApi = _apis[apiKey];
             } catch {

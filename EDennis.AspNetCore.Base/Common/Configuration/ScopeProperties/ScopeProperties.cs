@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace EDennis.AspNetCore.Base {
     public class ScopeProperties : IScopeProperties {
+        public int LoggerIndex { get; set; }
         public string User { get; set; }
         public HeaderDictionary Headers { get; set; }
         public Claim[] Claims { get; set; }

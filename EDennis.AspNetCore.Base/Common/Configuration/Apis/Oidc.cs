@@ -1,5 +1,5 @@
 ﻿namespace EDennis.AspNetCore.Base {
-    public class OidcSettings : OAuthSettings {
+    public class Oidc : OAuth {
         public string ResponseType { get; set; } = "code id_token";
         public bool GetClaimsFromUserInfoEndpoint { get; set; } = true;
         public bool AddOfflineAccess { get; set; } = true;
