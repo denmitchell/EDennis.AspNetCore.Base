@@ -43,6 +43,10 @@ namespace EDennis.AspNetCore.Base.Logging {
             for (int i = 0; i < parms.Length; i++) {
                 logScope.Add(KeyValuePair.Create(parms[i].Name, formatted[i] ?? parms[i].DefaultValue));
             }
+            if (args.ReturnValue != null) {
+                var returnValue = JsonSerializer.Serialize(args.ReturnValue);
+                logScope.Add(KeyValuePair.Create("ReturnValue", (object)returnValue));
+            }
             return logScope;
         }
 

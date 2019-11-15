@@ -1,4 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Web;
+using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -22,7 +24,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     public partial class Repo<TEntity, TContext> : IRepo
-        where TEntity : class, IHasSysUser, new()
+        where TEntity : class, IHasSysUser, IHasMethodCallbacks, new()
         where TContext : DbContext {
 
 
@@ -31,7 +33,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public ScopeProperties ScopeProperties { get; set; }
 
         public ILogger Logger { get; }
-
+        public ScopedLogger ScopedLogger { get; }
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
@@ -39,11 +41,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="context">Entity Framework DbContext</param>
         public Repo(TContext context,
             ScopeProperties scopeProperties,
-            ILogger<Repo<TEntity, TContext>> logger) {
+            ILogger<Repo<TEntity, TContext>> logger,
+            ScopedLogger scopedLogger) {
 
             Context = context;
             ScopeProperties = scopeProperties;
             Logger = logger;
+            ScopedLogger = scopedLogger;
 
         }
 
@@ -54,6 +58,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
+        [MethodCallback]
         public virtual TEntity GetById(params object[] keyValues) {
             return Context.Find<TEntity>(keyValues);
         }
@@ -64,6 +69,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
+        [MethodCallback]
         public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
             return await Context.FindAsync<TEntity>(keyValues);
         }
@@ -81,6 +87,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="skip">int number of records to skip</param>
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
+        [MethodCallback]
         public virtual List<dynamic> GetFromDynamicLinq(
                 string where = null,
                 string orderBy = null,
@@ -120,6 +127,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="skip">int number of records to skip</param>
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
+        [MethodCallback]
         public virtual async Task<List<dynamic>> GetFromDynamicLinqAsync(
                 string where = null,
                 string orderBy = null,
@@ -150,6 +158,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Provides direct access to the Query property of the context,
         /// allowing any query to be constructed via Linq expression
         /// </summary>
+        [MethodCallback]
         public virtual IQueryable<TEntity> Query { get => Context.Set<TEntity>().AsNoTracking(); }
 
 
@@ -159,6 +168,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key values</param>
         /// <returns>true if an entity with the provided keys exists</returns>
+        [MethodCallback]
         public virtual bool Exists(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
             if (entity != null)
@@ -174,6 +184,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key values</param>
         /// <returns></returns>
+        [MethodCallback]
         public virtual async Task<bool> ExistsAsync(params object[] keyValues) {
             var entity = await Context.FindAsync<TEntity>(keyValues);
             if (entity != null)
@@ -187,6 +198,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The entity to create</param>
         /// <returns>The created entity</returns>
+        [MethodCallback]
         public virtual TEntity Create(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
@@ -204,6 +216,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The entity to create</param>
         /// <returns>The created entity</returns>
+        [MethodCallback]
         public virtual async Task<TEntity> CreateAsync(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
@@ -224,6 +237,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
+        [MethodCallback]
         public virtual TEntity Update(TEntity entity, params object[] keyValues) {
             if (entity == null)
                 throw new MissingEntityException(
@@ -248,6 +262,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
+        [MethodCallback]
         public virtual async Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues) {
 
             if (entity == null)
@@ -269,9 +284,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-
-
-
+        [MethodCallback]
         public virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
@@ -294,6 +307,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
+        [MethodCallback]
         public virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
@@ -323,6 +337,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
+        [MethodCallback]
         public virtual void Delete(params object[] keyValues) {
 
             var existing = Context.Find<TEntity>(keyValues);
@@ -342,6 +357,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchrously deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
+        [MethodCallback]
         public virtual async Task DeleteAsync(params object[] keyValues) {
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
@@ -352,6 +368,21 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             await Context.SaveChangesAsync();
             return;
         }
+
+
+        public virtual void OnEntry(MethodExecutionArgs args) {
+            if (ScopedLogger.LogLevel == LogLevel.Trace)
+                ScopedLogger.LogEntry(args, LogLevel.Trace, ScopeProperties);
+        }
+
+        public virtual void OnExit(MethodExecutionArgs args) {
+            if (ScopedLogger.LogLevel == LogLevel.Trace)
+                ScopedLogger.LogExit(args, LogLevel.Trace, ScopeProperties);
+        }
+        
+        public virtual void OnException(MethodExecutionArgs args) =>
+            ScopedLogger.LogException(args, ScopeProperties);
+        
 
 
 
