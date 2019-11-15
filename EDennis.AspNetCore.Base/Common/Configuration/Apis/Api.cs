@@ -34,12 +34,15 @@ namespace EDennis.AspNetCore.Base {
                         { "name", "X-User" },
                         { "role", "X-Role" }
                     },
-                    HeadersToHeaders = new HeadersToHeaders{
-                        { "X-Testing-Rollback",  "X-Testing-Rollback" },
-                        { "X-User",  "X-User" },
-                        { "X-Role",  "X-Role" },
+                    HeadersToHeaders = new HeadersToHeaders {
+                        { "X-Testing-Rollback", "X-Testing-Rollback" },
+                        { "X-Set-ScopedLogger", "X-Set-ScopedLogger" },
+                        { "X-Clear-ScopedLogger", "X-Clear-ScopedLogger" },
+                        { "X-User", "X-User" },
+                        { "X-Role", "X-Role" },
+                        { "X-HostPath", "X-HostPath" }
                     }
-                }; 
+                };
             } 
             set {
                 _mappings = value;

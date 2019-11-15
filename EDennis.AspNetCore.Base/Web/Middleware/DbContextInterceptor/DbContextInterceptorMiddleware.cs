@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 bool newConnection = false;
 
-                if (context.Request.Headers.ContainsKey(Constants.ROLLBACK_HEADER_KEY))
+                if (context.Request.Headers.ContainsKey(Constants.ROLLBACK_REQUEST_KEY))
                     newConnection = true;
                 else if (context.Request.Query.ContainsKey(Constants.ROLLBACK_QUERY_KEY))
                     newConnection = true;

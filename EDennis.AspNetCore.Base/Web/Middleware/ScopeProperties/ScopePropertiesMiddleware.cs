@@ -51,8 +51,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 //append the host path to a ScopeProperties header, if configured 
                 if (settings.AppendHostPath)
-                        scopeProperties.Headers.Add(Constants.HOSTPATH_HEADER_KEY,
-                            $"{context.Request.Headers[Constants.HOSTPATH_HEADER_KEY].ToString()}>" +
+                        scopeProperties.Headers.Add(Constants.HOSTPATH_REQUEST_KEY,
+                            $"{context.Request.Headers[Constants.HOSTPATH_REQUEST_KEY].ToString()}>" +
                             $"{context.Request.Headers["Host"]}");
 
 

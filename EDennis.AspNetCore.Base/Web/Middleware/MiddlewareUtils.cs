@@ -28,8 +28,8 @@ namespace EDennis.AspNetCore.Base.Web {
             UserSource.JwtPhoneClaim => GetClaimValue(context, JwtClaimTypes.PhoneNumber),
             UserSource.JwtClientIdClaim => GetClaimValue(context, JwtClaimTypes.ClientId),
             UserSource.SessionId => context.Session?.Id,
-            UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_HEADER_KEY),
-            UserSource.XUserQueryString => context.Request.Query[Constants.USER_QUERY_KEY].ToString(),
+            UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_REQUEST_KEY),
+            UserSource.XUserQueryString => context.Request.Query[Constants.USER_REQUEST_KEY].ToString(),
             _ => null
         };
 
