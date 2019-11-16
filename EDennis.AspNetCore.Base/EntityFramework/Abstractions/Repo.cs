@@ -23,26 +23,25 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    public partial class Repo<TEntity, TContext> : IRepo
-        where TEntity : class, IHasSysUser, IHasMethodCallbacks, new()
+    public partial class Repo<TEntity, TContext> : IRepo, IRepo<TEntity, TContext>
+        where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
 
-
         public TContext Context { get; set; }
-        public ScopeProperties ScopeProperties { get; set; }
+        public IScopeProperties ScopeProperties { get; set; }
 
         public ILogger Logger { get; }
-        public ScopedLogger ScopedLogger { get; }
+        public IScopedLogger ScopedLogger { get; }
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public Repo(TContext context,
-            ScopeProperties scopeProperties,
+            IScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger,
-            ScopedLogger scopedLogger) {
+            IScopedLogger scopedLogger) {
 
             Context = context;
             ScopeProperties = scopeProperties;
@@ -379,10 +378,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (ScopedLogger.LogLevel == LogLevel.Trace)
                 ScopedLogger.LogExit(args, LogLevel.Trace, ScopeProperties);
         }
-        
+
         public virtual void OnException(MethodExecutionArgs args) =>
             ScopedLogger.LogException(args, ScopeProperties);
-        
+
 
 
 

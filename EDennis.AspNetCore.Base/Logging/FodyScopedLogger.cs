@@ -1,15 +1,14 @@
-﻿using EDennis.AspNetCore.Base.Logging;
-using MethodBoundaryAspect.Fody.Attributes;
+﻿using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 
-namespace EDennis.AspNetCore.Base.Web {
-    public class ScopedLogger : IScopedLogger {
+namespace EDennis.AspNetCore.Base.Logging {
+    public class FodyScopedLogger : IScopedLogger {
 
         private readonly IScopedLoggerAssignments _loggerAssignments;
 
-        public ScopedLogger(IScopedLoggerAssignments loggerAssignments) {
+        public FodyScopedLogger(IScopedLoggerAssignments loggerAssignments) {
             _loggerAssignments = loggerAssignments;
         }
 
@@ -28,8 +27,6 @@ namespace EDennis.AspNetCore.Base.Web {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) {
             Log(logLevel, eventId, state, exception, formatter);
         }
-
-
 
 
         public virtual void LogEntry(MethodExecutionArgs args, LogLevel level, IScopeProperties scopeProperties = null) {

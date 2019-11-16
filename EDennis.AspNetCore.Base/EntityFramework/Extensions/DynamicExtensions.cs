@@ -8,6 +8,8 @@ using System.Linq.Expressions;
 
 namespace EDennis.AspNetCore.Base.EntityFramework
 {
+    //TODO: Replace with ObjectExtensions -- no dependency on Json.NET
+
     public static class DynamicExtensions {
 
         public static bool PropertyExists(dynamic obj, string property)
@@ -23,6 +25,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
 
         public static void Populate<T>(T destination, dynamic source)
             where T: class, new() {
+
             var json = JToken.FromObject(source).ToString();
             JsonConvert.PopulateObject(json, destination);
         }

@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
@@ -11,13 +13,14 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    public class RelationalRepo<TEntity, TContext> : Repo<TEntity, TContext> 
+    public class RelationalRepo<TEntity, TContext> : Repo<TEntity, TContext>, IRelationalRepo<TEntity,TContext> 
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
         public RelationalRepo(TContext context,
-            ScopeProperties scopeProperties, 
-            ILogger<Repo<TEntity, TContext>> logger) : base(context, scopeProperties, logger) {
+            IScopeProperties scopeProperties,
+            ILogger<Repo<TEntity, TContext>> logger,
+            IScopedLogger scopedLogger) : base(context, scopeProperties, logger, scopedLogger) {
         }
 
         /// <summary>
@@ -29,7 +32,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public virtual List<TEntity> GetFromSql(string sql){
+        public virtual List<TEntity> GetFromSql(string sql) {
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -55,7 +58,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql){
+        public virtual async Task<List<TEntity>> GetFromSqlAsync(string sql) {
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
@@ -78,7 +81,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <typeparam name="TScalarType">The type of object to return</typeparam>
         /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
         /// <returns></returns>
-        public virtual TScalarType GetScalarFromSql<TScalarType>(string sql){
+        public virtual TScalarType GetScalarFromSql<TScalarType>(string sql) {
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -102,7 +105,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <typeparam name="TScalarType">The type of object to return</typeparam>
         /// <param name="sql">Valid SQL SELECT statement returning a scalar</param>
         /// <returns></returns>
-        public virtual async Task<TScalarType> GetScalarFromSqlAsync<TScalarType>(string sql){
+        public virtual async Task<TScalarType> GetScalarFromSqlAsync<TScalarType>(string sql) {
 
             var cxn = Context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)

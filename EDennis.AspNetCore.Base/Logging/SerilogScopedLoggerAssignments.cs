@@ -1,22 +1,22 @@
-﻿using EDennis.AspNetCore.Base.Logging;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using M = Microsoft.Extensions.Logging;
 
-namespace EDennis.AspNetCore.Base.Web {
+namespace EDennis.AspNetCore.Base.Logging {
     /// <summary>
     /// Provides a cache of five loggers and different logging levels, as well 
     /// as a dictionary of assignments of users (or potentially other entities) to 
     /// particular loggers at a log level.
     /// </summary>
-    public class ScopedLoggerAssignments : IScopedLoggerAssignments {
+    public class SerilogScopedLoggerAssignments : IScopedLoggerAssignments {
 
         public Dictionary<M.LogLevel, M.ILogger> Loggers { get; private set; } = new Dictionary<M.LogLevel,M.ILogger>();
         public ConcurrentDictionary<string, M.LogLevel> Assignments { get; set; } = new ConcurrentDictionary<string, M.LogLevel>();
 
-        public ScopedLoggerAssignments(IConfiguration config, string scopedLoggerKey) {
+        public SerilogScopedLoggerAssignments(IConfiguration config, string scopedLoggerKey) {
 
 
             using var factory = new M.LoggerFactory();

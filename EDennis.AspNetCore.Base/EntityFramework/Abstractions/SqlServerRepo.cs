@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using EDennis.AspNetCore.Base.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
@@ -12,14 +13,17 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    public class SqlServerRepo<TEntity, TContext> : RelationalRepo<TEntity, TContext> 
+    public class SqlServerRepo<TEntity, TContext> : RelationalRepo<TEntity, TContext>, ISqlServerRepo<TEntity,TContext> 
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
         protected List<StoredProcedureDef> _spDefs;
 
-        public SqlServerRepo(TContext context, ScopeProperties scopeProperties, ILogger<Repo<TEntity, TContext>> logger)
-            : base(context, scopeProperties, logger) {
+        public SqlServerRepo(TContext context,
+            IScopeProperties scopeProperties,
+            ILogger<Repo<TEntity, TContext>> logger,
+            IScopedLogger scopedLogger)
+            : base(context, scopeProperties, logger, scopedLogger) {
         }
 
         /// <summary>

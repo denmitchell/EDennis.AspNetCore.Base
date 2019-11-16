@@ -36,39 +36,34 @@ namespace EDennis.AspNetCore.Base.Configuration {
             return this;
         }
 
-        public ApiConfig AddApi<TClientImplementation>(string configKey, bool traceable = false)
-            where TClientImplementation : ApiClient, IHasILogger {
-            AddDependencies<TClientImplementation>();
-            AddApiClientInternal<TClientImplementation, TClientImplementation>(configKey, traceable);
+        public ApiConfig AddApi<TClientImplementation>(string configKey)
+            where TClientImplementation : ApiClient {
+            AddApiClientInternal<TClientImplementation, TClientImplementation>(configKey);
             return new ApiConfig(_services, this, _section, configKey);
         }
 
+        public ApiConfig AddApi<TClientImplementation>()
+            where TClientImplementation : ApiClient =>
+            AddApi<TClientImplementation>(typeof(TClientImplementation).Name);
 
-        public ApiConfig AddApi<TClientImplementation>(bool traceable = false)
-            where TClientImplementation : ApiClient, IHasILogger =>
-            AddApi<TClientImplementation>(typeof(TClientImplementation).Name, traceable);
-
-
-
-        public ApiConfig AddApi<TClientInterface,TClientImplementation>(string configKey, bool traceable = false)
-            where TClientImplementation : ApiClient, IHasILogger, TClientInterface
-            where TClientInterface : class, IHasILogger {
-            AddDependencies<TClientImplementation>();
-            AddApiClientInternal<TClientInterface, TClientImplementation>(configKey, traceable);
+        public ApiConfig AddApi<TClientInterface,TClientImplementation>(string configKey)
+            where TClientImplementation : ApiClient, TClientInterface
+            where TClientInterface : class {
+            AddApiClientInternal<TClientInterface, TClientImplementation>(configKey);
             return new ApiConfig(_services, this, _section, configKey);
         }
-
 
         public ApiConfig AddApi<TClientInterface,TClientImplementation>(bool traceable = false)
-            where TClientImplementation : ApiClient, IHasILogger, TClientInterface
-            where TClientInterface : class, IHasILogger  =>
-            AddApi<TClientInterface,TClientImplementation>(typeof(TClientImplementation).Name, traceable);
+            where TClientImplementation : ApiClient, TClientInterface
+            where TClientInterface : class  =>
+            AddApi<TClientInterface,TClientImplementation>(typeof(TClientImplementation).Name);
 
-
-        private void AddDependencies<TClientImplementation>()
-            where TClientImplementation : class {
+        private void AddApiClientInternal<TClientInterface, TClientImplementation>(string configKey)
+            where TClientInterface : class
+            where TClientImplementation : ApiClient, TClientInterface {
 
             _services.TryAddScoped<IScopeProperties, ScopeProperties>();
+            _services.TryAddScoped<ScopeProperties, ScopeProperties>();
 
             bool isSecureClient = typeof(SecureApiClient).IsAssignableFrom(typeof(TClientImplementation));
 
@@ -76,22 +71,10 @@ namespace EDennis.AspNetCore.Base.Configuration {
                 _services.TryAddSingleton<SecureTokenService, SecureTokenService>();
                 _services.TryAddScoped<IdentityServerApi>();
             }
-        }
-
-
-        private void AddApiClientInternal<TClientInterface, TClientImplementation>(string configKey, bool traceable)
-            where TClientInterface : class, IHasILogger
-            where TClientImplementation : ApiClient, TClientInterface {
-
             _services.Configure<Api<TClientImplementation>>(_section.GetSection(configKey));
-
-            if (traceable)
-                _services.AddScopedTraceable<TClientInterface, TClientImplementation>();
-            else
-                _services.AddHttpClient<TClientInterface, TClientImplementation>();
+            _services.AddHttpClient<TClientInterface, TClientImplementation>();
+            _services.AddHttpClient<TClientImplementation, TClientImplementation>();
         }
-
-
 
 
         public DbContextConfig AddDbContext<TContext>(string configKey)
@@ -103,14 +86,16 @@ namespace EDennis.AspNetCore.Base.Configuration {
             var settings = new DbContextSettings<TContext>();
             configSection.Bind(settings);
 
-            _services.AddDbContext<TContext>(builder => { DbConnectionManager.ConfigureDbContextOptionsBuilder(builder, settings); });
-            _services.AddScoped<DbContextOptionsProvider<TContext>>();
+            _services.AddDbContext<TContext>(builder => { 
+                DbConnectionManager.ConfigureDbContextOptionsBuilder(builder, settings); 
+            });
 
+            _services.AddScoped<DbContextOptionsProvider<TContext>>();
             _services.TryAddSingleton<DbConnectionCache<TContext>>();
 
             return new DbContextConfig(_services, this, _section, configKey);
-
         }
+
 
         public DbContextConfig AddDbContext<TContext>()
             where TContext : DbContext =>
@@ -243,14 +228,11 @@ namespace EDennis.AspNetCore.Base.Configuration {
             _section = section.GetSection(configKey);
         }
 
-        public DbContextConfig AddRepo<TRepo>(bool traceable = false)
-            where TRepo : class, IHasILogger, IRepo {
+        public DbContextConfig AddRepo<TRepo>()
+            where TRepo : class, IRepo {
             _services.TryAddScoped<IScopeProperties, ScopeProperties>();
-            if (traceable)
-                _services.AddScopedTraceable<TRepo>();
-            else
-                _services.AddScoped<TRepo, TRepo>();
-
+            _services.TryAddScoped<ScopeProperties, ScopeProperties>();
+            _services.AddScoped<TRepo, TRepo>();
             return this;
         }
 

@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base.Logging;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
-    public class TemporalRepo<TEntity, TContext, THistoryContext> : Repo<TEntity, TContext>
+    public class TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> : Repo<TEntity, TContext>, ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> 
         where TEntity : class, IEFCoreTemporalModel, new()
+        where THistoryEntity : TEntity
         where TContext : DbContext
         where THistoryContext : DbContext {
 
@@ -21,8 +22,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public TemporalRepo(TContext context, THistoryContext historyContext,
-            ScopeProperties scopeProperties,
-            ILogger<Repo<TEntity, TContext>> logger) : base(context, scopeProperties, logger) {
+            IScopeProperties scopeProperties,
+            ILogger<Repo<TEntity, TContext>> logger,
+            IScopedLogger scopedLogger) : base(context, scopeProperties, logger, scopedLogger) {
 
             Context = context;
             HistoryContext = historyContext;
@@ -154,7 +156,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 WriteToHistory(existing);
 
             //copy property values from entity to existing
-            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            existing = ObjectUtils.CopyFromDynamic<TEntity>(partialEntity);
+            //DynamicExtensions.Populate<TEntity>(existing, partialEntity);
 
             Context.Update(existing);
             Context.SaveChanges();
@@ -178,7 +181,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 await WriteToHistoryAsync(existing);
 
             //copy property values from entity to existing
-            DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            existing = ObjectUtils.CopyFromDynamic<TEntity>(partialEntity);
+            //DynamicExtensions.Populate<TEntity>(existing, partialEntity);
 
             Context.Update(existing);
             await Context.SaveChangesAsync();
@@ -197,11 +201,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
-                if (WriteDelete(existing))
-                    WriteToHistory(existing);
+            if (WriteDelete(existing))
+                WriteToHistory(existing);
 
-                Context.Remove(existing);
-                Context.SaveChanges();
+            Context.Remove(existing);
+            Context.SaveChanges();
 
         }
 
@@ -215,12 +219,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
-                if (WriteDelete(existing))
-                    await WriteToHistoryAsync(existing);
+            if (WriteDelete(existing))
+                await WriteToHistoryAsync(existing);
 
-                Context.Remove(existing);
-                await Context.SaveChangesAsync();
-                return;
+            Context.Remove(existing);
+            await Context.SaveChangesAsync();
+            return;
         }
 
 
@@ -422,32 +426,20 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public virtual void WriteToHistory(TEntity existing) {
-            if (Context.Entry(existing).State != EntityState.Detached)
-                Context.Entry(existing).State = EntityState.Detached;
-            var sysEnd = existing.SysEnd;
-            var sysUserNext = existing.SysUserNext;
-            existing.SysEnd = DateTime.Now.AddTicks(-1);
-            existing.SysUserNext = ScopeProperties.User;
-            HistoryContext.Add(existing);
+            var historyEntity = ObjectUtils.CopyFromBaseClass<TEntity, THistoryEntity>(existing);
+            historyEntity.SysEnd = DateTime.Now.AddTicks(-1);
+            historyEntity.SysUserNext = ScopeProperties.User;
+            HistoryContext.Add(historyEntity);
             HistoryContext.SaveChanges();
-            HistoryContext.Entry(existing).State = EntityState.Detached;
-            existing.SysEnd = sysEnd;
-            existing.SysUserNext = sysUserNext;
         }
 
 
         public virtual async Task WriteToHistoryAsync(TEntity existing) {
-            if (Context.Entry(existing).State != EntityState.Detached)
-                Context.Entry(existing).State = EntityState.Detached;
-            var sysEnd = existing.SysEnd;
-            var sysUserNext = existing.SysUserNext;
-            existing.SysEnd = DateTime.Now.AddTicks(-1);
-            existing.SysUserNext = ScopeProperties.User;
-            HistoryContext.Add(existing);
+            var historyEntity = ObjectUtils.CopyFromBaseClass<TEntity, THistoryEntity>(existing);
+            historyEntity.SysEnd = DateTime.Now.AddTicks(-1);
+            historyEntity.SysUserNext = ScopeProperties.User;
+            HistoryContext.Add(historyEntity);
             await HistoryContext.SaveChangesAsync();
-            HistoryContext.Entry(existing).State = EntityState.Detached;
-            existing.SysEnd = sysEnd;
-            existing.SysUserNext = sysUserNext;
         }
 
 
