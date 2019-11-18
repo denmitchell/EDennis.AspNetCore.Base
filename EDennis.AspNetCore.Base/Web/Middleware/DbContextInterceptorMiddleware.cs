@@ -21,9 +21,13 @@ namespace EDennis.AspNetCore.Base.Web {
         where TContext : DbContext {
 
         protected readonly RequestDelegate _next;
+        public bool Bypass { get; } = false;
 
         public DbContextInterceptorMiddleware(RequestDelegate next) {
             _next = next;
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (env == "Production")
+                Bypass = true;
         }
 
         ILogger _logger;
@@ -35,42 +39,39 @@ namespace EDennis.AspNetCore.Base.Web {
             ILogger<DbContextInterceptorMiddleware<TContext>> logger) {
 
 
-            if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
-
+            if (!Bypass && !context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
                 _logger = logger;
-                _logger.LogInformation("RepoInterceptor handling request: {RequestPath}", context.Request.Path);
 
+                var method = context.Request.Method;
+                var instance = context.Request.Query[Constants.TESTING_INSTANCE_KEY][0];
 
-                bool newConnection = false;
+                //Handle reset
+                //NOTE: Resets are sent as standalone requests with a special "Reset" Http Method
+                //      and a query string: instance=some_instance_name
+                if (method == Constants.RESET_METHOD) {
+                    if (cache.ContainsKey(instance)) {
+                        if (settings.CurrentValue.IsInMemory) {
+                            cache[instance] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
+                            _logger.LogInformation("Db Interceptor resetting {DbContext}-{Instance}", typeof(TContext).Name, instance);
+                        } else {
+                            cache[instance].IDbTransaction.Rollback();
+                            _logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance);
+                        }
+                    }
+                    return;
+                }
 
-                if (context.Request.Headers.ContainsKey(Constants.ROLLBACK_REQUEST_KEY))
-                    newConnection = true;
-                else if (context.Request.Query.ContainsKey(Constants.ROLLBACK_REQUEST_KEY))
-                    newConnection = true;
+                _logger.LogInformation("Db Interceptor handling request: {RequestPath}", context.Request.Path);
 
-                var instanceName = MiddlewareUtils.ResolveUser(context, settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");
+                var instanceName = instance ?? MiddlewareUtils.ResolveUser(context, settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");
 
-
-                bool added = false;
-
-                var cachedCxn = cache.GetOrAdd(instanceName,(key)=> {
-                    added = true;
-                    return DbConnectionManager.GetDbConnection(settings.CurrentValue);
-                });
-
-                if (!added && newConnection)
-                    if (settings.CurrentValue.IsInMemory)
-                        cache[instanceName] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
-                    else 
-                        cachedCxn.IDbTransaction.Rollback();
-
+                var cachedCxn = cache.GetOrAdd(instanceName,(key)
+                    => DbConnectionManager.GetDbConnection(settings.CurrentValue));
+                
                 dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptionsBuilder.Options;
-
             }
-
             await _next(context);
-
         }
 
 

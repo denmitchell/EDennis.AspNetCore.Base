@@ -2,10 +2,38 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
+using System.Net.Sockets;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
     public static class MiddlewareUtils {
+
+
+        public static Task Reset(Apis apis, string instance) {
+            return Task.WhenAll(apis.Values.Select(a => Reset(a, instance)));
+        }
+
+
+        public static async Task Reset(Api api, string instance) {
+            if (api.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) {
+                using var tcp = new TcpClient("localhost", api.HttpPort.Value) {
+                    SendTimeout = 500,
+                    ReceiveTimeout = 1000
+                };
+                var builder = new StringBuilder()
+                    .AppendLine($"{Constants.RESET_METHOD} /?instance={instance} HTTP/1.1")
+                    .AppendLine("Host: localhost")
+                    .AppendLine("Connection: close")
+                    .AppendLine();
+                var header = Encoding.ASCII.GetBytes(builder.ToString());
+                using var stream = tcp.GetStream();
+                await stream.WriteAsync(header, 0, header.Length);
+            }
+            return;
+        }
+
 
         public static string ResolveUser(HttpContext context, UserSource[] userSource, string purpose) {
             foreach(var source in userSource) {
@@ -28,8 +56,8 @@ namespace EDennis.AspNetCore.Base.Web {
             UserSource.JwtPhoneClaim => GetClaimValue(context, JwtClaimTypes.PhoneNumber),
             UserSource.JwtClientIdClaim => GetClaimValue(context, JwtClaimTypes.ClientId),
             UserSource.SessionId => context.Session?.Id,
-            UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_REQUEST_KEY),
-            UserSource.XUserQueryString => context.Request.Query[Constants.USER_REQUEST_KEY].ToString(),
+            UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_KEY),
+            UserSource.XUserQueryString => context.Request.Query[Constants.USER_KEY].ToString(),
             _ => null
         };
 

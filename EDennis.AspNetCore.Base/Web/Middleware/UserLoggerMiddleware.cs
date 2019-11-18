@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 //handle new logger assignment or clearing of existing assignment
                 if (context.Request.ContainsHeaderOrQueryKey(
-                        Constants.SET_SCOPEDLOGGER_REQUEST_KEY, out string setValue)) {
+                        Constants.SET_SCOPEDLOGGER_KEY, out string setValue)) {
                     var v = setValue.Split('|');
                     var userKey = v[0];
                     var logLevel = (LogLevel)Enum.Parse(typeof(LogLevel), v[1]);
@@ -53,7 +53,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     loggerAssignments.Assignments.AddOrUpdate(userKey, logLevel, (u, l) => l);
 
                 }else if (context.Request.ContainsHeaderOrQueryKey(
-                        Constants.CLEAR_SCOPEDLOGGER_REQUEST_KEY, out string user1)) {
+                        Constants.CLEAR_SCOPEDLOGGER_KEY, out string user1)) {
 
                     _logger.LogInformation("UserLogger middleware clearing {User}", user1);
                     loggerAssignments.Assignments.TryRemove(user1, out LogLevel _);

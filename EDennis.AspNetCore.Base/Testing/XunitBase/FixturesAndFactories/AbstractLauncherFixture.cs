@@ -15,15 +15,17 @@ namespace EDennis.AspNetCore.Base.Testing {
         //the threading mechanism used to remotely terminate launcher apps
         private readonly EventWaitHandle _ewh;
 
-        /// <summary>
-        /// The entry-point application's port (must be overidden in subclass)
-        /// </summary>
-        public abstract int EntryPointPort { get; }
+        public virtual string InstanceName { get; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// The entry-point application's scheme (can be overidden in subclass)
         /// </summary>
         public virtual string EntryPointScheme { get; } = "https";
+
+        /// <summary>
+        /// The entry-point application's port (must be overidden in subclass)
+        /// </summary>
+        public abstract int EntryPointPort { get; }
 
         /// <summary>
         /// The Launcher's Main method (must be overidden in subclass)
@@ -49,6 +51,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             HttpClient = new HttpClient {
                 BaseAddress = new Uri($"{EntryPointScheme}://localhost:{EntryPointPort}")
             };
+            HttpClient.DefaultRequestHeaders.Add(Constants.TESTING_INSTANCE_KEY, InstanceName);
 
             //asynchronously initiate the launch of the server 
             Task.Run(() => { LauncherMain(new string[] { arg }); });

@@ -1,6 +1,8 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityModel;
+using IdentityServer4.Models;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
@@ -31,16 +33,16 @@ namespace EDennis.AspNetCore.Base {
             get {
                 return _mappings ?? new ApiMappings {
                     ClaimsToHeaders = new ClaimsToHeaders {
-                        { "name", "X-User" },
-                        { "role", "X-Role" }
+                        { JwtClaimTypes.Name, Constants.USER_KEY },
+                        { JwtClaimTypes.Role, Constants.ROLE_KEY }
                     },
                     HeadersToHeaders = new HeadersToHeaders {
-                        { "X-Testing-Rollback", "X-Testing-Rollback" },
-                        { "X-Set-ScopedLogger", "X-Set-ScopedLogger" },
-                        { "X-Clear-ScopedLogger", "X-Clear-ScopedLogger" },
-                        { "X-User", "X-User" },
-                        { "X-Role", "X-Role" },
-                        { "X-HostPath", "X-HostPath" }
+                        { Constants.TESTING_INSTANCE_KEY, Constants.TESTING_INSTANCE_KEY },
+                        { Constants.SET_SCOPEDLOGGER_KEY, Constants.SET_SCOPEDLOGGER_KEY },
+                        { Constants.CLEAR_SCOPEDLOGGER_KEY, Constants.SET_SCOPEDLOGGER_KEY },
+                        { Constants.USER_KEY, Constants.USER_KEY },
+                        { Constants.ROLE_KEY, Constants.ROLE_KEY },
+                        { Constants.HOSTPATH_KEY, Constants.HOSTPATH_KEY }
                     }
                 };
             } 

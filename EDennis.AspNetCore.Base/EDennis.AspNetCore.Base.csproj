@@ -85,5 +85,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
   </ItemGroup>  
   
+  <ItemGroup>
+    <Folder Include="Web\Middleware\Utils\" />
+  </ItemGroup>  
+  
 
 </Project>

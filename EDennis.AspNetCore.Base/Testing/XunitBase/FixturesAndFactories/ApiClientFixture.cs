@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public abstract class SecureApiClientFixture<TClient> : AbstractLauncherFixture
-        where TClient : SecureApiClient {
+    public abstract class ApiClientFixture<TClient> : AbstractLauncherFixture
+        where TClient : ApiClient {
 
 
         public const string DEFAULT_USER = "tester@example.org";
@@ -36,12 +36,11 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public virtual string ApisConfigurationKey { get; } = "Apis";
 
-        public SecureTokenService SecureTokenService { get; }
-        public SecureApiClient ApiClient { get; }
+        public ApiClient ApiClient { get; }
         public Apis Apis { get; }
         public Api Api { get; }
 
-        public SecureApiClientFixture() {
+        public ApiClientFixture() {
             Apis = GetApisSettings();
             Api = GetApiSettings(Apis);
 
@@ -49,11 +48,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 BaseAddress = new Uri(Api.MainAddress)
             };
 
-            SecureTokenService = new SecureTokenService(GetIOptionsMonitorApis(Apis), NullLogger<SecureTokenService>.Instance);
             ApiClient = (SecureApiClient) Activator.CreateInstance(typeof(TClient), 
                 new object[] { GetIOptionsMonitorApis(Apis),
                     ScopeProperties,
-                    SecureTokenService,
                     NullLogger<TClient>.Instance }
             );
         }
