@@ -10,5 +10,7 @@ namespace EDennis.AspNetCore.Base {
         public UserSource[] InstanceNameSource { get; set; } = new UserSource[] { Base.UserSource.JwtNameClaim };
         public bool IsInMemory { get; set; }
         public IsolationLevel IsolationLevel { get; set; }
+        public bool ResetSqlServerIdentities { get; set; }
+        public bool ResetSqlServerSequences { get; set; }
     }
 }

@@ -23,10 +23,10 @@ namespace EDennis.AspNetCore.Base.Web {
     /// </summary>
     public class HeadersToClaimsMiddleware {
         private readonly RequestDelegate _next;
-        private readonly IOptionsMonitor<AppSettings> _appSettings;
-        public HeadersToClaimsMiddleware(RequestDelegate next, IOptionsMonitor<AppSettings> appSettings) {
+        private readonly IOptionsMonitor<HeadersToClaims> _settings;
+        public HeadersToClaimsMiddleware(RequestDelegate next, IOptionsMonitor<HeadersToClaims> settings) {
             _next = next;
-            _appSettings = appSettings;
+            _settings = settings;
         }
 
         public async Task InvokeAsync(HttpContext context) {
@@ -36,7 +36,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 if (context.User != null) {
 
-                    var htc = _appSettings.CurrentValue.Mappings?.HeadersToClaims;
+                    var htc = _settings.CurrentValue;
                     var claims = new List<Claim>();
                     bool claimsAdded = false;
 

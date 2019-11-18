@@ -46,7 +46,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 if (context.Request.Headers.ContainsKey(Constants.ROLLBACK_REQUEST_KEY))
                     newConnection = true;
-                else if (context.Request.Query.ContainsKey(Constants.ROLLBACK_QUERY_KEY))
+                else if (context.Request.Query.ContainsKey(Constants.ROLLBACK_REQUEST_KEY))
                     newConnection = true;
 
                 var instanceName = MiddlewareUtils.ResolveUser(context, settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");

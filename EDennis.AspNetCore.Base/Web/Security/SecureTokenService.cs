@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -29,7 +30,6 @@ namespace EDennis.AspNetCore.Base.Security {
         private readonly string _clientSecret;
         private Timer _timer;
         private readonly Apis _apis;
-        private readonly IWebHostEnvironment _environment;
 
         /// <summary>
         /// This buffer period is used to explicitly invalidate a token that is requested
@@ -40,6 +40,9 @@ namespace EDennis.AspNetCore.Base.Security {
         /// </summary>
         public static readonly TimeSpan TOKEN_EXPIRATION_BUFFER_PERIOD = new TimeSpan(0, 0, 15);
 
+        public static readonly TimeSpan DISCOVERY_DOCUMENT_RETRIEVAL_FREQUENCY = new TimeSpan(0, 5, 0);
+
+
         protected ILogger Logger { get; }
 
 
@@ -48,24 +51,21 @@ namespace EDennis.AspNetCore.Base.Security {
 
 
         #region public api
-        public SecureTokenService(HttpClient httpClient,
-            ILogger<SecureTokenService> logger,
-            IOptionsMonitor<AppSettings> appSettings,
-            IWebHostEnvironment environment) {
+        public SecureTokenService(
+            IOptionsMonitor<Apis> apis,
+            ILogger<SecureTokenService> logger) {
 
             Logger = logger;
+            _apis = apis.CurrentValue;
 
-            var security = appSettings.CurrentValue.Security;
-            _apis = appSettings.CurrentValue.Apis;
-
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri(security.IdentityServerApi);
-            _clientSecret = security.ClientSecret;
-            _pingFrequency = security.IdentityServerPingFrequency;
-            _environment = environment;
+            var identityServerApi = _apis.FirstOrDefault(a => a.Value.OAuth != null || a.Value.Oidc != null).Value;
+            var auth = identityServerApi.OAuth ?? identityServerApi.Oidc;
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(identityServerApi.MainAddress);
+            _clientSecret = auth.ClientSecret;
 
             if (_pingFrequency > 0)
-                SchedulePing();
+                ScheduleDiscoveryDocument();
         }
 
 
@@ -94,7 +94,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
             using (Logger.BeginScope(loggerScope)) {
 
-                //if the cache has an unexpired token for the profile and client, return it.
+                //if the cache has an unexpired token for the client, return it.
                 if (_tokenCache.ContainsKey(client.ApiKey)) {
                     cachedToken = _tokenCache[client.ApiKey];
                     if (cachedToken != null && cachedToken.Expiration < DateTime.Now) {
@@ -237,12 +237,12 @@ namespace EDennis.AspNetCore.Base.Security {
         /// Schedules Identity Server to be pinged -- retrieving a new Discovery Document --
         /// at the _pingFrequency interval
         /// </summary>
-        private void SchedulePing() {
+        private void ScheduleDiscoveryDocument() {
             var autoEvent = new AutoResetEvent(false);
             var callbackInvoker = new CallbackInvoker(GetDiscoveryDocumentResponse);
 
             _timer = new Timer(callbackInvoker.InvokeCallback,
-                               autoEvent, 0, _pingFrequency * 1000 * 60);
+                               autoEvent, 0, (int)DISCOVERY_DOCUMENT_RETRIEVAL_FREQUENCY.TotalSeconds * 1000);
         }
 
 

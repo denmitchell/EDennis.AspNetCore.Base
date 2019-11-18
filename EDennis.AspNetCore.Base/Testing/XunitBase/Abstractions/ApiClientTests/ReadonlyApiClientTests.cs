@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing
                 ApiLauncherFactory<TStartup> factory) {
 
             Output = output;
-            ApiClient = ApiClientLauncherFixture.CreateReadonlyClient<TClient, TStartup>(factory);
+            ApiClient = SecureApiClientFixture.CreateReadonlyClient<TClient, TStartup>(factory);
             InstanceName = ApiClient.GetInstanceName();
 
         }
