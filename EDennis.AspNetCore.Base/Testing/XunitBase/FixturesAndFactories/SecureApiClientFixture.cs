@@ -60,6 +60,14 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+        public void SendReset() {
+            var headers = ApiClient.HttpClient.DefaultRequestHeaders;
+            if (!headers.Contains(Constants.ROLLBACK_REQUEST_KEY)) {
+                headers.Add(Constants.ROLLBACK_REQUEST_KEY, "true");
+            }
+        }
+
+
         private Apis GetApisSettings() {
             var settings = new Apis();
             Configuration.GetSection(ApisConfigurationKey).Bind(settings);
