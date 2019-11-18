@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.Logging {
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) {
-            Log(logLevel, eventId, state, exception, formatter);
+            Logger.Log(logLevel, eventId, state, exception, formatter);
         }
 
 

@@ -4,19 +4,25 @@ using System;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    //TODO: Determine if this is still needed
-    public class ConfigurationFactory<TClass> : IDisposable 
+    /// <summary>
+    /// Note: Add appsettings.json, appsettings.{env}.json, and 
+    /// (optionally) appsettings.{Shared}.json to the test project.
+    /// If using Visual Studio, add these files as linked files.
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
+    public class ConfigurationFixture<TClass> : IDisposable 
         where TClass : class {
 
         public IConfiguration Configuration { get; }
 
-        public ConfigurationFactory() {
+        public ConfigurationFixture() {
 
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
             Configuration = new ConfigurationBuilder()
-                .AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TClass).Assembly), $"appsettings.json", true, true)
-                .AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TClass).Assembly), $"appsettings.{env}.json", true, true)
+                .AddJsonFile($"appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{env}.json", true, true)
+                .AddJsonFile($"appsettings.Shared.json", true, true)
                 .AddEnvironmentVariables()
                 .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" })
                 .Build();

@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing
 {
-    public abstract class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationFactory<TRepo>>, IDisposable
+    public abstract class WriteableTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> : IClassFixture<ConfigurationFixture<TRepo>>, IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
         where TContext : DbContext
         where THistoryContext : DbContext
@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing
         protected string HistoryInstanceName { get; }
 
         public WriteableTemporalRepoTests(ITestOutputHelper output, 
-            ConfigurationFactory<TRepo> fixture,
+            ConfigurationFixture<TRepo> fixture,
             string testUser = "tester@example.org") {
 
             Output = output;

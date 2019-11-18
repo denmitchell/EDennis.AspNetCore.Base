@@ -7,7 +7,7 @@ namespace EDennis.AspNetCore.Base.Testing
 {
 
     public abstract class ReadonlyTemporalRepoTests<TRepo, TEntity, TContext, THistoryContext> 
-        : IClassFixture<ConfigurationFactory<TRepo>>
+        : IClassFixture<ConfigurationFixture<TRepo>>
 
         where TEntity : class, IEFCoreTemporalModel , new()
         where TContext : DbContext
@@ -19,7 +19,7 @@ namespace EDennis.AspNetCore.Base.Testing
         protected ITestOutputHelper Output { get; }
         protected TRepo Repo { get; }
 
-        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationFactory<TRepo> fixture) {
+        public ReadonlyTemporalRepoTests(ITestOutputHelper output, ConfigurationFixture<TRepo> fixture) {
 
             Output = output;
             Repo = TestRepoFactory.CreateReadonlyTemporalRepo<TRepo,TEntity,TContext,THistoryContext, TRepo>(fixture);

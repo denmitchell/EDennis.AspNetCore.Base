@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -35,6 +36,33 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             };
 
         }
+
+
+        public static DbContext GetTestDbContext<TContext>(DbContextInterceptorSettings<TContext> settings)
+            where TContext : DbContext {
+
+            var dbConnection = (settings.DatabaseProvider) switch
+            {
+                DatabaseProvider.SqlServer => GetSqlServerDbConnection(settings),
+                DatabaseProvider.Sqlite => GetSqliteDbConnection(settings),
+                DatabaseProvider.InMemory => GetInMemoryDbConnection<TContext>(),
+                _ => null,
+            };
+
+            var builder = new DbContextOptionsBuilder<TContext>();
+            builder = (settings.DatabaseProvider) switch
+            {
+                DatabaseProvider.SqlServer => builder.UseSqlServer(dbConnection.IDbConnection as SqlConnection),
+                DatabaseProvider.Sqlite => builder.UseSqlite(dbConnection.IDbConnection as SqliteConnection),
+                DatabaseProvider.InMemory => builder.UseInMemoryDatabase(Guid.NewGuid().ToString()),
+                _ => null,
+            };
+
+            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
+            return context;
+        }
+
 
 
         public static DbConnection<TContext> GetInMemoryDbConnection<TContext>()

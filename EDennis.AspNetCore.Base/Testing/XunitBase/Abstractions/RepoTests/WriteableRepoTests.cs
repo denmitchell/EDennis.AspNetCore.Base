@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing
 {
     public abstract class WriteableRepoTests<TRepo, TEntity, TContext> 
-        : IClassFixture<ConfigurationFactory<TRepo>>, IDisposable
+        : IClassFixture<ConfigurationFixture<TRepo>>, IDisposable
         
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
@@ -21,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Testing
 
 
         public WriteableRepoTests(ITestOutputHelper output, 
-            ConfigurationFactory<TRepo> fixture,
+            ConfigurationFixture<TRepo> fixture,
             string testUser = "tester@example.org") {
 
             Output = output;

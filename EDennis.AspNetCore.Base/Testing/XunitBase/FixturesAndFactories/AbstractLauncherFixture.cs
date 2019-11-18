@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EDennis.AspNetCore.Base.Web;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Testing {
 
     /// <summary>
+    /// Subclass this abstract fixture if using Xunit with the ApiLauncher pattern
     /// Xunit class fixture used to launch and terminate a web server for integration testing
     /// </summary>
     public abstract class AbstractLauncherFixture : IDisposable {

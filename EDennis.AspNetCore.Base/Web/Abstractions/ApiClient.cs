@@ -1,20 +1,15 @@
-﻿using EDennis.AspNetCore.Base.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
-namespace EDennis.AspNetCore.Base.Web
-{
+namespace EDennis.AspNetCore.Base.Web {
     //note: use ApiAttribute(ApiKey) to specify a key for the configuration file that
     //      differs from the class name
-    public abstract class ApiClient : IHasILogger {
+    public abstract class ApiClient {
 
         public HttpClient HttpClient { get; set; }
         public Api Api { get; set; }
@@ -22,13 +17,13 @@ namespace EDennis.AspNetCore.Base.Web
         public IScopeProperties ScopeProperties { get; set; }
 
         public ApiClient(HttpClient httpClient,
-            IOptionsMonitor<AppSettings> appSettings, 
+            IOptionsMonitor<Apis> apis, 
             IScopeProperties scopeProperties,
             ILogger logger) {
 
             HttpClient = httpClient;
             try {
-                Api = appSettings.CurrentValue.Apis[GetApiKey()];
+                Api = apis.CurrentValue[GetApiKey()];
             } catch (Exception ex) {
                 Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", this.GetType().Name, GetApiKey());
             }
@@ -56,14 +51,7 @@ namespace EDennis.AspNetCore.Base.Web
         private void BuildClient() {
 
             #region BaseAddress
-            string baseAddress = null;
-
-
-            if (Api.NeedsLaunched) {
-                baseAddress = $"{Api.Scheme}://{Api.Host}:{Api.HttpsPort}";
-            }
-
-            HttpClient.BaseAddress = new Uri(baseAddress);
+            HttpClient.BaseAddress = new Uri(Api.MainAddress);
             #endregion
             #region DefaultRequestHeaders
 
@@ -77,12 +65,12 @@ namespace EDennis.AspNetCore.Base.Web
             //add claims as headers
             foreach (var key in claimsToTransfer.Keys)
                 foreach(var claim in claimsDictionary.Where(d=>d.Key == key))
-                    HttpClient.DefaultRequestHeaders.AddOrReplace(key, claim.Value.ToArray());
+                    HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, claim.Value.ToArray());
 
             //add additional headers
             foreach (var key in headersToTransfer.Keys)
                 foreach(var hdr in ScopeProperties.Headers.Where(d=>d.Key == key))
-                    HttpClient.DefaultRequestHeaders.AddOrReplace(key, hdr.Value.ToArray());
+                    HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, hdr.Value.ToArray());
 
 
             #endregion

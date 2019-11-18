@@ -71,9 +71,18 @@ namespace EDennis.AspNetCore.Base.Configuration {
                 _services.TryAddSingleton<SecureTokenService, SecureTokenService>();
                 _services.TryAddScoped<IdentityServerApi>();
             }
-            _services.Configure<Api<TClientImplementation>>(_section.GetSection(configKey));
-            _services.AddHttpClient<TClientInterface, TClientImplementation>();
-            _services.AddHttpClient<TClientImplementation, TClientImplementation>();
+            var api = new Api();
+            _section.GetSection(configKey).Bind(configKey);
+            _services.AddHttpClient<TClientInterface, TClientImplementation>(
+                    options=> {
+                        options.BaseAddress = new Uri(api.MainAddress);
+                    }
+                );
+            _services.AddHttpClient<TClientImplementation, TClientImplementation>(
+                    options => {
+                        options.BaseAddress = new Uri(api.MainAddress);
+                    }
+                );
         }
 
 

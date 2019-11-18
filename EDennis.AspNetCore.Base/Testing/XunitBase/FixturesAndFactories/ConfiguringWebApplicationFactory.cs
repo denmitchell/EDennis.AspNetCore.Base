@@ -6,7 +6,12 @@ using System;
 
 namespace EDennis.AspNetCore.Base.Testing
 {
-    //TODO: Determine if this is still needed
+    /// <summary>
+    /// Note: Add appsettings.json, appsettings.{env}.json, and 
+    /// (optionally) appsettings.{Shared}.json to the test project.
+    /// If using Visual Studio, add these files as linked files.
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
     public class ConfiguringWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup>
         where TStartup : class{
 
@@ -25,8 +30,9 @@ namespace EDennis.AspNetCore.Base.Testing
                 .UseStartup<TStartup>()
                 .UseEnvironment(env)
                 .ConfigureAppConfiguration(options => {
-                    options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.json", true, true);
-                    options.AddJsonFile(new ManifestEmbeddedFileProvider(typeof(TStartup).Assembly), $"appsettings.{env}.json", true, true);
+                    options.AddJsonFile($"appsettings.json", true, true);
+                    options.AddJsonFile($"appsettings.{env}.json", true, true);
+                    options.AddJsonFile($"appsettings.Shared.json", true, true);
                     options.AddEnvironmentVariables();
                     options.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
                 });

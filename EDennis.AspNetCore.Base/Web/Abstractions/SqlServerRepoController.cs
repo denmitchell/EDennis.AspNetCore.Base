@@ -4,19 +4,19 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web
-{
+namespace EDennis.AspNetCore.Base.Web {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class WriteableController<TEntity, TContext> : ControllerBase
-            where TEntity : class, IHasSysUser, IHasIntegerId, new()
+    public abstract class SqlServerRepoController<TEntity, TContext> : ControllerBase
+            where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
 
-        private readonly WriteableRepo<TEntity,TContext> _repo;
+        private readonly ISqlServerRepo<TEntity, TContext> _repo;
 
-        public WriteableController(WriteableRepo<TEntity, TContext> repo) {
+        public SqlServerRepoController(ISqlServerRepo<TEntity, TContext> repo) {
             _repo = repo;
         }
 
@@ -46,7 +46,7 @@ namespace EDennis.AspNetCore.Base.Web
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet("devextreme")]
-        public IActionResult GetDevExtreme(                   
+        public IActionResult GetDevExtreme(
                 [FromQuery]string select,
                 [FromQuery]string sort,
                 [FromQuery]string filter,
@@ -57,13 +57,12 @@ namespace EDennis.AspNetCore.Base.Web
                 [FromQuery]string groupSummary
             ) {
             var loadOptions = DataSourceLoadOptionsBuilder.Build(
-                select, sort, filter, skip, take, totalSummary, 
+                select, sort, filter, skip, take, totalSummary,
                 group, groupSummary);
 
             var result = DataSourceLoader.Load(_repo.Query, loadOptions);
             return Ok(result);
         }
-
 
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace EDennis.AspNetCore.Base.Web
                 [FromQuery]int? take = null
                 ) {
             return new ObjectResult(_repo.GetFromDynamicLinq(
-                where,orderBy,select,skip,take));
+                where, orderBy, select, skip, take));
         }
 
 
@@ -114,92 +113,59 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
-        /// <summary>
-        /// Get by primary key
-        /// </summary>
-        /// <param name="id">integer primary key</param>
-        /// <returns></returns>
-        [HttpGet("{id}")]
-        public IActionResult Get(int id) {
-            var rec = _repo.GetById(id);
-            if (rec == null)
-                return NotFound();
-            else
-                return new ObjectResult(rec);
+
+        [HttpGet("sp")]
+        public IActionResult GetFromStoredProcedure([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+
+            return Ok(_repo.GetFromStoredProcedure(
+                spName, parms));
         }
 
-        /// <summary>
-        /// Get by primary key
-        /// </summary>
-        /// <param name="id">integer primary key</param>
-        /// <returns></returns>
-        [HttpGet("async/{id}")]
-        public async Task<IActionResult> GetAsync(int id) {
-            var rec = await _repo.GetByIdAsync(id);
-            if (rec == null)
-                return NotFound();
-            else
-                return new ObjectResult(rec);
+        [HttpGet("sp/async")]
+        public async Task<IActionResult> GetFromStoredProcedureAsync([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+
+            return Ok(await _repo.GetFromStoredProcedureAsync(
+                spName, parms));
         }
 
+        [HttpGet("json")]
+        public ActionResult<string> GetJsonColumnFromStoredProcedure([FromQuery] string spName) {
 
-        [HttpPost]
-        public IActionResult Post([FromBody]TEntity value) {
-            var created = _repo.Create(value);
-            return CreatedAtAction("Get", created.Id, created);
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+            var json = _repo.GetJsonColumnFromStoredProcedure(
+                spName, parms);
+
+
+            return Content(json, "application/json");
+
         }
 
-        [HttpPost("async")]
-        public async Task<IActionResult> PostAsync([FromBody]TEntity value) {
-            var created = await _repo.CreateAsync(value);
-            return CreatedAtAction("Get", created.Id, created);
-        }
+        [HttpGet("json/async")]
+        public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
 
-        [HttpPut("{id}")]
-        public IActionResult Put([FromBody]TEntity value, [FromRoute]int id) {
-            if (id != value.Id)
-                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
-            try {
-                var updated = _repo.Update(value,id);
-                return CreatedAtAction("Get", updated.Id, updated);
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
-            }
-        }
-
-        [HttpPut("async/{id}")]
-        public async Task<IActionResult> PutAsync([FromBody]TEntity value, [FromRoute]int id) {
-            if (id != value.Id)
-                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
-            try {
-                var updated = await _repo.UpdateAsync(value, id);
-                return CreatedAtAction("Get", updated.Id, updated);
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
-            }
-        }
+            var json = await _repo.GetJsonColumnFromStoredProcedureAsync(
+                spName, parms);
 
 
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute]int id) {
-            try {
-                _repo.Delete(id);
-                return NoContent();
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
-            }
-        }
-
-        [HttpDelete("async/{id}")]
-        public async Task<IActionResult> DeleteAsync([FromRoute]int id) {
-            try {
-                await _repo.DeleteAsync(id);
-                return NoContent();
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
-            }
+            return Content(json, "application/json");
         }
 
     }

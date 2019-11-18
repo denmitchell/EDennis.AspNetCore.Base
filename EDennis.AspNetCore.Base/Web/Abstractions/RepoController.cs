@@ -11,13 +11,13 @@ namespace EDennis.AspNetCore.Base.Web
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class ReadonlyController<TEntity, TContext> : ControllerBase
-            where TEntity : class, new()
+    public abstract class RepoController<TEntity, TContext> : ControllerBase
+            where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
 
-        private readonly ReadonlyRepo<TEntity,TContext> _repo;
+        private readonly IRepo<TEntity,TContext> _repo;
 
-        public ReadonlyController(ReadonlyRepo<TEntity, TContext> repo) {
+        public RepoController(IRepo<TEntity, TContext> repo) {
             _repo = repo;
         }
 

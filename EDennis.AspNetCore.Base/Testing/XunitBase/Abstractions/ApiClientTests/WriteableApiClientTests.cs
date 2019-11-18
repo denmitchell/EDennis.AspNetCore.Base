@@ -21,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Testing
                 string testUser = "tester@example.org") {
 
             Output = output;
-            ApiClient = TestApiClientFactory.CreateWriteableClient<TClient, TStartup>(fixture, testUser);
+            ApiClient = ApiClientLauncherFixture.CreateWriteableClient<TClient, TStartup>(fixture, testUser);
             HttpClient = ApiClient.HttpClient;
             InstanceName = ApiClient.GetInstanceName();
 

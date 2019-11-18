@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class ReadonlyRepoTests<TRepo, TEntity, TContext> 
-            : IClassFixture<ConfigurationFactory<TRepo>>
+            : IClassFixture<ConfigurationFixture<TRepo>>
 
         where TEntity : class, new()
         where TContext : DbContext
@@ -21,10 +21,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected ITestOutputHelper Output { get; }
         protected TRepo Repo { get; }
 
-        public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationFactory<TRepo> fixture) {
+        public ReadonlyRepoTests(ITestOutputHelper output, ConfigurationFixture<TRepo> fixture) {
 
             Output = output;
-            Repo = TestRepoFactory.CreateReadonlyRepo<TRepo, TEntity, TContext, TRepo>(fixture);
+            Repo = TestRepoFactory.CreateRepo<TRepo, TEntity, TContext, TRepo>(fixture);
 
         }
 
