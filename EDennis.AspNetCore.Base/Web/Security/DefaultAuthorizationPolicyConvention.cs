@@ -10,12 +10,12 @@ namespace EDennis.AspNetCore.Base.Security {
     /// This obviates the need for adding an [Authorize(SomePolicy)] attribute
     /// to the controller and actions
     /// </summary>
-    public class AddDefaultAuthorizationPolicyConvention : IControllerModelConvention {
+    public class DefaultAuthorizationPolicyConvention : IControllerModelConvention {
 
         private readonly string _appName;
         private readonly IConfiguration _config;
 
-        public AddDefaultAuthorizationPolicyConvention(IWebHostEnvironment env, IConfiguration config) {
+        public DefaultAuthorizationPolicyConvention(IWebHostEnvironment env, IConfiguration config) {
             _appName = env.ApplicationName;
             _config = config;
         }

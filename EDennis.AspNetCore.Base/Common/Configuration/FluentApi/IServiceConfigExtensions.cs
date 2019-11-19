@@ -2,10 +2,13 @@
 using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -41,6 +44,27 @@ namespace EDennis.AspNetCore.Base {
             serviceConfig.Services.TryAddScoped<IScopedLogger, TScopedLogger>();
             return serviceConfig;
 
+        }
+
+        public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig, 
+            IWebHostEnvironment env, string identityServerApiKey) {
+
+            serviceConfig.Services.AddControllers(options => {
+                options.Conventions.Add(new DefaultAuthorizationPolicyConvention(env, serviceConfig.Configuration));
+            });
+
+            serviceConfig.Goto(identityServerApiKey);
+            var api = new Api();
+            serviceConfig.ConfigurationSection.Bind(api);
+
+            serviceConfig.Services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    serviceConfig.Configuration, api, logger);
+                }
+            );
+
+            return serviceConfig;
         }
 
 

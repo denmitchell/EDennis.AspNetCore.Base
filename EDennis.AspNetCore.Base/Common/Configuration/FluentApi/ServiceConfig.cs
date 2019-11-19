@@ -20,11 +20,11 @@ namespace EDennis.AspNetCore.Base {
     public class ServiceConfig : IServiceConfig {
 
         public IServiceCollection Services { get; }
-        private readonly IConfiguration _config;
+        public IConfiguration Configuration { get; }
         public IConfigurationSection ConfigurationSection { get; private set; }
 
         public ServiceConfig(IServiceCollection services, IConfiguration config) {
-            _config = config;
+            Configuration = config;
             Services = services;
             ConfigurationSection = config.GetSection("");
         }
@@ -40,7 +40,7 @@ namespace EDennis.AspNetCore.Base {
                     try {
                         var path = ConfigurationSection.Path;
                         var parent = path.Substring(0, path.LastIndexOf(":"));
-                        ConfigurationSection = _config.GetSection(parent);
+                        ConfigurationSection = Configuration.GetSection(parent);
                         key = key.Substring(3);
                     } catch (Exception ex) {
                         throw new ApplicationException($"Cannot navigate to {configKey} from {origPath}: {ex.Message}");
@@ -52,7 +52,7 @@ namespace EDennis.AspNetCore.Base {
             if(key.StartsWith(":")) //relative path                
                 ConfigurationSection = ConfigurationSection.GetSection(configKey);
             else //absolute path
-                ConfigurationSection = _config.GetSection(configKey);
+                ConfigurationSection = Configuration.GetSection(configKey);
             return this;
         }
 

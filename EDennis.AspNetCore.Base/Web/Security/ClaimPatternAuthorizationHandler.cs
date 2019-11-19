@@ -25,21 +25,23 @@ namespace EDennis.AspNetCore.Base.Security {
         /// <param name="AllowedValues">The optional list of claim values, which, if present, 
         /// the claim must NOT match.</param>
         public ClaimPatternAuthorizationHandler(
-                string requirementScope, ScopePatternSettings options,
+                string requirementScope, Api api,
                 ConcurrentDictionary<string, bool> policyPatternCache,
                 ILogger logger) {
 
             RequirementScope = requirementScope;
             PolicyPatternCache = policyPatternCache;
 
-            if (options != null) {
+            if (api != null) { 
+                
+                IsOidc = api.Oidc != null;
 
-                IsOidc = options.IsOidc;
-
-                if (IsOidc)
-                    UserScopePrefix = options.UserScopePrefix?.ToLower();
-
-                ExclusionPrefix = options.ExclusionPrefix;
+                if (api.Oidc != null) {
+                    UserScopePrefix = api.Oidc.UserScopePrefix?.ToLower();
+                    ExclusionPrefix = api.Oidc.ExclusionPrefix;
+                } else if (api.OAuth != null) {
+                    ExclusionPrefix = api.OAuth.ExclusionPrefix;
+                }
                 Logger = logger;
             }
         }

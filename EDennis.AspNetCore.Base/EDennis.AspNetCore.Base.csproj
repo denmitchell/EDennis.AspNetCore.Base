@@ -43,7 +43,6 @@
     <Content Include="Common\Configuration\Apis\apis.appsettings.Shared.json" />
     <Content Include="Common\Configuration\Apis\apis.appsettings.Embedded.json" />
     <Content Include="Common\Configuration\README.txt" />
-    <Content Include="Common\Configuration\sample.appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>

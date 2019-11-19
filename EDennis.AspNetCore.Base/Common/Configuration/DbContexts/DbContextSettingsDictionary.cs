@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class DbContextSettingsDictionary : Dictionary<string,DbContextSettings> {
+    public class DbContextSettingsDictionary<TContext> : Dictionary<string,DbContextSettings<TContext>>
+        where TContext : DbContext {
     }
 }

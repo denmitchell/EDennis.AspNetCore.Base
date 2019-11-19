@@ -25,7 +25,6 @@ namespace EDennis.AspNetCore.Base.Security {
     public class SecureTokenService : IDisposable, ISecureTokenService {
 
         private readonly HttpClient _httpClient;
-        private readonly int _pingFrequency;
         private DiscoveryDocumentResponse _disco;
         private readonly string _clientSecret;
         private Timer _timer;
@@ -66,12 +65,12 @@ namespace EDennis.AspNetCore.Base.Security {
 
             var identityServerApi = _apis.FirstOrDefault(a => a.Value.OAuth != null || a.Value.Oidc != null).Value;
             var auth = identityServerApi.OAuth ?? identityServerApi.Oidc;
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(identityServerApi.MainAddress);
+            _httpClient = new HttpClient {
+                BaseAddress = new Uri(identityServerApi.MainAddress)
+            };
             _clientSecret = auth.ClientSecret;
 
-            if (_pingFrequency > 0)
-                ScheduleDiscoveryDocument();
+            ScheduleDiscoveryDocument();
         }
 
 
@@ -146,7 +145,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
             await _httpClient.RevokeTokenAsync(new TokenRevocationRequest {
                 Address = _disco.RevocationEndpoint,
-                ClientId = _environment.ApplicationName,
+                ClientId = ApplicationName,
                 ClientSecret = _clientSecret,
 
                 Token = tokenResponse.AccessToken
@@ -199,7 +198,7 @@ namespace EDennis.AspNetCore.Base.Security {
             }
 
 
-            return await GetTokenResponse(_environment.ApplicationName, _clientSecret, matchingApi.Scopes);
+            return await GetTokenResponse(ApplicationName, _clientSecret, matchingApi.Scopes);
 
         }
 

@@ -1,8 +1,4 @@
-﻿using EDennis.AspNetCore.Base.Logging;
-using MethodBoundaryAspect.Fody.Attributes;
-using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using WebApplication4;
+﻿using MethodBoundaryAspect.Fody.Attributes;
 
 namespace EDennis.AspNetCore.Base {
     public sealed class MethodCallbackAttribute : OnMethodBoundaryAspect {
