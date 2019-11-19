@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using EDennis.AspNetCore.Base.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -15,11 +16,13 @@ namespace EDennis.AspNetCore.Base.Web {
         public Api Api { get; set; }
         public ILogger Logger { get; }
         public IScopeProperties ScopeProperties { get; set; }
+        public IScopedLogger ScopedLogger { get; }
 
         public ApiClient(HttpClient httpClient,
             IOptionsMonitor<Apis> apis,
             IScopeProperties scopeProperties,
-            ILogger logger) {
+            ILogger logger,
+            IScopedLogger scopedLogger = null) {
 
             HttpClient = httpClient;
             try {
@@ -28,6 +31,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", this.GetType().Name, GetApiKey());
             }
             Logger = logger;
+            ScopedLogger = scopedLogger;
 
             ScopeProperties = scopeProperties;
 
@@ -51,7 +55,8 @@ namespace EDennis.AspNetCore.Base.Web {
         private void BuildClient() {
 
             #region BaseAddress
-            HttpClient.BaseAddress = new Uri(Api.MainAddress);
+            if(!HttpClient.BaseAddress.ToString().Equals(Api.MainAddress))
+                HttpClient.BaseAddress = new Uri(Api.MainAddress);
             #endregion
             #region DefaultRequestHeaders
 

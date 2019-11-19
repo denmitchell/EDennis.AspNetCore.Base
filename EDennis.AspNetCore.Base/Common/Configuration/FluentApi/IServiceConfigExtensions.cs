@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,15 @@ namespace EDennis.AspNetCore.Base {
         public const string DEFAULT_MOCK_HEADERS_RELATIVE_PATH = ":MockHeaders";
         public const string DEFAULT_MOCK_CLIENT_RELATIVE_PATH = ":MockClient";
         public const string DEFAULT_HEADERS_TO_CLAIMS_RELATIVE_PATH = ":HeadersToClaims";
+
+
+        public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)
+            where TScopedLogger : class, IScopedLogger {
+            serviceConfig.Services.TryAddScoped<IScopedLogger, TScopedLogger>();
+            return serviceConfig;
+
+        }
+
 
         public static ApiConfig AddApi<TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientImplementation : ApiClient {

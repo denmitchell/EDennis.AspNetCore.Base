@@ -370,18 +370,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public virtual void OnEntry(MethodExecutionArgs args) {
-            if (ScopedLogger.LogLevel == LogLevel.Trace)
+            if (ScopedLogger != null && ScopedLogger.LogLevel == LogLevel.Trace)
                 ScopedLogger.LogEntry(args, LogLevel.Trace, ScopeProperties);
         }
 
         public virtual void OnExit(MethodExecutionArgs args) {
-            if (ScopedLogger.LogLevel == LogLevel.Trace)
+            if (ScopedLogger != null && ScopedLogger.LogLevel == LogLevel.Trace)
                 ScopedLogger.LogExit(args, LogLevel.Trace, ScopeProperties);
         }
 
-        public virtual void OnException(MethodExecutionArgs args) =>
-            ScopedLogger.LogException(args, ScopeProperties);
-
+        public virtual void OnException(MethodExecutionArgs args) {
+            if (ScopedLogger != null)
+                ScopedLogger.LogException(args, ScopeProperties);
+        }
 
 
 
