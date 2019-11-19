@@ -10,6 +10,23 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
+
+    /// <summary>
+    /// This class provides extension methods for IServiceConfig.  IServiceConfig is
+    /// an interface that wraps IServiceCollection and IConfiguration and provides navigation
+    /// through the configuration tree.  Extensions on this interface allow for a fluent
+    /// experience with configuration.
+    /// 
+    /// The current set of extension methods provides configuration of the following:
+    /// <list type="bullet">
+    /// <item>An individual Api</item>
+    /// <item>An individual DbContext</item>
+    /// <item>ScopeProperties settings (for middleware)</item>
+    /// <item>MockHeaders settings (for middleware)</item>
+    /// <item>MockClient settings (for middleware)</item>
+    /// <item>HeadersToClaims settings (for middleware)</item>
+    /// </list>
+    /// </summary>
     public static class IServiceConfigExtensions {
 
         public const string DEFAULT_SCOPE_PROPERTIES_RELATIVE_PATH = ":ScopeProperties";
