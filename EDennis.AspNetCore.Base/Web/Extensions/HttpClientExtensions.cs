@@ -231,19 +231,19 @@ namespace EDennis.AspNetCore.Base.Web {
         public static async void SendResetAsync(this HttpClient client, string operationName,
             string instanceName)
         {
-            using var msg = new HttpRequestMessage
-            {
-                Method = HttpMethod.Options,
-                RequestUri = client.BaseAddress
-            };
-            var xTestingHeaders = client.DefaultRequestHeaders.Where(h => h.Key.StartsWith("X-Testing")).Select(h => h.Key).ToArray();
-            for (int i = 0; i < xTestingHeaders.Count(); i++)
-                client.DefaultRequestHeaders.Remove(xTestingHeaders[i]);
-
-            msg.Headers.Add($"{operationName}", $"{instanceName}");
-            try
-            {
-                await client.SendAsync(msg);
+            try {
+                using var tcp = new TcpClient(client.BaseAddress.Host, client.BaseAddress.Port) {
+                    SendTimeout = 500,
+                    ReceiveTimeout = 1000
+                };
+                var builder = new StringBuilder()
+                    .AppendLine($"{Constants.RESET_METHOD} /?instance={instanceName} HTTP/1.1")
+                    .AppendLine($"Host: {client.BaseAddress.Host}")
+                    .AppendLine("Connection: close")
+                    .AppendLine();
+                var header = Encoding.ASCII.GetBytes(builder.ToString());
+                using var stream = tcp.GetStream();
+                await stream.WriteAsync(header, 0, header.Length);
             }
             catch (Exception)
             {

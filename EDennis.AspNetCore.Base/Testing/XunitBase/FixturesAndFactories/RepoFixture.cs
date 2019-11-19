@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 
 
-namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
+namespace EDennis.AspNetCore.Base.Testing {
     public abstract class RepoFixture<TRepo, TEntity, TContext> : IDisposable
         where TRepo : IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
@@ -19,7 +19,18 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
         public virtual IScopeProperties ScopeProperties { get; } = 
             new ScopeProperties { User = DEFAULT_USER };
 
-        
+        public virtual Action<IDbConnection,DbContextSettings<TContext>> ResetAction 
+            {
+            get {
+                if (DbConnection.IDbConnection is SqlConnection)
+                    return DbConnectionManager.Reset;
+                else
+                    return null;
+            }
+        }
+
+
+
         public virtual IConfiguration Configuration { get; set; } =
             new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", true, true)
@@ -29,15 +40,6 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
 
 
         public virtual string DbContextConfigurationKey { get; } = "DbContexts:" + typeof(TContext).Name;
-
-        public virtual Action<IDbConnection> ResetAction {
-            get {
-                if (DbConnection.IDbConnection is SqlConnection)
-                    return DbConnectionManager.ResetSqlServerIdentities;
-                else
-                    return null;
-            }
-        }
 
 
         public DbConnection<TContext> DbConnection { get; private set; }
@@ -55,7 +57,7 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
         }
 
         public void Reset() {
-            ResetAction?.Invoke(DbConnection.IDbConnection);
+            ResetAction?.Invoke(DbConnection.IDbConnection, DbContextSettings);
             DbConnection = DbConnectionManager.GetDbConnection(DbContextSettings.Interceptor);
             Repo.Context = DbConnectionManager.GetDbContext(DbConnection, DbContextSettings);
         }
@@ -70,7 +72,7 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
 
 
         public void Dispose() {
-            throw new NotImplementedException();
+            Reset();
         }
 
 

@@ -9,9 +9,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     /// (optionally) appsettings.{Shared}.json to the test project.
     /// If using Visual Studio, add these files as linked files.
     /// </summary>
-    /// <typeparam name="TClass"></typeparam>
-    public class ConfigurationFixture<TClass> : IDisposable 
-        where TClass : class {
+    public class ConfigurationFixture : IDisposable {
 
         public IConfiguration Configuration { get; }
 

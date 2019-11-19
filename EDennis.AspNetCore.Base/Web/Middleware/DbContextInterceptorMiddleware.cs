@@ -1,18 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -58,6 +50,7 @@ namespace EDennis.AspNetCore.Base.Web {
                             cache[instance].IDbTransaction.Rollback();
                             _logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance);
                         }
+                        DbConnectionManager.Reset<TContext>(cache[instance].IDbConnection, settings.CurrentValue);
                     }
                     return;
                 }

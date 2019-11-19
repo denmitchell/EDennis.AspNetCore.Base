@@ -116,6 +116,24 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         }
 
+
+        public static void Reset<TContext>(IDbConnection connection, DbContextSettings<TContext> settings)
+            where TContext : DbContext {
+            if (settings.Interceptor.ResetSqlServerIdentities)
+                ResetSqlServerIdentities(connection);
+            if (settings.Interceptor.ResetSqlServerSequences)
+                ResetSqlServerSequences(connection);
+        }
+
+        public static void Reset<TContext>(IDbConnection connection, DbContextInterceptorSettings<TContext> settings)
+            where TContext : DbContext {
+            if (settings.ResetSqlServerIdentities)
+                ResetSqlServerIdentities(connection);
+            if (settings.ResetSqlServerSequences)
+                ResetSqlServerSequences(connection);
+        }
+
+
         public static void ResetSqlServerIdentities(IDbConnection connection) {
             connection.Open();
             using var command = new SqlCommand(RESET_IDENTITIES);

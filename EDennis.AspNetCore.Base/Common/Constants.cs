@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace EDennis.AspNetCore.Base {
     public static class Constants {
         public const string HOSTPATH_KEY = "X-HostPath";

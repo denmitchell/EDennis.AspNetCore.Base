@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 
 
-namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
+namespace EDennis.AspNetCore.Base.Testing {
     public abstract class TemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> : IDisposable
         where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>
         where TEntity : class, IEFCoreTemporalModel, new()
@@ -31,10 +31,19 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
         public virtual string DbContextConfigurationKey { get; } = "DbContexts:" + typeof(TContext).Name;
         public virtual string HistoryDbContextConfigurationKey { get; } = "DbContexts:" + typeof(THistoryContext).Name;
 
-        public virtual Action<IDbConnection> ResetAction {
+        public virtual Action<IDbConnection, DbContextSettings<TContext>> ResetAction {
             get {
                 if (DbConnection.IDbConnection is SqlConnection)
-                    return DbConnectionManager.ResetSqlServerIdentities;
+                    return DbConnectionManager.Reset;
+                else
+                    return null;
+            }
+        }
+
+        public virtual Action<IDbConnection, DbContextSettings<THistoryContext>> HistoryResetAction {
+            get {
+                if (DbConnection.IDbConnection is SqlConnection)
+                    return DbConnectionManager.Reset;
                 else
                     return null;
             }
@@ -65,14 +74,13 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
         }
 
         public void Reset() {
-            ResetAction?.Invoke(DbConnection.IDbConnection);
-            ResetAction?.Invoke(HistoryDbConnection.IDbConnection);
+            ResetAction?.Invoke(DbConnection.IDbConnection, DbContextSettings);
+            HistoryResetAction?.Invoke(HistoryDbConnection.IDbConnection, HistoryDbContextSettings);
             DbConnection = DbConnectionManager.GetDbConnection(DbContextSettings.Interceptor);
             HistoryDbConnection = DbConnectionManager.GetDbConnection(HistoryDbContextSettings.Interceptor);
             Repo.Context = DbConnectionManager.GetDbContext(DbConnection, DbContextSettings);
             Repo.HistoryContext = DbConnectionManager.GetDbContext(HistoryDbConnection, HistoryDbContextSettings);
         }
-
 
 
         private DbContextSettings<TContext> GetSettings() {
@@ -88,7 +96,7 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
 
 
         public void Dispose() {
-            throw new NotImplementedException();
+            Reset();
         }
 
 

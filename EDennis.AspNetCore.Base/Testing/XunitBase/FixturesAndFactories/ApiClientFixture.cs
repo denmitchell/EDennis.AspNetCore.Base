@@ -27,13 +27,6 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
 
-        public virtual IConfiguration Configuration { get; set; } =
-            new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", true, true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true, true)
-            .AddJsonFile("appsettings.Shared.json", true, true)
-            .Build();
-
         public virtual string ApisConfigurationKey { get; } = "Apis";
 
         public ApiClient ApiClient { get; }

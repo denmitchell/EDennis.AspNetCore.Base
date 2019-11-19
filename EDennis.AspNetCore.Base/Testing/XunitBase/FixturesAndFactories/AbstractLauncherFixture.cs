@@ -10,7 +10,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     /// Subclass this abstract fixture if using Xunit with the ApiLauncher pattern
     /// Xunit class fixture used to launch and terminate a web server for integration testing
     /// </summary>
-    public abstract class AbstractLauncherFixture : IDisposable {
+    public abstract class AbstractLauncherFixture : ConfigurationFixture, IDisposable {
 
         //the threading mechanism used to remotely terminate launcher apps
         private readonly EventWaitHandle _ewh;
@@ -65,7 +65,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// In disposing of this fixture instance, signal the EventWaitHandle so that the
         /// launcher app can terminate and then dispose of the EventWaitHandle.
         /// </summary>
-        public void Dispose() {
+        public virtual new void Dispose() {
+            base.Dispose();
             _ewh.Set();
             _ewh.Dispose();
         }
