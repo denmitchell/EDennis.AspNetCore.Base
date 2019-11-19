@@ -15,11 +15,11 @@ using Microsoft.Extensions.Options;
 
 namespace EDennis.AspNetCore.Base.Web {
 
-    public abstract class SecureApiClient : ApiClient {
+    public abstract class SecureApiClient : ApiClient, ISecureApiClient {
 
         public SecureApiClient(HttpClient httpClient,
             IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties,
-            SecureTokenService secureTokenService, ILogger logger)
+            ISecureTokenService secureTokenService, ILogger logger)
             : base(httpClient, apis, scopeProperties, logger) {
 
             var tokenResponse = secureTokenService.GetTokenAsync(this).Result;

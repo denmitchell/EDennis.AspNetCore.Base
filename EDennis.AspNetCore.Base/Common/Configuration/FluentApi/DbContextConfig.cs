@@ -1,40 +1,36 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EDennis.AspNetCore.Base {
     public class DbContextConfig {
-        private readonly ServiceConfig _appConfig;
-        private readonly IServiceCollection _services;
-        private readonly IConfigurationSection _section;
+        private readonly IServiceConfig _serviceConfig;
 
-        public DbContextConfig(IServiceCollection services, ServiceConfig appConfig, IConfigurationSection section, string configKey) {
-            _services = services;
-            _appConfig = appConfig;
-            _section = section.GetSection(configKey);
-        }
+        public DbContextConfig(IServiceConfig serviceConfig, string path) {
+            _serviceConfig = serviceConfig;
+            _serviceConfig.Goto(path);
+      }
 
         public DbContextConfig AddRepo<TRepo>()
             where TRepo : class, IRepo {
-            _services.TryAddScoped<IScopeProperties, ScopeProperties>();
-            _services.TryAddScoped<ScopeProperties, ScopeProperties>();
-            _services.AddScoped<TRepo, TRepo>();
+            _serviceConfig.Services.TryAddScoped<IScopeProperties, ScopeProperties>();
+            _serviceConfig.Services.TryAddScoped<ScopeProperties, ScopeProperties>();
+            _serviceConfig.Services.AddScoped<TRepo, TRepo>();
             return this;
         }
 
 
-        public DbContextConfig AddDbContext<TContext>(string configKey)
+        public DbContextConfig AddDbContext<TContext>(string path)
             where TContext : DbContext
-            => _appConfig.AddDbContext<TContext>(configKey);
+            => _serviceConfig.AddDbContext<TContext>(path);
 
         public DbContextConfig AddDbContext<TContext>()
             where TContext : DbContext =>
             AddDbContext<TContext>(typeof(TContext).Name);
 
-        public ServiceConfig GetSection(string configKey)
-            => _appConfig.Goto(configKey);
-
+        public IServiceConfig Goto(string path) =>
+            _serviceConfig.Goto(path);
 
     }
 }

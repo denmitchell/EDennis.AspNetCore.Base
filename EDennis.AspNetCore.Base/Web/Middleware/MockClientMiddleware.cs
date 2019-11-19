@@ -18,11 +18,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<ActiveMockClientSettings> _settings;
-        private readonly SecureTokenService _tokenService;
+        private readonly ISecureTokenService _tokenService;
 
         public MockClientMiddleware(RequestDelegate next, 
             IOptionsMonitor<ActiveMockClientSettings> settings,
-            SecureTokenService tokenService) {
+            ISecureTokenService tokenService) {
             _next = next;
             _settings = settings;
             _tokenService = tokenService;

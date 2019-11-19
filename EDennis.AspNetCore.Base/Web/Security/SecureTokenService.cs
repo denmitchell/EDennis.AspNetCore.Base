@@ -22,7 +22,7 @@ namespace EDennis.AspNetCore.Base.Security {
     ///   (3) Pings IdentityServer4 (refreshes the DiscoveryDocumentResponse) on a pre-configured
     ///       frequency in order to prevent idle timeouts from delaying token generation
     /// </summary>
-    public class SecureTokenService : IDisposable {
+    public class SecureTokenService : IDisposable, ISecureTokenService {
 
         private readonly HttpClient _httpClient;
         private readonly int _pingFrequency;
@@ -49,11 +49,17 @@ namespace EDennis.AspNetCore.Base.Security {
         private readonly Dictionary<string, CachedToken> _tokenCache
             = new Dictionary<string, CachedToken>();
 
+        public string ApplicationName { get; set; }
+
 
         #region public api
         public SecureTokenService(
             IOptionsMonitor<Apis> apis,
-            ILogger<SecureTokenService> logger) {
+            ILogger<SecureTokenService> logger,
+            IWebHostEnvironment environment) {
+
+            if (environment != null)
+                ApplicationName = environment.ApplicationName;
 
             Logger = logger;
             _apis = apis.CurrentValue;

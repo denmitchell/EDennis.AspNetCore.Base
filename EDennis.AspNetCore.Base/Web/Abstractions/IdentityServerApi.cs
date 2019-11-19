@@ -12,7 +12,7 @@ namespace EDennis.AspNetCore.Base.Web {
     /// If a different configuration key is needed, extend the class
     /// with a different class name. 
     /// </summary>
-    public class IdentityServerApi : ApiClient {
+    public class IdentityServerApi : ApiClient, IIdentityServerApi {
         public IdentityServerApi(HttpClient httpClient, 
             IOptionsMonitor<Apis> apis, 
             IScopeProperties scopeProperties, ILogger<IdentityServerApi> logger) 

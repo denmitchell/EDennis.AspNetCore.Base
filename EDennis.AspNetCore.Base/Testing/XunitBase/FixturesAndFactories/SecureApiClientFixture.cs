@@ -36,8 +36,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public virtual string ApisConfigurationKey { get; } = "Apis";
 
-        public SecureTokenService SecureTokenService { get; }
-        public SecureApiClient ApiClient { get; }
+        public ISecureTokenService SecureTokenService { get; }
+        public SecureApiClient SecureApiClient { get; }
         public Apis Apis { get; }
         public Api Api { get; }
 
@@ -49,9 +49,14 @@ namespace EDennis.AspNetCore.Base.Testing {
                 BaseAddress = new Uri(Api.MainAddress)
             };
 
-            SecureTokenService = new SecureTokenService(GetIOptionsMonitorApis(Apis), NullLogger<SecureTokenService>.Instance);
-            ApiClient = (SecureApiClient) Activator.CreateInstance(typeof(TClient), 
-                new object[] { GetIOptionsMonitorApis(Apis),
+            SecureTokenService = new SecureTokenService(GetIOptionsMonitorApis(Apis), NullLogger<SecureTokenService>.Instance, null) {
+                ApplicationName = typeof(TClient).Assembly.GetName().Name
+            };
+
+            SecureApiClient = (SecureApiClient) Activator.CreateInstance(typeof(TClient), 
+                new object[] {
+                    httpClient,
+                    GetIOptionsMonitorApis(Apis),
                     ScopeProperties,
                     SecureTokenService,
                     NullLogger<TClient>.Instance }

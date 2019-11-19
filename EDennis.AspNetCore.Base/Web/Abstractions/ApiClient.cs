@@ -9,7 +9,7 @@ using System.Reflection;
 namespace EDennis.AspNetCore.Base.Web {
     //note: use ApiAttribute(ApiKey) to specify a key for the configuration file that
     //      differs from the class name
-    public abstract class ApiClient {
+    public abstract class ApiClient : IApiClient {
 
         public HttpClient HttpClient { get; set; }
         public Api Api { get; set; }
@@ -17,7 +17,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public IScopeProperties ScopeProperties { get; set; }
 
         public ApiClient(HttpClient httpClient,
-            IOptionsMonitor<Apis> apis, 
+            IOptionsMonitor<Apis> apis,
             IScopeProperties scopeProperties,
             ILogger logger) {
 
@@ -40,7 +40,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private static string GetApiKey() {
             var type = MethodBase.GetCurrentMethod().DeclaringType;
-            var attr =(ApiAttribute)Attribute.GetCustomAttribute(type, typeof(ApiAttribute));
+            var attr = (ApiAttribute)Attribute.GetCustomAttribute(type, typeof(ApiAttribute));
             if (attr != null)
                 return attr.Key;
             else
@@ -64,12 +64,12 @@ namespace EDennis.AspNetCore.Base.Web {
 
             //add claims as headers
             foreach (var key in claimsToTransfer.Keys)
-                foreach(var claim in claimsDictionary.Where(d=>d.Key == key))
+                foreach (var claim in claimsDictionary.Where(d => d.Key == key))
                     HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, claim.Value.ToArray());
 
             //add additional headers
             foreach (var key in headersToTransfer.Keys)
-                foreach(var hdr in ScopeProperties.Headers.Where(d=>d.Key == key))
+                foreach (var hdr in ScopeProperties.Headers.Where(d => d.Key == key))
                     HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, hdr.Value.ToArray());
 
 

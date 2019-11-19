@@ -1,4 +1,10 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Security;
+using EDennis.AspNetCore.Base.Web;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,49 +12,56 @@ using System.Text;
 namespace EDennis.AspNetCore.Base {
     public static class IServiceConfigExtensions {
 
-        public static ApiConfig AddApi<TClientImplementation>(this ServiceConfig sc, string configKey)
+        public const string DEFAULT_SCOPE_PROPERTIES_RELATIVE_PATH = ":ScopeProperties";
+        public const string DEFAULT_MOCK_HEADERS_RELATIVE_PATH = ":MockHeaders";
+        public const string DEFAULT_MOCK_CLIENT_RELATIVE_PATH = ":MockClient";
+        public const string DEFAULT_HEADERS_TO_CLAIMS_RELATIVE_PATH = ":HeadersToClaims";
+
+        public static ApiConfig AddApi<TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientImplementation : ApiClient {
-            AddApiClientInternal<TClientImplementation, TClientImplementation>(configKey);
-            return new ApiConfig( configKey);
+            AddApiClientInternal<TClientImplementation, TClientImplementation>(serviceConfig, path);
+            return new ApiConfig( serviceConfig, path);
         }
 
-        public ApiConfig AddApi<TClientImplementation>()
+        public static ApiConfig AddApi<TClientImplementation>(this IServiceConfig serviceConfig)
             where TClientImplementation : ApiClient =>
-            AddApi<TClientImplementation>(typeof(TClientImplementation).Name);
+            AddApi<TClientImplementation>(serviceConfig, typeof(TClientImplementation).Name);
 
-        public ApiConfig AddApi<TClientInterface, TClientImplementation>(string configKey)
+        public static ApiConfig AddApi<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientImplementation : ApiClient, TClientInterface
             where TClientInterface : class {
-            AddApiClientInternal<TClientInterface, TClientImplementation>(configKey);
-            return new ApiConfig(_services, this, _section, configKey);
+            AddApiClientInternal<TClientInterface, TClientImplementation>(serviceConfig, path);
+            return new ApiConfig(serviceConfig, path);
         }
 
-        public ApiConfig AddApi<TClientInterface, TClientImplementation>(bool traceable = false)
+        public static ApiConfig AddApi<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig)
             where TClientImplementation : ApiClient, TClientInterface
             where TClientInterface : class =>
-            AddApi<TClientInterface, TClientImplementation>(typeof(TClientImplementation).Name);
+            AddApi<TClientInterface, TClientImplementation>(serviceConfig, typeof(TClientImplementation).Name);
 
-        private void AddApiClientInternal<TClientInterface, TClientImplementation>(string configKey)
+        private static void AddApiClientInternal<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientInterface : class
             where TClientImplementation : ApiClient, TClientInterface {
 
-            _services.TryAddScoped<IScopeProperties, ScopeProperties>();
-            _services.TryAddScoped<ScopeProperties, ScopeProperties>();
+            serviceConfig.Goto(path);
+
+            serviceConfig.Services.TryAddScoped<IScopeProperties, ScopeProperties>();
+            serviceConfig.Services.TryAddScoped<ScopeProperties, ScopeProperties>();
 
             bool isSecureClient = typeof(SecureApiClient).IsAssignableFrom(typeof(TClientImplementation));
 
             if (isSecureClient) {
-                _services.TryAddSingleton<SecureTokenService, SecureTokenService>();
-                _services.TryAddScoped<IdentityServerApi>();
+                serviceConfig.Services.TryAddSingleton<ISecureTokenService, SecureTokenService>();
+                serviceConfig.Services.TryAddScoped<IIdentityServerApi,IdentityServerApi>();
             }
             var api = new Api();
-            _section.GetSection(configKey).Bind(configKey);
-            _services.AddHttpClient<TClientInterface, TClientImplementation>(
+            serviceConfig.ConfigurationSection.Bind(api);
+            serviceConfig.Services.AddHttpClient<TClientInterface, TClientImplementation>(
                     options => {
                         options.BaseAddress = new Uri(api.MainAddress);
                     }
                 );
-            _services.AddHttpClient<TClientImplementation, TClientImplementation>(
+            serviceConfig.Services.AddHttpClient<TClientImplementation, TClientImplementation>(
                     options => {
                         options.BaseAddress = new Uri(api.MainAddress);
                     }
@@ -56,64 +69,72 @@ namespace EDennis.AspNetCore.Base {
         }
 
 
-        public DbContextConfig AddDbContext<TContext>(string configKey)
+        public static DbContextConfig AddDbContext<TContext>(this IServiceConfig serviceConfig, string path)
 
             where TContext : DbContext {
-            var configSection = _config.GetSection(configKey);
-            _services.Configure<DbContextSettings<TContext>>(configSection);
+
+            serviceConfig.Goto(path);
+
+            serviceConfig.Services.Configure<DbContextSettings<TContext>>(serviceConfig.ConfigurationSection);
 
             var settings = new DbContextSettings<TContext>();
-            configSection.Bind(settings);
+            serviceConfig.ConfigurationSection.Bind(settings);
 
-            _services.AddDbContext<TContext>(builder => {
+            serviceConfig.Services.AddDbContext<TContext>(builder => {
                 DbConnectionManager.ConfigureDbContextOptionsBuilder(builder, settings);
             });
 
-            _services.AddScoped<DbContextOptionsProvider<TContext>>();
-            _services.TryAddSingleton<DbConnectionCache<TContext>>();
+            serviceConfig.Services.AddScoped<DbContextOptionsProvider<TContext>>();
+            serviceConfig.Services.TryAddSingleton<DbConnectionCache<TContext>>();
 
-            return new DbContextConfig(_services, this, _section, configKey);
+            return new DbContextConfig(serviceConfig, path);
         }
 
 
-        public DbContextConfig AddDbContext<TContext>()
+        public static DbContextConfig AddDbContext<TContext>(this IServiceConfig serviceConfig)
             where TContext : DbContext =>
-            AddDbContext<TContext>(typeof(TContext).Name);
+            AddDbContext<TContext>(serviceConfig, typeof(TContext).Name);
 
-        public ServiceConfig AddHeadersToClaims(string configKey) {
-            _services.Configure<HeadersToClaims>(_config.GetSection(configKey));
-            return this;
+
+        public static IServiceConfig AddHeadersToClaims(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Goto(path);
+            serviceConfig.Services.Configure<HeadersToClaims>(serviceConfig.ConfigurationSection);
+            return serviceConfig;
         }
 
-        public ServiceConfig AddHeadersToClaims() =>
-            AddHeadersToClaims("HeadersToClaims");
+        public static IServiceConfig AddHeadersToClaims(this IServiceConfig serviceConfig) =>
+            AddHeadersToClaims(serviceConfig, DEFAULT_HEADERS_TO_CLAIMS_RELATIVE_PATH);
 
 
-        public ServiceConfig AddMockClient(string configKey) {
-            _services.Configure<ActiveMockClientSettings>(_config.GetSection(configKey));
-            _services.TryAddSingleton<SecureTokenService>();
-            return this;
+        public static IServiceConfig AddMockClient(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Goto(path);
+            serviceConfig.Services.Configure<ActiveMockClientSettings>(serviceConfig.ConfigurationSection);
+            serviceConfig.Services.TryAddSingleton<ISecureTokenService,SecureTokenService>();
+            return serviceConfig;
         }
 
-        public ServiceConfig AddMockClient() =>
-            AddMockClient("MockClient");
+        public static IServiceConfig AddMockClient(this IServiceConfig serviceConfig) =>
+            AddMockClient(serviceConfig, DEFAULT_MOCK_CLIENT_RELATIVE_PATH);
 
-        public ServiceConfig AddMockHeaders(string configKey) {
-            _services.Configure<MockHeaderSettingsCollection>(_config.GetSection(configKey));
-            return this;
+        public static IServiceConfig AddMockHeaders(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Goto(path);
+            serviceConfig.Services.Configure<MockHeaderSettingsCollection>(serviceConfig.ConfigurationSection);
+            return serviceConfig;
         }
 
-        public ServiceConfig AddMockHeaders() =>
-            AddMockHeaders("MockHeaders");
+        public static IServiceConfig AddMockHeaders(this IServiceConfig serviceConfig) =>
+            AddMockHeaders(serviceConfig, DEFAULT_MOCK_HEADERS_RELATIVE_PATH);
 
-        public ServiceConfig AddScopeProperties(string configKey) {
-            _services.Configure<ScopePropertiesSettings>(_config.GetSection(configKey));
-            _services.AddScoped<IScopeProperties, ScopeProperties>();
-            return this;
+
+        public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Goto(path);
+            serviceConfig.Services.Configure<ScopePropertiesSettings>(serviceConfig.ConfigurationSection);
+            serviceConfig.Services.AddScoped<IScopeProperties, ScopeProperties>();
+            return serviceConfig;
         }
 
-        public ServiceConfig AddScopeProperties() =>
-            AddScopeProperties("ScopeProperties");
+        public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig) =>
+            AddScopeProperties(serviceConfig, DEFAULT_SCOPE_PROPERTIES_RELATIVE_PATH);
 
 
     }

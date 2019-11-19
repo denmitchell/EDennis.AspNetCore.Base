@@ -7,7 +7,8 @@ using System.Linq;
 namespace EDennis.AspNetCore.Base {
 
     /// <summary>
-    /// Utilizing IServiceConfig, this class provides a fluent API
+    /// Utilizing IServiceConfig, this class provides a fluent API for
+    /// configuring an Identity Server API Client
     /// </summary>
     public class ApiConfig {
 
@@ -109,6 +110,10 @@ namespace EDennis.AspNetCore.Base {
         /// </summary>
         /// <returns>the IServiceConfig object for continued method-chaining configuration</returns>
         public IServiceConfig AddOidc() => AddOidc(DEFAULT_OIDC_RELATIVE_PATH);
+
+
+        public IServiceConfig Goto(string path) =>
+            _serviceConfig.Goto(path);
 
     }
 }
