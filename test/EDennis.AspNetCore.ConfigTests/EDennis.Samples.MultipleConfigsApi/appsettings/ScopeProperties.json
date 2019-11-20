@@ -35,6 +35,14 @@
     }
   },
   "Apis": {
+    "MultipleConfigsApi": {
+      "ProjectName": "EDennis.Samples.MultipleConfigsApi",
+      "Host": "localhost",
+      "Scheme": "https",
+      "HttpsPort": 6005,
+      "HttpPort": 6006,
+      "Version": 1.1
+    },
     "MyApi1": {
       "ProjectName": "My.Api1",
       "Host": "localhost",

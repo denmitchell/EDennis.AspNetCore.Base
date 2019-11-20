@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         public virtual string EntryPointScheme { get; } = "https";
 
+        public virtual string[] Arguments { get; } = new string[] { };
+
         /// <summary>
         /// The entry-point application's port (must be overidden in subclass)
         /// </summary>
@@ -70,8 +73,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             };
             HttpClient.DefaultRequestHeaders.Add(Constants.TESTING_INSTANCE_KEY, InstanceName);
 
+            var args = Arguments.Union(new string[] { arg }).ToArray();
+
             //asynchronously initiate the launch of the server 
-            Task.Run(() => { LauncherMain(new string[] { arg }); });
+            Task.Run(() => { LauncherMain(args); });
 
             //optional : use custom PingAsync (see HttpClientExtensions) to wait for server to start.
             var canPing = HttpClient.PingAsync(10).Result;
@@ -82,7 +87,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// In disposing of this fixture instance, signal the EventWaitHandle so that the
         /// launcher app can terminate and then dispose of the EventWaitHandle.
         /// </summary>
-        public virtual new void Dispose() {
+        public void Dispose() {
             _ewh.Set();
             _ewh.Dispose();
         }
