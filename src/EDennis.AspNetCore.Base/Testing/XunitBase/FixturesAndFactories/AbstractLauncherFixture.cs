@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.Web;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -10,12 +11,28 @@ namespace EDennis.AspNetCore.Base.Testing {
     /// Subclass this abstract fixture if using Xunit with the ApiLauncher pattern
     /// Xunit class fixture used to launch and terminate a web server for integration testing
     /// </summary>
-    public abstract class AbstractLauncherFixture : ConfigurationFixture, IDisposable {
+    public abstract class AbstractLauncherFixture : IDisposable {
 
         //the threading mechanism used to remotely terminate launcher apps
         private readonly EventWaitHandle _ewh;
 
         public virtual string InstanceName { get; } = Guid.NewGuid().ToString();
+
+        public virtual IConfiguration Configuration {
+            get {
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.json", true, true)
+                    .AddJsonFile($"appsettings.{env}.json", true, true)
+                    .AddJsonFile($"appsettings.Shared.json", true, true)
+                    .AddEnvironmentVariables()
+                    .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" })
+                    .Build();
+                return config;
+
+            }
+        }
 
         /// <summary>
         /// The entry-point application's scheme (can be overidden in subclass)
@@ -66,7 +83,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// launcher app can terminate and then dispose of the EventWaitHandle.
         /// </summary>
         public virtual new void Dispose() {
-            base.Dispose();
             _ewh.Set();
             _ewh.Dispose();
         }

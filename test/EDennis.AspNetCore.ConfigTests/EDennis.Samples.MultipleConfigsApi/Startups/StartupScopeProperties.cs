@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,8 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace EDennis.Samples.MultipleConfigsApi {
-    public class Startup {
-        public Startup(IConfiguration configuration) {
+    public class StartupScopeProperties {
+        public StartupScopeProperties(IConfiguration configuration) {
             Configuration = configuration;
         }
 
@@ -21,6 +22,9 @@ namespace EDennis.Samples.MultipleConfigsApi {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            var sc = new ServiceConfig(services,Configuration);
+            sc.AddScopeProperties();
+
             services.AddControllers();
         }
 

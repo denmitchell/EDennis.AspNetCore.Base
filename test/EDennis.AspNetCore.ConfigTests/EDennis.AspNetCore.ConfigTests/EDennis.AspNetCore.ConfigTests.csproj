@@ -13,4 +13,9 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MultipleConfigsApi\EDennis.Samples.MultipleConfigsApi.csproj" />
+  </ItemGroup>
+
 </Project>

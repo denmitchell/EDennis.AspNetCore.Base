@@ -14,17 +14,14 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected ITestOutputHelper Output { get; }
         protected TLauncherFixture LauncherFixture { get; }
-        protected ConfigurationFixture ConfigurationFixture { get; }
         protected Apis Apis { get; }
 
         public EndpointTests(ITestOutputHelper output,
-            TLauncherFixture launcherFixture,
-            ConfigurationFixture configurationFixture) {
+            TLauncherFixture launcherFixture) {
             Output = output;
             LauncherFixture = launcherFixture;
-            ConfigurationFixture = configurationFixture;
             Apis = new Apis();
-            configurationFixture.Configuration.GetSection(ApisConfigKey).Bind(Apis);
+            launcherFixture.Configuration.GetSection(ApisConfigKey).Bind(Apis);
         }
 
         public virtual string ApisConfigKey { get; } = "Apis";
