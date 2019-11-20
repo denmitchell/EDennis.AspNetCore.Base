@@ -33,6 +33,25 @@ namespace EDennis.AspNetCore.Base {
             return builder;
         }
 
+
+        public static IHostBuilder CreateHostBuilder(Type programType, Type startupType, string[] args)
+            => CreateHostBuilder(programType, startupType, args, GetConfiguration(programType), APIS_CONFIGURATION_SECTION);
+
+
+        public static IHostBuilder CreateHostBuilder(Type programType, Type startupType, string[] args, IConfiguration configuration, string apisConfigurationSection = "Apis"){
+
+            var builder = Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => {
+                    var urls = GetUrls(programType, configuration);
+                    webBuilder
+                        .UseConfiguration(configuration)
+                        .UseUrls(urls)
+                        .UseStartup(startupType);
+                });
+            return builder;
+        }
+
+
         public static string[] GetUrls<TProgram>(IConfiguration config)
             where TProgram : class {
             var apis = new Apis();
@@ -41,10 +60,31 @@ namespace EDennis.AspNetCore.Base {
             return api.Urls;
         }
 
+        public static string[] GetUrls(Type programType, IConfiguration config){
+            var apis = new Apis();
+            config.GetSection(APIS_CONFIGURATION_SECTION).Bind(apis);
+            var api = apis.FirstOrDefault(a => a.Value.ProjectName == programType.Assembly.GetName().Name).Value;
+            return api.Urls;
+        }
+
+
         public static IConfiguration GetConfiguration<TProgram>()
             where TProgram : class {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var assembly = typeof(TProgram).Assembly;
+            var provider = new ManifestEmbeddedFileProvider(assembly);
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(provider, $"appsettings.json", true, true)
+                .AddJsonFile(provider, $"appsettings.{env}.json", true, true)
+                .AddJsonFile($"appsettings.Shared.json", true)
+                .Build();
+            return config;
+        }
+
+
+        public static IConfiguration GetConfiguration(Type programType) {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var assembly = programType.Assembly;
             var provider = new ManifestEmbeddedFileProvider(assembly);
             var config = new ConfigurationBuilder()
                 .AddJsonFile(provider, $"appsettings.json", true, true)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.ConfigTests {
-    public class LauncherFixtureBase : AbstractLauncherFixture {
+    public abstract class LauncherFixtureBase : AbstractLauncherFixture {
 
         public override string[] Arguments => base.Arguments;
 
