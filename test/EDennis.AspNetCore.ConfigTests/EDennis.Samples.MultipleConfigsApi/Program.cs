@@ -16,6 +16,12 @@ namespace EDennis.Samples.MultipleConfigsApi {
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
+                    var filePrefix = args[0].Split('=')[1];                    
+                    webBuilder.ConfigureAppConfiguration((context, configure) => {
+                        configure
+                            .AddJsonFile($"appsettings\\{filePrefix}.json")
+                            .AddJsonFile($"appsettings\\{filePrefix}.Shared.json");
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

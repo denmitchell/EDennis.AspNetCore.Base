@@ -8,7 +8,6 @@ namespace EDennis.AspNetCore.Base
     /// *** Special Note: this class is not yet tested.
     /// </summary>
     public class MockClientSettings {
-        public bool IsActive { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string[] Scopes { get; set; }

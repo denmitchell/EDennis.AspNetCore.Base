@@ -37,6 +37,7 @@ namespace EDennis.AspNetCore.Base {
         public const string DEFAULT_MOCK_HEADERS_RELATIVE_PATH = ":MockHeaders";
         public const string DEFAULT_MOCK_CLIENT_RELATIVE_PATH = ":MockClient";
         public const string DEFAULT_HEADERS_TO_CLAIMS_RELATIVE_PATH = ":HeadersToClaims";
+        public const string DEFAULT_USER_LOGGER_RELATIVE_PATH = ":UserLogger";
 
 
         public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)
@@ -186,6 +187,15 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig) =>
             AddScopeProperties(serviceConfig, DEFAULT_SCOPE_PROPERTIES_RELATIVE_PATH);
+
+        public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Goto(path);
+            serviceConfig.Services.Configure<UserLoggerSettings>(serviceConfig.ConfigurationSection);
+            return serviceConfig;
+        }
+
+        public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig) =>
+            AddUserLogger(serviceConfig, DEFAULT_USER_LOGGER_RELATIVE_PATH);
 
 
     }
