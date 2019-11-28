@@ -10,7 +10,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         : IClassFixture<TLauncherFixture>,
         IDisposable
 
-        where TLauncherFixture : AbstractLauncherFixture {
+        where TLauncherFixture : OLDAbstractLauncherFixture {
 
         protected ITestOutputHelper Output { get; }
         protected TLauncherFixture LauncherFixture { get; }

@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -417,7 +418,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 if (statusCode < 299 && typeof(T) != typeof(string))
                 {
-                    value = JToken.Parse(json).ToObject<T>();
+                    value = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 }
                 else
                 {

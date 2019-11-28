@@ -40,8 +40,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 //Handle reset
                 //NOTE: Resets are sent as standalone requests with a special "Reset" Http Method
+                //          or a special "X-Testing-Reset" Request Header or query key
                 //      and a query string: instance=some_instance_name
-                if (method == Constants.RESET_METHOD) {
+                if (method == Constants.RESET_METHOD 
+                    || context.Request.ContainsHeaderOrQueryKey(Constants.TESTING_RESET_KEY, out string _)) {
                     if (cache.ContainsKey(instance)) {
                         if (settings.CurrentValue.IsInMemory) {
                             cache[instance] = DbConnectionManager.GetInMemoryDbConnection<TContext>();

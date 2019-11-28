@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Security.Claims;
 using System.Text;
@@ -11,10 +12,14 @@ namespace EDennis.AspNetCore.Base.Web {
     public static class MiddlewareUtils {
 
 
+        public static Task Reset(HttpClient[] httpClients, string instance) {
+            return Task.WhenAll(httpClients.Select(a => Reset(a, instance)));
+        }
+
+
         public static Task Reset(Apis apis, string instance) {
             return Task.WhenAll(apis.Values.Select(a => Reset(a, instance)));
         }
-
 
         public static async Task Reset(Api api, string instance) {
             if (api.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) {
@@ -23,7 +28,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     ReceiveTimeout = 1000
                 };
                 var builder = new StringBuilder()
-                    .AppendLine($"{Constants.RESET_METHOD} /?instance={instance} HTTP/1.1")
+                    .AppendLine($"{Constants.RESET_METHOD} /?{Constants.TESTING_INSTANCE_KEY}={instance} HTTP/1.1")
                     .AppendLine("Host: localhost")
                     .AppendLine("Connection: close")
                     .AppendLine();
@@ -33,6 +38,23 @@ namespace EDennis.AspNetCore.Base.Web {
             }
             return;
         }
+
+
+        public static async Task Reset(HttpClient httpClient, string instance) {
+            if (httpClient.BaseAddress.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) {
+
+                var msg = new HttpRequestMessage {
+                    RequestUri = new Uri(
+                        $"{httpClient.BaseAddress}?{Constants.TESTING_INSTANCE_KEY}={instance}&{Constants.TESTING_RESET_KEY}=true"),
+                    Method = HttpMethod.Head
+                };
+                await httpClient.SendAsync(msg);
+            }
+            return;
+        }
+
+
+
 
 
         public static string ResolveUser(HttpContext context, UserSource[] userSource, string purpose) {

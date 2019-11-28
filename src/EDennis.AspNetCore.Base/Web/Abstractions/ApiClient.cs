@@ -18,22 +18,24 @@ namespace EDennis.AspNetCore.Base.Web {
         public IScopeProperties ScopeProperties { get; set; }
         public IScopedLogger ScopedLogger { get; }
 
-        public ApiClient(HttpClient httpClient,
+        public ApiClient(
+            IHttpClientFactory httpClientFactory,
             IOptionsMonitor<Apis> apis,
             IScopeProperties scopeProperties,
             ILogger logger,
             IScopedLogger scopedLogger = null) {
 
-            HttpClient = httpClient;
+            Logger = logger;
+            ScopedLogger = scopedLogger;
+            ScopeProperties = scopeProperties;
+
+            var apiKey = GetApiKey();
+            HttpClient = httpClientFactory.CreateClient(apiKey);
             try {
                 Api = apis.CurrentValue[GetApiKey()];
             } catch (Exception ex) {
                 Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", this.GetType().Name, GetApiKey());
             }
-            Logger = logger;
-            ScopedLogger = scopedLogger;
-
-            ScopeProperties = scopeProperties;
 
             BuildClient();
 

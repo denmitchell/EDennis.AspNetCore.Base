@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -69,10 +70,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static partial class RequestExtensions {
         public static bool ContainsHeaderOrQueryKey(this HttpRequest request, string key, out string value) {
-            if (request.Headers.ContainsKey(key)) {
+            if (request.Headers.Keys.Any(k=>k.Equals(key,StringComparison.OrdinalIgnoreCase))) {
                 value = request.Headers[key];
                 return true;
-            } else if (request.Query.ContainsKey(key)) {
+            } else if (request.Query.Keys.Any(k => k.Equals(key, StringComparison.OrdinalIgnoreCase))) {
                 value = request.Query[key];
                 return true;
             } else {
