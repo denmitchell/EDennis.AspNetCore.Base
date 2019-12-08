@@ -1,12 +1,9 @@
-﻿using EDennis.Samples.SharedModel;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Collections.Generic;
 using System;
-using System.Linq;
 
 namespace EDennis.AspNetCore.Base.Testing {
 

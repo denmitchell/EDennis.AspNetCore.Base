@@ -13,10 +13,10 @@ namespace EDennis.AspNetCore.Base.Web {
     /// with a different class name. 
     /// </summary>
     public class IdentityServerApi : ApiClient, IIdentityServerApi {
-        public IdentityServerApi(HttpClient httpClient, 
+        public IdentityServerApi(IHttpClientFactory httpClientFactory, 
             IOptionsMonitor<Apis> apis, 
             IScopeProperties scopeProperties, ILogger<IdentityServerApi> logger) 
-            : base(httpClient, apis, scopeProperties, logger) {
+            : base(httpClientFactory, apis, scopeProperties, logger) {
         }
     }
 }

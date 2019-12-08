@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace EDennis.Samples.Utils {
+namespace EDennis.AspNetCore.Base.Web {
     public static class LauncherUtils {
 
         //used to parse ewh argument, which carries the name of the synchronization event as a GUID

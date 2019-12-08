@@ -7,7 +7,8 @@ using System.Net.Http;
 
 namespace EDennis.Samples.MultipleConfigsApi.Services {
     public class MyApiClient : ApiClient {
-        public MyApiClient(HttpClient httpClient, IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties, ILogger logger, IScopedLogger scopedLogger = null) : base(httpClient, apis, scopeProperties, logger, scopedLogger) {
+        public MyApiClient(IHttpClientFactory httpClientFactory, IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties, ILogger logger, IScopedLogger scopedLogger = null) 
+            : base(httpClientFactory, apis, scopeProperties, logger, scopedLogger) {
         }
     }
 }

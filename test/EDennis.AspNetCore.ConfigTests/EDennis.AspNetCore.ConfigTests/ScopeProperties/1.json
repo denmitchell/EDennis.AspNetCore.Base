@@ -1,0 +1,12 @@
+{
+  "ScopeProperties": {
+    "UserSource": [
+      "JwtSubjectClaim",
+      "JwtNameClaim",
+      "SessionId"
+    ],
+    "CopyHeaders": false,
+    "CopyClaims": false,
+    "AppendHostPath": false
+  }
+ }

@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -57,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static string ResolveUser(HttpContext context, UserSource[] userSource, string purpose) {
+        public static string ResolveUser(HttpContext context, HashSet<UserSource> userSource, string purpose) {
             foreach(var source in userSource) {
                 var user = ResolveUser(context, source);
                 if (!string.IsNullOrEmpty(user))
