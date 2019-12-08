@@ -57,7 +57,7 @@ namespace EDennis.AspNetCore.ConfigTests {
             new MockHeaderSettingsCollection[] {
                 new MockHeaderSettingsCollection {
                     {"X-User", new MockHeaderSettings {
-                        Values = "moe@stooges.org",
+                        Values = new string[] { "moe@stooges.org" },
                         ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     },
                     {"X-Role", new MockHeaderSettings {
@@ -67,7 +67,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                 },
                 new MockHeaderSettingsCollection {
                     {"X-User", new MockHeaderSettings {
-                        Values = "larry@stooges.org",
+                        Values = new string[] { "larry@stooges.org" },
                         ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     },
                     {"X-Role", new MockHeaderSettings {

@@ -1,7 +1,7 @@
 {
   "MockHeaders": {
     "X-User": {
-      "Values": "moe@stooges.org",
+      "Values": [ "moe@stooges.org" ],
       "ConflictResolution": "Overwrite"
     },
     "X-Role": {

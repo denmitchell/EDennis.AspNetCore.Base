@@ -3,7 +3,8 @@
 namespace EDennis.AspNetCore.Base
 {
     public class MockHeaderSettings {
-        public StringValues Values { get; set; }
+
+        public string[] Values { get; set; } = new string[] { };
         public MockHeaderConflictResolution ConflictResolution { get; set; }
     }
 }
