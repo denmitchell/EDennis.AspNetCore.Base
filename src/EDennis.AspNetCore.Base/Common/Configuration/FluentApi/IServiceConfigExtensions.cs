@@ -33,11 +33,11 @@ namespace EDennis.AspNetCore.Base {
     /// </summary>
     public static class IServiceConfigExtensions {
 
-        public const string DEFAULT_SCOPE_PROPERTIES_RELATIVE_PATH = ":ScopeProperties";
-        public const string DEFAULT_MOCK_HEADERS_RELATIVE_PATH = ":MockHeaders";
-        public const string DEFAULT_MOCK_CLIENT_RELATIVE_PATH = ":MockClient";
-        public const string DEFAULT_HEADERS_TO_CLAIMS_RELATIVE_PATH = ":HeadersToClaims";
-        public const string DEFAULT_USER_LOGGER_RELATIVE_PATH = ":UserLogger";
+        public const string DEFAULT_SCOPE_PROPERTIES_PATH = ":ScopeProperties";
+        public const string DEFAULT_MOCK_HEADERS_PATH = ":MockHeaders";
+        public const string DEFAULT_MOCK_CLIENT_PATH = ":MockClient";
+        public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = ":HeadersToClaims";
+        public const string DEFAULT_USER_LOGGER_PATH = ":UserLogger";
 
 
         public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)
@@ -64,7 +64,6 @@ namespace EDennis.AspNetCore.Base {
                     serviceConfig.Configuration, api, logger);
                 }
             );
-
             return serviceConfig;
         }
 
@@ -155,7 +154,7 @@ namespace EDennis.AspNetCore.Base {
         }
 
         public static IServiceConfig AddHeadersToClaims(this IServiceConfig serviceConfig) =>
-            AddHeadersToClaims(serviceConfig, DEFAULT_HEADERS_TO_CLAIMS_RELATIVE_PATH);
+            AddHeadersToClaims(serviceConfig, DEFAULT_HEADERS_TO_CLAIMS_PATH);
 
 
         public static IServiceConfig AddMockClient(this IServiceConfig serviceConfig, string path) {
@@ -166,7 +165,7 @@ namespace EDennis.AspNetCore.Base {
         }
 
         public static IServiceConfig AddMockClient(this IServiceConfig serviceConfig) =>
-            AddMockClient(serviceConfig, DEFAULT_MOCK_CLIENT_RELATIVE_PATH);
+            AddMockClient(serviceConfig, DEFAULT_MOCK_CLIENT_PATH);
 
         public static IServiceConfig AddMockHeaders(this IServiceConfig serviceConfig, string path) {
             serviceConfig.Goto(path);
@@ -175,7 +174,7 @@ namespace EDennis.AspNetCore.Base {
         }
 
         public static IServiceConfig AddMockHeaders(this IServiceConfig serviceConfig) =>
-            AddMockHeaders(serviceConfig, DEFAULT_MOCK_HEADERS_RELATIVE_PATH);
+            AddMockHeaders(serviceConfig, DEFAULT_MOCK_HEADERS_PATH);
 
 
         public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig, string path) {
@@ -186,7 +185,7 @@ namespace EDennis.AspNetCore.Base {
         }
 
         public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig) =>
-            AddScopeProperties(serviceConfig, DEFAULT_SCOPE_PROPERTIES_RELATIVE_PATH);
+            AddScopeProperties(serviceConfig, DEFAULT_SCOPE_PROPERTIES_PATH);
 
         public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig, string path) {
             serviceConfig.Goto(path);
@@ -195,7 +194,7 @@ namespace EDennis.AspNetCore.Base {
         }
 
         public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig) =>
-            AddUserLogger(serviceConfig, DEFAULT_USER_LOGGER_RELATIVE_PATH);
+            AddUserLogger(serviceConfig, DEFAULT_USER_LOGGER_PATH);
 
 
     }

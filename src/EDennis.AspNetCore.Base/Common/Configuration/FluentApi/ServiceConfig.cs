@@ -1,13 +1,6 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Logging;
-using EDennis.AspNetCore.Base.Security;
-using EDennis.AspNetCore.Base.Web;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base {
 
@@ -29,30 +22,52 @@ namespace EDennis.AspNetCore.Base {
             ConfigurationSection = config.GetSection("");
         }
 
+        /// <summary>
+        /// Navigate configuration tree
+        ///     .. or ..: means navigate up to parent node
+        ///     ..:..: means navigate up to grandparent node
+        ///     : or "" means navigate to root
+        /// </summary>
+        /// <param name="configKey"></param>
+        /// <returns></returns>
         public IServiceConfig Goto(string configKey) {
 
             var key = configKey;
             var origPath = ConfigurationSection.Path;
 
-            //navigate up the config tree (analogous to ../ in file system navigation)
-            if (configKey.StartsWith("..:")) {
-                while (key.StartsWith("..:")) {
-                    try {
-                        var path = ConfigurationSection.Path;
-                        var parent = path.Substring(0, path.LastIndexOf(":"));
-                        ConfigurationSection = Configuration.GetSection(parent);
-                        key = key.Substring(3);
-                    } catch (Exception ex) {
-                        throw new ApplicationException($"Cannot navigate to {configKey} from {origPath}: {ex.Message}");
-                    }
-                }
-                key = ":" + key; //add starting colon to key to indicate relative path
+            if (configKey.Equals(":") || configKey.Equals("")) {
+                ConfigurationSection = Configuration.GetSection("");
+                return this;
             }
 
-            if(key.StartsWith(":")) //relative path                
-                ConfigurationSection = ConfigurationSection.GetSection(configKey);
-            else //absolute path
-                ConfigurationSection = Configuration.GetSection(configKey);
+            //navigate up the config tree (analogous to ../ in file system navigation)
+            while (key.StartsWith("..")) {
+                var path = ConfigurationSection.Path;
+                if (!path.Contains(":")) {
+                    if (key == ".." || key == "..:") {
+                        ConfigurationSection = Configuration.GetSection("");
+                        return this;
+                    } else
+                        throw new ApplicationException($"Cannot navigate to {configKey} from {origPath}");
+                } else if (key.StartsWith("..:")) {
+                    var parent = path.Substring(0, path.LastIndexOf(":"));
+                    ConfigurationSection = Configuration.GetSection(parent);
+                    key = key.Substring(3);
+                } else {
+                    throw new ApplicationException($"Cannot navigate to {configKey} from {origPath}");
+                }
+
+            }
+
+            //navigate to the root
+            if (key.StartsWith(":")) {
+                ConfigurationSection = Configuration.GetSection(key.Substring(1));
+            } else if (ConfigurationSection.Path == "") {
+                ConfigurationSection = Configuration.GetSection(key);
+            } else {
+                ConfigurationSection = ConfigurationSection.GetSection(key);
+            }
+
             return this;
         }
 
