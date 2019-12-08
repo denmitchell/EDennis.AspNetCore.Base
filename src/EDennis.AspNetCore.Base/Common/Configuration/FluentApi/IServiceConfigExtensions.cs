@@ -10,8 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EDennis.AspNetCore.Base {
 
@@ -107,16 +105,18 @@ namespace EDennis.AspNetCore.Base {
             }
             var api = new Api();
             serviceConfig.ConfigurationSection.Bind(api);
-            serviceConfig.Services.AddHttpClient<TClientInterface, TClientImplementation>(
+
+            //add named client
+            var httpClientName = GetApiKey(typeof(TClientImplementation));
+            serviceConfig.Services.AddHttpClient(httpClientName,
                     options => {
                         options.BaseAddress = new Uri(api.MainAddress);
                     }
                 );
-            serviceConfig.Services.AddHttpClient<TClientImplementation, TClientImplementation>(
-                    options => {
-                        options.BaseAddress = new Uri(api.MainAddress);
-                    }
-                );
+
+            //setup DI for ApiClient
+            serviceConfig.Services.AddScoped<TClientInterface, TClientImplementation>();
+            serviceConfig.Services.AddScoped<TClientImplementation, TClientImplementation>();
         }
 
 
@@ -196,6 +196,14 @@ namespace EDennis.AspNetCore.Base {
         public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig) =>
             AddUserLogger(serviceConfig, DEFAULT_USER_LOGGER_PATH);
 
+
+        private static string GetApiKey(Type type) {
+            var attr = (ApiAttribute)Attribute.GetCustomAttribute(type, typeof(ApiAttribute));
+            if (attr != null)
+                return attr.Key;
+            else
+                return type.Name;
+        }
 
     }
 }
