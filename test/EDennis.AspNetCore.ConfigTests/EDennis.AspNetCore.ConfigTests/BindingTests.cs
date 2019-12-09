@@ -21,13 +21,43 @@ namespace EDennis.AspNetCore.ConfigTests {
                     UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
                     CopyHeaders = true,
                     CopyClaims = true,
+                    AppendHostPath = false
+                },
+                new ScopePropertiesSettings {
+                    UserSource = new HashSet<UserSource> { UserSource.XUserHeader },
+                    CopyHeaders = false,
+                    CopyClaims = false,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> { UserSource.JwtSubjectClaim, UserSource.JwtNameClaim, UserSource.SessionId },
+                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
+                    CopyHeaders = true,
+                    CopyClaims = true,
+                    AppendHostPath = true
+                },
+                new ScopePropertiesSettings {
+                    UserSource = new HashSet<UserSource> { UserSource.JwtSubjectClaim, UserSource.SessionId },
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = false
+                },
+                new ScopePropertiesSettings {
+                    UserSource = new HashSet<UserSource> {
+                        UserSource.JwtNameClaim,
+                        UserSource.JwtPreferredUserNameClaim,
+                        UserSource.JwtSubjectClaim,
+                        UserSource.SessionId,
+                        UserSource.XUserHeader,
+                        UserSource.XUserQueryString,
+                        UserSource.OasisNameClaim,
+                        UserSource.OasisEmailClaim,
+                        UserSource.JwtEmailClaim,
+                        UserSource.JwtPhoneClaim,
+                        UserSource.JwtClientIdClaim
+                    },
+                    CopyHeaders = false,
+                    CopyClaims = false,
+                    AppendHostPath = true
                 },
 
             };
@@ -35,6 +65,9 @@ namespace EDennis.AspNetCore.ConfigTests {
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
         public void ScopeProperties(int testCase) {
             var path = $"ScopeProperties/{testCase}.json";
             var config = new ConfigurationBuilder()
@@ -57,13 +90,13 @@ namespace EDennis.AspNetCore.ConfigTests {
             new MockHeaderSettingsCollection[] {
                 new MockHeaderSettingsCollection {
                     {"X-User", new MockHeaderSettings {
-                        Values = new string[] { "moe@stooges.org" },
+                        Values = new string[] { "curly@stooges.org" },
                         ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     },
                     {"X-Role", new MockHeaderSettings {
-                        Values = new string[] { "admin", "user" },
-                        ConflictResolution = MockHeaderConflictResolution.Union }
-                    },
+                        Values = new string[] { "readonly" },
+                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
+                    }
                 },
                 new MockHeaderSettingsCollection {
                     {"X-User", new MockHeaderSettings {
@@ -73,13 +106,24 @@ namespace EDennis.AspNetCore.ConfigTests {
                     {"X-Role", new MockHeaderSettings {
                         Values = new string[] { "user" },
                         ConflictResolution = MockHeaderConflictResolution.Union }
+                    }
+                },
+                new MockHeaderSettingsCollection {
+                    {"X-User", new MockHeaderSettings {
+                        Values = new string[] { "moe@stooges.org" },
+                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     },
+                    {"X-Role", new MockHeaderSettings {
+                        Values = new string[] { "admin", "user" },
+                        ConflictResolution = MockHeaderConflictResolution.Union }
+                    }
                 }
             };
 
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(2)]
         public void MockHeaders(int testCase) {
             var path = $"MockHeaders/{testCase}.json";
             var config = new ConfigurationBuilder()

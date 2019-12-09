@@ -1,0 +1,20 @@
+{
+  "ScopeProperties": {
+    "UserSource": [
+      "JwtNameClaim",
+      "JwtPreferredUserNameClaim",
+      "JwtSubjectClaim",
+      "SessionId",
+      "XUserHeader",
+      "XUserQueryString",
+      "OasisNameClaim",
+      "OasisEmailClaim",
+      "JwtEmailClaim",
+      "JwtPhoneClaim",
+      "JwtClientIdClaim"
+    ],
+    "CopyHeaders": false,
+    "CopyClaims": false,
+    "AppendHostPath": true
+  }
+ }
