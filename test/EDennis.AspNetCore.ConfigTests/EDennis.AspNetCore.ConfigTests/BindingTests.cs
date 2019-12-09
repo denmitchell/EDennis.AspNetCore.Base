@@ -30,7 +30,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
+                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim, UserSource.SessionId },
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = true
@@ -141,6 +141,59 @@ namespace EDennis.AspNetCore.ConfigTests {
                 Assert.Equal(e.ConflictResolution, a.ConflictResolution);
             }
         }
+
+        private static UserLoggerSettings[] ul =
+            new UserLoggerSettings[] {
+                new UserLoggerSettings {
+                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim }
+                },
+                new UserLoggerSettings {
+                    UserSource = new HashSet<UserSource> { UserSource.XUserHeader }
+                },
+                new UserLoggerSettings {
+                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim, UserSource.SessionId }
+                },
+                new UserLoggerSettings {
+                    UserSource = new HashSet<UserSource> { UserSource.JwtSubjectClaim, UserSource.SessionId }
+                },
+                new UserLoggerSettings {
+                    UserSource = new HashSet<UserSource> {
+                        UserSource.JwtNameClaim,
+                        UserSource.JwtPreferredUserNameClaim,
+                        UserSource.JwtSubjectClaim,
+                        UserSource.SessionId,
+                        UserSource.XUserHeader,
+                        UserSource.XUserQueryString,
+                        UserSource.OasisNameClaim,
+                        UserSource.OasisEmailClaim,
+                        UserSource.JwtEmailClaim,
+                        UserSource.JwtPhoneClaim,
+                        UserSource.JwtClientIdClaim
+                    }
+                },
+
+            };
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void UserLogger(int testCase) {
+            var path = $"UserLogger/{testCase}.json";
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(path)
+                .Build();
+            var actual = new UserLoggerSettings();
+            config.Bind("UserLogger", actual);
+
+            var expected = sps[testCase];
+
+            Assert.Equal(expected.UserSource, actual.UserSource);
+
+        }
+
 
 
     }

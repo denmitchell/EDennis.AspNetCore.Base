@@ -6,6 +6,7 @@ using System.Text;
 namespace EDennis.AspNetCore.Base {
     public class ScopePropertiesSettings {
 
+        public readonly static HashSet<UserSource> DEFAULT_USER_SOURCE = new HashSet<UserSource> { Base.UserSource.JwtNameClaim };
 
         private HashSet<UserSource> _userSource = new HashSet<UserSource>();
         private bool _userSourceSet = false;
@@ -20,13 +21,13 @@ namespace EDennis.AspNetCore.Base {
         public HashSet<UserSource> UserSource {
             get {
                 if (_userSource.Count == 0)
-                    _userSource = new HashSet<UserSource> { Base.UserSource.JwtNameClaim };
+                    _userSource.UnionWith(DEFAULT_USER_SOURCE);
                 
                 return _userSource;
             }
             set {
                 if (!_userSourceSet) {
-                    value.Remove(Base.UserSource.JwtNameClaim);
+                    value.RemoveWhere(x=>DEFAULT_USER_SOURCE.Contains(x));
                 }
                 _userSource = value;
                 _userSourceSet = true;

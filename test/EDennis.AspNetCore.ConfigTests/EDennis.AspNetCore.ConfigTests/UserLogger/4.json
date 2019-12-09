@@ -1,0 +1,17 @@
+{
+  "UserLogger": {
+    "UserSource": [
+      "JwtNameClaim",
+      "JwtPreferredUserNameClaim",
+      "JwtSubjectClaim",
+      "SessionId",
+      "XUserHeader",
+      "XUserQueryString",
+      "OasisNameClaim",
+      "OasisEmailClaim",
+      "JwtEmailClaim",
+      "JwtPhoneClaim",
+      "JwtClientIdClaim"
+    ]
+  }
+ }

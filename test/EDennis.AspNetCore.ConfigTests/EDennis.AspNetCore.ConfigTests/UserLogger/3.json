@@ -1,0 +1,8 @@
+{
+  "UserLogger": {
+    "UserSource": [
+      "JwtSubjectClaim",
+      "SessionId"
+    ]
+  }
+ }
