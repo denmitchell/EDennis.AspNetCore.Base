@@ -7,6 +7,11 @@ using Xunit.Abstractions;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using EDennis.AspNetCore.Base;
+using EDennis.NetCoreTestingUtilities.Extensions;
+using EDennis.JsonUtils;
+using System.Text.Json;
+using System.Linq;
+using System.ComponentModel;
 
 namespace EDennis.AspNetCore.ConfigTests {
     public class BindingTests {
@@ -15,7 +20,7 @@ namespace EDennis.AspNetCore.ConfigTests {
             _output = output;
         }
 
-        private static ScopePropertiesSettings[] sps =
+        private static readonly ScopePropertiesSettings[] sps =
             new ScopePropertiesSettings[] {
                 new ScopePropertiesSettings {
                     UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
@@ -86,39 +91,55 @@ namespace EDennis.AspNetCore.ConfigTests {
         }
 
 
-        private static MockHeaderSettingsCollection[] mhsc =
+        private static readonly MockHeaderSettingsCollection[] mhsc =
             new MockHeaderSettingsCollection[] {
                 new MockHeaderSettingsCollection {
-                    {"X-User", new MockHeaderSettings {
-                        Values = new string[] { "curly@stooges.org" },
-                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
-                    },
                     {"X-Role", new MockHeaderSettings {
                         Values = new string[] { "readonly" },
                         ConflictResolution = MockHeaderConflictResolution.Overwrite }
+                    },
+                    {"X-User", new MockHeaderSettings {
+                        Values = new string[] { "curly@stooges.org" },
+                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     }
                 },
                 new MockHeaderSettingsCollection {
-                    {"X-User", new MockHeaderSettings {
-                        Values = new string[] { "larry@stooges.org" },
-                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
-                    },
                     {"X-Role", new MockHeaderSettings {
                         Values = new string[] { "user" },
                         ConflictResolution = MockHeaderConflictResolution.Union }
+                    },
+                    {"X-User", new MockHeaderSettings {
+                        Values = new string[] { "larry@stooges.org" },
+                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     }
                 },
                 new MockHeaderSettingsCollection {
-                    {"X-User", new MockHeaderSettings {
-                        Values = new string[] { "moe@stooges.org" },
-                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
-                    },
                     {"X-Role", new MockHeaderSettings {
                         Values = new string[] { "admin", "user" },
                         ConflictResolution = MockHeaderConflictResolution.Union }
+                    },
+                    {"X-User", new MockHeaderSettings {
+                        Values = new string[] { "moe@stooges.org" },
+                        ConflictResolution = MockHeaderConflictResolution.Overwrite }
                     }
                 }
             };
+
+
+        [Fact]
+        public void ExploreMockHeaderSettingsCollectionType() {
+            var type = typeof(MockHeaderSettingsCollection);
+            _output.WriteLine($"type.IsGenericType: {type.IsGenericType}");
+            _output.WriteLine($"type.IsAssignableFrom(typeof(Dictionary<,>)): {type.IsAssignableFrom(typeof(Dictionary<,>))}");
+            _output.WriteLine($"(typeof(Dictionary<,>)).IsAssignableFrom(type): {(typeof(Dictionary<,>)).IsAssignableFrom(type)}");
+            _output.WriteLine($"(typeof(Dictionary<string,MockHeaderSettings>)).IsAssignableFrom(type): {(typeof(Dictionary<string, MockHeaderSettings>)).IsAssignableFrom(type)}");
+            _output.WriteLine($"(typeof(Dictionary<string,object>)).IsAssignableFrom(type): {(typeof(Dictionary<string, object>)).IsAssignableFrom(type)}");
+
+        }
+
+
+
+
 
         [Theory]
         [InlineData(0)]
@@ -134,15 +155,11 @@ namespace EDennis.AspNetCore.ConfigTests {
 
             var expected = mhsc[testCase];
 
-            foreach(var key in expected.Keys) {
-                var e = expected[key];
-                var a = actual[key];
-                Assert.Equal(e.Values, a.Values);
-                Assert.Equal(e.ConflictResolution, a.ConflictResolution);
-            }
+            Assert.True(actual.IsEqualOrWrite(expected,_output, true));
+
         }
 
-        private static UserLoggerSettings[] ul =
+        private static readonly UserLoggerSettings[] ul =
             new UserLoggerSettings[] {
                 new UserLoggerSettings {
                     UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim }
@@ -188,7 +205,7 @@ namespace EDennis.AspNetCore.ConfigTests {
             var actual = new UserLoggerSettings();
             config.Bind("UserLogger", actual);
 
-            var expected = sps[testCase];
+            var expected = ul[testCase];
 
             Assert.Equal(expected.UserSource, actual.UserSource);
 
@@ -196,5 +213,101 @@ namespace EDennis.AspNetCore.ConfigTests {
 
 
 
+        private static readonly ActiveMockClientSettings[] amcs =
+            new ActiveMockClientSettings[] {
+                new ActiveMockClientSettings {
+                    ActiveMockClientKey = "MockClient1",
+                    MockClients = new MockClientSettingsDictionary {
+                        {
+                            "MockClient1", new MockClientSettings {
+                            ClientId = "EDennis.Samples.SomeApi1",
+                            ClientSecret = "some secret 1",
+                            Scopes = new string[] { "some scope 1" }}
+                        },
+                        {
+                            "MockClient2", new MockClientSettings {
+                            ClientId = "EDennis.Samples.SomeApi2",
+                            ClientSecret = "some secret 2",
+                            Scopes = new string[] { "some scope 2a", "some scope 2b" }}
+                        }
+                    }
+                },
+                new ActiveMockClientSettings {
+                    ActiveMockClientKey = "MockClient2",
+                    MockClients = new MockClientSettingsDictionary {
+                        {
+                            "MockClient1", new MockClientSettings {
+                            ClientId = "EDennis.Samples.SomeApi1",
+                            ClientSecret = "some secret 1",
+                            Scopes = new string[] { "some scope 1" }}
+                        },
+                        {
+                            "MockClient2", new MockClientSettings {
+                            ClientId = "EDennis.Samples.SomeApi2",
+                            ClientSecret = "some secret 2",
+                            Scopes = new string[] { "some scope 2a", "some scope 2b" }}
+                        }
+                    }
+                }
+            };
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void MockClients(int testCase) {
+            var path = $"MockClient/{testCase}.json";
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(path)
+                .Build();
+            var actual = new ActiveMockClientSettings();
+            config.Bind("MockClient", actual);
+
+            var expected = amcs[testCase];
+
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+
+        }
+
+
+        private static readonly HeadersToClaims[] htc =
+            new HeadersToClaims[] {
+                new HeadersToClaims {
+                    PreAuthentication = new PreAuthenticationHeadersToClaims{
+                        { "X-User", "name" },
+                        { "X-Role", "role" }
+                    }
+                },
+                new HeadersToClaims {
+                    PreAuthentication = new PreAuthenticationHeadersToClaims{
+                        { "X-UserScope", "user_scope" },
+                    },
+                    PostAuthentication = new PostAuthenticationHeadersToClaims{
+                        { "X-User", "name" },
+                        { "X-Role", "role" }
+
+                    },
+                }
+            };
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void HeadersToClaims(int testCase) {
+            var path = $"HeadersToClaims/{testCase}.json";
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(path)
+                .Build();
+            var actual = new ActiveMockClientSettings();
+            config.Bind("HeadersToClaims", actual);
+
+            var expected = htc[testCase];
+
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+
+        }
+
+
+
     }
+
 }

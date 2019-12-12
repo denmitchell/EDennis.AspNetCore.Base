@@ -1,0 +1,17 @@
+{
+  "MockClient": {
+    "ActiveMockClientKey": "MockClient2",
+    "MockClients": {
+      "MockClient1": {
+        "ClientId": "EDennis.Samples.SomeApi1",
+        "ClientSecret": "some secret 1",
+        "Scopes": [ "some scope 1" ]
+      },
+      "MockClient2": {
+        "ClientId": "EDennis.Samples.SomeApi2",
+        "ClientSecret": "some secret 2",
+        "Scopes": [ "some scope 2a", "some scope 2b" ]
+      }
+    }
+  }
+}
