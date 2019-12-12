@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Apis\appsettings.json" />
-    <None Remove="DbContexts\appsettings.json" />
+    <None Remove="Apis\0.json" />
+    <None Remove="Apis\1.json" />
+    <None Remove="Apis\2.json" />
+    <None Remove="Apis\3.json" />
+    <None Remove="DbContexts\0.json" />
+    <None Remove="DbContexts\1.json" />
+    <None Remove="DbContexts\2.json" />
     <None Remove="HeadersToClaims\0.json" />
     <None Remove="HeadersToClaims\1.json" />
     <None Remove="MockClient\0.json" />
@@ -29,12 +34,37 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Apis\appsettings.json">
+    <Content Include="Apis\3.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="DbContexts\appsettings.json">
+    <Content Include="Apis\2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Apis\1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Apis\0.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="DbContexts\2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="DbContexts\1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="DbContexts\0.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -138,6 +168,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj" />
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\EDennis.Samples.MultipleConfigsApi\EDennis.Samples.MultipleConfigsApi.csproj" />
   </ItemGroup>

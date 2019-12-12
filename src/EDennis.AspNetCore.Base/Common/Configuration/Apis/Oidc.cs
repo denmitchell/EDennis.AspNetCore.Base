@@ -1,4 +1,6 @@
-﻿namespace EDennis.AspNetCore.Base {
+﻿using EDennis.AspNetCore.Base.Web;
+
+namespace EDennis.AspNetCore.Base {
     public class Oidc : OAuth {
         public string ResponseType { get; set; } = "code id_token";
         public bool GetClaimsFromUserInfoEndpoint { get; set; } = true;

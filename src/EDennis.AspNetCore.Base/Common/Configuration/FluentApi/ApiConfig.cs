@@ -12,8 +12,8 @@ namespace EDennis.AspNetCore.Base {
     /// </summary>
     public class ApiConfig {
 
-        public const string DEFAULT_OAUTH_RELATIVE_PATH = ":OAuth";
-        public const string DEFAULT_OIDC_RELATIVE_PATH = ":Oidc";
+        public const string DEFAULT_OAUTH_RELATIVE_PATH = "OAuth";
+        public const string DEFAULT_OIDC_RELATIVE_PATH = "Oidc";
         public const string OAUTH_SCHEME = "Bearer";
         public const string OIDC_SCHEME = "Cookies";
         public const string OIDC_CHALLENGE_SCHEME = "oidc";

@@ -1,0 +1,10 @@
+{
+  "Apis": {
+    "Api1": {
+      "ProjectName": "My.Api1",
+      "HttpsPort": 6005,
+      "HttpPort": 6006,
+      "Scopes": [ "My.Api1.*" ]
+    }
+  }
+}

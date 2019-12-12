@@ -31,11 +31,11 @@ namespace EDennis.AspNetCore.Base {
     /// </summary>
     public static class IServiceConfigExtensions {
 
-        public const string DEFAULT_SCOPE_PROPERTIES_PATH = ":ScopeProperties";
-        public const string DEFAULT_MOCK_HEADERS_PATH = ":MockHeaders";
-        public const string DEFAULT_MOCK_CLIENT_PATH = ":MockClient";
-        public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = ":HeadersToClaims";
-        public const string DEFAULT_USER_LOGGER_PATH = ":UserLogger";
+        public const string DEFAULT_SCOPE_PROPERTIES_PATH = "ScopeProperties";
+        public const string DEFAULT_MOCK_HEADERS_PATH = "MockHeaders";
+        public const string DEFAULT_MOCK_CLIENT_PATH = "MockClient";
+        public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = "HeadersToClaims";
+        public const string DEFAULT_USER_LOGGER_PATH = "UserLogger";
 
 
         public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)

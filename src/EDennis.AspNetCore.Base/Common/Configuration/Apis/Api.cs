@@ -1,15 +1,12 @@
-﻿using IdentityModel;
-using IdentityServer4.Models;
+﻿using EDennis.AspNetCore.Base.Web;
+using IdentityModel;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
-using System.Text;
+using System.Linq;
 
 namespace EDennis.AspNetCore.Base {
-    public class Api  {
+    public class Api {
 
-        private string[] _scopes;
-        private ApiMappings _mappings;
 
         public string ProjectName { get; set; }
         public string Host { get; set; } = "localhost";
@@ -21,29 +18,37 @@ namespace EDennis.AspNetCore.Base {
         public Oidc Oidc { get; set; }
 
 
-        public string[] Scopes { 
-            get {
-                return _scopes ?? new string[] { $"{ProjectName}*" };
-            }
-            set {
-                _scopes = value;
-            } 
-        }
-        public ApiMappings Mappings { 
-            get {
-                return _mappings ?? new ApiMappings {
-                    ClaimsToHeaders = new ClaimsToHeaders {
+        /// <summary>
+        /// One or more security scopes for accessing the API
+        /// NOTE: the implementation contains a workaround to replace default scope when explicitly set
+        /// </summary>
+        public string[] Scopes { get; set; }
+
+
+
+        public static readonly ClaimsToHeaders DEFAULT_CLAIMS_TO_HEADERS =
+                    new ClaimsToHeaders {
                         { JwtClaimTypes.Name, Constants.USER_KEY },
                         { JwtClaimTypes.Role, Constants.ROLE_KEY }
-                    },
-                    HeadersToHeaders = new HeadersToHeaders {
+                    };
+
+        public static readonly HeadersToHeaders DEFAULT_HEADERS_TO_HEADERS =
+                    new HeadersToHeaders {
                         { Constants.TESTING_INSTANCE_KEY, Constants.TESTING_INSTANCE_KEY },
                         { Constants.SET_SCOPEDLOGGER_KEY, Constants.SET_SCOPEDLOGGER_KEY },
                         { Constants.CLEAR_SCOPEDLOGGER_KEY, Constants.SET_SCOPEDLOGGER_KEY },
                         { Constants.USER_KEY, Constants.USER_KEY },
                         { Constants.ROLE_KEY, Constants.ROLE_KEY },
                         { Constants.HOSTPATH_KEY, Constants.HOSTPATH_KEY }
-                    }
+                    };
+
+        private ApiMappings _mappings;
+
+        public ApiMappings Mappings { 
+            get {
+                return _mappings ?? new ApiMappings {
+                    ClaimsToHeaders = DEFAULT_CLAIMS_TO_HEADERS,
+                    HeadersToHeaders = DEFAULT_HEADERS_TO_HEADERS
                 };
             } 
             set {

@@ -92,25 +92,6 @@ namespace EDennis.AspNetCore.Base.Web
             return entries;
         }
 
-        [Obsolete("Apis have a new structure configuration.  See Profiles class.")]
-        public static Dictionary<string, ApiConfig> GetApiConfig(this IConfiguration config) {
-
-            var env = config["ASPNETCORE_ENVIRONMENT"] ?? "Development";
-
-            var apis = new Dictionary<string, ApiConfig>();
-            var apiConfig = config.GetJsonConfiguration($"appsettings.{env}.json")
-                .Where(x=>x.Key=="Apis").FirstOrDefault();
-
-            apiConfig.Bind(apis);
-
-            foreach(var api in apis) {
-                if (api.Value.ProjectDirectory == null) {
-                    api.Value.ProjectDirectory = $"C:/Users/{Environment.UserName}/source/repos/{api.Value.SolutionName}/{api.Value.ProjectName}";
-                }
-            }
-
-            return apis;
-        }
 
         public static Dictionary<string, string> Flatten(this IConfiguration config) {
             var dict = new Dictionary<string, string>();

@@ -1,0 +1,10 @@
+{
+  "DbContexts": {
+    "MyDbContext2": {
+      "ConnectionString": "Some connection string 2",
+      "Interceptor": {
+        "IsInMemory": false
+      }
+    }
+  }
+}
