@@ -126,20 +126,6 @@ namespace EDennis.AspNetCore.ConfigTests {
             };
 
 
-        [Fact]
-        public void ExploreMockHeaderSettingsCollectionType() {
-            var type = typeof(MockHeaderSettingsCollection);
-            _output.WriteLine($"type.IsGenericType: {type.IsGenericType}");
-            _output.WriteLine($"type.IsAssignableFrom(typeof(Dictionary<,>)): {type.IsAssignableFrom(typeof(Dictionary<,>))}");
-            _output.WriteLine($"(typeof(Dictionary<,>)).IsAssignableFrom(type): {(typeof(Dictionary<,>)).IsAssignableFrom(type)}");
-            _output.WriteLine($"(typeof(Dictionary<string,MockHeaderSettings>)).IsAssignableFrom(type): {(typeof(Dictionary<string, MockHeaderSettings>)).IsAssignableFrom(type)}");
-            _output.WriteLine($"(typeof(Dictionary<string,object>)).IsAssignableFrom(type): {(typeof(Dictionary<string, object>)).IsAssignableFrom(type)}");
-
-        }
-
-
-
-
 
         [Theory]
         [InlineData(0)]
@@ -273,8 +259,8 @@ namespace EDennis.AspNetCore.ConfigTests {
             new HeadersToClaims[] {
                 new HeadersToClaims {
                     PreAuthentication = new PreAuthenticationHeadersToClaims{
-                        { "X-User", "name" },
-                        { "X-Role", "role" }
+                        { "X-Role", "role" },
+                        { "X-User", "name" }
                     }
                 },
                 new HeadersToClaims {
@@ -282,8 +268,8 @@ namespace EDennis.AspNetCore.ConfigTests {
                         { "X-UserScope", "user_scope" },
                     },
                     PostAuthentication = new PostAuthenticationHeadersToClaims{
-                        { "X-User", "name" },
-                        { "X-Role", "role" }
+                        { "X-Role", "role" },
+                        { "X-User", "name" }
 
                     },
                 }
@@ -297,7 +283,7 @@ namespace EDennis.AspNetCore.ConfigTests {
             var config = new ConfigurationBuilder()
                 .AddJsonFile(path)
                 .Build();
-            var actual = new ActiveMockClientSettings();
+            var actual = new HeadersToClaims();
             config.Bind("HeadersToClaims", actual);
 
             var expected = htc[testCase];
