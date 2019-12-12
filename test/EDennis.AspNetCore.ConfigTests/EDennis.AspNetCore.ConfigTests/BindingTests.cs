@@ -371,7 +371,7 @@ namespace EDennis.AspNetCore.ConfigTests {
         }
 
 
-        Apis[] apis = new Apis[] {
+        readonly Apis[] apis = new Apis[] {
             new Apis {
                 { "Api1",new Api {
                     Host = "localhost",

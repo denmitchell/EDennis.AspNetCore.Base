@@ -84,7 +84,7 @@ namespace EDennis.AspNetCore.Base {
                 .AddCookie(OIDC_SCHEME)
                 .AddOpenIdConnect(OIDC_CHALLENGE_SCHEME, opt => {
                     opt.SignInScheme = OIDC_SCHEME;
-                    opt.Authority = settings.MainAddress;
+                    opt.Authority = settings.Authority;
                     opt.RequireHttpsMetadata = settings.RequireHttpsMetadata;
                     opt.ClientId = settings.Audience;
                     opt.ClientSecret = settings.ClientSecret;

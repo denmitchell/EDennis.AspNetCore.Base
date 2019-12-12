@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base {
-    public class OAuth : Api {
+    public class OAuth {
 
         public string ClientSecret { get; set; }
 
