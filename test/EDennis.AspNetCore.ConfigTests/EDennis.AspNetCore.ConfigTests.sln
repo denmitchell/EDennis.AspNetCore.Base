@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.MultipleCon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.NetCoreTestingUtilities", "..\..\..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj", "{E776FA65-25E4-4DAD-B4D9-23CC8661CCD2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.JsonUtils", "..\..\..\JsonUtils-SystemTextJson\EDennis.JsonUtils\EDennis.JsonUtils\EDennis.JsonUtils.csproj", "{9915C346-A501-4BDF-99DA-151271BF80DC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,14 +27,6 @@ Global
 		{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E776FA65-25E4-4DAD-B4D9-23CC8661CCD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E776FA65-25E4-4DAD-B4D9-23CC8661CCD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E776FA65-25E4-4DAD-B4D9-23CC8661CCD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E776FA65-25E4-4DAD-B4D9-23CC8661CCD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9915C346-A501-4BDF-99DA-151271BF80DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9915C346-A501-4BDF-99DA-151271BF80DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9915C346-A501-4BDF-99DA-151271BF80DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9915C346-A501-4BDF-99DA-151271BF80DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
