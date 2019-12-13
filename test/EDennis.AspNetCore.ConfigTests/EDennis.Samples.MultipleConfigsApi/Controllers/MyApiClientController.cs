@@ -6,6 +6,7 @@ using System.Linq;
 
 
 namespace EDennis.Samples.MultipleConfigsApi.Controllers {
+
     [ApiController]
     [Route("[controller]")]
     public class MyApiClientController : ControllerBase {

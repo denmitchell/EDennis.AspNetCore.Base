@@ -172,4 +172,8 @@
     <ProjectReference Include="..\EDennis.Samples.MultipleConfigsApi\EDennis.Samples.MultipleConfigsApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DefaultPolicies\" />
+  </ItemGroup>
+
 </Project>
