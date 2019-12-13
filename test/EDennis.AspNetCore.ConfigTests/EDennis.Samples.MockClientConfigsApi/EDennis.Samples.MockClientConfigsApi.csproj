@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockClientConfigsApi.Lib\EDennis.Samples.MockClientConfigsApi.Lib.csproj" />
   </ItemGroup>
 
 </Project>
