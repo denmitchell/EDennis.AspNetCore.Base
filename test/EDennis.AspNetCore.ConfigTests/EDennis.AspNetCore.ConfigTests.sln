@@ -51,6 +51,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "..\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj", "{217B9EBA-A8B6-48C5-BDA1-7FF5CC6F7B6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api1", "EDennis.Samples.Api1\EDennis.Samples.Api1.csproj", "{618D4E1F-E838-4FEE-9873-F40492579BCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api1.Lib", "EDennis.Samples.Api1.Lib\EDennis.Samples.Api1.Lib.csproj", "{309635CB-26A7-4C45-81A6-27372859B351}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api2", "EDennis.Samples.Api2\EDennis.Samples.Api2.csproj", "{5026D00D-D0D9-470F-871D-84CDE9928C45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api2.Lib", "EDennis.Samples.Api2.Lib\EDennis.Samples.Api2.Lib.csproj", "{43F03AEC-888E-41F1-A16B-2A6A09F01C03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +161,22 @@ Global
 		{217B9EBA-A8B6-48C5-BDA1-7FF5CC6F7B6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{217B9EBA-A8B6-48C5-BDA1-7FF5CC6F7B6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{217B9EBA-A8B6-48C5-BDA1-7FF5CC6F7B6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{618D4E1F-E838-4FEE-9873-F40492579BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{618D4E1F-E838-4FEE-9873-F40492579BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{618D4E1F-E838-4FEE-9873-F40492579BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{618D4E1F-E838-4FEE-9873-F40492579BCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{309635CB-26A7-4C45-81A6-27372859B351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{309635CB-26A7-4C45-81A6-27372859B351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{309635CB-26A7-4C45-81A6-27372859B351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{309635CB-26A7-4C45-81A6-27372859B351}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5026D00D-D0D9-470F-871D-84CDE9928C45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5026D00D-D0D9-470F-871D-84CDE9928C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5026D00D-D0D9-470F-871D-84CDE9928C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5026D00D-D0D9-470F-871D-84CDE9928C45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
