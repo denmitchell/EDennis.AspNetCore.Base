@@ -2,12 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <OutputType>library</OutputType>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="appsettings.Development.json" />
+  </ItemGroup>
+
+
+  <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="3.0.1" />
-    
+
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.0.1" />
 
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.1.0" />

@@ -20,14 +20,14 @@ namespace EDennis.Samples.MultipleConfigsApi.Controllers {
             _serviceDescriptor = services.FirstOrDefault(s => s.ImplementationType == instance.GetType());
         }
 
-        [HttpGet]
-        public Service Get() {
-            var service = new Service {
-                Instance = _instance,
-                Name = _instance.GetType().CSharpName(),
-                Lifetime = _serviceDescriptor.Lifetime
-            };
-            return service;
-        }
+        //[HttpGet]
+        //public Service Get() {
+        //    var service = new Service {
+        //        Instance = _instance,
+        //        Name = _instance.GetType().CSharpName(),
+        //        Lifetime = _serviceDescriptor.Lifetime
+        //    };
+        //    return service;
+        //}
     }
 }
