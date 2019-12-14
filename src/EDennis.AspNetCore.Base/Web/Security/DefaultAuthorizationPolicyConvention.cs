@@ -15,8 +15,8 @@ namespace EDennis.AspNetCore.Base.Security {
         private readonly string _appName;
         private readonly IConfiguration _config;
 
-        public DefaultAuthorizationPolicyConvention(IWebHostEnvironment env, IConfiguration config) {
-            _appName = env.ApplicationName;
+        public DefaultAuthorizationPolicyConvention(string appName, IConfiguration config) {
+            _appName = appName;
             _config = config;
         }
 

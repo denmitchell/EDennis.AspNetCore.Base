@@ -169,11 +169,27 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.ApiConfigsApi.Lib\EDennis.Samples.ApiConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.ApiConfigsApi\EDennis.Samples.ApiConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DbContextConfigsApi.Lib\EDennis.Samples.DbContextConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DbContextConfigsApi\EDennis.Samples.DbContextConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DefaultPoliciesConfigsApi.Lib\EDennis.Samples.DefaultPoliciesConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DefaultPoliciesConfigsApi\EDennis.Samples.DefaultPoliciesConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.HeadersToClaimsConfigsApi.Lib\EDennis.Samples.HeadersToClaimsConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.HeadersToClaimsConfigsApi\EDennis.Samples.HeadersToClaimsConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockClientConfigsApi.Lib\EDennis.Samples.MockClientConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockClientConfigsApi\EDennis.Samples.MockClientConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockHeadersConfigsApi.Lib\EDennis.Samples.MockHeadersConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockHeadersConfigsApi\EDennis.Samples.MockHeadersConfigsApi.csproj" />
     <ProjectReference Include="..\EDennis.Samples.MultipleConfigsApi\EDennis.Samples.MultipleConfigsApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DefaultPolicies\" />
+    <ProjectReference Include="..\EDennis.Samples.OAuthConfigsApi.Lib\EDennis.Samples.OAuthConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.OAuthConfigsApi\EDennis.Samples.OAuthConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.OidcConfigsApp\EDennis.Samples.OidcConfigsApp.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.ScopePropertiesConfigsApi.Lib\EDennis.Samples.ScopePropertiesConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.ScopePropertiesConfigsApi\EDennis.Samples.ScopePropertiesConfigsApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.UserLoggerConfigsApi.Lib\EDennis.Samples.UserLoggerConfigsApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.UserLoggerConfigsApi\EDennis.Samples.UserLoggerConfigsApi.csproj" />
   </ItemGroup>
 
 </Project>

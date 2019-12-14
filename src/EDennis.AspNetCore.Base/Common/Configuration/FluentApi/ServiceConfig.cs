@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Collections.Generic;
 
 namespace EDennis.AspNetCore.Base {
 
@@ -14,61 +15,49 @@ namespace EDennis.AspNetCore.Base {
 
         public IServiceCollection Services { get; }
         public IConfiguration Configuration { get; }
-        public IConfigurationSection ConfigurationSection { get; private set; }
+
+        public T Bind<T>(string path) where T : class, new() {
+            var configSection = Configuration.GetSection(path);
+            var obj = new T();
+            configSection.Bind(obj);
+            if(!_objects.ContainsKey(path))
+                _objects.Add(path, obj);
+            return obj;
+        }
+
+        public void Configure<T>(string path) where T : class, new() {
+            var configSection = Configuration.GetSection(path);
+            Services.Configure<T>(configSection);
+        }
+
+        public T BindAndConfigure<T>(string path) where T : class, new() {
+            var configSection = Configuration.GetSection(path);
+            Services.Configure<T>(configSection);
+            var obj = new T();
+            configSection.Bind(obj);
+            _objects.Add(path, obj);
+            return obj;
+        }
+
+        //TODO: Not Needed?
+        public T GetObject<T>(string path) where T: class, new() {
+            return (T)_objects[path];
+        }
+
+        //TODO: Not Needed?
+        public T GetParentObject<T>(string path) where T: class, new() {
+            string parentPath = "";
+            if (path.Contains(":"))
+                parentPath = path.Substring(0, path.LastIndexOf(':'));
+            return (T)_objects[parentPath];
+        }
+
+        //TODO: Not Needed?
+        readonly Dictionary<string, object> _objects = new Dictionary<string, object>();
 
         public ServiceConfig(IServiceCollection services, IConfiguration config) {
             Configuration = config;
             Services = services;
-            ConfigurationSection = config.GetSection("");
-        }
-
-        /// <summary>
-        /// Navigate configuration tree
-        ///     .. or ..: means navigate up to parent node
-        ///     ..:..: means navigate up to grandparent node
-        ///     : or "" means navigate to root
-        /// </summary>
-        /// <param name="configKey"></param>
-        /// <returns></returns>
-        public IServiceConfig Goto(string configKey) {
-
-            var key = configKey;
-            var origPath = ConfigurationSection.Path;
-
-            if (configKey.Equals(":") || configKey.Equals("")) {
-                ConfigurationSection = Configuration.GetSection("");
-                return this;
-            }
-
-            //navigate up the config tree (analogous to ../ in file system navigation)
-            while (key.StartsWith("..")) {
-                var path = ConfigurationSection.Path;
-                if (!path.Contains(":")) {
-                    if (key == ".." || key == "..:") {
-                        ConfigurationSection = Configuration.GetSection("");
-                        return this;
-                    } else
-                        throw new ApplicationException($"Cannot navigate to {configKey} from {origPath}");
-                } else if (key.StartsWith("..:")) {
-                    var parent = path.Substring(0, path.LastIndexOf(":"));
-                    ConfigurationSection = Configuration.GetSection(parent);
-                    key = key.Substring(3);
-                } else {
-                    throw new ApplicationException($"Cannot navigate to {configKey} from {origPath}");
-                }
-
-            }
-
-            //navigate to the root
-            if (key.StartsWith(":")) {
-                ConfigurationSection = Configuration.GetSection(key.Substring(1));
-            } else if (ConfigurationSection.Path == "") {
-                ConfigurationSection = Configuration.GetSection(key);
-            } else {
-                ConfigurationSection = ConfigurationSection.GetSection(key);
-            }
-
-            return this;
         }
 
     }

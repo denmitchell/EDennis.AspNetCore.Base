@@ -1,3 +1,5 @@
+using EDennis.AspNetCore.Base;
+using EDennis.Samples.ApiConfigsApi.Apis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,10 @@ namespace EDennis.Samples.ApiConfigsApi.Lib {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+            var sc = new ServiceConfig(services,Configuration);
+            sc.AddApi<Api1>()
+                .Goto("..:")
+                .AddApi<Api2>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
