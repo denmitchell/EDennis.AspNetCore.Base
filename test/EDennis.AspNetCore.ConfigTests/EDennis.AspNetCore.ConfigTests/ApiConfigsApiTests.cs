@@ -22,14 +22,14 @@ namespace EDennis.AspNetCore.ConfigTests {
         }
 
 
-        [Fact]
-        public void TestApi1() {
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void TestApis(int apiSuffix) {
 
             var client = _factory.CreateClient["ApiConfigsApi"]();
-            var result = client.Get<Api1>("Api1");
-            var api1 = (Api1)result.Value;
-            if (api1 == null)
-                throw new ApplicationException($"Cannot retrieve api1 from endpoint: {client.BaseAddress}Api");
+            var result = client.Get<string>($"Api{apiSuffix}");
+            Assert.Equal($"Api{apiSuffix}", result.Value);
 
         }
 

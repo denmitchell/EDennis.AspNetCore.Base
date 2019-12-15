@@ -211,6 +211,36 @@ namespace IdentityServer
         public static IEnumerable<ApiResource> GetApis() {
             return new List<ApiResource>
             {
+                new ApiResource {
+                    Name ="EDennis.Samples.ApiConfigsApi",
+                    DisplayName="EDennis.Samples.ApiConfigsApi",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.ApiConfigsApi.*",
+                            DisplayName = "EDennis.Samples.ApiConfigsApi.*"
+                        }
+                    }
+                },
+                new ApiResource {
+                    Name ="EDennis.Samples.Api1",
+                    DisplayName="EDennis.Samples.Api1",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.Api1.*",
+                            DisplayName = "EDennis.Samples.Api1.*"
+                        }
+                    }
+                },
+                new ApiResource {
+                    Name ="EDennis.Samples.Api2",
+                    DisplayName="EDennis.Samples.Api2",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.Api2.*",
+                            DisplayName = "EDennis.Samples.Api2.*"
+                        }
+                    }
+                },
                 new ApiResource{
                     Name ="EDennis.Samples.Hr.InternalApi2",
                     DisplayName="EDennis.Samples.Hr.InternalApi2",
@@ -453,6 +483,14 @@ namespace IdentityServer
                     ClientId = "EDennis.Samples.DefaultPoliciesApi.Client4",
                     AllowedScopes = {
                         "N/A"
+                    }
+                },
+                new MockClient
+                {
+                    ClientId = "EDennis.Samples.ApiConfigsApi",
+                    AllowedScopes = {
+                        "EDennis.Samples.Api1.*",
+                        "EDennis.Samples.Api2.*"
                     }
                 },
                 // resource owner password grant client

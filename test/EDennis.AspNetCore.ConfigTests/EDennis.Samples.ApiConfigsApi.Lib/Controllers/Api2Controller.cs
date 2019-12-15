@@ -12,8 +12,8 @@ namespace EDennis.Samples.ApisConfigsApi.Controllers {
         }
 
         [HttpGet]
-        public Api2 Get() {
-            return _api2;
+        public string Get() {
+            return _api2.GetName();
         }
     }
 }

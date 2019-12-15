@@ -32,7 +32,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             builder.ConfigureServices(services => {
 
-                services.AddScoped<IHttpClientFactory>(provider => {
+                services.AddSingleton<IHttpClientFactory>(provider => {
                     return new TestHttpClientFactory(_create);
                 });
                 foreach(var apiKey in _create.Keys)

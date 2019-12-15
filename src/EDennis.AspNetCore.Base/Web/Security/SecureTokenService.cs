@@ -59,7 +59,7 @@ namespace EDennis.AspNetCore.Base.Security {
             IWebHostEnvironment environment) {
 
             if (environment != null)
-                ApplicationName = environment.ApplicationName;
+                ApplicationName = environment.ApplicationName.Replace(".Lib","");
 
             Logger = logger;
             _apis = apis.CurrentValue;
@@ -182,7 +182,7 @@ namespace EDennis.AspNetCore.Base.Security {
                 Logger.LogDebug("Retrieving discovery document from Identity Server.");
                 _disco = await _httpClient.GetDiscoveryDocumentAsync(_httpClient.BaseAddress.ToString());
                 if (_disco.IsError) {
-                    var ex = new ApplicationException($"Cannot retrieve discovery document from Identity Server.");
+                    var ex = new ApplicationException($"Cannot retrieve discovery document from Identity Server: {_disco.Error + "..." + _disco.Exception.Message}");
                     Logger.LogError(ex, ex.Message);
                     throw ex;
                 }
@@ -239,7 +239,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
 
             if (tokenResponse.IsError) {
-                var ex = new ApplicationException($"Cannot retrieve token from Identity Server");
+                var ex = new ApplicationException($"Cannot retrieve token from Identity Server: {tokenResponse.Error + "..." + tokenResponse.ErrorDescription}");
                 Logger.LogError(ex, ex.Message);
                 throw ex;
             } else {
