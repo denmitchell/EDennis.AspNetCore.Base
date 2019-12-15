@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging;
 
 namespace EDennis.AspNetCore.Base.Web {
     public interface IApiClient {
-        Api Api { get; set; }
-        string ApiKey { get; set; }
-        HttpClient HttpClient { get; set; }
+        Api Api { get; }
+        string ApiKey { get; }
+        HttpClient HttpClient { get; }
         ILogger Logger { get; }
-        IScopeProperties ScopeProperties { get; set; }
+        IScopeProperties ScopeProperties { get; }
     }
 }

@@ -78,35 +78,39 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             where TClient : SecureApiClient {
 
-            var apis = new Apis();
-            Configuration.GetSection(apisConfigKey).Bind(apis);
-            var iomApis = new TestOptionsMonitor<Apis>(apis);
+            throw new NotImplementedException();
 
-            var httpClient = HttpClients.GetOrAdd(typeof(TClient), t => {
-                var httpClient = new HttpClient();
-                HttpClients.TryAdd(t, httpClient);
-                return httpClient;
-            });
+            //var apis = new Apis();
+            //Configuration.GetSection(apisConfigKey).Bind(apis);
+            //var iomApis = new TestOptionsMonitor<Apis>(apis);
 
-            var secureTokenService = new SecureTokenService(iomApis, NullLogger<SecureTokenService>.Instance, null) {
-                ApplicationName = typeof(TClient).Assembly.GetName().Name
-            };
+            //var httpClient = HttpClients.GetOrAdd(typeof(TClient), t => {
+            //    var httpClient = new HttpClient();
+            //    HttpClients.TryAdd(t, httpClient);
+            //    return httpClient;
+            //});
 
-            var baseAddress = httpClient.BaseAddress.ToString();
+            //var httpClientFactory = new TestHttpClientFactory(TestApis.CreateClient);
 
-            var client = (TClient)Activator.CreateInstance(typeof(TClient),
-                new object[] { httpClient, iomApis, scopeProperties, secureTokenService, NullLogger.Instance, new NullScopedLogger() });
+            //var secureTokenService = new SecureTokenService(httpClientFactory, iomApis, NullLogger<SecureTokenService>.Instance, null) {
+            //    ApplicationName = typeof(TClient).Assembly.GetName().Name
+            //};
 
-            var baseAddressAfter = client.HttpClient.BaseAddress.ToString();
+            //var baseAddress = httpClient.BaseAddress.ToString();
 
-            if (baseAddressAfter != baseAddress)
-                httpClient.BaseAddress = client.HttpClient.BaseAddress;
+            //var client = (TClient)Activator.CreateInstance(typeof(TClient),
+            //    new object[] { httpClient, iomApis, scopeProperties, secureTokenService, NullLogger.Instance, new NullScopedLogger() });
 
-            bool ping = httpClient.Ping(TIMEOUT_SECONDS);
-            if (ping == false)
-                ping = httpClient.Ping(TIMEOUT_SECONDS);
+            //var baseAddressAfter = client.HttpClient.BaseAddress.ToString();
 
-            return client;
+            //if (baseAddressAfter != baseAddress)
+            //    httpClient.BaseAddress = client.HttpClient.BaseAddress;
+
+            //bool ping = httpClient.Ping(TIMEOUT_SECONDS);
+            //if (ping == false)
+            //    ping = httpClient.Ping(TIMEOUT_SECONDS);
+
+            //return client;
 
         }
     }

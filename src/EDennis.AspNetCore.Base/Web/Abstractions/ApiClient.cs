@@ -12,10 +12,10 @@ namespace EDennis.AspNetCore.Base.Web {
     //      differs from the class name
     public abstract class ApiClient : IApiClient {
 
-        public HttpClient HttpClient { get; set; }
-        public Api Api { get; set; }
+        public HttpClient HttpClient { get; }
+        public Api Api { get; }
         public ILogger Logger { get; }
-        public IScopeProperties ScopeProperties { get; set; }
+        public IScopeProperties ScopeProperties { get; }
         public IScopedLogger ScopedLogger { get; }
 
         public ApiClient(
@@ -29,29 +29,21 @@ namespace EDennis.AspNetCore.Base.Web {
             ScopedLogger = scopedLogger;
             ScopeProperties = scopeProperties;
 
-            var apiKey = GetApiKey();
-            HttpClient = httpClientFactory.CreateClient(apiKey);
+            ApiKey = GetType().Name;
+            HttpClient = httpClientFactory.CreateClient(ApiKey);
             try {
-                Api = apis.CurrentValue[GetApiKey()];
+                Api = apis.CurrentValue[ApiKey];
             } catch (Exception ex) {
-                Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", this.GetType().Name, GetApiKey());
+                Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", ApiKey);
             }
 
             BuildClient();
 
         }
 
-        public virtual string ApiKey { get; set; } = GetApiKey();
+        public virtual string ApiKey { get;}
 
 
-        private static string GetApiKey() {
-            var type = MethodBase.GetCurrentMethod().DeclaringType;
-            var attr = (ApiAttribute)Attribute.GetCustomAttribute(type, typeof(ApiAttribute));
-            if (attr != null)
-                return attr.Key;
-            else
-                return type.Name;
-        }
 
 
         private void BuildClient() {
@@ -65,20 +57,23 @@ namespace EDennis.AspNetCore.Base.Web {
             var headersToTransfer = Api.Mappings.HeadersToHeaders;
             var claimsToTransfer = Api.Mappings.ClaimsToHeaders;
 
-            var claimsDictionary = ScopeProperties.Claims
-                        .GroupBy(x => x.Type)
-                        .ToDictionary(g => g.Key, g => new StringValues(g.Select(x => x.Value).ToArray()));
-
             //add claims as headers
-            foreach (var key in claimsToTransfer.Keys)
-                foreach (var claim in claimsDictionary.Where(d => d.Key == key))
-                    HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, claim.Value.ToArray());
+            if (ScopeProperties.Claims != null) {
+                var claimsDictionary = ScopeProperties.Claims
+                            .GroupBy(x => x.Type)
+                            .ToDictionary(g => g.Key, g => new StringValues(g.Select(x => x.Value).ToArray()));
+
+                foreach (var key in claimsToTransfer.Keys)
+                    foreach (var claim in claimsDictionary.Where(d => d.Key == key))
+                        HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, claim.Value.ToArray());
+            }
 
             //add additional headers
-            foreach (var key in headersToTransfer.Keys)
-                foreach (var hdr in ScopeProperties.Headers.Where(d => d.Key == key))
-                    HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, hdr.Value.ToArray());
-
+            if (ScopeProperties.Headers != null) {
+                foreach (var key in headersToTransfer.Keys)
+                    foreach (var hdr in ScopeProperties.Headers.Where(d => d.Key == key))
+                        HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(key, hdr.Value.ToArray());
+            }
 
             #endregion
 

@@ -41,16 +41,26 @@ namespace EDennis.AspNetCore.Base {
 
         //TODO: Not Needed?
         public T GetObject<T>(string path) where T: class, new() {
+            if (!_objects.ContainsKey(path))
+                return null;
             return (T)_objects[path];
         }
 
         //TODO: Not Needed?
         public T GetParentObject<T>(string path) where T: class, new() {
+            var parentPath = GetParentPath(path);
+            if (!_objects.ContainsKey(parentPath))
+                return null;
+            return (T)_objects[parentPath];
+        }
+
+        public string GetParentPath(string path) {
             string parentPath = "";
             if (path.Contains(":"))
                 parentPath = path.Substring(0, path.LastIndexOf(':'));
-            return (T)_objects[parentPath];
+            return parentPath;
         }
+
 
         //TODO: Not Needed?
         readonly Dictionary<string, object> _objects = new Dictionary<string, object>();

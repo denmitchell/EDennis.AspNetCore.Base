@@ -53,6 +53,7 @@ namespace EDennis.AspNetCore.Base.Security {
 
         #region public api
         public SecureTokenService(
+            IHttpClientFactory httpClientFactory,
             IOptionsMonitor<Apis> apis,
             ILogger<SecureTokenService> logger,
             IWebHostEnvironment environment) {
@@ -63,11 +64,22 @@ namespace EDennis.AspNetCore.Base.Security {
             Logger = logger;
             _apis = apis.CurrentValue;
 
-            var identityServerApi = _apis.FirstOrDefault(a => a.Value.OAuth != null || a.Value.Oidc != null).Value;
+            string apiKey = "";
+            Api identityServerApi = null;
+
+            try {
+                apiKey = _apis.FirstOrDefault(a => a.Value.OAuth != null || a.Value.Oidc != null).Key;
+                identityServerApi = _apis[apiKey];
+            } catch (Exception ex) {
+                Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", apiKey);
+            }
+
             var auth = identityServerApi.OAuth ?? identityServerApi.Oidc;
-            _httpClient = new HttpClient {
-                BaseAddress = new Uri(identityServerApi.MainAddress)
-            };
+            _httpClient = httpClientFactory.CreateClient(apiKey);
+
+            if (!_httpClient.BaseAddress.ToString().Equals(identityServerApi.MainAddress))
+                _httpClient.BaseAddress = new Uri(identityServerApi.MainAddress);
+
             _clientSecret = auth.ClientSecret;
 
             ScheduleDiscoveryDocument();

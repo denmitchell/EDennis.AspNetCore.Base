@@ -8,7 +8,7 @@ using System.Net.Http;
 
 namespace EDennis.Samples.ApiConfigsApi.Apis {
     public class Api2 : SecureApiClient {
-        public Api2(IHttpClientFactory httpClientFactory, IOptionsMonitor<AspNetCore.Base.Apis> apis, IScopeProperties scopeProperties, ISecureTokenService secureTokenService, ILogger logger, IScopedLogger scopedLogger) : base(httpClientFactory, apis, scopeProperties, secureTokenService, logger, scopedLogger) {
+        public Api2(IHttpClientFactory httpClientFactory, IOptionsMonitor<AspNetCore.Base.Apis> apis, IScopeProperties scopeProperties, ISecureTokenService secureTokenService, ILogger<Api2> logger, IScopedLogger scopedLogger) : base(httpClientFactory, apis, scopeProperties, secureTokenService, logger, scopedLogger) {
         }
     }
 }

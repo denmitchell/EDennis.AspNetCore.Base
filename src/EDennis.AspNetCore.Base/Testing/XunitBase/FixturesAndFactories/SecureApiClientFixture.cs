@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var httpClientFactory = new TestHttpClientFactory(TestApis.CreateClient);
 
-            SecureTokenService = new SecureTokenService(GetIOptionsMonitorApis(Apis), NullLogger<SecureTokenService>.Instance, null) {
+            SecureTokenService = new SecureTokenService(httpClientFactory, GetIOptionsMonitorApis(Apis), NullLogger<SecureTokenService>.Instance, null) {
                 ApplicationName = typeof(TClient).Assembly.GetName().Name
             };
 

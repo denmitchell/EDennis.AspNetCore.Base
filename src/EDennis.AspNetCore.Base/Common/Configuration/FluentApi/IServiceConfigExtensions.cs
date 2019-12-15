@@ -33,6 +33,7 @@ namespace EDennis.AspNetCore.Base {
     /// </summary>
     public static class IServiceConfigExtensions {
 
+        public const string DEFAULT_APIS_PATH = "Apis";
         public const string DEFAULT_SCOPE_PROPERTIES_PATH = "ScopeProperties";
         public const string DEFAULT_MOCK_HEADERS_PATH = "MockHeaders";
         public const string DEFAULT_MOCK_CLIENT_PATH = "MockClient";
@@ -52,7 +53,7 @@ namespace EDennis.AspNetCore.Base {
 
         }
 
-        public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig, 
+        public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig,
             string appName, string identityServerConfigKey) {
 
             serviceConfig.Services.AddControllers(options => {
@@ -66,7 +67,7 @@ namespace EDennis.AspNetCore.Base {
                 var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
                 return new DefaultPoliciesAuthorizationPolicyProvider(
                     serviceConfig.Configuration, api, logger);
-                }
+            }
             );
             return serviceConfig;
         }
@@ -80,7 +81,7 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddApi<TClientImplementation>(this IServiceConfig serviceConfig)
             where TClientImplementation : ApiClient =>
-            AddApi<TClientImplementation>(serviceConfig, typeof(TClientImplementation).Name);
+            AddApi<TClientImplementation>(serviceConfig, $"Apis:{typeof(TClientImplementation).Name}");
 
         public static IServiceConfig AddApi<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientImplementation : ApiClient, TClientInterface
@@ -92,11 +93,14 @@ namespace EDennis.AspNetCore.Base {
         public static IServiceConfig AddApi<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig)
             where TClientImplementation : ApiClient, TClientInterface
             where TClientInterface : class =>
-            AddApi<TClientInterface, TClientImplementation>(serviceConfig, typeof(TClientImplementation).Name);
+            AddApi<TClientInterface, TClientImplementation>(serviceConfig, $"Apis:{typeof(TClientImplementation).Name}");
 
         private static void AddApiClientInternal<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientInterface : class
             where TClientImplementation : ApiClient, TClientInterface {
+
+            if (serviceConfig.GetParentObject<Apis>(path) == null)
+                serviceConfig.BindAndConfigure<Apis>(serviceConfig.GetParentPath(path));
 
             serviceConfig.Services.TryAddScoped<IScopeProperties, ScopeProperties>();
             serviceConfig.Services.TryAddScoped<ScopeProperties, ScopeProperties>();

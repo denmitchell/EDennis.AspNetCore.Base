@@ -24,6 +24,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.Api1.Lib\EDennis.Samples.Api1.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.Api1\EDennis.Samples.Api1.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.Api2.Lib\EDennis.Samples.Api2.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.Api2\EDennis.Samples.Api2.csproj" />
     <ProjectReference Include="..\EDennis.Samples.ApiConfigsApi.Lib\EDennis.Samples.ApiConfigsApi.Lib.csproj" />
     <ProjectReference Include="..\EDennis.Samples.ApiConfigsApi\EDennis.Samples.ApiConfigsApi.csproj" />
     <ProjectReference Include="..\EDennis.Samples.DbContextConfigsApi.Lib\EDennis.Samples.DbContextConfigsApi.Lib.csproj" />

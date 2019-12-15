@@ -12,12 +12,10 @@ namespace EDennis.AspNetCore.Base {
         T BindAndConfigure<T>(string path) where T : class, new();
 
 
-        //TODO: Not Needed?
         T GetObject<T>(string path) where T : class, new();
 
-        //TODO: Not Needed?
         T GetParentObject<T>(string path) where T : class, new();
 
-
+        string GetParentPath(string path);
     }
 }

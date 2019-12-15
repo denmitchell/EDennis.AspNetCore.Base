@@ -25,8 +25,8 @@ namespace EDennis.AspNetCore.ConfigTests {
         [Fact]
         public void TestApi1() {
 
-            var client = _factory.CreateClient["Api1"]();
-            var result = client.Get<Api1>("Api");
+            var client = _factory.CreateClient["ApiConfigsApi"]();
+            var result = client.Get<Api1>("Api1");
             var api1 = (Api1)result.Value;
             if (api1 == null)
                 throw new ApplicationException($"Cannot retrieve api1 from endpoint: {client.BaseAddress}Api");
