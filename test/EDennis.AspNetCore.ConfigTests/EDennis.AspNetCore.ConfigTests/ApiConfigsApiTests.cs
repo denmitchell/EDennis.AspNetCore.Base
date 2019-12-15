@@ -3,6 +3,7 @@ using EDennis.Samples.ApiConfigsApi.Apis;
 using EDennis.Samples.ApiConfigsApi.Tests;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -28,11 +29,27 @@ namespace EDennis.AspNetCore.ConfigTests {
         public void TestApis(int apiSuffix) {
 
             var client = _factory.CreateClient["ApiConfigsApi"]();
-            var result = client.Get<string>($"Api{apiSuffix}");
-            Assert.Equal($"Api{apiSuffix}", result.Value);
+            var result = client.Get<Dictionary<string,string>>($"Api{apiSuffix}");
+            Dictionary<string,string> obj = (Dictionary<string, string>)result.Value;
+
+
+
+            Assert.Equal($"Api{apiSuffix}", obj["ApiName"]);
+            Assert.Contains($"http://localhost", obj["HttpClientBaseAddress"]);
+            Assert.Equal("4", obj["ApisCount"]);
+            Assert.Equal("ApiConfigsApi", obj["SecureTokenServiceApplicationName"]);
+            Assert.Equal("Information", obj["LoggerLevel"]);
+            Assert.Equal("None", obj["ScopedLoggerLevel"]);
 
         }
+        /*
+                        HttpClientBaseAddress = HttpClient.BaseAddress.ToString(),
+                        Apis = apis.CurrentValue,
+                        ScopePropertiesUser = ScopeProperties.User,
+                        SecureTokenServiceApplicationName = secureTokenService.ApplicationName,
+                        LoggerLevel = Logger.EnabledAt(),
+                        ScopedLoggerLevel = scopedLogger.LogLevel
 
-
+        */
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EDennis.Samples.ApiConfigsApi.Apis;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace EDennis.Samples.ApisConfigsApi.Controllers {
     [ApiController]
@@ -12,8 +13,8 @@ namespace EDennis.Samples.ApisConfigsApi.Controllers {
         }
 
         [HttpGet]
-        public string Get() {
-            return _api2.GetName();
+        public Dictionary<string,string> Get() {
+            return _api2.GetObjects();
         }
     }
 }
