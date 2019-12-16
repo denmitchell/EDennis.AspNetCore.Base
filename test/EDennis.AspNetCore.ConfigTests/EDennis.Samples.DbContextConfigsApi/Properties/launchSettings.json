@@ -9,6 +9,20 @@
     }
   },
   "profiles": {
+    "UpdateDatabase1": {
+      "commandName": "Project",
+      "commandLineArgs": "UpdateDatabase=DbContext1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "UpdateDatabase2": {
+      "commandName": "Project",
+      "commandLineArgs": "UpdateDatabase=DbContext2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

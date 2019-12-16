@@ -57,6 +57,24 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
+        public static TContext GetDbContext<TContext>(DbContextSettings<TContext> settings)
+            where TContext : DbContext {
+
+            var builder = new DbContextOptionsBuilder<TContext>();
+            builder = (settings.DatabaseProvider) switch
+            {
+                DatabaseProvider.SqlServer => builder.UseSqlServer(settings.ConnectionString),
+                DatabaseProvider.Sqlite => builder.UseSqlite(settings.ConnectionString),
+                DatabaseProvider.InMemory => builder.UseInMemoryDatabase(Guid.NewGuid().ToString()),
+                _ => null
+            };
+
+            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
+            return context;
+        }
+
+
 
         public static DbConnection<TContext> GetInMemoryDbConnection<TContext>()
                     where TContext : DbContext {

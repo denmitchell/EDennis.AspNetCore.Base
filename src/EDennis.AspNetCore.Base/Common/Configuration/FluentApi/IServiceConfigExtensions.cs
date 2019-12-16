@@ -34,6 +34,7 @@ namespace EDennis.AspNetCore.Base {
     public static class IServiceConfigExtensions {
 
         public const string DEFAULT_APIS_PATH = "Apis";
+        public const string DEFAULT_DBCONTEXTS_PATH = "DbContexts";
         public const string DEFAULT_SCOPE_PROPERTIES_PATH = "ScopeProperties";
         public const string DEFAULT_MOCK_HEADERS_PATH = "MockHeaders";
         public const string DEFAULT_MOCK_CLIENT_PATH = "MockClient";
@@ -81,7 +82,7 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddApi<TClientImplementation>(this IServiceConfig serviceConfig)
             where TClientImplementation : ApiClient =>
-            AddApi<TClientImplementation>(serviceConfig, $"Apis:{typeof(TClientImplementation).Name}");
+            AddApi<TClientImplementation>(serviceConfig, $"{DEFAULT_APIS_PATH}:{typeof(TClientImplementation).Name}");
 
         public static IServiceConfig AddApi<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientImplementation : ApiClient, TClientInterface
@@ -93,7 +94,7 @@ namespace EDennis.AspNetCore.Base {
         public static IServiceConfig AddApi<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig)
             where TClientImplementation : ApiClient, TClientInterface
             where TClientInterface : class =>
-            AddApi<TClientInterface, TClientImplementation>(serviceConfig, $"Apis:{typeof(TClientImplementation).Name}");
+            AddApi<TClientInterface, TClientImplementation>(serviceConfig, $"{DEFAULT_APIS_PATH}:{typeof(TClientImplementation).Name}");
 
         private static void AddApiClientInternal<TClientInterface, TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientInterface : class
@@ -221,7 +222,7 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddDbContext<TContext>(this IServiceConfig serviceConfig)
             where TContext : DbContext =>
-            AddDbContext<TContext>(serviceConfig, typeof(TContext).Name);
+            AddDbContext<TContext>(serviceConfig, $"{DEFAULT_DBCONTEXTS_PATH}:{typeof(TContext).Name}");
 
 
         public static IServiceConfig AddRepo<TRepo>(this IServiceConfig serviceConfig)

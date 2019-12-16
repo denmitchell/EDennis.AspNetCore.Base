@@ -16,6 +16,7 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib.Controllers {
 
         public Repo1Controller(PersonRepo1 personRepo, PositionRepo1 positionRepo, ILogger<Repo1Controller> logger) {
             _personRepo = personRepo;
+            _positionRepo = positionRepo;
             _logger = logger;
 
             _repoProps.Add("PersonRepoScopedLoggerLevel", _personRepo.ScopedLogger.LogLevel.ToString());

@@ -14,6 +14,7 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib.Controllers {
             = new Dictionary<string, string>();
 
         public DbContext3Controller(DbContext3 dbContext, ILogger<DbContext3Controller> logger) {
+            dbContext.Database.EnsureCreated();
             _dbContext = dbContext;
             _logger = logger;
 

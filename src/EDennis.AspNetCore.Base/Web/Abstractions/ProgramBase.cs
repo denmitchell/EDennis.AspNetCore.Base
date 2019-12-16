@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
+using EDennis.AspNetCore.Base.EntityFramework;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -95,6 +97,16 @@ namespace EDennis.AspNetCore.Base.Web {
                 });
             return builder;
         }
+
+
+        public void UpdateDatabase<TContext>()
+            where TContext: DbContext {
+            var settings = new DbContextSettings<TContext>();
+            Configuration.GetSection($"DbContexts:{typeof(TContext).Name}").Bind(settings);
+            using var ctx = DbConnectionManager.GetDbContext(settings);
+            ctx.Database.Migrate();
+        }
+
 
         #region CanPingAsync
         public static bool CanPingAsync<TProgram1>(TProgram1 program1)

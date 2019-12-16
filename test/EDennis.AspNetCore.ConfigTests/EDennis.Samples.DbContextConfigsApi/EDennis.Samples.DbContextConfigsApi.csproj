@@ -16,4 +16,10 @@
     <ProjectReference Include="..\EDennis.Samples.DbContextConfigsApi.Lib\EDennis.Samples.DbContextConfigsApi.Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="hr.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

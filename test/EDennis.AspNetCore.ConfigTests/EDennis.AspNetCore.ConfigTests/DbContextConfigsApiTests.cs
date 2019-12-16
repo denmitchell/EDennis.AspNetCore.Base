@@ -21,7 +21,7 @@ namespace EDennis.AspNetCore.ConfigTests {
         }
 
         private static readonly string[] _databaseProviderName = new string[] {
-            "SqlServer", "Sqlite", "InMemory"
+            "Microsoft.EntityFrameworkCore.SqlServer", "Microsoft.EntityFrameworkCore.Sqlite", "Microsoft.EntityFrameworkCore.InMemory"
         };
 
         [Theory]
@@ -37,10 +37,10 @@ namespace EDennis.AspNetCore.ConfigTests {
             var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
             _output.WriteLine(json);
 
-            Assert.Equal(_databaseProviderName[dbContextSuffix], obj["DatabaseProviderName"] );
+            Assert.Equal(_databaseProviderName[dbContextSuffix-1], obj["DatabaseProviderName"] );
             Assert.Equal("EDennis.Samples.DbContextConfigsApi.Person,EDennis.Samples.DbContextConfigsApi.Position", obj["EntityTypes"]);
             Assert.Equal("3", obj["PersonCount"]);
-            Assert.Equal("2", obj["ProviderCount"]);
+            Assert.Equal("2", obj["PositionCount"]);
 
         }
 
