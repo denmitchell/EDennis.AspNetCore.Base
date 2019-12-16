@@ -48,7 +48,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                 Assert.StartsWith("System.InvalidOperationException", actual);
 
         }
-
+          
 
 
 
