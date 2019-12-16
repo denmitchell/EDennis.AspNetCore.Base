@@ -26,7 +26,7 @@ namespace EDennis.AspNetCore.Base.Security {
             if (controller.Filters.Any(f => f.GetType() == typeof(AllowAnonymousFilter)))
                 return;
 
-            var controllerPath = _appName + '.' + controller.ControllerName;
+            var controllerPath = _appName.Replace(".Lib","") + '.' + controller.ControllerName;
 
             foreach (var action in controller.Actions) {
                 var actionPath = controllerPath + '.' + action.ActionName;

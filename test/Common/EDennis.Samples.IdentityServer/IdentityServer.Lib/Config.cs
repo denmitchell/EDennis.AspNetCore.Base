@@ -222,6 +222,16 @@ namespace IdentityServer
                     }
                 },
                 new ApiResource {
+                    Name ="EDennis.Samples.DefaultPoliciesConfigsApi",
+                    DisplayName="EDennis.Samples.DefaultPoliciesConfigsApi",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.DefaultPoliciesConfigsApi.*",
+                            DisplayName = "EDennis.Samples.DefaultPoliciesConfigsApi.*"
+                        }
+                    }
+                },
+                new ApiResource {
                     Name ="EDennis.Samples.Api1",
                     DisplayName="EDennis.Samples.Api1",
                     Scopes={
@@ -491,6 +501,14 @@ namespace IdentityServer
                     AllowedScopes = {
                         "EDennis.Samples.Api1.*",
                         "EDennis.Samples.Api2.*"
+                    }
+                },
+                new MockClient
+                {
+                    ClientId = "EDennis.Samples.DefaultPoliciesConfigsApi",
+                    AllowedScopes = {
+                        "EDennis.Samples.DefaultPoliciesConfigsApi.Person.*",
+                        "EDennis.Samples.DefaultPoliciesConfigsApi.Position.GetUser"
                     }
                 },
                 // resource owner password grant client

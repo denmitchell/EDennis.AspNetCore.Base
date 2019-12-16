@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,15 +15,19 @@ using Microsoft.Extensions.Logging;
 
 namespace EDennis.Samples.DefaultPoliciesConfigsApi.Lib {
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;
+            Environment = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get;  }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers();
+            //services.AddControllers();
+            var _ = new ServiceConfig(services, Configuration)
+                .AddControllersWithDefaultPolicies(Environment.ApplicationName, "Apis:IdentityServer");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +41,19 @@ namespace EDennis.Samples.DefaultPoliciesConfigsApi.Lib {
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) => {
+
+                var claims = new List<Claim>();
+
+                claims.Add(new Claim("scope", "EDennis.Samples.DefaultPoliciesConfigsApi.Person.*"));
+                claims.Add(new Claim("scope", "EDennis.Samples.DefaultPoliciesConfigsApi.Position.GetUser"));
+                var appIdentity = new ClaimsIdentity(claims);
+                context.User.AddIdentity(appIdentity);
+
+                await next();
+
+            });
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
