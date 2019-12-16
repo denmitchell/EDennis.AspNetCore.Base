@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
 
 namespace EDennis.Samples.MockClientConfigsApi.Lib {
     public class Startup {
@@ -22,6 +24,9 @@ namespace EDennis.Samples.MockClientConfigsApi.Lib {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+            var _ = new ServiceConfig(services, Configuration)
+                .AddApi<IdentityServerApi>("Apis:IdentityServer")
+                .AddMockClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
