@@ -32,6 +32,9 @@ namespace EDennis.AspNetCore.ConfigTests {
             var result = client.Get<Dictionary<string,string>>($"Api{apiSuffix}");
             Dictionary<string,string> obj = (Dictionary<string, string>)result.Value;
 
+            var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
+            _output.WriteLine(json);
+
             Assert.Equal($"Api{apiSuffix}", obj["ApiName"]);
             Assert.Contains($"https://localhost", obj["HttpClientBaseAddress"]);
             Assert.Equal("4", obj["ApisCount"]);

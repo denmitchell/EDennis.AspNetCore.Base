@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace EDennis.Samples.DbContextConfigsApi {
+    /// <summary>
+    /// with DefaultProject = EDennis.Samples.DbContextConfigsApi ...
+    ///     PM > Add-Migration Initial -Context DbContext2 -Project EDennis.Samples.DbContextConfigsApi.Lib
+    /// </summary>
     public class DbContextDesignTimeFactory2 : DbContextDesignTimeFactory<DbContext2> { }
 
     public class DbContext2 : DbContext

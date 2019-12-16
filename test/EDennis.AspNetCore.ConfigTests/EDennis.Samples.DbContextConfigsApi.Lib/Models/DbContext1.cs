@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EDennis.Samples.DbContextConfigsApi {
 
+    /// <summary>
+    /// with DefaultProject = EDennis.Samples.DbContextConfigsApi ...
+    ///     PM > Add-Migration Initial -Context DbContext1 -Project EDennis.Samples.DbContextConfigsApi.Lib
+    /// </summary>
     public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<DbContext1> { }
     public class DbContext1 : DbContext {
         public DbSet<Person> Person { get; set; }

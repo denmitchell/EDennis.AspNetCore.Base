@@ -2,7 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace EDennis.Samples.DbContextConfigsApi {
-    public class DbContextDesignTimeFactory3 : DbContextDesignTimeFactory<DbContext3> { }
+    /// <summary>
+    /// No Migration Needed here
+    /// </summary>
+    //public class DbContextDesignTimeFactory3 : DbContextDesignTimeFactory<DbContext3> { }
     public class DbContext3 : DbContext
     {
         public DbSet<Person> Person { get; set; }
