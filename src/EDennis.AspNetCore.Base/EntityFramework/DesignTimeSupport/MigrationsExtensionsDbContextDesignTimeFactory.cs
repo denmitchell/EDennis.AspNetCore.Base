@@ -12,7 +12,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// This class is used in lieu of providing an OnConfiguring
     /// method and a default constructor in a DbContext class.  The
     /// DbContext subclass looks for a connection string defined in
-    /// either appsettings.json or appsettings.Development.json
+    /// either appsettings.json or appsettings.Development.json.
+    /// NOTE: only works with SQL Server
+    /// NOTE: requires that DbContext injects DbContextOptionsProvider,
+    ///       rather than DbContextOptions
     /// </summary>
     /// <typeparam name="TContext">The DbContextBase type</typeparam>
     public class MigrationsExtensionsDbContextDesignTimeFactory<TContext> 
@@ -48,16 +51,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //create the options builder from the configuration data
             _config = BuildConfiguration();
-            var cxnString = _config[$"ConnectionStrings:{typeof(TContext).Name}"];
-            var optionsBuilder = new DbContextOptionsBuilder<TContext>();
-            optionsBuilder
-                .UseSqlServer(cxnString)
-                .ReplaceService<IMigrationsSqlGenerator, MigrationsExtensionsSqlGenerator>(); ;
 
-            //use reflection to create the context object
-            TContext context = Activator.CreateInstance(typeof(TContext), new object[] { optionsBuilder.Options }) as TContext;
+            DbContextSettings<TContext> settings = new DbContextSettings<TContext>();
+            _config.GetSection($"DbContexts:{typeof(TContext).Name}").Bind(settings);
 
+            var builder = new DbContextOptionsBuilder<TContext>();
+            builder = builder
+                    .UseSqlServer(settings.ConnectionString)
+                    .ReplaceService<IMigrationsSqlGenerator, MigrationsExtensionsSqlGenerator>();
+
+            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
             return context;
+
         }
     }
 

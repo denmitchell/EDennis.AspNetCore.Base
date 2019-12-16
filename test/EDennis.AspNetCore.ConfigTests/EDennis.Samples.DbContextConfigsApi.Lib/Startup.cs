@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,6 +23,17 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+            var _ = new ServiceConfig(services, Configuration)
+                .AddDbContext<DbContext1>()
+                    .AddRepo<PersonRepo1>()
+                    .AddRepo<PositionRepo1>()
+                .AddDbContext<DbContext2>()
+                    .AddRepo<PersonRepo2>()
+                    .AddRepo<PositionRepo2>()
+                .AddDbContext<DbContext3>()
+                    .AddRepo<PersonRepo3>()
+                    .AddRepo<PositionRepo3>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

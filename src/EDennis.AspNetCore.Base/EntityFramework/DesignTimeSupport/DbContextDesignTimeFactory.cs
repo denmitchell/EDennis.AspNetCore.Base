@@ -11,9 +11,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// method and a default constructor in a DbContext class.  The
     /// DbContext subclass looks for a connection string defined in
     /// either appsettings.json or appsettings.Development.json
+    /// NOTE: requires that DbContext injects DbContextOptionsProvider,
+    ///       rather than DbContextOptions
     /// </summary>
     /// <typeparam name="TContext">The DbContextBase type</typeparam>
-    /// <seealso cref="SqlTemporalContextDesignTimeFactory{TContext}"/>
+    /// <seealso cref="MigrationsExtensionsDbContextDesignTimeFactory{TContext}"/>
     public class DbContextDesignTimeFactory<TContext> : IDesignTimeDbContextFactory<TContext> 
         where TContext : DbContext {
 
@@ -46,14 +48,23 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //create the options builder from the configuration data
             _config = BuildConfiguration();
-            var cxnString = _config[$"ConnectionStrings:{typeof(TContext).Name}"];
-            var optionsBuilder = new DbContextOptionsBuilder<TContext>();
-            optionsBuilder.UseSqlServer(cxnString);
 
-            //use reflection to create the context object
-            TContext context = Activator.CreateInstance(typeof(TContext), new object[] { optionsBuilder.Options }) as TContext;
+            DbContextSettings<TContext> settings = new DbContextSettings<TContext>();
+            _config.GetSection($"DbContexts:{typeof(TContext).Name}").Bind(settings);
 
+            var builder = new DbContextOptionsBuilder<TContext>();
+            builder = (settings.DatabaseProvider) switch
+            {
+                DatabaseProvider.SqlServer => builder.UseSqlServer(settings.ConnectionString),
+                DatabaseProvider.Sqlite => builder.UseSqlite(settings.ConnectionString),
+                DatabaseProvider.InMemory => builder.UseInMemoryDatabase(Guid.NewGuid().ToString()),
+                _ => null
+            };
+
+            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
             return context;
+
         }
     }
 
