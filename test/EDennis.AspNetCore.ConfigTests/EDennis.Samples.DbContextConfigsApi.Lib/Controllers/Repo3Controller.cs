@@ -19,6 +19,8 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib.Controllers {
             _positionRepo = positionRepo;
             _logger = logger;
 
+            _personRepo.Context.Database.EnsureCreated(); //for in-memory
+
             _repoProps.Add("PersonRepoScopedLoggerLevel", _personRepo.ScopedLogger.LogLevel.ToString());
             _repoProps.Add("PersonRepoScopePropertiesUser", _personRepo.ScopeProperties.User);
             _repoProps.Add("PersonCount", _personRepo.Query.Count().ToString());
