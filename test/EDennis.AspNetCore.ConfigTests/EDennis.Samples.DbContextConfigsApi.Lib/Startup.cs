@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +25,7 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
             var _ = new ServiceConfig(services, Configuration)
+                .AddScopedLogger<NullScopedLogger>()
                 .AddDbContext<DbContext1>()
                     .AddRepo<PersonRepo1>()
                     .AddRepo<PositionRepo1>()
