@@ -32,24 +32,14 @@ namespace EDennis.AspNetCore.ConfigTests {
             var result = client.Get<Dictionary<string,string>>($"Api{apiSuffix}");
             Dictionary<string,string> obj = (Dictionary<string, string>)result.Value;
 
-
-
             Assert.Equal($"Api{apiSuffix}", obj["ApiName"]);
-            Assert.Contains($"http://localhost", obj["HttpClientBaseAddress"]);
+            Assert.Contains($"https://localhost", obj["HttpClientBaseAddress"]);
             Assert.Equal("4", obj["ApisCount"]);
-            Assert.Equal("ApiConfigsApi", obj["SecureTokenServiceApplicationName"]);
+            Assert.Null(obj["ScopePropertiesUser"]);
+            Assert.Equal("EDennis.Samples.ApiConfigsApi", obj["SecureTokenServiceApplicationName"]);
             Assert.Equal("Information", obj["LoggerLevel"]);
-            Assert.Equal("None", obj["ScopedLoggerLevel"]);
+            Assert.Equal("Information", obj["ScopedLoggerLevel"]);
 
         }
-        /*
-                        HttpClientBaseAddress = HttpClient.BaseAddress.ToString(),
-                        Apis = apis.CurrentValue,
-                        ScopePropertiesUser = ScopeProperties.User,
-                        SecureTokenServiceApplicationName = secureTokenService.ApplicationName,
-                        LoggerLevel = Logger.EnabledAt(),
-                        ScopedLoggerLevel = scopedLogger.LogLevel
-
-        */
     }
 }
