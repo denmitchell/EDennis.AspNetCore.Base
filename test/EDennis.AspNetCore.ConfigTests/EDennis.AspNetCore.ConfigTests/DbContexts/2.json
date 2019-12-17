@@ -4,7 +4,7 @@
       "DatabaseProvider": "InMemory",
       "ConnectionString": "Some connection string 3",
       "Interceptor": {
-        "InstanceNameSource": [ "SessionId" ],
+        "InstanceNameSource": "SessionId",
         "IsInMemory": true,
         "IsolationLevel": "Unspecified",
         "ResetSqlServerIdentities": false,

@@ -58,12 +58,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static string ResolveUser(HttpContext context, HashSet<UserSource> userSource, string purpose) {
-            foreach(var source in userSource) {
-                var user = ResolveUser(context, source);
-                if (!string.IsNullOrEmpty(user))
-                    return user;
-            }
+        public static string ResolveUser(HttpContext context, UserSource userSource, string purpose) {
+            var user = ResolveUser(context, userSource);
+            if (!string.IsNullOrEmpty(user))
+                return user;
             throw new ApplicationException($"Cannot resolve user setting for {purpose} with source(s) = '{string.Join(',',userSource)}'.");
         }
 

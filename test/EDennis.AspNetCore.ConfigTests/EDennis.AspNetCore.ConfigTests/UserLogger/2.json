@@ -1,5 +1,5 @@
 {
   "UserLogger": {
-    "UserSource": [ "JwtNameClaim", "SessionId" ]
+    "UserSource": "JwtNameClaim"
   }
- }
+}

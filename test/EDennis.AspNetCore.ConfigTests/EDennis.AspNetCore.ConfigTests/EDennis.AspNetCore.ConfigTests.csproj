@@ -40,7 +40,6 @@
     <ProjectReference Include="..\EDennis.Samples.MockClientConfigsApi\EDennis.Samples.MockClientConfigsApi.csproj" />
     <ProjectReference Include="..\EDennis.Samples.MockHeadersConfigsApi.Lib\EDennis.Samples.MockHeadersConfigsApi.Lib.csproj" />
     <ProjectReference Include="..\EDennis.Samples.MockHeadersConfigsApi\EDennis.Samples.MockHeadersConfigsApi.csproj" />
-    <ProjectReference Include="..\EDennis.Samples.MultipleConfigsApi\EDennis.Samples.MultipleConfigsApi.csproj" />
     <ProjectReference Include="..\EDennis.Samples.OAuthConfigsApi.Lib\EDennis.Samples.OAuthConfigsApi.Lib.csproj" />
     <ProjectReference Include="..\EDennis.Samples.OAuthConfigsApi\EDennis.Samples.OAuthConfigsApi.csproj" />
     <ProjectReference Include="..\EDennis.Samples.OidcConfigsApp\EDennis.Samples.OidcConfigsApp.csproj" />

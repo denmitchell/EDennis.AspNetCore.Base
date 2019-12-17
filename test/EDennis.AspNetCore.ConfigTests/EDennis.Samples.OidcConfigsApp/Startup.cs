@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
@@ -13,17 +14,20 @@ using Microsoft.Extensions.Hosting;
 
 namespace EDennis.Samples.OidcConfigsApp {
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env) {
+            Environment = env;
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddRazorPages();
+            //services.AddRazorPages();
             var _ = new ServiceConfig(services, Configuration)
-                .AddApi<IdentityServerApi>("Apis:IdentityServer");
+                .AddApi<IdentityServerApi>("Apis:IdentityServer")
+                .AddRazorPagesWithDefaultPolicies(Environment.ApplicationName,"Apis:IdentityServer");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +46,21 @@ namespace EDennis.Samples.OidcConfigsApp {
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) => {
+
+                var claims = new List<Claim>();
+
+                claims.Add(new Claim("scope", "EDennis.Samples.OidcConfigsApp.*"));
+                claims.Add(new Claim("scope", "EDennis.Samples.OidcConfigsApp.Index"));
+                claims.Add(new Claim("scope", "EDennis.Samples.OidcConfigsApp.Error"));
+                claims.Add(new Claim("scope", "EDennis.Samples.OidcConfigsApp.Privacy"));
+                var appIdentity = new ClaimsIdentity(claims);
+                context.User.AddIdentity(appIdentity);
+
+                await next();
+
+            });
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();

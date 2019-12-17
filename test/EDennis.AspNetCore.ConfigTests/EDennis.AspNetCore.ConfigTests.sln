@@ -5,59 +5,57 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.ConfigTests", "EDennis.AspNetCore.ConfigTests\EDennis.AspNetCore.ConfigTests.csproj", "{9D7BA624-046C-4F56-841B-8406D088B323}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.MultipleConfigsApi", "EDennis.Samples.MultipleConfigsApi\EDennis.Samples.MultipleConfigsApi.csproj", "{F47AA51D-A8C6-45C8-8079-EB7F7287E449}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.ApiConfigsApi", "EDennis.Samples.ApiConfigsApi\EDennis.Samples.ApiConfigsApi.csproj", "{0C13B33F-A263-459F-8E54-635745A2488D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ApiConfigsApi", "EDennis.Samples.ApiConfigsApi\EDennis.Samples.ApiConfigsApi.csproj", "{0C13B33F-A263-459F-8E54-635745A2488D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.DbContextConfigsApi", "EDennis.Samples.DbContextConfigsApi\EDennis.Samples.DbContextConfigsApi.csproj", "{1AB2CC6D-28F1-4C67-B741-3F6F98D5B174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DbContextConfigsApi", "EDennis.Samples.DbContextConfigsApi\EDennis.Samples.DbContextConfigsApi.csproj", "{1AB2CC6D-28F1-4C67-B741-3F6F98D5B174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.HeadersToClaimsConfigsApi", "EDennis.Samples.HeadersToClaimsConfigsApi\EDennis.Samples.HeadersToClaimsConfigsApi.csproj", "{5D6DED79-2235-4736-A44D-DB2E77063AC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.HeadersToClaimsConfigsApi", "EDennis.Samples.HeadersToClaimsConfigsApi\EDennis.Samples.HeadersToClaimsConfigsApi.csproj", "{5D6DED79-2235-4736-A44D-DB2E77063AC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.MockClientConfigsApi", "EDennis.Samples.MockClientConfigsApi\EDennis.Samples.MockClientConfigsApi.csproj", "{A8A2C92B-A501-40D1-BEB7-51DF6435189D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.MockClientConfigsApi", "EDennis.Samples.MockClientConfigsApi\EDennis.Samples.MockClientConfigsApi.csproj", "{A8A2C92B-A501-40D1-BEB7-51DF6435189D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.MockHeadersConfigsApi", "EDennis.Samples.MockHeadersConfigsApi\EDennis.Samples.MockHeadersConfigsApi.csproj", "{958552A5-856B-4C5D-A7B1-431F1738DDAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.MockHeadersConfigsApi", "EDennis.Samples.MockHeadersConfigsApi\EDennis.Samples.MockHeadersConfigsApi.csproj", "{958552A5-856B-4C5D-A7B1-431F1738DDAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.ScopePropertiesConfigsApi", "EDennis.Samples.ScopePropertiesConfigsApi\EDennis.Samples.ScopePropertiesConfigsApi.csproj", "{FC4C704D-425E-47E3-A64C-DD32F0A84EC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ScopePropertiesConfigsApi", "EDennis.Samples.ScopePropertiesConfigsApi\EDennis.Samples.ScopePropertiesConfigsApi.csproj", "{FC4C704D-425E-47E3-A64C-DD32F0A84EC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.UserLoggerConfigsApi", "EDennis.Samples.UserLoggerConfigsApi\EDennis.Samples.UserLoggerConfigsApi.csproj", "{CACF1209-B37B-424B-ABA3-3E8ECC4552C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.UserLoggerConfigsApi", "EDennis.Samples.UserLoggerConfigsApi\EDennis.Samples.UserLoggerConfigsApi.csproj", "{CACF1209-B37B-424B-ABA3-3E8ECC4552C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.DefaultPoliciesConfigsApi", "EDennis.Samples.DefaultPoliciesConfigsApi\EDennis.Samples.DefaultPoliciesConfigsApi.csproj", "{54755A61-78B2-44BE-9293-9D7D7963CFBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DefaultPoliciesConfigsApi", "EDennis.Samples.DefaultPoliciesConfigsApi\EDennis.Samples.DefaultPoliciesConfigsApi.csproj", "{54755A61-78B2-44BE-9293-9D7D7963CFBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.OAuthConfigsApi", "EDennis.Samples.OAuthConfigsApi\EDennis.Samples.OAuthConfigsApi.csproj", "{3C370A69-F854-40D2-B283-5990E33B724C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.OAuthConfigsApi", "EDennis.Samples.OAuthConfigsApi\EDennis.Samples.OAuthConfigsApi.csproj", "{3C370A69-F854-40D2-B283-5990E33B724C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.OidcConfigsApp", "EDennis.Samples.OidcConfigsApp\EDennis.Samples.OidcConfigsApp.csproj", "{D94FCBEA-4035-4DE4-B8F4-A2273840CF16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.OidcConfigsApp", "EDennis.Samples.OidcConfigsApp\EDennis.Samples.OidcConfigsApp.csproj", "{D94FCBEA-4035-4DE4-B8F4-A2273840CF16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.ApiConfigsApi.Lib", "EDennis.Samples.ApiConfigsApi.Lib\EDennis.Samples.ApiConfigsApi.Lib.csproj", "{DB304D4F-0F9A-4931-B7E8-26DC01F75645}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ApiConfigsApi.Lib", "EDennis.Samples.ApiConfigsApi.Lib\EDennis.Samples.ApiConfigsApi.Lib.csproj", "{DB304D4F-0F9A-4931-B7E8-26DC01F75645}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.DbContextConfigsApi.Lib", "EDennis.Samples.DbContextConfigsApi.Lib\EDennis.Samples.DbContextConfigsApi.Lib.csproj", "{B39916C1-CD2A-48EF-8AF0-B40BC87934BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DbContextConfigsApi.Lib", "EDennis.Samples.DbContextConfigsApi.Lib\EDennis.Samples.DbContextConfigsApi.Lib.csproj", "{B39916C1-CD2A-48EF-8AF0-B40BC87934BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.DefaultPoliciesConfigsApi.Lib", "EDennis.Samples.DefaultPoliciesConfigsApi.Lib\EDennis.Samples.DefaultPoliciesConfigsApi.Lib.csproj", "{A01BCD7B-73A2-45CA-BD21-7F64EF8B9CEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.DefaultPoliciesConfigsApi.Lib", "EDennis.Samples.DefaultPoliciesConfigsApi.Lib\EDennis.Samples.DefaultPoliciesConfigsApi.Lib.csproj", "{A01BCD7B-73A2-45CA-BD21-7F64EF8B9CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.HeadersToClaimsConfigsApi.Lib", "EDennis.Samples.HeadersToClaimsConfigsApi.Lib\EDennis.Samples.HeadersToClaimsConfigsApi.Lib.csproj", "{DF38E9CA-2E79-4A0F-8733-0E045275EC1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.HeadersToClaimsConfigsApi.Lib", "EDennis.Samples.HeadersToClaimsConfigsApi.Lib\EDennis.Samples.HeadersToClaimsConfigsApi.Lib.csproj", "{DF38E9CA-2E79-4A0F-8733-0E045275EC1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.MockClientConfigsApi.Lib", "EDennis.Samples.MockClientConfigsApi.Lib\EDennis.Samples.MockClientConfigsApi.Lib.csproj", "{012526EB-4DF0-4736-9962-F6FEAA65BA38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.MockClientConfigsApi.Lib", "EDennis.Samples.MockClientConfigsApi.Lib\EDennis.Samples.MockClientConfigsApi.Lib.csproj", "{012526EB-4DF0-4736-9962-F6FEAA65BA38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.MockHeadersConfigsApi.Lib", "EDennis.Samples.MockHeadersConfigsApi.Lib\EDennis.Samples.MockHeadersConfigsApi.Lib.csproj", "{5D4EB9B1-0B41-47C6-9370-5CDB35C460EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.MockHeadersConfigsApi.Lib", "EDennis.Samples.MockHeadersConfigsApi.Lib\EDennis.Samples.MockHeadersConfigsApi.Lib.csproj", "{5D4EB9B1-0B41-47C6-9370-5CDB35C460EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.OAuthConfigsApi.Lib", "EDennis.Samples.OAuthConfigsApi.Lib\EDennis.Samples.OAuthConfigsApi.Lib.csproj", "{A604B77D-51F7-4CA1-9121-E4E6FE7875DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.OAuthConfigsApi.Lib", "EDennis.Samples.OAuthConfigsApi.Lib\EDennis.Samples.OAuthConfigsApi.Lib.csproj", "{A604B77D-51F7-4CA1-9121-E4E6FE7875DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.ScopePropertiesConfigsApi.Lib", "EDennis.Samples.ScopePropertiesConfigsApi.Lib\EDennis.Samples.ScopePropertiesConfigsApi.Lib.csproj", "{2C7B2DB0-202C-482C-95AD-210F3F93F88C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.ScopePropertiesConfigsApi.Lib", "EDennis.Samples.ScopePropertiesConfigsApi.Lib\EDennis.Samples.ScopePropertiesConfigsApi.Lib.csproj", "{2C7B2DB0-202C-482C-95AD-210F3F93F88C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.UserLoggerConfigsApi.Lib", "EDennis.Samples.UserLoggerConfigsApi.Lib\EDennis.Samples.UserLoggerConfigsApi.Lib.csproj", "{6C26CD49-6A08-4B50-ADCB-9630939380DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.UserLoggerConfigsApi.Lib", "EDennis.Samples.UserLoggerConfigsApi.Lib\EDennis.Samples.UserLoggerConfigsApi.Lib.csproj", "{6C26CD49-6A08-4B50-ADCB-9630939380DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "..\Common\EDennis.Samples.IdentityServer\IdentityServer.Lib\IdentityServer.Lib.csproj", "{F487D660-F012-497F-AEA0-B51705AFA9ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj", "{217B9EBA-A8B6-48C5-BDA1-7FF5CC6F7B6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api1", "EDennis.Samples.Api1\EDennis.Samples.Api1.csproj", "{618D4E1F-E838-4FEE-9873-F40492579BCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Api1", "EDennis.Samples.Api1\EDennis.Samples.Api1.csproj", "{618D4E1F-E838-4FEE-9873-F40492579BCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api1.Lib", "EDennis.Samples.Api1.Lib\EDennis.Samples.Api1.Lib.csproj", "{309635CB-26A7-4C45-81A6-27372859B351}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Api1.Lib", "EDennis.Samples.Api1.Lib\EDennis.Samples.Api1.Lib.csproj", "{309635CB-26A7-4C45-81A6-27372859B351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api2", "EDennis.Samples.Api2\EDennis.Samples.Api2.csproj", "{5026D00D-D0D9-470F-871D-84CDE9928C45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Api2", "EDennis.Samples.Api2\EDennis.Samples.Api2.csproj", "{5026D00D-D0D9-470F-871D-84CDE9928C45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDennis.Samples.Api2.Lib", "EDennis.Samples.Api2.Lib\EDennis.Samples.Api2.Lib.csproj", "{43F03AEC-888E-41F1-A16B-2A6A09F01C03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.Samples.Api2.Lib", "EDennis.Samples.Api2.Lib\EDennis.Samples.Api2.Lib.csproj", "{43F03AEC-888E-41F1-A16B-2A6A09F01C03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,10 +67,6 @@ Global
 		{9D7BA624-046C-4F56-841B-8406D088B323}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D7BA624-046C-4F56-841B-8406D088B323}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D7BA624-046C-4F56-841B-8406D088B323}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F47AA51D-A8C6-45C8-8079-EB7F7287E449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F47AA51D-A8C6-45C8-8079-EB7F7287E449}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F47AA51D-A8C6-45C8-8079-EB7F7287E449}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F47AA51D-A8C6-45C8-8079-EB7F7287E449}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F56AEF9C-75D5-47E5-B80E-19F69D402D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU

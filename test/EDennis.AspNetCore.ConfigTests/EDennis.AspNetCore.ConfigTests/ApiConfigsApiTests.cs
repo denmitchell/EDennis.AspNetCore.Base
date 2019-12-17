@@ -8,6 +8,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.ConfigTests {
+    [Collection("Sequential")]
     public class ApiConfigsApiTests :
         IClassFixture<TestApis> {
 

@@ -1,6 +1,6 @@
 {
   "ScopeProperties": {
-    "UserSource": [ "JwtNameClaim", "SessionId" ],
+    "UserSource": "JwtNameClaim",
     "CopyHeaders": true,
     "CopyClaims": true,
     "AppendHostPath": true

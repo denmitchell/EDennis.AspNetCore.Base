@@ -1,8 +1,10 @@
-﻿using Flurl;
+﻿using DevExpress.Utils.Serializing.Helpers;
+using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,6 +13,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,17 +21,20 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static partial class HttpClientExtensions {
 
-        public static ObjectResult Get<TResponseObject>(this HttpClient client, string relativeUrlFromBase) {
-            return client.GetAsync<TResponseObject>(relativeUrlFromBase).Result;
+        public static ObjectResult Get<TResponseObject>(this HttpClient client, string relativeUrlFromBase, 
+            JsonSerializerOptions jsonSerializerOptions = null) {
+            return client.GetAsync<TResponseObject>(relativeUrlFromBase, jsonSerializerOptions).Result;
         }
 
         public static async Task<ObjectResult> GetAsync<TResponseObject>(
-                this HttpClient client, string relativeUrlFromBase) {
+                this HttpClient client, string relativeUrlFromBase,
+                    JsonSerializerOptions jsonSerializerOptions = null                
+                ) {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
             var response = await client.GetAsync(url);
-            var objResult = await GenerateObjectResult<TResponseObject>(response);
+            var objResult = await GenerateObjectResult<TResponseObject>(response, jsonSerializerOptions);
 
             return objResult;
 
@@ -405,7 +411,8 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response)
+        private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response,
+            JsonSerializerOptions jsonSerializerOptions = null)
         {
 
             object value = null;
@@ -418,7 +425,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 if (statusCode < 299 && typeof(T) != typeof(string))
                 {
-                    value = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (jsonSerializerOptions != null)
+                        value = JsonSerializer.Deserialize<T>(json, jsonSerializerOptions);
+                    else {
+                        var options = new JsonSerializerOptions {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        value = JsonSerializer.Deserialize<T>(json, options);
+                    }
                 }
                 else
                 {

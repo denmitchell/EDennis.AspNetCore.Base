@@ -17,43 +17,31 @@ namespace EDennis.AspNetCore.ConfigTests {
         private static readonly ScopePropertiesSettings[] sps =
             new ScopePropertiesSettings[] {
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
+                    UserSource = UserSource.JwtNameClaim,
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> { UserSource.XUserHeader },
+                    UserSource = UserSource.XUserHeader,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim, UserSource.SessionId },
+                    UserSource = UserSource.JwtNameClaim,
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> { UserSource.JwtSubjectClaim, UserSource.SessionId },
+                    UserSource = UserSource.JwtSubjectClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
-                    UserSource = new HashSet<UserSource> {
-                        UserSource.JwtNameClaim,
-                        UserSource.JwtPreferredUserNameClaim,
-                        UserSource.JwtSubjectClaim,
-                        UserSource.SessionId,
-                        UserSource.XUserHeader,
-                        UserSource.XUserQueryString,
-                        UserSource.OasisNameClaim,
-                        UserSource.OasisEmailClaim,
-                        UserSource.JwtEmailClaim,
-                        UserSource.JwtPhoneClaim,
-                        UserSource.JwtClientIdClaim
-                    },
+                    UserSource = UserSource.JwtNameClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true
@@ -142,31 +130,19 @@ namespace EDennis.AspNetCore.ConfigTests {
         private static readonly UserLoggerSettings[] ul =
             new UserLoggerSettings[] {
                 new UserLoggerSettings {
-                   UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim }
+                   UserSource = UserSource.JwtNameClaim
                 },
                 new UserLoggerSettings {
-                   UserSource = new HashSet<UserSource> { UserSource.XUserHeader }
+                   UserSource = UserSource.XUserHeader
                 },
                 new UserLoggerSettings {
-                   UserSource = new HashSet<UserSource> { UserSource.JwtNameClaim, UserSource.SessionId }
+                   UserSource = UserSource.JwtNameClaim
                 },
                 new UserLoggerSettings {
-                   UserSource = new HashSet<UserSource> { UserSource.JwtSubjectClaim, UserSource.SessionId }
+                   UserSource = UserSource.JwtSubjectClaim
                 },
                 new UserLoggerSettings {
-                    UserSource = new HashSet<UserSource> {
-                        UserSource.JwtNameClaim,
-                        UserSource.JwtPreferredUserNameClaim,
-                        UserSource.JwtSubjectClaim,
-                        UserSource.SessionId,
-                        UserSource.XUserHeader,
-                        UserSource.XUserQueryString,
-                        UserSource.OasisNameClaim,
-                        UserSource.OasisEmailClaim,
-                        UserSource.JwtEmailClaim,
-                        UserSource.JwtPhoneClaim,
-                        UserSource.JwtClientIdClaim
-                    }
+                    UserSource = UserSource.JwtNameClaim
                 },
 
             };
@@ -296,7 +272,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                      DatabaseProvider = DatabaseProvider.Sqlite,
                       ConnectionString = "Some connection string 1",
                       Interceptor = new DbContextInterceptorSettings<MyDbContext1> {
-                          InstanceNameSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
+                          InstanceNameSource = UserSource.JwtNameClaim,
                           IsInMemory = false,
                           IsolationLevel = IsolationLevel.ReadCommitted,
                           ResetSqlServerIdentities =false,
@@ -307,7 +283,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                      DatabaseProvider = DatabaseProvider.SqlServer,
                       ConnectionString = "Some connection string 2",
                       Interceptor = new DbContextInterceptorSettings<MyDbContext2> {
-                          InstanceNameSource = new HashSet<UserSource> { UserSource.JwtNameClaim },
+                          InstanceNameSource = UserSource.JwtNameClaim,
                           IsInMemory = false,
                           IsolationLevel = IsolationLevel.ReadUncommitted,
                           ResetSqlServerIdentities =false,
@@ -318,7 +294,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                      DatabaseProvider = DatabaseProvider.InMemory,
                       ConnectionString = "Some connection string 3",
                       Interceptor = new DbContextInterceptorSettings<MyDbContext3> {
-                          InstanceNameSource = new HashSet<UserSource> { UserSource.SessionId },
+                          InstanceNameSource = UserSource.SessionId,
                           IsInMemory = true,
                           IsolationLevel = IsolationLevel.Unspecified,
                           ResetSqlServerIdentities =false,

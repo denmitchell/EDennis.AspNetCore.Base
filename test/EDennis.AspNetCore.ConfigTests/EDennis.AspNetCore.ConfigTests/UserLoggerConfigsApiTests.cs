@@ -1,6 +1,6 @@
 ﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
-using EDennis.Samples.HeadersToClaimsConfigsApi.Tests;
+using EDennis.Samples.UserLoggerConfigsApi.Tests;
 using System.Collections.Generic;
 using System.Text.Json;
 using Xunit;
@@ -8,14 +8,14 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.ConfigTests {
     [Collection("Sequential")]
-    public class HeadersToClaimsConfigsApiTests :
+    public class UserLoggerConfigsApiTests :
         IClassFixture<TestApis> {
 
 
         private readonly TestApis _factory;
 
         private readonly ITestOutputHelper _output;
-        public HeadersToClaimsConfigsApiTests(
+        public UserLoggerConfigsApiTests(
             TestApis factory,
             ITestOutputHelper output) {
             _factory = factory;
@@ -24,18 +24,16 @@ namespace EDennis.AspNetCore.ConfigTests {
 
 
         [Fact]
-        public void TestHeadersToClaims() {
+        public void TestUserLogger() {
 
-            var client = _factory.CreateClient["HeadersToClaimsConfigsApi"]();
-            var result = client.Get<HeadersToClaims>($"HeadersToClaims");
-            HeadersToClaims obj = (HeadersToClaims)result.Value;
+            var client = _factory.CreateClient["UserLoggerConfigsApi"]();
+            var result = client.Get<UserLoggerSettings>($"UserLogger");
+            UserLoggerSettings obj = (UserLoggerSettings)result.Value;
 
             var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
             _output.WriteLine(json);
 
-            Assert.Equal("user_scope", obj.PreAuthentication["X-UserScope"] );
-            Assert.Equal("role", obj.PostAuthentication["X-Role"]);
-            Assert.Equal("name", obj.PostAuthentication["X-User"]);
+            Assert.Equal(UserSource.JwtSubjectClaim, obj.UserSource);
 
         }
 

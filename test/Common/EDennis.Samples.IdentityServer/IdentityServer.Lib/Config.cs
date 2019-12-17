@@ -232,6 +232,28 @@ namespace IdentityServer
                     }
                 },
                 new ApiResource {
+                    Name ="EDennis.Samples.OidcConfigsApp",
+                    DisplayName="EDennis.Samples.OidcConfigsApp",
+                    Scopes={
+                        new Scope {
+                            Name = "EDennis.Samples.OidcConfigsApp.*",
+                            DisplayName = "EDennis.Samples.OidcConfigsApp.*"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.OidcConfigsApp.Index",
+                            DisplayName = "EDennis.Samples.OidcConfigsApp.Index"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.OidcConfigsApp.Error",
+                            DisplayName = "EDennis.Samples.OidcConfigsApp.Error"
+                        },
+                        new Scope {
+                            Name = "EDennis.Samples.OidcConfigsApp.Privacy",
+                            DisplayName = "EDennis.Samples.OidcConfigsApp.Privacy"
+                        },
+                    }
+                },
+                new ApiResource {
                     Name ="EDennis.Samples.Api1",
                     DisplayName="EDennis.Samples.Api1",
                     Scopes={
@@ -509,6 +531,16 @@ namespace IdentityServer
                     AllowedScopes = {
                         "EDennis.Samples.DefaultPoliciesConfigsApi.Person.*",
                         "EDennis.Samples.DefaultPoliciesConfigsApi.Position.GetUser"
+                    }
+                },
+                new MockClient
+                {
+                    ClientId = "EDennis.Samples.OidcConfigsApp",
+                    AllowedScopes = {
+                        "EDennis.Samples.OidcConfigsApp.*",
+                        "EDennis.Samples.OidcConfigsApp.Index",
+                        "EDennis.Samples.OidcConfigsApp.Error",
+                        "EDennis.Samples.OidcConfigsApp.Privacy",
                     }
                 },
                 // resource owner password grant client

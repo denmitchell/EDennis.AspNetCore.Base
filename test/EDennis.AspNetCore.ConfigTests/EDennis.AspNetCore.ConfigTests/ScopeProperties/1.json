@@ -1,6 +1,6 @@
 {
   "ScopeProperties": {
-    "UserSource": [ "XUserHeader" ],
+    "UserSource": "XUserHeader",
     "CopyHeaders": false,
     "CopyClaims": false,
     "AppendHostPath": true

@@ -41,13 +41,9 @@ namespace EDennis.AspNetCore.Base.Security {
             if (model.Filters.Any(f => f.GetType() == typeof(AllowAnonymousFilter)))
                 return;
 
-            var pagePath = _appName.Replace(".Lib", "") + '.' + model.RelativePath;
-
-            foreach (var action in model.HandlerMethods) {
-                var actionPath = pagePath + '.' + action.HandlerName;
-                action.Page.Filters.Add(new AuthorizeFilter(actionPath));
-                _config[$"DefaultPolicies:{actionPath}"] = "action";
-            }
+            var pagePath = _appName.Replace(".Lib", "") + model.ViewEnginePath.Replace('/','.');
+            model.Filters.Add(new AuthorizeFilter(pagePath));
+            _config[$"DefaultPolicies:{pagePath}"] = "page";
         }
 
 

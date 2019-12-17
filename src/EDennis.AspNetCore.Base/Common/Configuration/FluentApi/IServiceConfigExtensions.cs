@@ -74,6 +74,27 @@ namespace EDennis.AspNetCore.Base {
         }
 
 
+        public static IServiceConfig AddRazorPagesWithDefaultPolicies(this IServiceConfig serviceConfig,
+            string appName, string identityServerConfigKey) {
+
+            serviceConfig.Services.AddRazorPages(options => {
+                options.Conventions.Add(new DefaultAuthorizationPolicyConvention(appName, serviceConfig.Configuration));
+            });
+
+            var api = new Api();
+            serviceConfig.Configuration.GetSection(identityServerConfigKey).Bind(api);
+
+            serviceConfig.Services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
+                return new DefaultPoliciesAuthorizationPolicyProvider(
+                    serviceConfig.Configuration, api, logger);
+            }
+            );
+            return serviceConfig;
+        }
+
+
+
         public static IServiceConfig AddApi<TClientImplementation>(this IServiceConfig serviceConfig, string path)
             where TClientImplementation : ApiClient {
             AddApiClientInternal<TClientImplementation, TClientImplementation>(serviceConfig, path);
