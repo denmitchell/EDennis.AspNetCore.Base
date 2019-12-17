@@ -1,7 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
-namespace EDennis.Samples.DbContextConfigsApi {
+namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
 
     /// <summary>
     /// To Add Migration :
@@ -10,12 +10,12 @@ namespace EDennis.Samples.DbContextConfigsApi {
     /// To Update Database:
     ///     PM > Update-Database -Context DbContext1 -Project EDennis.Samples.DbContextConfigsApi.Lib -StartupProject EDennis.Samples.DbContextConfigsApi
     /// </summary>
-    public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<DbContext1> { }
-    public class DbContext1 : DbContext {
+    public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<AppDbContext> { }
+    public class AppDbContext : DbContext {
         public DbSet<Person> Person { get; set; }
         public DbSet<Position> Position { get; set; }
 
-        public DbContext1(DbContextOptionsProvider<DbContext1> provider) :
+        public AppDbContext(DbContextOptionsProvider<AppDbContext> provider) :
             base(provider.DbContextOptions) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
