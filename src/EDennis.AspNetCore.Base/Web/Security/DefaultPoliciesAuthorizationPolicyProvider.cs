@@ -12,10 +12,10 @@ namespace EDennis.AspNetCore.Base.Security {
         private AuthorizationOptions _options;
         private Task<AuthorizationPolicy> _cachedPolicyTask;
         private readonly IConfiguration _configuration;
-        private readonly Api _api;
+        public Api Api { get; private set; }
         //outerkey is the scope policy (the default policy associated with the action method)
         //inner key is the pattern that matches either negatively or positively
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, bool>> _policyPatternCacheSet;
+        public ConcurrentDictionary<string, ConcurrentDictionary<string, bool>> PolicyPatternCacheSet { get; private set; }
         private readonly ILogger _logger;
 
 
@@ -23,8 +23,8 @@ namespace EDennis.AspNetCore.Base.Security {
             Api api, ILogger logger) {
 
             _configuration = configuration;
-            _api = api;
-            _policyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string,bool>>();
+            Api = api;
+            PolicyPatternCacheSet = new ConcurrentDictionary<string, ConcurrentDictionary<string,bool>>();
             _logger = logger;
         }
 
@@ -77,8 +77,8 @@ namespace EDennis.AspNetCore.Base.Security {
             if (policies.Count > 0) {
                 foreach (var policy in policies.Keys)
                     _options.AddPolicy(policy, builder => {
-                        var policyPatternCache = _policyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, bool>());
-                        builder.RequireClaimPatternMatch(policy, _api, policyPatternCache, _logger);
+                        var policyPatternCache = PolicyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, bool>());
+                        builder.RequireClaimPatternMatch(policy, Api, policyPatternCache, _logger);
                     });
             }
 

@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.ConfigTests {
 
 
         [Fact]
-        public void TestHeadersToClaims() {
+        public void TestMockHeaders() {
 
             var client = _factory.CreateClient["MockHeadersConfigsApi"]();
             var result = client.Get<MockHeaderSettingsCollection>($"MockHeaders");

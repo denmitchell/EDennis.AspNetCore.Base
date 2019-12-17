@@ -10,7 +10,7 @@ namespace EDennis.AspNetCore.Base.Security {
     /// This obviates the need for adding an [Authorize(SomePolicy)] attribute
     /// to the controller and actions
     /// </summary>
-    public class DefaultAuthorizationPolicyConvention : IControllerModelConvention {
+    public class DefaultAuthorizationPolicyConvention : IControllerModelConvention, IPageApplicationModelConvention {
 
         private readonly string _appName;
         private readonly IConfiguration _config;
@@ -34,6 +34,22 @@ namespace EDennis.AspNetCore.Base.Security {
                 _config[$"DefaultPolicies:{actionPath}"] = "action";
             }
         }
+
+        public void Apply(PageApplicationModel model) {
+
+            //don't add Filter if AllowAnonymousFilter is already added
+            if (model.Filters.Any(f => f.GetType() == typeof(AllowAnonymousFilter)))
+                return;
+
+            var pagePath = _appName.Replace(".Lib", "") + '.' + model.RelativePath;
+
+            foreach (var action in model.HandlerMethods) {
+                var actionPath = pagePath + '.' + action.HandlerName;
+                action.Page.Filters.Add(new AuthorizeFilter(actionPath));
+                _config[$"DefaultPolicies:{actionPath}"] = "action";
+            }
+        }
+
 
     }
 }

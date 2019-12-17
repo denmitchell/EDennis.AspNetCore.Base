@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.0.1" />
+    <PackageReference Include="ObjectDumper.NET" Version="2.4.19218.1" />
   </ItemGroup>
 
   <ItemGroup>
