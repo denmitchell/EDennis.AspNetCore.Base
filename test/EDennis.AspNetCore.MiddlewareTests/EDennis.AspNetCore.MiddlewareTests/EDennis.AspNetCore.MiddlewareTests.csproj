@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\..\Common\EDennis.Samples.IdentityServer\IdentityServer.Lib\IdentityServer.Lib.csproj" />
+    <ProjectReference Include="..\..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib\EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.DbContextInterceptorMiddlewareApi\EDennis.Samples.DbContextInterceptorMiddlewareApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib\EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.HeadersToClaimsMiddlewareApi\EDennis.Samples.HeadersToClaimsMiddlewareApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockClientMiddlewareApi.Lib\EDennis.Samples.MockClientMiddlewareApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockClientMiddlewareApi\EDennis.Samples.MockClientMiddlewareApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockHeadersMiddlewareApi.Lib\EDennis.Samples.MockHeadersMiddlewareApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.MockHeadersMiddlewareApi\EDennis.Samples.MockHeadersMiddlewareApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.ScopePropertiesMiddlewareApi.Lib\EDennis.Samples.ScopePropertiesMiddlewareApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.ScopePropertiesMiddlewareApi\EDennis.Samples.ScopePropertiesMiddlewareApi.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.UserLoggerMiddlewareApi.Lib\EDennis.Samples.UserLoggerMiddlewareApi.Lib.csproj" />
+    <ProjectReference Include="..\EDennis.Samples.UserLoggerMiddlewareApi\EDennis.Samples.UserLoggerMiddlewareApi.csproj" />
+  </ItemGroup>
+
+</Project>
