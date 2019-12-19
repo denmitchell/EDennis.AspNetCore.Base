@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.NetCoreTestingUtilities;
 using EDennis.Samples.ScopePropertiesMiddlewareApi.Tests;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,6 +17,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         private HttpClient _client;
 
         private readonly ITestOutputHelper _output;
+
         public ScopePropertiesMiddlewareApiTests(
             TestApis factory,
             ITestOutputHelper output) {
@@ -25,6 +27,37 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _client = _factory.CreateClient["ScopePropertiesMiddlewareApi"]();
 
         }
+
+
+        internal class TestJsonA : TestJsonAttribute {
+            public TestJsonA(string methodName, string testScenario, string testCase)
+                : base("HelloWorld1", "HelloWorld",
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "TestJson.xlsx") {
+            }
+        }
+        /*
+         
+        [Theory]
+        [TestJsonA("GetPerson", "", "A")]
+        [TestJsonA("GetPerson", "", "B")]
+        public void GetPerson(string t, JsonTestCase jsonTestCase) {
+            _output.WriteLine($"Test case: {t}");
+
+            var first = jsonTestCase.GetObject<string>("First");
+            var last = jsonTestCase.GetObject<string>("Last");
+            var expected = jsonTestCase.GetObject<Person>("Expected");
+
+            var hw = new HelloWorld();
+            var actual = hw.GetPerson(first, last);
+
+
+            Assert.Equal(expected.FirstName, actual.FirstName);
+            Assert.Equal(expected.LastName, actual.LastName);
+
+        }
+    
+
+    */
 
 
         //[Theory]
