@@ -1,7 +1,9 @@
 ﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
+using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.ScopePropertiesMiddlewareApi.Tests;
+using System;
 using System.Net.Http;
 using System.Text.Json;
 using Xunit;
@@ -14,7 +16,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
 
         private readonly TestApis _factory;
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
         private readonly ITestOutputHelper _output;
 
@@ -35,50 +37,39 @@ namespace EDennis.AspNetCore.MiddlewareTests {
                       methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "TestJson.xlsx") {
             }
         }
-        /*
+        
          
         [Theory]
-        [TestJsonA("GetPerson", "", "A")]
-        [TestJsonA("GetPerson", "", "B")]
-        public void GetPerson(string t, JsonTestCase jsonTestCase) {
+        [TestJsonA("Get", "", "A")]
+        [TestJsonA("Get", "", "B")]
+        public void Get(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine($"Test case: {t}");
 
-            var first = jsonTestCase.GetObject<string>("First");
-            var last = jsonTestCase.GetObject<string>("Last");
-            var expected = jsonTestCase.GetObject<Person>("Expected");
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "A");
 
-            var hw = new HelloWorld();
-            var actual = hw.GetPerson(first, last);
+            IScopeProperties actual = null;
+            IScopeProperties expected = null;
 
+            try {
+                var claimsQueryString = jsonTestCase.GetObject<string>("Claims");
+                var headersQueryString = jsonTestCase.GetObject<string>("Headers");
+                expected = jsonTestCase.GetObject<IScopeProperties>("Expected");
 
-            Assert.Equal(expected.FirstName, actual.FirstName);
-            Assert.Equal(expected.LastName, actual.LastName);
+                var url = $"ScopeProperties?{claimsQueryString}&{headersQueryString}";
+
+                var result = _client.Get<ScopeProperties>(url);
+                actual = (ScopeProperties)result.Value;
+
+                var json = JsonSerializer.Serialize(actual, new JsonSerializerOptions { WriteIndented = true });
+                _output.WriteLine(json);
+            } finally {
+                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);
+            }
+
+            Assert.True(actual.IsEqualOrWrite(expected,_output,true));
 
         }
-    
-
-    */
-
-
-        //[Theory]
-        //[InlineData(0)]
-        //[InlineData(1)]
-        //public void TestScopeProperties(int testCase) {
-
-        //    var result = _client.Get<ScopeProperties>($"ScopeProperties");
-        //    ScopeProperties obj = (ScopeProperties)result.Value;
-
-        //    var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
-        //    _output.WriteLine(json);
-
-
-        //    Assert.Equal(UserSource.JwtSubjectClaim, obj.UserSource);
-        //    Assert.True(obj.AppendHostPath);
-        //    Assert.True(obj.CopyClaims);
-        //    Assert.True(obj.CopyHeaders);
-
-        //}
-
 
     }
 }
