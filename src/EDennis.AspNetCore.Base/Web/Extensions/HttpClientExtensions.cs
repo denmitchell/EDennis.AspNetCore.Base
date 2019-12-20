@@ -1,4 +1,5 @@
-﻿using DevExpress.Utils.Serializing.Helpers;
+﻿using Castle.Core.Configuration;
+using DevExpress.Utils.Serializing.Helpers;
 using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -93,6 +94,26 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+        public static StatusCodeResult Configure(this HttpClient client, string relativeUrlFromBase,
+                string jsonConfig) {
+            return client.ConfigureAsync(relativeUrlFromBase, jsonConfig).Result;
+        }
+
+        public static async Task<StatusCodeResult> ConfigureAsync(this HttpClient client, string relativeUrlFromBase, string jsonConfig) {
+            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
+            //build the request message object for the POST
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(url),
+                Content = new StringContent(jsonConfig)
+            };
+            msg.Headers.Add(Constants.CONFIG_QUERY_KEY, "-");
+
+            var response = await client.SendAsync(msg);
+
+            return new StatusCodeResult((int)response.StatusCode);
+
+        }
 
         public static ObjectResult Post<T>(this HttpClient client, string relativeUrlFromBase, T obj)
         {

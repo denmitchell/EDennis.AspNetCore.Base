@@ -26,12 +26,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public abstract class ProgramBase : IProgram {
 
-        public virtual string EnvironmentName { get; set; }
-
 
         public virtual IConfiguration Configuration {
             get {
-                var env = EnvironmentName ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
                 var config = new ConfigurationBuilder();
 

@@ -1,8 +1,8 @@
 {
   "ScopeProperties": {
-    "UserSource": "JwtSubjectClaim",
+    "UserSource": "XUserQueryString",
     "CopyHeaders": false,
     "CopyClaims": false,
     "AppendHostPath": false
   }
- }
+}

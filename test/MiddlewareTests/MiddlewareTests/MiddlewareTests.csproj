@@ -7,6 +7,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ScopeProperties\A.json" />
+    <None Remove="ScopeProperties\B.json" />
+    <None Remove="ScopeProperties\C.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ScopeProperties\A.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="ScopeProperties\B.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="ScopeProperties\C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
     <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.6.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
@@ -37,6 +61,12 @@
     <ProjectReference Include="..\ScopePropertiesApi\ScopePropertiesApi.csproj" />
     <ProjectReference Include="..\UserLoggerApi.Lib\UserLoggerApi.Lib.csproj" />
     <ProjectReference Include="..\UserLoggerApi\UserLoggerApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ScopeProperties\TestJson.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

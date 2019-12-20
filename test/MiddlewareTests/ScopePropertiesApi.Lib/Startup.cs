@@ -21,8 +21,6 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
 
-            services.AddSession();
-
             //configure ScopePropertiesMiddleware
             var _ = new ServiceConfig(services, Configuration)
                 .AddScopeProperties();
@@ -40,7 +38,7 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
 
             app.UseAuthorization();
 
-            app.UseSession();
+            app.UseConfiguration(); //for test configurations
 
             //for testing purposes:
             //intercept request to add claims and headers 
