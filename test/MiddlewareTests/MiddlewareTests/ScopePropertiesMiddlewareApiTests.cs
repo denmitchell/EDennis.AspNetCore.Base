@@ -26,8 +26,6 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _factory = factory;
             _output = output;
 
-            _client = _factory.CreateClient["ScopePropertiesMiddlewareApi"]();
-
         }
 
 
@@ -45,27 +43,20 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         public void Get(string t, JsonTestCase jsonTestCase) {
             _output.WriteLine($"Test case: {t}");
 
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "A");
+            var client = _factory[jsonTestCase.TestCase].CreateClient["ScopePropertiesMiddlewareApi"]();
 
-            IScopeProperties actual = null;
-            IScopeProperties expected = null;
 
-            try {
-                var claimsQueryString = jsonTestCase.GetObject<string>("Claims");
-                var headersQueryString = jsonTestCase.GetObject<string>("Headers");
-                expected = jsonTestCase.GetObject<IScopeProperties>("Expected");
+            var claimsQueryString = jsonTestCase.GetObject<string>("Claims");
+            var headersQueryString = jsonTestCase.GetObject<string>("Headers");
+            var expected = jsonTestCase.GetObject<IScopeProperties>("Expected");
 
-                var url = $"ScopeProperties?{claimsQueryString}&{headersQueryString}";
+            var url = $"ScopeProperties?{claimsQueryString}&{headersQueryString}";
 
-                var result = _client.Get<ScopeProperties>(url);
-                actual = (ScopeProperties)result.Value;
+            var result = client.Get<ScopeProperties>(url);
+            var actual = (ScopeProperties)result.Value;
 
-                var json = JsonSerializer.Serialize(actual, new JsonSerializerOptions { WriteIndented = true });
-                _output.WriteLine(json);
-            } finally {
-                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);
-            }
+            var json = JsonSerializer.Serialize(actual, new JsonSerializerOptions { WriteIndented = true });
+            _output.WriteLine(json);
 
             Assert.True(actual.IsEqualOrWrite(expected,_output,true));
 

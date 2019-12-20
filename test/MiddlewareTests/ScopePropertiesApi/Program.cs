@@ -9,6 +9,5 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi {
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             new Lib.Program().CreateHostBuilder(args);
-
     }
 }

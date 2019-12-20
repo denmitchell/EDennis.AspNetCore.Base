@@ -15,8 +15,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             = new Dictionary<string, Action>();
 
         public abstract Dictionary<string,Type> EntryPoints { get; }
-        
-        public TestApisBase() {
+        public virtual string Environment { get; }
+
+        public TestApisBase() : this(null) { }
+        public TestApisBase(string env) {
+            Environment = env;
 
             //now populate the dictionary with TestApi instances
             foreach (var httpClientName in EntryPoints.Keys) {
@@ -24,10 +27,10 @@ namespace EDennis.AspNetCore.Base.Testing {
                 Type classType = typeof(TestApi<>);
                 Type constructedType = classType.MakeGenericType(typeParams);
 
-                var _ = 
-                    Activator.CreateInstance(constructedType, 
-                        new object[] { CreateClient, _dispose, 
-                            httpClientName, InstanceName });
+                Activator.CreateInstance(constructedType, 
+                    new object[] { CreateClient, _dispose, 
+                        httpClientName, InstanceName, Environment });
+
             }
 
         }
