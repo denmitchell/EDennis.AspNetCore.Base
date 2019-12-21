@@ -83,10 +83,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="MockHeaders\TestJson.xlsx">
+    <None Update="ScopeProperties\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ScopeProperties\TestJson.xlsx">
+    <None Update="MockHeaders\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
