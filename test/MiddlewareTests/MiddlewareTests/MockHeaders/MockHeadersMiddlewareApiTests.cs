@@ -1,14 +1,9 @@
-﻿using EDennis.AspNetCore.Base;
-using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.ScopePropertiesMiddlewareApi.Tests;
-using IdentityServer4.Endpoints.Results;
-using System;
-using System.Collections.Concurrent;
+using EDennis.Samples.MockHeadersMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
@@ -35,8 +30,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
-                : base("ScopePropertiesApi", "ScopePropertiesController",
-                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "ScopeProperties\\TestJson.xlsx") {
+                : base("MockHeadersApi", "MockHeadersController",
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "MockHeaders\\TestJson.xlsx") {
             }
         }
 
@@ -61,7 +56,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var headersQueryString = jsonTestCase.GetObject<string>("Headers");
             var expected = jsonTestCase.GetObject<List<KeyValuePair<string,string>>>("Expected");
 
-            var url = $"MockHeaders?{headersQueryString}";
+            var url = $"Headers?{headersQueryString}";
 
             var result = client.GetAsync(client.BaseAddress.ToString() + url).Result;
             var content = result.Content.ReadAsStringAsync().Result;

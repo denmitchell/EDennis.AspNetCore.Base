@@ -20,9 +20,8 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib.Controllers {
             var headers = HttpContext.Request.Headers;
             var hdrs = new List<KeyValuePair<string,string>>();
             foreach (var header in headers)
-                foreach(var value in headers.Values)
-                    foreach(var val in value)
-                        hdrs.Add(KeyValuePair.Create(header.Key, val));
+                foreach (var value in header.Value.ToArray())
+                    hdrs.Add(KeyValuePair.Create(header.Key, value));
             return hdrs;
         }
     }
