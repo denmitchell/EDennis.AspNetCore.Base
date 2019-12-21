@@ -3,6 +3,6 @@
     "UserSource": "XUserHeader",
     "CopyHeaders": true,
     "CopyClaims": true,
-    "AppendHostPath": true
+    "AppendHostPath": false
   }
 }

@@ -42,19 +42,24 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
                 //copy all headers to ScopeProperties headers
-                if(settings.CopyHeaders)
+                if (settings.CopyHeaders) {
+                    scopeProperties.Headers = new HeaderDictionary();
                     context.Request.Headers
                         .ToList()
                         .ForEach(h => scopeProperties.Headers
                         .Add(h.Key, h.Value.ToArray()));
-
+                }
 
                 //append the host path to a ScopeProperties header, if configured 
-                if (settings.AppendHostPath)
+                if (settings.AppendHostPath) {
+                    if (context.Request.Headers.ContainsKey(Constants.HOSTPATH_KEY))
                         scopeProperties.Headers.Add(Constants.HOSTPATH_KEY,
                             $"{context.Request.Headers[Constants.HOSTPATH_KEY].ToString()}>" +
-                            $"{context.Request.Headers["Host"]}");
-
+                            $"{context.Request.Headers["Host"].ToString()}");
+                    else
+                        scopeProperties.Headers.Add(Constants.HOSTPATH_KEY, 
+                            context.Request.Headers["Host"].ToString());
+                }
 
                 //add user claims
                 if (settings.CopyClaims && context.User?.Claims != null) 
