@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,6 +25,11 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+
+            //configure ScopePropertiesMiddleware
+            var _ = new ServiceConfig(services, Configuration)
+                .AddMockHeaders();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +43,23 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseConfiguration();
+
+            //for testing purposes:
+            //intercept request to add headers 
+            app.Use(async (context, next) => {
+
+                //add headers from query string
+                foreach (var query in context.Request.Query.Where(q => q.Key.StartsWith("header*")))
+                    context.Request.Headers.Add(query.Key.Substring("header*".Length), query.Value);
+
+                await next();
+
+            });
+
+            app.UseMockHeaders();
+
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();

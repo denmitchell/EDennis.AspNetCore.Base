@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MockHeadersApi.Lib;
+using System.Collections.Generic;
 
 namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib.Controllers {
     [ApiController]
@@ -14,9 +16,14 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib.Controllers {
         }
 
         [HttpGet]
-        public IHeaderDictionary Get() {
+        public IEnumerable<KeyValuePair<string,string>> Get() {
             var headers = HttpContext.Request.Headers;
-            return headers;
+            var hdrs = new List<KeyValuePair<string,string>>();
+            foreach (var header in headers)
+                foreach(var value in headers.Values)
+                    foreach(var val in value)
+                        hdrs.Add(KeyValuePair.Create(header.Key, val));
+            return hdrs;
         }
     }
 }

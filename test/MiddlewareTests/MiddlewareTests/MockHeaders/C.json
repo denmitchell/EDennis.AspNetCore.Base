@@ -1,0 +1,12 @@
+{
+  "MockHeaders": {
+    "X-User": {
+      "Values": [ "curly@stooges.org" ],
+      "ConflictResolution": "Overwrite"
+    },
+    "X-Role": {
+      "Values": [ "readonly" ],
+      "ConflictResolution": "Overwrite"
+    }
+  }
+}
