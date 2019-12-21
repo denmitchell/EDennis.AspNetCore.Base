@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="HeadersToClaims\A.json" />
+    <None Remove="HeadersToClaims\B.json" />
+    <None Remove="HeadersToClaims\C.json" />
     <None Remove="MockHeaders\A.json" />
     <None Remove="MockHeaders\B.json" />
     <None Remove="MockHeaders\C.json" />
@@ -16,6 +19,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="HeadersToClaims\A.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="HeadersToClaims\B.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="HeadersToClaims\C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="MockHeaders\A.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -83,16 +101,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="HeadersToClaims\TestJson.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ScopeProperties\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MockHeaders\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HeadersToClaims\" />
   </ItemGroup>
 
 </Project>

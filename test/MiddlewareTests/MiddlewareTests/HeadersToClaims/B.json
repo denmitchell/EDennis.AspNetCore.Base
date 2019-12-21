@@ -1,0 +1,9 @@
+{
+  "HeadersToClaims": {
+    "PreAuthentication": null,
+    "PostAuthentication": {
+      "X-Role": "role",
+      "X-User": "name"
+    }
+  }
+}
