@@ -212,6 +212,28 @@ namespace IdentityServer
             return new List<ApiResource>
             {
                 new ApiResource {
+                    Name ="MockClientApi",
+                    DisplayName="MockClientApi",
+                    Scopes={
+                        new Scope {
+                            Name = "MockClientApi.*",
+                            DisplayName = "MockClientApi.*"
+                        },
+                        new Scope {
+                            Name = "MockClientApi.Person.*",
+                            DisplayName = "MockClientApi.Person.*"
+                        },
+                        new Scope {
+                            Name = "MockClientApi.Person.GetA",
+                            DisplayName = "MockClientApi.Person.GetA"
+                        },
+                        new Scope {
+                            Name = "MockClientApi.Person.GetB",
+                            DisplayName = "MockClientApi.Person.GetB"
+                        }
+                    }
+                },
+                new ApiResource {
                     Name ="EDennis.Samples.ApiConfigsApi",
                     DisplayName="EDennis.Samples.ApiConfigsApi",
                     Scopes={
@@ -445,6 +467,30 @@ namespace IdentityServer
 
         public static IEnumerable<Client> GetClients() {
             return new List<Client> {
+                new MockClient {
+                    ClientId = "MockClientApi.Client1",
+                    AllowedScopes = {
+                        "MockClientApi.*"
+                    }
+                },
+                new MockClient {
+                    ClientId = "MockClientApi.Client2",
+                    AllowedScopes = {
+                        "MockClientApi.Person.*",
+                    }
+                },
+                new MockClient {
+                    ClientId = "MockClientApi.Client3",
+                    AllowedScopes = {
+                        "MockClientApi.Person.GetA",
+                    }
+                },
+                new MockClient {
+                    ClientId = "MockClientApi.Client4",
+                    AllowedScopes = {
+                        "MockClientApi.Person.GetB",
+                    }
+                },
                 new MockClient {
                     ClientId = "EDennis.Samples.Hr.ExternalApi",
                     AllowedScopes = {

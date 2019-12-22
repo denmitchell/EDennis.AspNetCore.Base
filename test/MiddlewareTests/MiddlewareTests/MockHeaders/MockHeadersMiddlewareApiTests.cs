@@ -42,7 +42,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Get", "", "C")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
-            var factory = new TestApis();
+            using var factory = new TestApis();
             var client = factory.CreateClient["MockHeadersApi"]();
             _output.WriteLine($"Test case: {t}");
 
