@@ -37,7 +37,9 @@ namespace EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib {
 
             app.UseRouting();
 
+
             app.UseAuthorization();
+
 
             app.UseConfiguration(); //for test configurations
 
@@ -64,9 +66,9 @@ namespace EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib {
 
             });
 
+
             //Use HeadersToClaimsMiddleware
             app.UseHeadersToClaims();
-
 
 
             app.UseEndpoints(endpoints => {

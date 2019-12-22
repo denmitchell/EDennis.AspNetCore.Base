@@ -1,11 +1,7 @@
 {
   "HeadersToClaims": {
-    "PreAuthentication": {
-      "X-UserScope": "user_scope"
-    },
-    "PostAuthentication": {
+      "X-UserScope": "user_scope",
       "X-Role": "role",
       "X-User": "name"
-    }
   }
 }

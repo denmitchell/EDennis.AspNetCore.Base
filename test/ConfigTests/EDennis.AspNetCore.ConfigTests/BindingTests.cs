@@ -228,21 +228,15 @@ namespace EDennis.AspNetCore.ConfigTests {
         private static readonly HeadersToClaims[] htc =
             new HeadersToClaims[] {
                 new HeadersToClaims {
-                    PreAuthentication = new PreAuthenticationHeadersToClaims{
-                        { "X-Role", "role" },
-                        { "X-User", "name" }
-                    }
+                    { "X-Role", "role" },
+                    { "X-User", "name" }                    
                 },
                 new HeadersToClaims {
-                    PreAuthentication = new PreAuthenticationHeadersToClaims{
-                        { "X-UserScope", "user_scope" },
-                    },
-                    PostAuthentication = new PostAuthenticationHeadersToClaims{
-                        { "X-Role", "role" },
-                        { "X-User", "name" }
-
-                    },
+                    { "X-UserScope", "user_scope" },
+                    { "X-Role", "role" },
+                    { "X-User", "name" }
                 }
+                
             };
 
         [Theory]

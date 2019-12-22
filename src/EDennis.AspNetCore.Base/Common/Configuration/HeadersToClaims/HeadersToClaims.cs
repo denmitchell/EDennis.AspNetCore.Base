@@ -1,8 +1,6 @@
 ﻿
-namespace EDennis.AspNetCore.Base {
-    public class HeadersToClaims {
-        public PreAuthenticationHeadersToClaims PreAuthentication { get; set; }
-        public PostAuthenticationHeadersToClaims PostAuthentication { get; set; }
+using System.Collections.Generic;
 
-    }
+namespace EDennis.AspNetCore.Base {
+    public class HeadersToClaims : Dictionary<string,string> { }
 }

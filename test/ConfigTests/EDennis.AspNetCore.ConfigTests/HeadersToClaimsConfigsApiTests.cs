@@ -33,9 +33,9 @@ namespace EDennis.AspNetCore.ConfigTests {
             var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
             _output.WriteLine(json);
 
-            Assert.Equal("user_scope", obj.PreAuthentication["X-UserScope"] );
-            Assert.Equal("role", obj.PostAuthentication["X-Role"]);
-            Assert.Equal("name", obj.PostAuthentication["X-User"]);
+            Assert.Equal("user_scope", obj["X-UserScope"] );
+            Assert.Equal("role", obj["X-Role"]);
+            Assert.Equal("name", obj["X-User"]);
 
         }
 

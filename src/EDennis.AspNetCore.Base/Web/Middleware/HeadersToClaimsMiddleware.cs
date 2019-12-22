@@ -7,9 +7,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace EDennis.AspNetCore.Base.Web {
-    
+
     /// <summary>
     /// This middleware will transform headers into user claims per configuration settings.
     /// 
@@ -42,25 +43,20 @@ namespace EDennis.AspNetCore.Base.Web {
 
                     //pre-authentication -- simply add the claim
                     if (context.User.Identities.Count(i => i.IsAuthenticated) == 0) {
-                        var headersToClaims = htc?.PreAuthentication;
-                        if (headersToClaims != null)
-                            foreach (var key in headersToClaims.Keys) {
-                                claims.Add(new Claim(key, headersToClaims[key]));
-                                claimsAdded = true;
-                            }
-                    //post-authentication -- only add the claim if the user doesn't already have it
-                    } else {
-                        var headersToClaims = htc?.PostAuthentication;
-                        if (headersToClaims != null)
-                            foreach (var key in headersToClaims.Keys)
-                                if (!context.User.HasClaim(c => c.Type.Equals(key, StringComparison.OrdinalIgnoreCase))) {
-                                    claims.Add(new Claim(key, headersToClaims[key]));
-                                    claimsAdded = true;
+                        if (htc != null) {
+                            foreach (var key in htc.Keys) {
+                                foreach (var hdr in context.Request.Headers.Where(h => h.Key == key)) {
+                                    foreach (var val in hdr.Value.ToArray()) {
+                                        claims.Add(new Claim(htc[key], val));
+                                        claimsAdded = true;
+                                    }
                                 }
+                            }
+                        }
                     }
 
                     //if any claims were added, add a new claims identity with those claims
-                    if (claimsAdded) { 
+                    if (claimsAdded) {
                         var appIdentity = new ClaimsIdentity(claims);
                         context.User.AddIdentity(appIdentity);
                     }
@@ -70,8 +66,9 @@ namespace EDennis.AspNetCore.Base.Web {
         }
     }
 
+
     public static partial class IApplicationBuilderExtensions_Middleware {
-        public static IApplicationBuilder UseHeadersToClaims(this IApplicationBuilder app){
+        public static IApplicationBuilder UseHeadersToClaims(this IApplicationBuilder app) {
             app.UseMiddleware<HeadersToClaimsMiddleware>();
             return app;
         }

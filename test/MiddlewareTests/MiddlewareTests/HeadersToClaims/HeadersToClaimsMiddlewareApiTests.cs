@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
+using EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib;
 using EDennis.Samples.HeadersToClaimsMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
@@ -47,23 +48,22 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case
-            var jcfg = File.ReadAllText($"Claims\\{jsonTestCase.TestCase}.json");
+            var jcfg = File.ReadAllText($"HeadersToClaims\\{jsonTestCase.TestCase}.json");
             var status = client.Configure("", jcfg);
 
             //make sure that configuration was successful
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
-            var claimsQueryString = jsonTestCase.GetObject<string>("Claims");
             var headersQueryString = jsonTestCase.GetObject<string>("Headers");
-            var expected = jsonTestCase.GetObject<Dictionary<string, string>>("Expected");
+            var expected = jsonTestCase.GetObject<List<SimpleClaim>>("Expected");
 
-            var url = $"Claims?{claimsQueryString}&{headersQueryString}";
+            var url = $"Claims?{headersQueryString}";
 
             var result = client.GetAsync(client.BaseAddress.ToString() + url).Result;
             var content = result.Content.ReadAsStringAsync().Result;
             _output.WriteLine(content);
 
-            var actual = JsonSerializer.Deserialize<Dictionary<string, string>>(content);
+            var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
         }

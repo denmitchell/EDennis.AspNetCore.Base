@@ -1,8 +1,6 @@
 {
   "HeadersToClaims": {
-    "PreAuthentication": {
       "X-Role": "role",
       "X-User": "name"
-    }
-  }
+  }  
 }
