@@ -13,6 +13,7 @@
     <None Remove="MockClient\A.json" />
     <None Remove="MockClient\B.json" />
     <None Remove="MockClient\C.json" />
+    <None Remove="MockClient\D.json" />
     <None Remove="MockHeaders\A.json" />
     <None Remove="MockHeaders\B.json" />
     <None Remove="MockHeaders\C.json" />
@@ -43,6 +44,11 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="MockClient\B.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="MockClient\D.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

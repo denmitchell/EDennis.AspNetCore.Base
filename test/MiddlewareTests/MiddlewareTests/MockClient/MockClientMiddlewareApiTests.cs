@@ -35,14 +35,14 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
 
         [Theory]
-        [TestJsonA("GetA", "", "Full Application Authorization")]
-        [TestJsonA("GetA", "", "Full Controller Authorization")]
-        [TestJsonA("GetA", "", "GetA Method Authorization")]
-        [TestJsonA("GetA", "", "GetB Method Authorization")]
-        [TestJsonA("GetB", "", "Full Application Authorization")]
-        [TestJsonA("GetB", "", "Full Controller Authorization")]
-        [TestJsonA("GetB", "", "GetA Method Authorization")]
-        [TestJsonA("GetB", "", "GetB Method Authorization")]
+        [TestJsonA("GetA", "Full Application Authorization", "A")]
+        [TestJsonA("GetA", "Full Controller Authorization","B")]
+        [TestJsonA("GetA", "GetA Method Authorization","C")]
+        [TestJsonA("GetA", "GetB Method Authorization","D")]
+        [TestJsonA("GetB", "Full Application Authorization","A")]
+        [TestJsonA("GetB", "Full Controller Authorization","B")]
+        [TestJsonA("GetB", "GetA Method Authorization","C")]
+        [TestJsonA("GetB", "GetB Method Authorization","D")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
             using var factory = new TestApis();

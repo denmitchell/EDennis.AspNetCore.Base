@@ -1,12 +1,5 @@
 {
-  "MockHeaders": {
-    "X-User": {
-      "Values": [ "larry@stooges.org" ],
-      "ConflictResolution": "Overwrite"
-    },
-    "X-Role": {
-      "Values": [ "admin" ],
-      "ConflictResolution": "Union"
-    }
+  "MockClient": {
+    "ActiveMockClientKey": "MockClientApi.Client2"
   }
 }
