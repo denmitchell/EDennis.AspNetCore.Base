@@ -1,0 +1,12 @@
+﻿Relevant classes/files/projects:
+
+	Web/Middleware/UserLoggerMiddleware
+	Configuration/UserLogger/UserLoggerSettings
+
+	Logging/IScopedLogger
+	Logging/FodyScopedLogger
+
+	Logging/IScopedLoggerAssignments
+	Logging/SerilogScopedLoggerAssignments
+	
+	GitHub:denmitchell/EDennis.Samples.ScopedLogging (heavily adapted, though)

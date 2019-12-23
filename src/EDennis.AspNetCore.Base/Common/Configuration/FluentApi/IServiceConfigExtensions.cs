@@ -47,12 +47,28 @@ namespace EDennis.AspNetCore.Base {
         public const string OIDC_SCHEME = "Cookies";
         public const string OIDC_CHALLENGE_SCHEME = "oidc";
 
+
+
+        public static IServiceConfig AddSerilogFodyScopedLogger(this IServiceConfig serviceConfig, string scopedLoggerKey){
+            serviceConfig.AddScopedLogger<FodyScopedLogger>();
+            serviceConfig.AddScopedLoggerAssignments(() => new SerilogScopedLoggerAssignments(serviceConfig.Configuration, scopedLoggerKey));
+            return serviceConfig;
+        }
+
+
+
         public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)
             where TScopedLogger : class, IScopedLogger {
             serviceConfig.Services.TryAddScoped<IScopedLogger, TScopedLogger>();
             return serviceConfig;
-
         }
+
+        public static IServiceConfig AddScopedLoggerAssignments<TScopedLoggerAssignments>(this IServiceConfig serviceConfig, Func<TScopedLoggerAssignments> ctor)
+            where TScopedLoggerAssignments : class, IScopedLoggerAssignments {
+            serviceConfig.Services.AddSingleton<IScopedLoggerAssignments>(provider=>ctor());
+            return serviceConfig;
+        }
+
 
         public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig,
             string appName, string identityServerConfigKey) {
