@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.MockClientMiddlewareApi.Tests;
@@ -45,8 +46,10 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("GetB", "GetB Method Authorization","D")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["MockClientApi"]();
+            var fixture = new LauncherFixture<IdentityServer.Lib.Program, MockClientApiLauncher.Program>();
+            var client = fixture.HttpClient;
+            //using var factory = new TestApis();
+            //var client = factory.CreateClient["MockClientApi"]();
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case

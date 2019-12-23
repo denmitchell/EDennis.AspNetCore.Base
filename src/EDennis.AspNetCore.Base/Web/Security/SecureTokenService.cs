@@ -77,7 +77,7 @@ namespace EDennis.AspNetCore.Base.Security {
             var auth = identityServerApi.OAuth ?? identityServerApi.Oidc;
             _httpClient = httpClientFactory.CreateClient(apiKey);
 
-            if (!_httpClient.BaseAddress.ToString().Equals(identityServerApi.MainAddress))
+            if (_httpClient.BaseAddress == null || !_httpClient.BaseAddress.ToString().Equals(identityServerApi.MainAddress))
                 _httpClient.BaseAddress = new Uri(identityServerApi.MainAddress);
 
             _clientSecret = auth.ClientSecret;

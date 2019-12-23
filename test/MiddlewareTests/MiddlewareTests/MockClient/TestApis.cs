@@ -7,6 +7,7 @@ namespace EDennis.Samples.MockClientMiddlewareApi.Tests {
     public class TestApis : TestApisBase {
         public override Dictionary<string, Type> EntryPoints =>
             new Dictionary<string, Type> {
+                {"IdentityServer", typeof(IdentityServer.Program) },
                 {"MockClientApi", typeof(Program) },
             };
     }

@@ -125,6 +125,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MockClient\MockClientApiLauncher.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="HeadersToClaims\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

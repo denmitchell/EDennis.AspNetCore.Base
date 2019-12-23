@@ -470,7 +470,10 @@ namespace IdentityServer
                 new MockClient {
                     ClientId = "MockClientApi.Client1",
                     AllowedScopes = {
-                        "MockClientApi.*"
+                        "MockClientApi.*",
+                        "MockClientApi.Person.*",
+                        "MockClientApi.Person.GetA",
+                        "MockClientApi.Person.GetB"
                     }
                 },
                 new MockClient {
