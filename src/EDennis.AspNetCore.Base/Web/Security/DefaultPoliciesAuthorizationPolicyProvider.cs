@@ -71,11 +71,11 @@ namespace EDennis.AspNetCore.Base.Security {
             //*** Get the DefaultPolicies added to configuration 
             //*** by AddDefaultAuthorizationPolicyConvention
             //***
-            Dictionary<string, string> policies = new Dictionary<string, string>();
+            List<string> policies = new List<string>();
             _configuration.Bind("DefaultPolicies", policies);
 
             if (policies.Count > 0) {
-                foreach (var policy in policies.Keys)
+                foreach (var policy in policies)
                     _options.AddPolicy(policy, builder => {
                         var policyPatternCache = PolicyPatternCacheSet.GetOrAdd(policy, new ConcurrentDictionary<string, bool>());
                         builder.RequireClaimPatternMatch(policy, Api, policyPatternCache, _logger);

@@ -35,7 +35,6 @@ namespace EDennis.AspNetCore.Base.Web {
                         .Build();
 
 
-
                     var configDict = config.Flatten();
                     foreach (var key in configDict.Keys)
                         configuration[key] = configDict[key];

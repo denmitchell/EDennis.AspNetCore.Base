@@ -3,6 +3,7 @@
 namespace EDennis.Samples.MockClientMiddlewareApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class PersonController : ControllerBase {
 
         [HttpGet("GetA")]

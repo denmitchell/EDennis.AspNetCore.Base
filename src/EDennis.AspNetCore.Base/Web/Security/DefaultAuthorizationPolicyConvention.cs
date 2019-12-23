@@ -28,10 +28,12 @@ namespace EDennis.AspNetCore.Base.Security {
 
             var controllerPath = _appName.Replace(".Lib","") + '.' + controller.ControllerName;
 
+            int i = 0;
             foreach (var action in controller.Actions) {
                 var actionPath = controllerPath + '.' + action.ActionName;
                 action.Filters.Add(new AuthorizeFilter(actionPath));
-                _config[$"DefaultPolicies:{actionPath}"] = "action";
+                _config[$"DefaultPolicies:{i}"] = actionPath;
+                i++;
             }
         }
 

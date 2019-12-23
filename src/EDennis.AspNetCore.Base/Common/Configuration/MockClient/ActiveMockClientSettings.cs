@@ -6,21 +6,12 @@ using System.Text;
 namespace EDennis.AspNetCore.Base {
     public class ActiveMockClientSettings {
 
-        private string _activeMockClientKey;
-
         /// <summary>
         /// The active mock client.
         /// NOTE: if left unspecified, this defaults to
         /// the first MockClient in the dictionary.
         /// </summary>
-        public string ActiveMockClientKey { 
-            get {                
-                return _activeMockClientKey ?? MockClients?.Keys?.FirstOrDefault();
-            }
-            set {
-                _activeMockClientKey = value;
-            } 
-        }
+        public string ActiveMockClientKey { get; set; } 
         public MockClientSettingsDictionary MockClients { get; set; }
 
         public MockClientSettings ActiveMockClient { 

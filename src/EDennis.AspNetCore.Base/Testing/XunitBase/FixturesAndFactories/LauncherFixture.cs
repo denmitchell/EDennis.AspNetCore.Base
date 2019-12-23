@@ -55,6 +55,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public void Dispose() {
             _ewh.Set();
             _ewh.Dispose();
+            HttpClient.Dispose();
         }
     }
 }

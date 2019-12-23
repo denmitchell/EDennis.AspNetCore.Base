@@ -1,5 +1,6 @@
 {
+  "DefaultPolicies": [],
   "MockClient": {
     "ActiveMockClientKey": "MockClientApi.Client1"
-  } 
+  }
 }

@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
@@ -29,12 +30,13 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public async Task InvokeAsync(HttpContext context) {
+        public async Task InvokeAsync(HttpContext context, IConfiguration config) {
 
             //ignore, if swagger meta-data processing
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
 
-                var mockClient = _settings.CurrentValue.ActiveMockClient;
+                var activeMockClientKey = config[Constants.ACTIVE_MOCK_CLIENT_KEY];
+                var mockClient = _settings.CurrentValue.MockClients[activeMockClientKey];
                 if (mockClient != null) {
 
                     var tokenResponse = await _tokenService.GetTokenResponse(
