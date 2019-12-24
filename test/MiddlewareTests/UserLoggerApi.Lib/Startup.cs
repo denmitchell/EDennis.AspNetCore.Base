@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +27,8 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
             services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
+                .AddMockHeaders()
+                .AddHeadersToClaims()
                 .AddSerilogFodyScopedLogger("Logging:Loggers:ScopedLogger");
 
         }
@@ -41,6 +44,37 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseConfiguration(); //for test configurations
+
+
+            //to send the same headers on every request
+            app.UseMockHeaders();
+
+
+            //to send a header via a query string (for specific requests)
+            //  (for the Xunit tests, there are three requests sent during
+            //   each test.  The second request sends a query string that
+            //   represents a new user, for which scoped logging should
+            //   not be enabled.)
+            app.Use(async (context, next) => {
+
+                //add or replace headers from query string
+                foreach (var query in context.Request.Query.Where(q => q.Key.StartsWith("header*"))) {
+                    var headerKey = query.Key.Substring("header*".Length);
+                    if (context.Request.Headers.ContainsKey(headerKey))
+                        context.Request.Headers.Remove(headerKey);
+                    context.Request.Headers.Add(query.Key.Substring("header*".Length), query.Value);
+                }
+
+                await next();
+
+            });
+
+            app.UseHeadersToClaims();
+
+            app.UseUserLogger();
+
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();

@@ -3,8 +3,6 @@ using EDennis.AspNetCore.Base.Logging;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
-using System.Text.Json;
 
 namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib.Controllers {
     [ApiController]
@@ -18,45 +16,21 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib.Controllers {
             IScopedLogger scopedLogger) {
             _logger = logger;
             ScopedLogger = scopedLogger;
+
+            _logger.LogCritical("UserLoggerController constructed.");
+            ScopedLogger.Logger.LogError("UserLoggerController constructed.");
         }
 
         [HttpGet]
+        [MethodCallback]
         public string Get() {
-            return GetName("Bob");
+            return ScopedLogger.LogLevel.ToString();
         }
 
-        public string GetName(string name) {
-            return name;
-        }
 
-        public void OnEntry(MethodExecutionArgs args) {
-            var scope = ScopedLogger.Logger.GetScope(args);
-            var formatted = args.Arguments.FormatCompact();
-            var method = (args.Method as MethodInfo).GetFriendlyName();
-            using (ScopedLogger.BeginScope(scope)) {
-                ScopedLogger.Logger.LogTrace("Entering {Method} with Arguments: {Arguments}",
-                    method, formatted);
-            }
-        }
+        public void OnEntry(MethodExecutionArgs args) => MethodCallbackUtils.OnEntry(args, ScopedLogger);
+        public void OnExit(MethodExecutionArgs args) => MethodCallbackUtils.OnExit(args, ScopedLogger);
+        public void OnException(MethodExecutionArgs args) => MethodCallbackUtils.OnException(args, ScopedLogger); 
 
-        public void OnExit(MethodExecutionArgs args) {
-            var scope = ScopedLogger.Logger.GetScope(args);
-            var formatted = args.Arguments.FormatCompact();
-            var method = (args.Method as MethodInfo).GetFriendlyName();
-            using (ScopedLogger.BeginScope(scope)) {
-                ScopedLogger.Logger.LogTrace("Exiting {Method} with Arguments: {Arguments} and ReturnValue: {ReturnValue}",
-                    method, formatted,
-                JsonSerializer.Serialize(args.ReturnValue)
-                );
-            }
-        }
-
-        public void OnException(MethodExecutionArgs args) {
-            ScopedLogger.Logger.LogError(args.Exception, "Exception on {Method} with Arguments: {Arguments}",
-                $"{args.Method.DeclaringType.Name}.{args.Method}",
-                JsonSerializer.Serialize(args.Arguments)
-                );
-            throw args.Exception;
-        }
     }
 }
