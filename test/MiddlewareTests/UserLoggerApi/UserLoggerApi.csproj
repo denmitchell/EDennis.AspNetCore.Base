@@ -5,8 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\UserLoggerApi.Lib\UserLoggerApi.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FodyWeavers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FodyWeavers.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
 
 </Project>

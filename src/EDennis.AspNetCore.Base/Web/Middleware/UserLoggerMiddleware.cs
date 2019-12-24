@@ -33,7 +33,6 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 _logger = logger;
 
-
                 //handle new logger assignment or clearing of existing assignment
                 if (context.Request.ContainsHeaderOrQueryKey(
                         Constants.SET_SCOPEDLOGGER_KEY, out string setValue)) {
@@ -65,7 +64,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
-
+        private void UserLoggerSettingsChanged(UserLoggerSettings settings, string str) {
+            _logger.LogInformation(settings.UserSource.ToString());
+            _logger.LogInformation(str);
+        }
     }
 
     public static partial class RequestExtensions {

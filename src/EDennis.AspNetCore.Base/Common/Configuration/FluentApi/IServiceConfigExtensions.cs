@@ -40,6 +40,7 @@ namespace EDennis.AspNetCore.Base {
         public const string DEFAULT_MOCK_CLIENT_PATH = "MockClient";
         public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = "HeadersToClaims";
         public const string DEFAULT_USER_LOGGER_PATH = "UserLogger";
+        public const string DEFAULT_SCOPED_LOGGER_PATH = "Logging:Loggers:ScopedLogger";
 
         public const string DEFAULT_OAUTH_RELATIVE_PATH = "OAuth";
         public const string DEFAULT_OIDC_RELATIVE_PATH = "Oidc";
@@ -48,16 +49,22 @@ namespace EDennis.AspNetCore.Base {
         public const string OIDC_CHALLENGE_SCHEME = "oidc";
 
 
+        public static IServiceConfig AddSerilogFodyScopedLogger(this IServiceConfig serviceConfig) 
+            => AddSerilogFodyScopedLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_PATH);
 
         public static IServiceConfig AddSerilogFodyScopedLogger(this IServiceConfig serviceConfig, string scopedLoggerKey){
-            serviceConfig.AddScopedLogger<FodyScopedLogger>();
+            serviceConfig.AddScopedLogger<FodyScopedLogger>(scopedLoggerKey);
             serviceConfig.AddScopedLoggerAssignments(() => new SerilogScopedLoggerAssignments(serviceConfig.Configuration, scopedLoggerKey));
             return serviceConfig;
         }
 
 
-
         public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)
+            where TScopedLogger : class, IScopedLogger 
+            => AddScopedLogger<TScopedLogger>(serviceConfig, DEFAULT_SCOPED_LOGGER_PATH);
+
+
+        public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig, string scopedLoggerKey)
             where TScopedLogger : class, IScopedLogger {
             serviceConfig.Services.TryAddScoped<IScopedLogger, TScopedLogger>();
             return serviceConfig;
@@ -150,7 +157,8 @@ namespace EDennis.AspNetCore.Base {
                 serviceConfig.Services.TryAddScoped<IIdentityServerApi,IdentityServerApi>();
             }
 
-            var api = serviceConfig.Bind<Api>(path);
+            Api api = new Api();
+            serviceConfig.Configuration.GetSection(path).Bind(api);
 
             //add named client
             var httpClientName = GetApiKey(typeof(TClientImplementation));

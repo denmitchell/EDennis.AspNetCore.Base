@@ -1,12 +1,4 @@
 {
-  "MockHeaders": {
-    "X-User": {
-      "Values": [ "moe" ]
-    },
-    "X-Set-ScopedLogger": {
-      "Values": [ "moe|Trace" ]
-    }
-  },
   "HeadersToClaims": {
     "X-User": "name"
   },

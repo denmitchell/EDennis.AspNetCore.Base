@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -16,7 +19,10 @@ namespace EDennis.AspNetCore.Base.Web {
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, IConfiguration configuration) {
+        public async Task InvokeAsync(HttpContext context, 
+            IConfiguration configuration,
+            IServiceProvider serviceProvider
+            ) {
 
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {

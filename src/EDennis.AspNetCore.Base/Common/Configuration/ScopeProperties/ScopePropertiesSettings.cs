@@ -1,4 +1,5 @@
 ﻿using IdentityModel;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,5 @@ namespace EDennis.AspNetCore.Base {
         public bool CopyClaims { get; set; } = true;
 
         public bool AppendHostPath { get; set; } = false;
-
     }
 }

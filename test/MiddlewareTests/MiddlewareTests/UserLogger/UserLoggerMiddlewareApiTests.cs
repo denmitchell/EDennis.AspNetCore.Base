@@ -47,13 +47,6 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var client = factory.CreateClient["UserLoggerApi"]();
             _output.WriteLine($"Test case: {t}");
 
-            //send configuration for test case
-            var jcfg = File.ReadAllText($"UserLogger\\{jsonTestCase.TestCase}.json");
-            var status = client.Configure("", jcfg);
-
-            //make sure that configuration was successful
-            Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
-
             TestUrl(jsonTestCase, client, 1);
             TestUrl(jsonTestCase, client, 2);
             TestUrl(jsonTestCase, client, 3);
@@ -63,6 +56,13 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
         private void TestUrl(JsonTestCase jsonTestCase, HttpClient client, int index) {
 
+            //send configuration for test case
+            var jcfg = File.ReadAllText($"UserLogger\\{jsonTestCase.TestCase}.json");
+            var status = client.Configure("", jcfg);
+
+            //make sure that configuration was successful
+            Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
+
             var qry = jsonTestCase.GetObject<string>($"QueryString{index}");
             var expected = jsonTestCase.GetObject<string>($"Expected{index}");
 
@@ -70,9 +70,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             var result = client.GetAsync(client.BaseAddress.ToString() + url).Result;
             var content = result.Content.ReadAsStringAsync().Result;
-            _output.WriteLine(content);
+            _output.WriteLine($"{jsonTestCase.TestCase}({index}): {content}");
 
-            var actual = JsonSerializer.Deserialize<List<KeyValuePair<string, string>>>(content);
+            var actual = content;
 
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 

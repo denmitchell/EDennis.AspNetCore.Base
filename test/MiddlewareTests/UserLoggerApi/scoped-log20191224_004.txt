@@ -1,0 +1,2 @@
+2019-12-24 14:18:15.094 -05:00 [ERR] UserLoggerController constructed.
+2019-12-24 14:21:38.459 -05:00 [ERR] UserLoggerController constructed.

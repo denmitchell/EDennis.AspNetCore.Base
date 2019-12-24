@@ -3,6 +3,7 @@ using EDennis.AspNetCore.Base.Logging;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib.Controllers {
     [ApiController]
@@ -17,7 +18,7 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib.Controllers {
             _logger = logger;
             ScopedLogger = scopedLogger;
 
-            _logger.LogCritical("UserLoggerController constructed.");
+            _logger.LogInformation("UserLoggerController constructed.");
             ScopedLogger.Logger.LogError("UserLoggerController constructed.");
         }
 

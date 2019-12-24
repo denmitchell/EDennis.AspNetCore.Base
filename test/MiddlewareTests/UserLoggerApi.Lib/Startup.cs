@@ -27,9 +27,9 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
             services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
-                .AddMockHeaders()
                 .AddHeadersToClaims()
-                .AddSerilogFodyScopedLogger("Logging:Loggers:ScopedLogger");
+                .AddUserLogger()
+                .AddSerilogFodyScopedLogger();
 
         }
 
@@ -48,9 +48,8 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
             app.UseConfiguration(); //for test configurations
 
 
-            //to send the same headers on every request
-            app.UseMockHeaders();
-
+            //note: don't use MockHeadersMiddleware here because
+            //      the headers must be different between requests
 
             //to send a header via a query string (for specific requests)
             //  (for the Xunit tests, there are three requests sent during

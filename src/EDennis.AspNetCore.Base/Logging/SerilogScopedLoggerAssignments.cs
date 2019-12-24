@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using M = Microsoft.Extensions.Logging;
@@ -72,6 +73,8 @@ namespace EDennis.AspNetCore.Base.Logging {
             //if 
             //        .MinimumLevel.
             var slogger = lconfig.ReadFrom.Configuration(configuration, sectionName)
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
                    .CreateLogger();
 
             //create the ILoggerFactory for Serilog from the Serilog.Core logger

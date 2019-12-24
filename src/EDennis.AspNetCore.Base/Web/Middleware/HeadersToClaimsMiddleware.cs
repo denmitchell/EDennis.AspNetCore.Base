@@ -41,8 +41,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     var claims = new List<Claim>();
                     bool claimsAdded = false;
 
-                    //pre-authentication -- simply add the claim
-                    if (context.User.Identities.Count(i => i.IsAuthenticated) == 0) {
+                    if (context.User != null) {
                         if (htc != null) {
                             foreach (var key in htc.Keys) {
                                 foreach (var hdr in context.Request.Headers.Where(h => h.Key == key)) {
