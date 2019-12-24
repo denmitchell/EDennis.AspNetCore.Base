@@ -1,0 +1,10 @@
+{
+  "MockHeaders": {
+    "X-User": {
+      "Values": [ "larry" ]
+    }
+  },
+  "UserLogger": {
+    "UserSource": "XUserHeader"
+  }
+}
