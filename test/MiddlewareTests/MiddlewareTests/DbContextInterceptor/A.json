@@ -1,0 +1,5 @@
+{
+  "HeadersToClaims": {
+    "X-UserScope": "user_scope"
+  }
+}
