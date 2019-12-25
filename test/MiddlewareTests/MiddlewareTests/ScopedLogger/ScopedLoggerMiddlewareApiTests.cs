@@ -1,7 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.UserLoggerMiddlewareApi.Tests;
+using EDennis.Samples.ScopedLoggerMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -19,11 +19,11 @@ namespace EDennis.AspNetCore.MiddlewareTests {
     /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class UserLoggerMiddlewareApiTests {
+    public class ScopedLoggerMiddlewareApiTests {
 
         private readonly ITestOutputHelper _output;
 
-        public UserLoggerMiddlewareApiTests(
+        public ScopedLoggerMiddlewareApiTests(
             ITestOutputHelper output) {
             _output = output;
         }
@@ -31,8 +31,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
-                : base("UserLoggerApi", "UserLoggerController",
-                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "UserLogger\\TestJson.xlsx") {
+                : base("ScopedLoggerApi", "ScopedLoggerController",
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "ScopedLogger\\TestJson.xlsx") {
             }
         }
 
@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         public void Get(string t, JsonTestCase jsonTestCase) {
 
             using var factory = new TestApis();
-            var client = factory.CreateClient["UserLoggerApi"]();
+            var client = factory.CreateClient["ScopedLoggerApi"]();
             _output.WriteLine($"Test case: {t}");
 
             TestUrl(jsonTestCase, client, 1);
@@ -57,7 +57,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         private void TestUrl(JsonTestCase jsonTestCase, HttpClient client, int index) {
 
             //send configuration for test case
-            var jcfg = File.ReadAllText($"UserLogger\\{jsonTestCase.TestCase}.json");
+            var jcfg = File.ReadAllText($"ScopedLogger\\{jsonTestCase.TestCase}.json");
             var status = client.Configure("", jcfg);
 
             //make sure that configuration was successful
@@ -66,7 +66,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var qry = jsonTestCase.GetObject<string>($"QueryString{index}");
             var expected = jsonTestCase.GetObject<string>($"Expected{index}");
 
-            var url = $"UserLogger?{qry}";
+            var url = $"ScopedLogger?{qry}";
 
             var result = client.GetAsync(client.BaseAddress.ToString() + url).Result;
             var content = result.Content.ReadAsStringAsync().Result;

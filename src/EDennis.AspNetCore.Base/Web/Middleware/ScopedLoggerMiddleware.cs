@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 
 namespace EDennis.AspNetCore.Base.Web {
-    public class UserLoggerMiddleware {
+    public class ScopedLoggerMiddleware {
 
         protected readonly RequestDelegate _next;
 
-        public UserLoggerMiddleware(RequestDelegate next) {
+        public ScopedLoggerMiddleware(RequestDelegate next) {
             _next = next;
         }
 
         ILogger _logger;
 
         public async Task InvokeAsync(HttpContext context,
-            IOptionsMonitor<UserLoggerSettings> settings,
-            IScopedLogger scopedLogger,
+            //IOptionsMonitor<UserLoggerSettings> settings,
+            //IScopedLogger scopedLogger,
             IScopedLoggerAssignments loggerAssignments,
-            ILogger<UserLoggerMiddleware> logger) {
+            ILogger<ScopedLoggerMiddleware> logger) {
 
 
             if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
@@ -51,23 +51,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
 
 
-                //update ScopedLogger for the user, if the user has an assigned logger/level
-                var user = MiddlewareUtils.ResolveUser(context, settings.CurrentValue.UserSource, "UserLogger.User");
-                if (loggerAssignments.Assignments.TryGetValue(user, out LogLevel newLevel)) {
-                    _logger.LogInformation("UserLogger setting logging level to {LogLevel} for {User}", newLevel, user);
-                    scopedLogger.LogLevel = newLevel;
-                }
-
             }
 
             await _next(context);
 
         }
 
-        private void UserLoggerSettingsChanged(UserLoggerSettings settings, string str) {
-            _logger.LogInformation(settings.UserSource.ToString());
-            _logger.LogInformation(str);
-        }
     }
 
     public static partial class RequestExtensions {
@@ -88,7 +77,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static partial class IApplicationBuilderExtensions_Middleware {
         public static IApplicationBuilder UseUserLogger(this IApplicationBuilder app) { 
-            app.UseMiddleware<UserLoggerMiddleware>();
+            app.UseMiddleware<ScopedLoggerMiddleware>();
             return app;
         }
     }

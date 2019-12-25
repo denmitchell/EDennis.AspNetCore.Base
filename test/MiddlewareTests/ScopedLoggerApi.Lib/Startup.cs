@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Logging;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
+namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
@@ -27,8 +28,8 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
             services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
+                .AddScopeProperties()
                 .AddHeadersToClaims()
-                .AddUserLogger()
                 .AddSerilogFodyScopedLogger();
 
         }
@@ -66,6 +67,8 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
                     context.Request.Headers.Add(query.Key.Substring("header*".Length), query.Value);
                 }
 
+                context.Request.Headers.Add("queryString", WebUtility.UrlDecode(context.Request.QueryString.ToString()).Replace('\u0026','&'));
+
                 await next();
 
             });
@@ -74,6 +77,7 @@ namespace EDennis.Samples.UserLoggerMiddlewareApi.Lib {
 
             app.UseUserLogger();
 
+            app.UseScopeProperties();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();

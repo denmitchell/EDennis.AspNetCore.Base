@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Extensions.Logging;
 using System;
@@ -19,12 +20,11 @@ namespace EDennis.AspNetCore.Base.Logging {
 
         public SerilogScopedLoggerAssignments(IConfiguration config, string scopedLoggerKey) {
 
-
             using var factory = new M.LoggerFactory();
             for(int i = (int)M.LogLevel.Trace; i < (int)M.LogLevel.None; i++) {
                 Loggers.Add((M.LogLevel)i,CreateLogger(factory, config, scopedLoggerKey, (M.LogLevel)i));
             }
-            Assignments.AddOrUpdate("", M.LogLevel.Trace, (k, v) => v);
+            //Assignments.AddOrUpdate("Anonymous", M.LogLevel.Trace, (k, v) => v);
 
         }
 
@@ -32,8 +32,12 @@ namespace EDennis.AspNetCore.Base.Logging {
         public string Category { get; } = "General";
 
 
-        public M.ILogger GetLogger(M.LogLevel level) => Loggers[level];
-
+        public M.ILogger GetLogger(string key) {
+            if (!Assignments.ContainsKey(key))
+                return new NullScopedLogger().Logger;
+            else
+                return Loggers[Assignments[key]];
+        }
 
 
 
@@ -45,8 +49,26 @@ namespace EDennis.AspNetCore.Base.Logging {
         public M.ILogger CreateLogger(M.ILoggerFactory _, IConfiguration configuration, string sectionName, M.LogLevel logLevel) {
 
             //create a Serilog.Core logger
-            var lconfig = new Serilog.LoggerConfiguration();
+            var slogger = new LoggerConfiguration()
+                .SetLogLevel(logLevel)
+                .ReadFrom.Configuration(configuration, sectionName)
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
+                .SetLogLevel(logLevel)
+                .CreateLogger();
 
+            //create the ILoggerFactory for Serilog from the Serilog.Core logger
+            using var serilogLoggerFactory = new SerilogLoggerFactory(slogger);
+
+            //create the Microsoft.Extensions.Logging.ILogger from the factory
+            return serilogLoggerFactory.CreateLogger(Category);
+        }
+
+
+    }
+
+    internal static class LogLevelExtensions {
+        internal static LoggerConfiguration SetLogLevel(this LoggerConfiguration lconfig, M.LogLevel logLevel) {
             switch (logLevel) {
                 case M.LogLevel.Trace:
                     lconfig.MinimumLevel.Verbose();
@@ -70,21 +92,9 @@ namespace EDennis.AspNetCore.Base.Logging {
                     break;
             }
 
-            //if 
-            //        .MinimumLevel.
-            var slogger = lconfig.ReadFrom.Configuration(configuration, sectionName)
-                    .Enrich.FromLogContext()
-                    .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
-                   .CreateLogger();
-
-            //create the ILoggerFactory for Serilog from the Serilog.Core logger
-            using var serilogLoggerFactory = new SerilogLoggerFactory(slogger);
-
-            //create the Microsoft.Extensions.Logging.ILogger from the factory
-            return serilogLoggerFactory.CreateLogger(Category);
+            return lconfig;
         }
 
-
-    }
+    } 
 
 }

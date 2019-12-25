@@ -11,7 +11,6 @@ namespace EDennis.AspNetCore.Base {
     public static class MethodCallbackUtils {
 
         public static void OnEntry(MethodExecutionArgs args, IScopedLogger scopedLogger) {
-            //scopedLogger.Logger.LogDebug("Entering {Method}", (args.Method as MethodInfo).Name);
             var scope = scopedLogger.Logger.GetScope(args);
             var formatted = args.Arguments.FormatCompact();
             var method = (args.Method as MethodInfo).GetFriendlyName();

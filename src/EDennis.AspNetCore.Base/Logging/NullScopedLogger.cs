@@ -13,7 +13,7 @@ namespace EDennis.AspNetCore.Base.Logging {
 
         public ILogger Logger { get => NullLogger.Instance; }
 
-        public LogLevel LogLevel { get; set; } = LogLevel.Information;
+        public LogLevel LogLevel { get; } = LogLevel.None;
 
         public IDisposable BeginScope<TState>(TState state) {
             return Logger.BeginScope(state);
@@ -28,14 +28,14 @@ namespace EDennis.AspNetCore.Base.Logging {
         }
 
 
-        public virtual void LogEntry(MethodExecutionArgs args, LogLevel level, IScopeProperties scopeProperties = null) {
+        public virtual void LogEntry(MethodExecutionArgs args, LogLevel level) {
         }
 
-        public virtual void LogExit(MethodExecutionArgs args, LogLevel level, IScopeProperties scopeProperties = null) {
+        public virtual void LogExit(MethodExecutionArgs args, LogLevel level) {
         }
 
 
-        public virtual void LogException(MethodExecutionArgs args, IScopeProperties scopeProperties = null) {
+        public virtual void LogException(MethodExecutionArgs args) {
         }
 
 

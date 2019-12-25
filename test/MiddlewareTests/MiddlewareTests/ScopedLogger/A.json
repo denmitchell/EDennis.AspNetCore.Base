@@ -2,7 +2,10 @@
   "HeadersToClaims": {
     "X-User": "name"
   },
-  "UserLogger": {
+  "ScopedLogger": {
+    "AssignmentKeySource": "User"
+  },
+  "ScopeProperties": {
     "UserSource": "JwtNameClaim"
   }
 }

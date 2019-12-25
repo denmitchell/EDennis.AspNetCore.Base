@@ -20,9 +20,9 @@
     <None Remove="ScopeProperties\A.json" />
     <None Remove="ScopeProperties\B.json" />
     <None Remove="ScopeProperties\C.json" />
-    <None Remove="UserLogger\A.json" />
-    <None Remove="UserLogger\B.json" />
-    <None Remove="UserLogger\C.json" />
+    <None Remove="ScopedLogger\A.json" />
+    <None Remove="ScopedLogger\B.json" />
+    <None Remove="ScopedLogger\C.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,17 +91,17 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="UserLogger\A.json">
+    <Content Include="ScopedLogger\A.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="UserLogger\B.json">
+    <Content Include="ScopedLogger\B.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="UserLogger\C.json">
+    <Content Include="ScopedLogger\C.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -136,10 +136,10 @@
     <ProjectReference Include="..\MockClientApi\MockClientApi.csproj" />
     <ProjectReference Include="..\MockHeadersApi.Lib\MockHeadersApi.Lib.csproj" />
     <ProjectReference Include="..\MockHeadersApi\MockHeadersApi.csproj" />
+    <ProjectReference Include="..\ScopedLoggerApi.Lib\ScopedLoggerApi.Lib.csproj" />
+    <ProjectReference Include="..\ScopedLoggerApi\ScopedLoggerApi.csproj" />
     <ProjectReference Include="..\ScopePropertiesApi.Lib\ScopePropertiesApi.Lib.csproj" />
     <ProjectReference Include="..\ScopePropertiesApi\ScopePropertiesApi.csproj" />
-    <ProjectReference Include="..\UserLoggerApi.Lib\UserLoggerApi.Lib.csproj" />
-    <ProjectReference Include="..\UserLoggerApi\UserLoggerApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -161,7 +161,7 @@
     <None Update="MockHeaders\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="UserLogger\TestJson.xlsx">
+    <None Update="ScopedLogger\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

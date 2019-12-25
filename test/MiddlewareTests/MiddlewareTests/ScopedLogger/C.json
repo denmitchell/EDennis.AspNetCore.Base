@@ -1,0 +1,9 @@
+{
+  "ScopedLogger": {
+    "AssignmentKeySource": "User"
+  },
+  "ScopeProperties": {
+    "UserSource": "XUserQueryString"
+  }
+}
+

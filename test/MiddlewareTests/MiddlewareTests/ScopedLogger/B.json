@@ -1,0 +1,8 @@
+{
+  "ScopedLogger": {
+    "AssignmentKeySource": "User"
+  },
+  "ScopeProperties": {
+    "UserSource": "XUserHeader"
+  }
+}

@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace EDennis.Samples.UserLoggerMiddlewareApi.Tests {
+namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Tests {
 
     public class TestApis : TestApisBase {
         public override Dictionary<string, Type> EntryPoints =>
             new Dictionary<string, Type> {
-                {"UserLoggerApi", typeof(Program) },
+                {"ScopedLoggerApi", typeof(Program) },
             };
     }
 
