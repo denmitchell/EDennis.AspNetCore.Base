@@ -17,6 +17,7 @@ namespace EDennis.Samples.ScopedLoggerApi.Lib {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
             var _ = new ServiceConfig(services, Configuration)
+                 .AddScopeProperties()
                  .AddSerilogFodyScopedLogger();
 
         }

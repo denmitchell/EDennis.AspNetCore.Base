@@ -24,7 +24,7 @@ namespace EDennis.AspNetCore.ConfigTests {
 
 
         [Fact]
-        public void TestUserLogger() {
+        public void TestScopedLogger() {
 
             var client = _factory.CreateClient["ScopedLoggerApi"]();
             var result = client.Get<ScopedLoggerSettings>($"ScopedLogger");

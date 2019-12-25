@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using EDennis.AspNetCore.Base.Web;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EDennis.AspNetCore.Base.Security {
@@ -29,6 +31,11 @@ namespace EDennis.AspNetCore.Base.Security {
             var controllerPath = _appName.Replace(".Lib","") + '.' + controller.ControllerName;
 
             int i = 0;
+            if (_config.ContainsKey("DefaultPolicies")) {
+                var dfCurr = new List<string>();
+                _config.GetSection("DefaultPolicies").Bind(dfCurr);
+                i = dfCurr.Count();
+            }
             foreach (var action in controller.Actions) {
                 var actionPath = controllerPath + '.' + action.ActionName;
                 action.Filters.Add(new AuthorizeFilter(actionPath));

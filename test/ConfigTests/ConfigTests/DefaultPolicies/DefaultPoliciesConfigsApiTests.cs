@@ -40,14 +40,16 @@ namespace EDennis.AspNetCore.ConfigTests {
 
             var client = _factory.CreateClient["DefaultPoliciesApi"]();
             var result = client.Get<string>(defaultPoliciesUrl[testCase]);
-            string actual = (string)result.Value;
 
-            _output.WriteLine(actual);
-
-            if (testCase < 3)
+            if (testCase < 3) {
+                string actual = (string)result.Value;
+                _output.WriteLine(actual);
                 Assert.Equal($"Hello, {defaultPoliciesExpected[testCase]}!", actual);
-            else
-                Assert.StartsWith("System.InvalidOperationException", actual);
+            } else {
+                int actual = result.StatusCode.Value;
+                _output.WriteLine(actual.ToString());
+                Assert.Equal(401, actual);
+            }
 
         }
           

@@ -59,10 +59,10 @@ namespace EDennis.AspNetCore.ConfigTests {
             var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
             _output.WriteLine(json);
 
-            Assert.Equal("Information", obj["PersonRepoScopedLoggerLevel"]);
+            Assert.Equal("None", obj["PersonRepoScopedLoggerLevel"]);
             Assert.Null(obj["PersonRepoScopePropertiesUser"]);
             Assert.Equal("3", obj["PersonCount"]);
-            Assert.Equal("Information", obj["PositionRepoScopedLoggerLevel"]);
+            Assert.Equal("None", obj["PositionRepoScopedLoggerLevel"]);
             Assert.Null(obj["PositionRepoScopePropertiesUser"]);
             Assert.Equal("2", obj["PositionCount"]);
 

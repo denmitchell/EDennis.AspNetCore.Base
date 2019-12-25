@@ -25,7 +25,7 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
             var _ = new ServiceConfig(services, Configuration)
-                .AddSerilogFodyScopedLogger()
+                .AddNullScopedLogger()
                 .AddDbContext<DbContext1>()
                     .AddRepo<PersonRepo1>()
                     .AddRepo<PositionRepo1>()

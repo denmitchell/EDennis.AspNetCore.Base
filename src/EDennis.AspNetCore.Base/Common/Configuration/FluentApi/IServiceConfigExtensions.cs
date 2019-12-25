@@ -54,6 +54,10 @@ namespace EDennis.AspNetCore.Base {
                     (c, s) => new SerilogScopedLoggerAssignments(c, s));
             return serviceConfig;
         }
+        public static IServiceConfig AddNullScopedLogger(this IServiceConfig serviceConfig) {
+            serviceConfig.Services.TryAddScoped<IScopedLogger, NullScopedLogger>();
+            return serviceConfig;
+        }
 
         public static IServiceConfig AddScopedLogger<TScopedLogger, TScopedLoggerAssignments>(this IServiceConfig serviceConfig,
             Func<IConfiguration, string, TScopedLoggerAssignments> slaFunc)
