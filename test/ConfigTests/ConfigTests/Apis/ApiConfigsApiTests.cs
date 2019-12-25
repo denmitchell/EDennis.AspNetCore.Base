@@ -40,9 +40,9 @@ namespace EDennis.AspNetCore.ConfigTests {
             Assert.Contains($"https://localhost", obj["HttpClientBaseAddress"]);
             Assert.Equal("4", obj["ApisCount"]);
             Assert.Null(obj["ScopePropertiesUser"]);
-            Assert.Equal("EDennis.Samples.ApiConfigsApi", obj["SecureTokenServiceApplicationName"]);
+            Assert.Equal("ApiConfigsApi", obj["SecureTokenServiceApplicationName"]);
             Assert.Equal("Information", obj["LoggerLevel"]);
-            Assert.Equal("Information", obj["ScopedLoggerLevel"]);
+            Assert.Equal("None", obj["ScopedLoggerLevel"]);
 
         }
     }

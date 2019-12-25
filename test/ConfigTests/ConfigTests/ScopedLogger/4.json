@@ -1,6 +1,6 @@
 {
   "ScopedLogger": {
-    "AssignmentKeyName": "SomeHeader",
-    "AssignmentKeySource": "Header"
+    "AssignmentKeyName": "SomeProperty",
+    "AssignmentKeySource": "OtherProperty"
   }
 }

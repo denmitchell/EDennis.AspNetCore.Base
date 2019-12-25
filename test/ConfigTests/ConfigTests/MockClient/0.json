@@ -1,5 +1,6 @@
 {
   "MockClient": {
+    "ActiveMockClientKey": "MockClient1",
     "MockClients": {
       "MockClient1": {
         "ClientId": "EDennis.Samples.SomeApi1",

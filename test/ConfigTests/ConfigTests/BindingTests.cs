@@ -238,9 +238,9 @@ namespace EDennis.AspNetCore.ConfigTests {
                     { "X-User", "name" }                    
                 },
                 new HeadersToClaims {
-                    { "X-UserScope", "user_scope" },
                     { "X-Role", "role" },
-                    { "X-User", "name" }
+                    { "X-User", "name" },
+                    { "X-UserScope", "user_scope" },
                 }
                 
             };

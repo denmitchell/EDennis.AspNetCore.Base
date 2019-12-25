@@ -4,7 +4,7 @@
       "DatabaseProvider": "Sqlite",
       "ConnectionString": "Some connection string 1",
       "Interceptor": {
-        "InstanceNameSource": [ "JwtNameClaim" ],
+        "InstanceNameSource": "JwtNameClaim",
         "IsInMemory": false,
         "IsolationLevel": "ReadCommitted",
         "ResetSqlServerIdentities": false,
