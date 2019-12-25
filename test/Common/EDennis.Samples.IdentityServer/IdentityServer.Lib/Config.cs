@@ -230,68 +230,77 @@ namespace IdentityServer
                         new Scope {
                             Name = "MockClientApi.Person.GetB",
                             DisplayName = "MockClientApi.Person.GetB"
-                        }
-                    }
-                },
-                new ApiResource {
-                    Name ="EDennis.Samples.ApiConfigsApi",
-                    DisplayName="EDennis.Samples.ApiConfigsApi",
-                    Scopes={
+                        },
+                        //configs tests...
                         new Scope {
-                            Name = "EDennis.Samples.ApiConfigsApi.*",
-                            DisplayName = "EDennis.Samples.ApiConfigsApi.*"
-                        }
-                    }
-                },
-                new ApiResource {
-                    Name ="EDennis.Samples.DefaultPoliciesConfigsApi",
-                    DisplayName="EDennis.Samples.DefaultPoliciesConfigsApi",
-                    Scopes={
-                        new Scope {
-                            Name = "EDennis.Samples.DefaultPoliciesConfigsApi.*",
-                            DisplayName = "EDennis.Samples.DefaultPoliciesConfigsApi.*"
-                        }
-                    }
-                },
-                new ApiResource {
-                    Name ="EDennis.Samples.OidcConfigsApp",
-                    DisplayName="EDennis.Samples.OidcConfigsApp",
-                    Scopes={
-                        new Scope {
-                            Name = "EDennis.Samples.OidcConfigsApp.*",
-                            DisplayName = "EDennis.Samples.OidcConfigsApp.*"
+                            Name = "MockClientApi.MockClient.*",
+                            DisplayName = "MockClientApi.MockClient.*"
                         },
                         new Scope {
-                            Name = "EDennis.Samples.OidcConfigsApp.Index",
-                            DisplayName = "EDennis.Samples.OidcConfigsApp.Index"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.OidcConfigsApp.Error",
-                            DisplayName = "EDennis.Samples.OidcConfigsApp.Error"
-                        },
-                        new Scope {
-                            Name = "EDennis.Samples.OidcConfigsApp.Privacy",
-                            DisplayName = "EDennis.Samples.OidcConfigsApp.Privacy"
+                            Name = "MockClientApi.MockClient.Get",
+                            DisplayName = "MockClientApi.MockClient.Get"
                         },
                     }
                 },
                 new ApiResource {
-                    Name ="EDennis.Samples.Api1",
-                    DisplayName="EDennis.Samples.Api1",
+                    Name ="ApiConfigsApi",
+                    DisplayName="ApiConfigsApi",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.Api1.*",
-                            DisplayName = "EDennis.Samples.Api1.*"
+                            Name = "ApiConfigsApi.*",
+                            DisplayName = "ApiConfigsApi.*"
                         }
                     }
                 },
                 new ApiResource {
-                    Name ="EDennis.Samples.Api2",
-                    DisplayName="EDennis.Samples.Api2",
+                    Name ="DefaultPoliciesApi",
+                    DisplayName="DefaultPoliciesApi",
                     Scopes={
                         new Scope {
-                            Name = "EDennis.Samples.Api2.*",
-                            DisplayName = "EDennis.Samples.Api2.*"
+                            Name = "DefaultPoliciesApi.*",
+                            DisplayName = "DefaultPoliciesApi.*"
+                        }
+                    }
+                },
+                new ApiResource {
+                    Name ="OidcApp",
+                    DisplayName="OidcApp",
+                    Scopes={
+                        new Scope {
+                            Name = "OidcApp.*",
+                            DisplayName = "OidcApp.*"
+                        },
+                        new Scope {
+                            Name = "OidcApp.Index",
+                            DisplayName = "OidcApp.Index"
+                        },
+                        new Scope {
+                            Name = "OidcApp.Error",
+                            DisplayName = "OidcApp.Error"
+                        },
+                        new Scope {
+                            Name = "OidcApp.Privacy",
+                            DisplayName = "OidcApp.Privacy"
+                        },
+                    }
+                },
+                new ApiResource {
+                    Name ="Api1",
+                    DisplayName="Api1",
+                    Scopes={
+                        new Scope {
+                            Name = "Api1.*",
+                            DisplayName = "Api1.*"
+                        }
+                    }
+                },
+                new ApiResource {
+                    Name ="Api2",
+                    DisplayName="Api2",
+                    Scopes={
+                        new Scope {
+                            Name = "Api2.*",
+                            DisplayName = "Api2.*"
                         }
                     }
                 },
@@ -568,28 +577,28 @@ namespace IdentityServer
                 },
                 new MockClient
                 {
-                    ClientId = "EDennis.Samples.ApiConfigsApi",
+                    ClientId = "ApiConfigsApi",
                     AllowedScopes = {
-                        "EDennis.Samples.Api1.*",
-                        "EDennis.Samples.Api2.*"
+                        "Api1.*",
+                        "Api2.*"
                     }
                 },
                 new MockClient
                 {
-                    ClientId = "EDennis.Samples.DefaultPoliciesConfigsApi",
+                    ClientId = "DefaultPoliciesApi",
                     AllowedScopes = {
-                        "EDennis.Samples.DefaultPoliciesConfigsApi.Person.*",
-                        "EDennis.Samples.DefaultPoliciesConfigsApi.Position.GetUser"
+                        "DefaultPoliciesApi.Person.*",
+                        "DefaultPoliciesApi.Position.GetUser"
                     }
                 },
                 new MockClient
                 {
-                    ClientId = "EDennis.Samples.OidcConfigsApp",
+                    ClientId = "OidcApp",
                     AllowedScopes = {
-                        "EDennis.Samples.OidcConfigsApp.*",
-                        "EDennis.Samples.OidcConfigsApp.Index",
-                        "EDennis.Samples.OidcConfigsApp.Error",
-                        "EDennis.Samples.OidcConfigsApp.Privacy",
+                        "OidcApp.*",
+                        "OidcApp.Index",
+                        "OidcApp.Error",
+                        "OidcApp.Privacy",
                     }
                 },
                 // resource owner password grant client

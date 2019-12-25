@@ -1,0 +1,6 @@
+{
+  "ScopedLogger": {
+    "AssignmentKeyName": "SomeHeader",
+    "AssignmentKeySource": "Header"
+  }
+}
