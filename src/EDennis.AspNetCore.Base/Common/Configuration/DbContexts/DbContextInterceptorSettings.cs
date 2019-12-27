@@ -8,6 +8,8 @@ namespace EDennis.AspNetCore.Base {
     public class DbContextInterceptorSettings<TContext> : DbContextBaseSettings<TContext> 
         where TContext: DbContext{
 
+        public bool Enabled { get; set; } = false;
+
         public readonly static UserSource DEFAULT_USER_SOURCE = UserSource.JwtNameClaim;
 
         public UserSource InstanceNameSource { get; set; } = DEFAULT_USER_SOURCE;

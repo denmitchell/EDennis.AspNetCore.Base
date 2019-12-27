@@ -7,12 +7,15 @@ using System.Text;
 namespace EDennis.AspNetCore.Base {
     public class ActiveMockClientSettings {
 
+        public bool Enabled { get; set; } = false;
+
         /// <summary>
         /// The active mock client.
         /// NOTE: if left unspecified, this defaults to
         /// the first MockClient in the dictionary.
         /// </summary>
         public string ActiveMockClientKey { get; set; } 
+
         public MockClientSettingsDictionary MockClients { get; set; }
 
         public MockClientSettings ActiveMockClient { 

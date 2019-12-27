@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,42 +13,52 @@ namespace EDennis.AspNetCore.Base.Web {
     public class ScopedLoggerMiddleware {
 
         protected readonly RequestDelegate _next;
+        protected readonly IScopedLoggerAssignments _loggerAssignments;
+        protected readonly ILogger<ScopedLoggerMiddleware> _logger;
+        protected readonly IOptionsMonitor<ScopedLoggerSettings> _settings;
+        public bool Bypass { get; } = false;
 
-        public ScopedLoggerMiddleware(RequestDelegate next) {
+        public ScopedLoggerMiddleware(RequestDelegate next,
+            IScopedLoggerAssignments loggerAssignments,
+            IOptionsMonitor<ScopedLoggerSettings> settings,
+            ILogger<ScopedLoggerMiddleware> logger,
+            IWebHostEnvironment env) {
             _next = next;
+            _loggerAssignments = loggerAssignments;
+            _logger = logger;
+            _settings = settings;
+            if (env.EnvironmentName == "Production")
+                Bypass = true;
         }
 
-        ILogger _logger;
-
-        public async Task InvokeAsync(HttpContext context,
-            //IOptionsMonitor<UserLoggerSettings> settings,
-            //IScopedLogger scopedLogger,
-            IScopedLoggerAssignments loggerAssignments,
-            ILogger<ScopedLoggerMiddleware> logger) {
+        public async Task InvokeAsync(HttpContext context) {
 
 
-            if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+            var req = context.Request;
+            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-                var query = context.Request.Query;
-                var headers = context.Request.Headers;
+            if (Bypass || !enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
-                _logger = logger;
+                var query = req.Query;
+                var headers = req.Headers;
 
                 //handle new logger assignment or clearing of existing assignment
-                if (context.Request.ContainsHeaderOrQueryKey(
+                if (req.ContainsHeaderOrQueryKey(
                         Constants.SET_SCOPEDLOGGER_KEY, out string setValue)) {
                     var v = setValue.Split('|');
                     var userKey = v[0];
                     var logLevel = (LogLevel)Enum.Parse(typeof(LogLevel), v[1]);
 
                     _logger.LogInformation("UserLogger middleware assigning {User} to {LogLevel}", userKey, logLevel);
-                    loggerAssignments.Assignments.AddOrUpdate(userKey, logLevel, (u, l) => l);
+                    _loggerAssignments.Assignments.AddOrUpdate(userKey, logLevel, (u, l) => l);
 
-                }else if (context.Request.ContainsHeaderOrQueryKey(
+                }else if (req.ContainsHeaderOrQueryKey(
                         Constants.CLEAR_SCOPEDLOGGER_KEY, out string user1)) {
 
                     _logger.LogInformation("UserLogger middleware clearing {User}", user1);
-                    loggerAssignments.Assignments.TryRemove(user1, out LogLevel _);
+                    _loggerAssignments.Assignments.TryRemove(user1, out LogLevel _);
                 }
 
 

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -11,6 +13,23 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
     public static class MiddlewareUtils {
+
+
+
+        public static Stream StringToStream(string str) {
+            var memStream = new MemoryStream();
+            var textWriter = new StreamWriter(memStream);
+            textWriter.Write(str);
+            textWriter.Flush();
+            memStream.Seek(0, SeekOrigin.Begin);
+
+            return memStream;
+        }
+
+        public static string StreamToString(Stream stream) {
+            var reader = new StreamReader(stream);
+            return reader.ReadToEndAsync().Result;
+        }
 
 
         public static Task Reset(HttpClient[] httpClients, string instance) {

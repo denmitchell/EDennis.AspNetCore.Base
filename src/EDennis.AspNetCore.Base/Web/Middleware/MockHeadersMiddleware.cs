@@ -1,31 +1,37 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
     public class MockHeadersMiddleware {
+
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<MockHeaderSettingsCollection> _settings;
-        public MockHeadersMiddleware(RequestDelegate next, IOptionsMonitor<MockHeaderSettingsCollection> settings) {
+        public bool Bypass { get; } = false;
+
+        public MockHeadersMiddleware(RequestDelegate next, 
+            IOptionsMonitor<MockHeaderSettingsCollection> settings,
+            IWebHostEnvironment env ) {
             _next = next;
             _settings = settings;
+            if (env.EnvironmentName == "Production")
+                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
-            //ignore, if swagger meta-data processing
-            if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+            var req = context.Request;
+            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+
+            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
 
                 var mockHeaders = _settings.CurrentValue;
                 if (mockHeaders != null) {
 
-                    var headers = context.Request.Headers;
+                    var headers = req.Headers;
 
 
                     //loop over the grouped mock headers, adding them to the RequestHeaders
@@ -39,7 +45,7 @@ namespace EDennis.AspNetCore.Base.Web {
                             if (mock.ConflictResolution == MockHeaderConflictResolution.Skip)
                                 continue;
                             else {
-                                StringValues newValues = default;
+                                StringValues newValues;
                                 if (mock.ConflictResolution == MockHeaderConflictResolution.Overwrite)
                                     newValues = mock.Values;
                                 else

@@ -44,9 +44,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         }
 
         [Theory]
-        [TestJsonPerson("Create", "", "A")]
-        [TestJsonPerson("Update", "", "B")]
-        [TestJsonPerson("Delete", "", "C")]
+        [TestJsonPerson("CUD", "", "A")]
+        [TestJsonPerson("CUD", "", "B")]
+        [TestJsonPerson("CUD", "", "C")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
             using var factory = new TestApis();
@@ -75,9 +75,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         }
 
         [Theory]
-        [TestJsonPosition("Create", "", "D")]
-        [TestJsonPosition("Update", "", "E")]
-        [TestJsonPosition("Delete", "", "F")]
+        [TestJsonPosition("CUD", "", "D")]
+        [TestJsonPosition("CUD", "", "E")]
+        [TestJsonPosition("CUD", "", "F")]
         public void Position(string t, JsonTestCase jsonTestCase) {
 
             using var factory = new TestApis();

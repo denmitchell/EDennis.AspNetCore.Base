@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System.Linq;
@@ -21,18 +22,27 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<ScopePropertiesSettings> _settings;
+        public bool Bypass { get; } = false;
 
         public ScopePropertiesMiddleware(RequestDelegate next, 
-            IOptionsMonitor<ScopePropertiesSettings> settings) {
+            IOptionsMonitor<ScopePropertiesSettings> settings,
+            IWebHostEnvironment env) {
             _next = next;
             _settings = settings;
+            if (env.EnvironmentName == "Production")
+                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context, IScopeProperties scopeProperties) {
 
 
-            //ignore, if swagger meta-data processing
-            if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+
+            var req = context.Request;
+            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+
+            if (Bypass || !enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
 
                 var settings = _settings.CurrentValue;
@@ -44,7 +54,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 //copy all headers to ScopeProperties headers
                 if (settings.CopyHeaders) {
                     scopeProperties.Headers = new HeaderDictionary();
-                    context.Request.Headers
+                    req.Headers
                         .ToList()
                         .ForEach(h => scopeProperties.Headers
                         .Add(h.Key, h.Value.ToArray()));
@@ -52,13 +62,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 //append the host path to a ScopeProperties header, if configured 
                 if (settings.AppendHostPath) {
-                    if (context.Request.Headers.ContainsKey(Constants.HOSTPATH_KEY))
+                    if (req.Headers.ContainsKey(Constants.HOSTPATH_KEY))
                         scopeProperties.Headers.Add(Constants.HOSTPATH_KEY,
-                            $"{context.Request.Headers[Constants.HOSTPATH_KEY].ToString()}>" +
-                            $"{context.Request.Headers["Host"].ToString()}");
+                            $"{req.Headers[Constants.HOSTPATH_KEY].ToString()}>" +
+                            $"{req.Headers["Host"].ToString()}");
                     else
                         scopeProperties.Headers.Add(Constants.HOSTPATH_KEY, 
-                            context.Request.Headers["Host"].ToString());
+                            req.Headers["Host"].ToString());
                 }
 
                 //add user claims

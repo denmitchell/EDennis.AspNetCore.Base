@@ -1,0 +1,74 @@
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System;
+using System.Threading.Tasks;
+
+namespace EDennis.AspNetCore.Base.Web {
+    public class ScopedConfigurationMiddleware {
+
+        protected readonly RequestDelegate _next;
+        protected readonly IOptionsMonitor<ScopedConfigurationSettings> _settings;
+        protected readonly IConfiguration _config;
+        public bool Bypass { get; } = false;
+
+        public ScopedConfigurationMiddleware(RequestDelegate next,
+            IOptionsMonitor<ScopedConfigurationSettings> settings,
+            IConfiguration config) {
+            _next = next;
+            _settings = settings;
+            _config = config;
+
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (env == "Production")
+                Bypass = true;
+        }
+
+        public async Task InvokeAsync(HttpContext context) {
+
+            var req = context.Request;
+            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+
+            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
+
+
+                var method = req.Method;
+
+                if (method == Constants.CONFIG_METHOD 
+                    || req.ContainsHeaderOrQueryKey(Constants.CONFIG_QUERY_KEY, out string _)) {
+
+                    req.EnableBuffering();
+                    var body = MiddlewareUtils.StreamToString(req.Body);
+
+                    var config = new ConfigurationBuilder()
+                        .AddJsonStream(MiddlewareUtils.StringToStream(body))
+                        .Build();
+
+
+                    var configDict = config.Flatten();
+                    foreach (var key in configDict.Keys)
+                        _config[key] = configDict[key];
+
+                    return;
+
+                }
+
+            }
+            await _next(context);
+        }
+
+
+    }
+
+
+
+    public static partial class IApplicationBuilderExtensions_Middleware {
+        public static IApplicationBuilder UseScopedConfiguration(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ScopedConfigurationMiddleware>();
+            return app;
+        }
+    }
+
+}

@@ -34,6 +34,7 @@ namespace EDennis.AspNetCore.Base {
     public static class IServiceConfigExtensions {
 
         public const string DEFAULT_APIS_PATH = "Apis";
+        public const string DEFAULT_SCOPED_CONFIGURATION_PATH = "DbContexts";
         public const string DEFAULT_DBCONTEXTS_PATH = "DbContexts";
         public const string DEFAULT_SCOPE_PROPERTIES_PATH = "ScopeProperties";
         public const string DEFAULT_MOCK_HEADERS_PATH = "MockHeaders";
@@ -337,6 +338,15 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddMockHeaders(this IServiceConfig serviceConfig) =>
             AddMockHeaders(serviceConfig, DEFAULT_MOCK_HEADERS_PATH);
+
+
+        public static IServiceConfig AddScopedConfiguration(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Configure<ScopedConfigurationSettings>(path);
+            return serviceConfig;
+        }
+
+        public static IServiceConfig AddScopedConfiguration(this IServiceConfig serviceConfig) =>
+            AddScopedConfiguration(serviceConfig, DEFAULT_SCOPED_CONFIGURATION_PATH);
 
 
         public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig, string path) {

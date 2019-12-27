@@ -8,6 +8,7 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
+using Microsoft.AspNetCore.Hosting;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -25,14 +26,23 @@ namespace EDennis.AspNetCore.Base.Web {
     public class HeadersToClaimsMiddleware {
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<HeadersToClaims> _settings;
-        public HeadersToClaimsMiddleware(RequestDelegate next, IOptionsMonitor<HeadersToClaims> settings) {
+        public bool Bypass { get; } = false;
+
+        public HeadersToClaimsMiddleware(RequestDelegate next,
+            IOptionsMonitor<HeadersToClaims> settings,
+            IWebHostEnvironment env) {
             _next = next;
             _settings = settings;
+            if (env.EnvironmentName == "Production")
+                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
-            //ignore, if swagger meta-data processing
-            if (!context.Request.Path.StartsWithSegments(new PathString("/swagger"))) {
+
+            var req = context.Request;
+            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+
+            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
 
 
                 if (context.User != null) {
@@ -44,7 +54,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     if (context.User != null) {
                         if (htc != null) {
                             foreach (var key in htc.Keys) {
-                                foreach (var hdr in context.Request.Headers.Where(h => h.Key == key)) {
+                                foreach (var hdr in req.Headers.Where(h => h.Key == key)) {
                                     foreach (var val in hdr.Value.ToArray()) {
                                         claims.Add(new Claim(htc[key], val));
                                         claimsAdded = true;
