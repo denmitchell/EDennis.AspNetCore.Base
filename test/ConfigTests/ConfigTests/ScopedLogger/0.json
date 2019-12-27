@@ -1,2 +1,5 @@
 {
+  "ScopedLogger": {
+    "Enabled": true
+  }
 }

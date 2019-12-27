@@ -1,5 +1,6 @@
 {
   "ScopedLogger": {
+    "Enabled": true,
     "AssignmentKeyName": "SomeClaim",
     "AssignmentKeySource": "Claim"
   }

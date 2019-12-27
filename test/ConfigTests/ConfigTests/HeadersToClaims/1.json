@@ -1,7 +1,8 @@
 {
   "HeadersToClaims": {
-      "X-UserScope": "user_scope",
-      "X-Role": "role",
-      "X-User": "name"
+    "Enabled": true,
+    "X-UserScope": "user_scope",
+    "X-Role": "role",
+    "X-User": "name"
   }
 }

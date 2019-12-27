@@ -1,5 +1,6 @@
 {
   "ScopeProperties": {
+    "Enabled": true,
     "UserSource": "JwtNameClaim",
     "CopyHeaders": false,
     "CopyClaims": false,

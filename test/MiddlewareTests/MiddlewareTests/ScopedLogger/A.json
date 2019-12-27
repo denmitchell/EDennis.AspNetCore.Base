@@ -1,11 +1,14 @@
 {
   "HeadersToClaims": {
+    "Enabled": true,
     "X-User": "name"
   },
   "ScopedLogger": {
+    "Enabled": true,
     "AssignmentKeySource": "User"
   },
   "ScopeProperties": {
+    "Enabled": true,
     "UserSource": "JwtNameClaim"
   }
 }

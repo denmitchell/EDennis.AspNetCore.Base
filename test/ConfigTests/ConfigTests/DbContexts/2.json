@@ -4,6 +4,7 @@
       "DatabaseProvider": "InMemory",
       "ConnectionString": "Some connection string 3",
       "Interceptor": {
+        "Enabled": true,
         "InstanceNameSource": "SessionId",
         "IsInMemory": true,
         "IsolationLevel": "Unspecified",

@@ -1,6 +1,7 @@
 {
   "HeadersToClaims": {
-      "X-Role": "role",
-      "X-User": "name"
+    "Enabled": true,
+    "X-Role": "role",
+    "X-User": "name"
   }  
 }

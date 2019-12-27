@@ -1,5 +1,6 @@
 {
   "ScopedLogger": {
+    "Enabled": true,
     "AssignmentKeySource": "User"
   }
 }

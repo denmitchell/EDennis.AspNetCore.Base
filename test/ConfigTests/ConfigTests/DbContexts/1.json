@@ -3,6 +3,7 @@
     "MyDbContext2": {
       "ConnectionString": "Some connection string 2",
       "Interceptor": {
+        "Enabled": true,
         "IsInMemory": false
       }
     }

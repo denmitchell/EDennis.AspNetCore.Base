@@ -1,5 +1,6 @@
 {
   "MockClient": {
+    "Enabled": true,
     "ActiveMockClientKey": "MockClient1",
     "MockClients": {
       "MockClient1": {
