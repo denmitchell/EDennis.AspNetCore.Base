@@ -1,5 +1,4 @@
 {
-  "Enabled": true,
   "MockHeaders": {
     "X-User": {
       "Values": [ "moe@stooges.org" ],

@@ -26,23 +26,21 @@ namespace EDennis.AspNetCore.Base.Web {
     public class HeadersToClaimsMiddleware {
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<HeadersToClaims> _settings;
-        public bool Bypass { get; } = false;
 
         public HeadersToClaimsMiddleware(RequestDelegate next,
-            IOptionsMonitor<HeadersToClaims> settings,
-            IWebHostEnvironment env) {
+            IOptionsMonitor<HeadersToClaims> settings) {
             _next = next;
             _settings = settings;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
 
             var req = context.Request;
-            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+            var enabled = _settings.CurrentValue.Count > 0 ;
 
-            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
 
                 if (context.User != null) {

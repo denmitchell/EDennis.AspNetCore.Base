@@ -11,7 +11,6 @@ namespace EDennis.AspNetCore.Base.Web {
         protected readonly RequestDelegate _next;
         protected readonly IOptionsMonitor<ScopedConfigurationSettings> _settings;
         protected readonly IConfiguration _config;
-        public bool Bypass { get; } = false;
 
         public ScopedConfigurationMiddleware(RequestDelegate next,
             IOptionsMonitor<ScopedConfigurationSettings> settings,
@@ -20,9 +19,6 @@ namespace EDennis.AspNetCore.Base.Web {
             _settings = settings;
             _config = config;
 
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (env == "Production")
-                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
@@ -30,8 +26,9 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
-
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
                 var method = req.Method;
 

@@ -1,6 +1,5 @@
 {
   "MockHeaders": {
-    "Enabled": true,
     "X-Role": {
       "Values": [ "readonly" ]
     },

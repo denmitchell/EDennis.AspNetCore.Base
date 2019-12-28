@@ -17,19 +17,14 @@ namespace EDennis.AspNetCore.Base.Web {
         protected readonly DbConnectionCache<TContext> _cache;
         protected readonly ILogger<DbContextInterceptorMiddleware<TContext>> _logger;
 
-        public bool Bypass { get; } = false;
-
         public DbContextInterceptorMiddleware(RequestDelegate next,
             IOptionsMonitor<DbContextInterceptorSettings<TContext>> settings,
             DbConnectionCache<TContext> cache,
-            ILogger<DbContextInterceptorMiddleware<TContext>> logger,
-            IWebHostEnvironment env) {
+            ILogger<DbContextInterceptorMiddleware<TContext>> logger) {
             _next = next;
             _settings = settings;
             _cache = cache;
             _logger = logger;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
 
@@ -40,7 +35,9 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
 
                 var method = req.Method;

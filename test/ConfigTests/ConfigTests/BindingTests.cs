@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,30 +18,35 @@ namespace EDennis.AspNetCore.ConfigTests {
         private static readonly ScopePropertiesSettings[] sps =
             new ScopePropertiesSettings[] {
                 new ScopePropertiesSettings {
+                    Enabled = true,
                     UserSource = UserSource.JwtNameClaim,
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
+                    Enabled = true,
                     UserSource = UserSource.XUserHeader,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
+                    Enabled = true,
                     UserSource = UserSource.JwtNameClaim,
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
+                    Enabled = true,
                     UserSource = UserSource.JwtSubjectClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
+                    Enabled = true,
                     UserSource = UserSource.JwtNameClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
@@ -61,7 +67,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                 .AddJsonFile(path)
                 .Build();
             var actual = new ScopePropertiesSettings();
-            config.Bind("ScopeProperties",actual);
+            config.Bind("ScopeProperties", actual);
 
             var expected = sps[testCase];
 
@@ -119,33 +125,82 @@ namespace EDennis.AspNetCore.ConfigTests {
                 .AddJsonFile(path)
                 .Build();
             var actual = new MockHeaderSettingsCollection();
-            config.Bind("MockHeaders",actual);
+            config.Bind("MockHeaders", actual);
 
             var expected = mhsc[testCase];
 
-            Assert.True(actual.IsEqualOrWrite(expected,_output, true));
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 
         }
+
+
+        private static readonly PkRewriterSettings[] pk =
+            new PkRewriterSettings[] {
+                new PkRewriterSettings {
+                    Enabled = true,
+                    BasePrefix = -999,
+                    DeveloperNameEnvironmentVariable = "DeveloperName",
+                    DeveloperPrefixes = new Dictionary<string, int> {
+                        { "moe",-501 },
+                        { "larry",-502 },
+                        { "curly",-503 },
+                    }
+                },
+                new PkRewriterSettings {
+                    Enabled = true,
+                    BasePrefix = -999,
+                    DeveloperNameEnvironmentVariable = "USERNAME",
+                    DeveloperPrefixes = new Dictionary<string, int> {
+                        { "jack",-601 },
+                        { "jill",-602 },
+                    }
+                }
+            };
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void PkRewriter(int testCase) {
+            var path = $"PkRewriter/{testCase}.json";
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(path)
+                .Build();
+            var actual = new PkRewriterSettings();
+            config.Bind("PkRewriter", actual);
+
+            var expected = pk[testCase];
+
+            Assert.Equal(expected.Enabled, actual.Enabled);
+            Assert.Equal(expected.BasePrefix, actual.BasePrefix);
+            Assert.Equal(expected.DeveloperNameEnvironmentVariable, actual.DeveloperNameEnvironmentVariable);
+            Assert.Equal(expected.DeveloperPrefixes.OrderBy(x=>x.Key),actual.DeveloperPrefixes.OrderBy(x => x.Key));
+        }
+
 
         private static readonly ScopedLoggerSettings[] ul =
             new ScopedLoggerSettings[] {
                 new ScopedLoggerSettings {
+                    Enabled = true,
                     AssignmentKeyName=null,
                     AssignmentKeySource=AssignmentKeySource.User
                 },
                 new ScopedLoggerSettings {
+                    Enabled = true,
                     AssignmentKeyName=null,
                     AssignmentKeySource=AssignmentKeySource.User
                 },
                 new ScopedLoggerSettings {
+                    Enabled = true,
                     AssignmentKeyName="SomeClaim",
                     AssignmentKeySource=AssignmentKeySource.Claim
                 },
                 new ScopedLoggerSettings {
+                    Enabled = true,
                     AssignmentKeyName="SomeHeader",
                     AssignmentKeySource=AssignmentKeySource.Header
                 },
                 new ScopedLoggerSettings {
+                    Enabled = true,
                     AssignmentKeyName="SomeProperty",
                     AssignmentKeySource=AssignmentKeySource.OtherProperty
                 },
@@ -178,6 +233,7 @@ namespace EDennis.AspNetCore.ConfigTests {
         private static readonly ActiveMockClientSettings[] amcs =
             new ActiveMockClientSettings[] {
                 new ActiveMockClientSettings {
+                    Enabled = true,
                     ActiveMockClientKey = "MockClient1",
                     MockClients = new MockClientSettingsDictionary {
                         {
@@ -195,6 +251,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                     }
                 },
                 new ActiveMockClientSettings {
+                    Enabled = true,
                     ActiveMockClientKey = "MockClient2",
                     MockClients = new MockClientSettingsDictionary {
                         {
@@ -235,14 +292,14 @@ namespace EDennis.AspNetCore.ConfigTests {
             new HeadersToClaims[] {
                 new HeadersToClaims {
                     { "X-Role", "role" },
-                    { "X-User", "name" }                    
+                    { "X-User", "name" }
                 },
                 new HeadersToClaims {
                     { "X-Role", "role" },
                     { "X-User", "name" },
                     { "X-UserScope", "user_scope" },
                 }
-                
+
             };
 
         [Theory]
@@ -269,37 +326,40 @@ namespace EDennis.AspNetCore.ConfigTests {
         private static readonly dynamic[] dcsd =
             new dynamic[] {
                 new DbContextSettings<MyDbContext1> {
-                     DatabaseProvider = DatabaseProvider.Sqlite,
-                      ConnectionString = "Some connection string 1",
-                      Interceptor = new DbContextInterceptorSettings<MyDbContext1> {
-                          InstanceNameSource = UserSource.JwtNameClaim,
-                          IsInMemory = false,
-                          IsolationLevel = IsolationLevel.ReadCommitted,
-                          ResetSqlServerIdentities =false,
-                          ResetSqlServerSequences = false
-                      }
+                    DatabaseProvider = DatabaseProvider.Sqlite,
+                    ConnectionString = "Some connection string 1",
+                    Interceptor = new DbContextInterceptorSettings<MyDbContext1> {
+                        Enabled = true,
+                        InstanceNameSource = UserSource.JwtNameClaim,
+                        IsInMemory = false,
+                        IsolationLevel = IsolationLevel.ReadCommitted,
+                        ResetSqlServerIdentities =false,
+                        ResetSqlServerSequences = false
+                    }
                 },
                 new DbContextSettings<MyDbContext2> {
-                     DatabaseProvider = DatabaseProvider.SqlServer,
-                      ConnectionString = "Some connection string 2",
-                      Interceptor = new DbContextInterceptorSettings<MyDbContext2> {
-                          InstanceNameSource = UserSource.JwtNameClaim,
-                          IsInMemory = false,
-                          IsolationLevel = IsolationLevel.ReadUncommitted,
-                          ResetSqlServerIdentities =false,
-                          ResetSqlServerSequences = false
-                      }
+                    DatabaseProvider = DatabaseProvider.SqlServer,
+                    ConnectionString = "Some connection string 2",
+                    Interceptor = new DbContextInterceptorSettings<MyDbContext2> {
+                        Enabled = true,
+                        InstanceNameSource = UserSource.JwtNameClaim,
+                        IsInMemory = false,
+                        IsolationLevel = IsolationLevel.ReadUncommitted,
+                        ResetSqlServerIdentities =false,
+                        ResetSqlServerSequences = false
+                    }
                 },
                 new DbContextSettings<MyDbContext3> {
-                     DatabaseProvider = DatabaseProvider.InMemory,
-                      ConnectionString = "Some connection string 3",
-                      Interceptor = new DbContextInterceptorSettings<MyDbContext3> {
-                          InstanceNameSource = UserSource.SessionId,
-                          IsInMemory = true,
-                          IsolationLevel = IsolationLevel.Unspecified,
-                          ResetSqlServerIdentities =false,
-                          ResetSqlServerSequences = false
-                      }
+                    DatabaseProvider = DatabaseProvider.InMemory,
+                    ConnectionString = "Some connection string 3",
+                    Interceptor = new DbContextInterceptorSettings<MyDbContext3> {
+                        Enabled = true,
+                        InstanceNameSource = UserSource.SessionId,
+                        IsInMemory = true,
+                        IsolationLevel = IsolationLevel.Unspecified,
+                        ResetSqlServerIdentities =false,
+                        ResetSqlServerSequences = false
+                    }
                 }
 
             };
@@ -449,7 +509,7 @@ namespace EDennis.AspNetCore.ConfigTests {
 
             var actual = new Apis();
             config.Bind("Apis", actual);
-            
+
             //this is ridiculous -- just require including audience and authority
             //special rebind for subsettings that inherit from parent
             //foreach(var key in actual.Keys) {

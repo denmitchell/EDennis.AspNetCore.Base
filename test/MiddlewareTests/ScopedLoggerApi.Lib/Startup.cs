@@ -46,7 +46,7 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
 
             app.UseAuthorization();
 
-            app.UseConfiguration(); //for test configurations
+            app.UseScopedConfiguration(); //for test configurations
 
 
             //note: don't use MockHeadersMiddleware here because

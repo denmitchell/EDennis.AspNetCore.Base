@@ -22,19 +22,14 @@ namespace EDennis.AspNetCore.Base.Web {
         private readonly IOptionsMonitor<ActiveMockClientSettings> _settings;
         private readonly IConfiguration _config;
 
-        public bool Bypass { get; } = false;
-
         public MockClientMiddleware(RequestDelegate next, 
             ISecureTokenService tokenService,
-            IWebHostEnvironment env,
             IOptionsMonitor<ActiveMockClientSettings> settings,
             IConfiguration config) {
             _next = next;
             _tokenService = tokenService;
             _settings = settings;
             _config = config;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
 
@@ -44,7 +39,9 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
                 var activeMockClientKey = _config[Constants.ACTIVE_MOCK_CLIENT_KEY];
                 var mockClient = _settings.CurrentValue.MockClients[activeMockClientKey];

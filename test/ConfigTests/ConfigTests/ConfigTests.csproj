@@ -43,6 +43,8 @@
     <ProjectReference Include="..\OAuthApi.Lib\OAuthApi.Lib.csproj" />
     <ProjectReference Include="..\OAuthApi\OAuthApi.csproj" />
     <ProjectReference Include="..\OidcApp\OidcApp.csproj" />
+    <ProjectReference Include="..\PkRewriterApi.Lib\PkRewriterApi.Lib.csproj" />
+    <ProjectReference Include="..\PkRewriterApi\PkRewriterApi.csproj" />
     <ProjectReference Include="..\ScopePropertiesApi.Lib\ScopePropertiesApi.Lib.csproj" />
     <ProjectReference Include="..\ScopePropertiesApi\ScopePropertiesApi.csproj" />
     <ProjectReference Include="..\ScopedLoggerApi.Lib\ScopedLoggerApi.Lib.csproj" />
@@ -81,6 +83,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MockClient\1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PkRewriter\0.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PkRewriter\1.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MockHeaders\0.json">

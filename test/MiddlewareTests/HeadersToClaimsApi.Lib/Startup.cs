@@ -41,7 +41,7 @@ namespace EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib {
             app.UseAuthorization();
 
 
-            app.UseConfiguration(); //for test configurations
+            app.UseScopedConfiguration(); //for test configurations
 
             //for testing purposes:
             //intercept request to add claims and headers 

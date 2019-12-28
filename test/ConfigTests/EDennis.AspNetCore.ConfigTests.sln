@@ -57,6 +57,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api2", "Api2\Api2.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api2.Lib", "Api2.Lib\Api2.Lib.csproj", "{43F03AEC-888E-41F1-A16B-2A6A09F01C03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PkRewriterApi", "PkRewriterApi\PkRewriterApi.csproj", "{3DE8DF2A-C0A5-4A53-B4C4-0A2246468E18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PkRewriterApi.Lib", "PkRewriterApi.Lib\PkRewriterApi.Lib.csproj", "{B6B335D8-ECA4-45D6-ACAA-993125C563FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +175,14 @@ Global
 		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43F03AEC-888E-41F1-A16B-2A6A09F01C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DE8DF2A-C0A5-4A53-B4C4-0A2246468E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DE8DF2A-C0A5-4A53-B4C4-0A2246468E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DE8DF2A-C0A5-4A53-B4C4-0A2246468E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DE8DF2A-C0A5-4A53-B4C4-0A2246468E18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6B335D8-ECA4-45D6-ACAA-993125C563FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6B335D8-ECA4-45D6-ACAA-993125C563FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6B335D8-ECA4-45D6-ACAA-993125C563FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6B335D8-ECA4-45D6-ACAA-993125C563FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

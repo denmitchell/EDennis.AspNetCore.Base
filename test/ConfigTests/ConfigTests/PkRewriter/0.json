@@ -1,0 +1,12 @@
+{
+  "PkRewriter": {
+    "Enabled": true,
+    "BasePrefix": -999,
+    "DeveloperNameEnvironmentVariable": "DeveloperName",
+    "DeveloperPrefixes": {
+      "moe": -501,
+      "larry": -502,
+      "curly": -503
+    }
+  }
+}

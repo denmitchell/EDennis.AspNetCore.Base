@@ -51,7 +51,7 @@ namespace EDennis.Samples.MockClientMiddlewareApi.Lib {
 
             app.UseRouting();
 
-            app.UseConfiguration();
+            app.UseScopedConfiguration();
             app.UseMockClient();
 
             app.Use(async (context, next) => {

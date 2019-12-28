@@ -39,6 +39,7 @@ namespace EDennis.AspNetCore.Base {
         public const string DEFAULT_SCOPE_PROPERTIES_PATH = "ScopeProperties";
         public const string DEFAULT_MOCK_HEADERS_PATH = "MockHeaders";
         public const string DEFAULT_MOCK_CLIENT_PATH = "MockClient";
+        public const string DEFAULT_PK_REWRITER_PATH = "PkRewriter";
         public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = "HeadersToClaims";
         public const string DEFAULT_SCOPED_LOGGER_SETTINGS_PATH = "ScopedLogger";
         public const string DEFAULT_SCOPED_LOGGER_PATH = "Logging:Loggers:ScopedLogger";
@@ -338,6 +339,15 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddMockHeaders(this IServiceConfig serviceConfig) =>
             AddMockHeaders(serviceConfig, DEFAULT_MOCK_HEADERS_PATH);
+
+
+        public static IServiceConfig AddPkRewriter(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Configure<PkRewriterSettings>(path);
+            return serviceConfig;
+        }
+
+        public static IServiceConfig AddPkRewriter(this IServiceConfig serviceConfig) =>
+            AddPkRewriter(serviceConfig, DEFAULT_PK_REWRITER_PATH);
 
 
         public static IServiceConfig AddScopedConfiguration(this IServiceConfig serviceConfig, string path) {

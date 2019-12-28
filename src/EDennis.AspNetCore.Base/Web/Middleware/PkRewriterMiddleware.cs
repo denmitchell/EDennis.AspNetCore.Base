@@ -15,19 +15,15 @@ namespace EDennis.AspNetCore.Base.Web {
         protected readonly IOptionsMonitor<PkRewriterSettings> _settings;
         protected readonly ILogger<PkRewriterMiddleware> _logger;
         protected readonly IConfiguration _config;
-        public bool Bypass { get; } = false;
 
         public PkRewriterMiddleware(RequestDelegate next,
             IOptionsMonitor<PkRewriterSettings> settings,
             ILogger<PkRewriterMiddleware> logger,
-            IConfiguration config,
-            IWebHostEnvironment env) {
+            IConfiguration config) {
             _next = next;
             _settings = settings;
             _logger = logger;
             _config = config;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
@@ -36,7 +32,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (Bypass || !enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 await _next(context);
             } else {
 

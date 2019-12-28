@@ -16,19 +16,15 @@ namespace EDennis.AspNetCore.Base.Web {
         protected readonly IScopedLoggerAssignments _loggerAssignments;
         protected readonly ILogger<ScopedLoggerMiddleware> _logger;
         protected readonly IOptionsMonitor<ScopedLoggerSettings> _settings;
-        public bool Bypass { get; } = false;
 
         public ScopedLoggerMiddleware(RequestDelegate next,
             IScopedLoggerAssignments loggerAssignments,
             IOptionsMonitor<ScopedLoggerSettings> settings,
-            ILogger<ScopedLoggerMiddleware> logger,
-            IWebHostEnvironment env) {
+            ILogger<ScopedLoggerMiddleware> logger) {
             _next = next;
             _loggerAssignments = loggerAssignments;
             _logger = logger;
             _settings = settings;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
@@ -37,7 +33,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (Bypass || !enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 await _next(context);
             } else {
 

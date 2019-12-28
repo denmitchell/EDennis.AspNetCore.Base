@@ -11,22 +11,20 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<MockHeaderSettingsCollection> _settings;
-        public bool Bypass { get; } = false;
 
         public MockHeadersMiddleware(RequestDelegate next, 
-            IOptionsMonitor<MockHeaderSettingsCollection> settings,
-            IWebHostEnvironment env ) {
+            IOptionsMonitor<MockHeaderSettingsCollection> settings) {
             _next = next;
             _settings = settings;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context) {
             var req = context.Request;
-            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+            var enabled = _settings.CurrentValue.Count > 0;
 
-            if (Bypass || !enabled || !req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+                await _next(context);
+            } else {
 
                 var mockHeaders = _settings.CurrentValue;
                 if (mockHeaders != null) {

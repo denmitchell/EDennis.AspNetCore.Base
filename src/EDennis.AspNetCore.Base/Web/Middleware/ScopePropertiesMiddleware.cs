@@ -22,15 +22,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<ScopePropertiesSettings> _settings;
-        public bool Bypass { get; } = false;
 
         public ScopePropertiesMiddleware(RequestDelegate next, 
-            IOptionsMonitor<ScopePropertiesSettings> settings,
-            IWebHostEnvironment env) {
+            IOptionsMonitor<ScopePropertiesSettings> settings) {
             _next = next;
             _settings = settings;
-            if (env.EnvironmentName == "Production")
-                Bypass = true;
         }
 
         public async Task InvokeAsync(HttpContext context, IScopeProperties scopeProperties) {
@@ -40,7 +36,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (Bypass || !enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 await _next(context);
             } else {
 
