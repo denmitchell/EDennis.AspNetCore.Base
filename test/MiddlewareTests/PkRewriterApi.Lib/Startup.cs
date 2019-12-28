@@ -5,15 +5,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
+using Microsoft.OpenApi.Models;
 
-namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
+namespace PkRewriterApi.Lib {
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;
+            HostingEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
@@ -21,8 +23,13 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
 
             //configure ScopePropertiesMiddleware
             var _ = new ServiceConfig(services, Configuration)
-                .AddMockHeaders();
+                .AddPkRewriter();
 
+            if (HostingEnvironment.EnvironmentName == "Development") {
+                services.AddSwaggerGen(c => {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,24 +46,23 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
 
             app.UseScopedConfiguration();
 
-            //for testing purposes:
-            //intercept request to add headers 
-            app.Use(async (context, next) => {
-
-                //add headers from query string
-                foreach (var query in context.Request.Query.Where(q => q.Key.StartsWith("header*")))
-                    context.Request.Headers.Add(query.Key.Substring("header*".Length), query.Value);
-
-                await next();
-
-            });
-
-            app.UseMockHeaders();
+            
+            app.UsePkRewriter();
 
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
+
+            if (HostingEnvironment.EnvironmentName == "Development") {
+                app.UseSwagger();
+
+                app.UseSwaggerUI(c => {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
+            }
+
         }
     }
 }
+

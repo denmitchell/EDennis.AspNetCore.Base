@@ -1,6 +1,5 @@
 {
   "HeadersToClaims": {
-    "Enabled": true,
     "X-User": "name"
   },
   "ScopedLogger": {

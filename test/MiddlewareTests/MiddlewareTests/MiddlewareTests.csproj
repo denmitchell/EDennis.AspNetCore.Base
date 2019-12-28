@@ -20,6 +20,9 @@
     <None Remove="MockClient\B.json" />
     <None Remove="MockClient\C.json" />
     <None Remove="MockClient\D.json" />
+    <None Remove="PkRewriter\A.json" />
+    <None Remove="PkRewriter\B.json" />
+    <None Remove="PkRewriter\C.json" />
     <None Remove="MockHeaders\A.json" />
     <None Remove="MockHeaders\B.json" />
     <None Remove="MockHeaders\C.json" />
@@ -93,6 +96,21 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="MockClient\C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PkRewriter\A.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PkRewriter\B.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PkRewriter\C.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -172,6 +190,8 @@
     <ProjectReference Include="..\MockClientApi\MockClientApi.csproj" />
     <ProjectReference Include="..\MockHeadersApi.Lib\MockHeadersApi.Lib.csproj" />
     <ProjectReference Include="..\MockHeadersApi\MockHeadersApi.csproj" />
+    <ProjectReference Include="..\PkRewriterApi.Lib\PkRewriterApi.Lib.csproj" />
+    <ProjectReference Include="..\PkRewriterApi\PkRewriterApi.csproj" />
     <ProjectReference Include="..\ScopedLoggerApi.Lib\ScopedLoggerApi.Lib.csproj" />
     <ProjectReference Include="..\ScopedLoggerApi\ScopedLoggerApi.csproj" />
     <ProjectReference Include="..\ScopePropertiesApi.Lib\ScopePropertiesApi.Lib.csproj" />
@@ -192,6 +212,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MockClient\TestJson.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PkRewriter\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ScopeProperties\TestJson.xlsx">

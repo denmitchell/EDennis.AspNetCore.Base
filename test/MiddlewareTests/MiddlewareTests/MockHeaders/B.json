@@ -1,6 +1,5 @@
 {
   "MockHeaders": {
-    "Enabled": true,
     "X-User": {
       "Values": [ "larry@stooges.org" ],
       "ConflictResolution": "Overwrite"

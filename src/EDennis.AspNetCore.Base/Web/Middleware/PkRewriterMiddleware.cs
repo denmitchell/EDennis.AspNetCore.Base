@@ -32,6 +32,11 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
+            //handle bypass query/header
+            if (req.ContainsHeaderOrQueryKey(Constants.PK_REWRITER_BYPASS_KEY, out string bypassStr))
+                if (bypassStr == "true")
+                    enabled = false;
+
             if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 await _next(context);
             } else {

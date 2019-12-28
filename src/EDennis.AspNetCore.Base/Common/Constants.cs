@@ -12,5 +12,6 @@ namespace EDennis.AspNetCore.Base {
         public const string CONFIG_METHOD = "Config";
         public const string CONFIG_QUERY_KEY = "config-03a4e06687f64c9a9716b90831ee7034";
         public const string ACTIVE_MOCK_CLIENT_KEY = "MockClient:ActiveMockClientKey";
+        public const string PK_REWRITER_BYPASS_KEY = "PkRewriter-Bypass";
     }
 }
