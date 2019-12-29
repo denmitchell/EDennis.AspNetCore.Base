@@ -1,8 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib;
-using EDennis.Samples.HeadersToClaimsMiddlewareApi.Tests;
+using EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
+using EDennis.Samples.DbContextInterceptorMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -49,6 +49,10 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonPerson("CUD", "", "C")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
+            //TODO: Modify Startup to include PkRewriter
+            //TODO: Create test cases in Excel
+            //TODO: initiate Create, Update, Delete
+
             using var factory = new TestApis();
             var client = factory.CreateClient["DbContextInterceptorApi"]();
             _output.WriteLine($"Test case: {t}");
@@ -61,7 +65,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
             var headersQueryString = jsonTestCase.GetObject<string>("Headers");
-            var expected = jsonTestCase.GetObject<List<SimpleClaim>>("Expected");
+            //var expected = jsonTestCase.GetObject<List<SimpleClaim>>("Expected");
 
             var url = $"Person?{headersQueryString}";
 
@@ -69,9 +73,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var content = result.Content.ReadAsStringAsync().Result;
             _output.WriteLine(content);
 
-            var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            //var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+            //Assert.True(actual.IsEqualOrWrite(expected, _output, true));
         }
 
         [Theory]
@@ -92,7 +96,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
             var headersQueryString = jsonTestCase.GetObject<string>("Headers");
-            var expected = jsonTestCase.GetObject<List<SimpleClaim>>("Expected");
+            //var expected = jsonTestCase.GetObject<List<SimpleClaim>>("Expected");
 
             var url = $"Person?{headersQueryString}";
 
@@ -100,9 +104,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var content = result.Content.ReadAsStringAsync().Result;
             _output.WriteLine(content);
 
-            var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            //var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+            //Assert.True(actual.IsEqualOrWrite(expected, _output, true));
         }
 
 
