@@ -68,8 +68,8 @@ namespace EDennis.AspNetCore.Base.Web {
                         context.User.AddIdentity(appIdentity);
                     }
                 }
+                await _next(context);
             }
-            await _next(context);
         }
     }
 

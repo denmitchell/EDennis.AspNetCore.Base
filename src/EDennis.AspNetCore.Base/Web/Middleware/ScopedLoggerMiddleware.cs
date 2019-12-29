@@ -57,10 +57,10 @@ namespace EDennis.AspNetCore.Base.Web {
                     _loggerAssignments.Assignments.TryRemove(user1, out LogLevel _);
                 }
 
+                await _next(context);
 
             }
 
-            await _next(context);
 
         }
 

@@ -53,9 +53,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
                     req.Headers.Add("Authorization", "Bearer " + tokenResponse.AccessToken);
                 }
+                await _next(context);
             }
 
-            await _next(context);
 
         }
 

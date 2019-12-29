@@ -70,8 +70,10 @@ namespace EDennis.AspNetCore.Base.Web {
                     => DbConnectionManager.GetDbConnection(_settings.CurrentValue));
                 
                 dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptionsBuilder.Options;
+
+                await _next(context);
+
             }
-            await _next(context);
         }
 
 

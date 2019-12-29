@@ -70,10 +70,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 //add user claims
                 if (settings.CopyClaims && context.User?.Claims != null) 
                     scopeProperties.Claims = context.User.Claims.ToArray();
-                
 
+
+                await _next(context);
             }
-            await _next(context);
 
         }
 

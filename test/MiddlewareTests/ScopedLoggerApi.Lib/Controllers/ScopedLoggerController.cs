@@ -25,11 +25,15 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib.Controllers {
         }
 
         [HttpGet]
-        [MethodCallback]
         public string Get([FromHeader] string queryString) {
-            return ScopedLogger.LogLevel.ToString();
+            var level = GetLevel();
+            return level;
         }
 
+        [MethodCallback]
+        public string GetLevel() {
+            return ScopedLogger.LogLevel.ToString();
+        }
 
         public void OnEntry(MethodExecutionArgs args) 
             => ScopedLogger.LogEntry(args, ScopedLogger.LogLevel); //MethodCallbackUtils.OnEntry(args, ScopedLogger);

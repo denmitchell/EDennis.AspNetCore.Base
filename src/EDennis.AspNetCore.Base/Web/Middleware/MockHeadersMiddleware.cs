@@ -57,8 +57,8 @@ namespace EDennis.AspNetCore.Base.Web {
                         }
                     }
                 }
+                await _next(context);
             }
-            await _next(context);
         }
 
     }
