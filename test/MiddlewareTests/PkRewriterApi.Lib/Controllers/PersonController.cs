@@ -50,7 +50,7 @@ namespace PkRewriterApi.Controllers {
         }
 
         [HttpPut("{id}")]
-        public Person Update(Person person, int id) {
+        public Person Update(Person person, [FromRoute]int id) {
             var rec = Get(id);
             rec.FirstName = person.FirstName;
             rec.LastName = person.LastName;

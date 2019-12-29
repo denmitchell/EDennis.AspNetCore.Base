@@ -29,6 +29,7 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
 
             var _ = new ServiceConfig(services, Configuration)
                 .AddScopeProperties()
+                .AddScopedConfiguration()
                 .AddHeadersToClaims()
                 .AddSerilogFodyScopedLogger();
 

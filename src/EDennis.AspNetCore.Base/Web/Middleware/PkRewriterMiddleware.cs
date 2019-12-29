@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -52,6 +53,13 @@ namespace EDennis.AspNetCore.Base.Web {
                 req.Path = new PathString(context.Request.Path.Value.Replace(basePrefix, devPrefix));
                 req.QueryString = new QueryString(context.Request.QueryString.Value.Replace(basePrefix, devPrefix));
 
+                //replace route values
+                var rv = new RouteValueDictionary();
+                foreach (var key in req.RouteValues.Keys)
+                    rv.Add(key, req.RouteValues[key].ToString().Replace(basePrefix, devPrefix));
+
+                req.RouteValues = rv;
+                   
                 //replace request body
                 req.EnableBuffering();
                 req.Body = Replace(req.Body, basePrefix, devPrefix);

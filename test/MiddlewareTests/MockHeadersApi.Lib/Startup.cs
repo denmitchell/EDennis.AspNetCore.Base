@@ -21,6 +21,7 @@ namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
 
             //configure ScopePropertiesMiddleware
             var _ = new ServiceConfig(services, Configuration)
+                .AddScopedConfiguration()
                 .AddMockHeaders();
 
         }

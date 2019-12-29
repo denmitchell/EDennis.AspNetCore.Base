@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace EDennis.Samples.MockHeadersMiddlewareApi.Tests {
+namespace PkRewriterApi.Tests {
 
     public class TestApis : TestApisBase {
         public override Dictionary<string, Type> EntryPoints =>
             new Dictionary<string, Type> {
-                {"MockHeadersApi", typeof(Program) },
+                {"PkRewriterApi", typeof(Program) },
             };
     }
 

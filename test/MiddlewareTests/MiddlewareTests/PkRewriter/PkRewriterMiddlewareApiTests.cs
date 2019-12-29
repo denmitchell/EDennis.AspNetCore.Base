@@ -2,7 +2,7 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.MockHeadersMiddlewareApi.Tests;
+using PkRewriterApi.Tests;
 using PkRewriterApi;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +33,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
                 : base("PkRewriterApi", "PersonController",
-                      methodName, testScenario, testCase, DatabaseProvider.Excel, "PkRewriter\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "PkRewriter\\TestJson.xlsx") {
             }
         }
 
@@ -57,28 +57,67 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             var url = $"Person";
 
-            var input1 = jsonTestCase.GetObject<Person>("Input1");
-            var expected1 = jsonTestCase.GetObject<List<Person>>("Expected1");
+            var input = jsonTestCase.GetObject<Person>("Input");
+            var expected = jsonTestCase.GetObject<List<Person>>("Expected");
 
-            client.Post(url, input1);
-            var result1 = client.Get<List<Person>>(url);
-            var actual1 = result1.GetObject<List<Person>>();
-            Assert.True(actual1.IsEqualOrWrite(expected1, _output, true));
+            client.Post(url, input);
+            var result = client.Get<List<Person>>(url);
+            var actual = result.GetObject<List<Person>>();
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 
 
-            var expected1b = jsonTestCase.GetObject<List<Person>>("Expected1b");
-            var result1b = client.Get<List<Person>>($"{url}?{Constants.PK_REWRITER_BYPASS_KEY}=true");
-            var actual1b = result1b.GetObject<List<Person>>();
-            Assert.True(actual1b.IsEqualOrWrite(expected1b, _output, true));
+            var expectedBypass = jsonTestCase.GetObject<List<Person>>("ExpectedBypass");
+            var resultBypass = client.Get<List<Person>>($"{url}?{Constants.PK_REWRITER_BYPASS_KEY}=true");
+            var actualBypass = resultBypass.GetObject<List<Person>>();
+            Assert.True(actualBypass.IsEqualOrWrite(expectedBypass, _output, true));
 
         }
 
 
 
         [Theory]
-        [TestJsonA("Update", "", "A")]
-        [TestJsonA("Update", "", "B")]
-        [TestJsonA("Update", "", "C")]
+        [TestJsonA("Update", "CreateUpdate", "A")]
+        [TestJsonA("Update", "CreateUpdate", "B")]
+        [TestJsonA("Update", "CreateUpdate", "C")]
+        public void CreateUpdate(string t, JsonTestCase jsonTestCase) {
+
+            using var factory = new TestApis();
+            var client = factory.CreateClient["PkRewriterApi"]();
+            _output.WriteLine($"Test case: {t}");
+
+            //send configuration for test case
+            var jcfg = File.ReadAllText($"PkRewriter\\{jsonTestCase.TestCase}.json");
+            var status = client.Configure("", jcfg);
+
+            //make sure that configuration was successful
+            Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
+
+            var url = $"Person";
+
+            var input1 = jsonTestCase.GetObject<Person>("Input1");
+            client.Post(url, input1);
+
+            var input2 = jsonTestCase.GetObject<Person>("Input2");
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Person>>("Expected");
+
+            client.Put($"{url}/{id}", input2);
+            var result = client.Get<List<Person>>(url);
+            var actual = result.GetObject<List<Person>>();
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+
+            var resultBypass = client.Get<List<Person>>($"{url}?{Constants.PK_REWRITER_BYPASS_KEY}=true");
+            var actualBypass = resultBypass.GetObject<List<Person>>();
+            var expectedBypass = jsonTestCase.GetObject<List<Person>>("ExpectedBypass");
+            Assert.True(actualBypass.IsEqualOrWrite(expectedBypass, _output, true));
+
+        }
+
+
+        [Theory]
+        [TestJsonA("Update", "Update", "A")]
+        [TestJsonA("Update", "Update", "B")]
+        [TestJsonA("Update", "Update", "C")]
         public void Update(string t, JsonTestCase jsonTestCase) {
 
             using var factory = new TestApis();
@@ -94,22 +133,16 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             var url = $"Person";
 
-            var input2 = jsonTestCase.GetObject<Person>("Input2");
-            var id = jsonTestCase.GetObject<int>("Id2");
-            var expected2 = jsonTestCase.GetObject<List<Person>>("Expected2");
+            var input = jsonTestCase.GetObject<Person>("Input");
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<int>("Expected");
 
-            client.Put($"{url}/{id}", input2);
-            var result2 = client.Get<List<Person>>(url);
-            var actual2 = result2.GetObject<List<Person>>();
-            Assert.True(actual2.IsEqualOrWrite(expected2, _output, true));
-
-            var result2b = client.Get<List<Person>>($"{url}?{Constants.PK_REWRITER_BYPASS_KEY}=true");
-            var actual2b = result2.GetObject<List<Person>>();
-            var expected2b = jsonTestCase.GetObject<List<Person>>("Expected2b");
-            Assert.True(actual2b.IsEqualOrWrite(expected2b, _output, true));
+            client.Put($"{url}/{id}", input);
+            var result = client.Get<List<Person>>(url);
+            var actual = result.GetStatusCode();
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 
         }
-
 
 
         [Theory]
@@ -131,13 +164,18 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             var url = $"Person";
 
-            var queryString3 = jsonTestCase.GetObject<string>("QueryString3");
-            var expected3 = jsonTestCase.GetObject<List<Person>>("Expected3");
+            var input1 = jsonTestCase.GetObject<Person>("Input1");
+            var input2 = jsonTestCase.GetObject<Person>("Input2");
+            client.Post(url, input1);
+            client.Post(url, input2);
 
-            client.Get<List<Person>>($"{url}?{queryString3}");
-            var result3 = client.Get<List<Person>>(url);
-            var actual3 = result3.GetObject<List<Person>>();
-            Assert.True(actual3.IsEqualOrWrite(expected3, _output, true));
+            var queryString = jsonTestCase.GetObject<string>("QueryString");
+            var expected = jsonTestCase.GetObject<List<Person>>("Expected");
+
+            client.Get<List<Person>>($"{url}?{queryString}");
+            var result = client.Get<List<Person>>(url);
+            var actual = result.GetObject<List<Person>>();
+            Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 
 
         }

@@ -32,6 +32,7 @@ namespace EDennis.Samples.MockClientMiddlewareApi.Lib {
             var _ = new ServiceConfig(services, Configuration)
                 .AddControllersWithDefaultPolicies("MockClientApi", "IdentityServer")
                 .AddApi<IdentityServerApi>("Apis:IdentityServer")
+                .AddScopedConfiguration()
                 .AddMockClient();
 
             if (HostingEnvironment.EnvironmentName == "Development") {

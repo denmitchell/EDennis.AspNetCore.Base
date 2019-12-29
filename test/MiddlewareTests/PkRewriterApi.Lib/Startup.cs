@@ -23,6 +23,7 @@ namespace PkRewriterApi.Lib {
 
             //configure ScopePropertiesMiddleware
             var _ = new ServiceConfig(services, Configuration)
+                .AddScopedConfiguration()
                 .AddPkRewriter();
 
             if (HostingEnvironment.EnvironmentName == "Development") {
@@ -48,6 +49,14 @@ namespace PkRewriterApi.Lib {
 
             
             app.UsePkRewriter();
+
+            app.Use(async (context, next) => {
+
+                var path = context.Request.Path;
+                
+                await next();
+
+            });
 
 
             app.UseEndpoints(endpoints => {

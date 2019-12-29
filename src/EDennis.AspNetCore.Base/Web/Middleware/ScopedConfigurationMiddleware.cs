@@ -26,7 +26,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var req = context.Request;
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
-            if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
+            if (req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 await _next(context);
             } else {
 
@@ -34,6 +34,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 if (method == Constants.CONFIG_METHOD 
                     || req.ContainsHeaderOrQueryKey(Constants.CONFIG_QUERY_KEY, out string _)) {
+
+                    if (!enabled)
+                        return;
 
                     req.EnableBuffering();
                     var body = MiddlewareUtils.StreamToString(req.Body);

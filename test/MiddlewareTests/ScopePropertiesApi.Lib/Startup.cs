@@ -23,6 +23,7 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
 
             //configure ScopePropertiesMiddleware
             var _ = new ServiceConfig(services, Configuration)
+                .AddScopedConfiguration()
                 .AddScopeProperties();
         }
 

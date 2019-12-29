@@ -23,6 +23,7 @@ namespace EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib {
 
             //configure HeadersToClaimsMiddleware
             var _ = new ServiceConfig(services, Configuration)
+                .AddScopedConfiguration()
                 .AddHeadersToClaims();
 
         }
