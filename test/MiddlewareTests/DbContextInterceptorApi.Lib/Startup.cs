@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,6 +24,15 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+
+            var _ = new ServiceConfig(services, Configuration)
+                .AddScopeProperties()
+                .AddScopedConfiguration()
+                .AddPkRewriter()
+                .AddDbContext<AppDbContext>()
+                .AddRepo<PersonRepo>()
+                .AddRepo<PositionRepo>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -30,11 +41,17 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
                 app.UseDeveloperExceptionPage();
             }
 
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseScopedConfiguration();
+            app.UseScopeProperties();
+            app.UsePkRewriter();
+            app.UseDbContextInterceptor<AppDbContext>();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();

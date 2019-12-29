@@ -49,7 +49,6 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonPerson("CUD", "", "C")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
-            //TODO: Modify Startup to include PkRewriter
             //TODO: Create test cases in Excel
             //TODO: initiate Create, Update, Delete
 
