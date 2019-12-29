@@ -19,19 +19,31 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
             base(provider.DbContextOptions) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
+
+            builder.HasSequence<int>("seqPerson");
+            builder.HasSequence<int>("seqPosition");
+
+            builder.Entity<Person>()
+                .Property(e => e.Id)
+                .HasDefaultValueSql("NEXT VALUE FOR seqPerson");
+            
             builder.Entity<Person>()
                     .ToTable("Person")
                     .HasData(
-                        new Person { Id = 1, Name = "Moe", SysUser = "jack@hill.org" },
-                        new Person { Id = 2, Name = "Larry", SysUser = "jill@hill.org" },
-                        new Person { Id = 3, Name = "Curly", SysUser = "jack@hill.org" }
+                        new Person { Id = -999001, Name = "Mike", SysUser = "jack@hill.org" },
+                        new Person { Id = -999002, Name = "Carol", SysUser = "jill@hill.org" },
+                        new Person { Id = -999003, Name = "Greg", SysUser = "jack@hill.org" }
                         );
 
             builder.Entity<Position>()
-                .ToTable("Position")
+                .Property(e => e.Id)
+                .HasDefaultValueSql("NEXT VALUE FOR seqPosition");
+
+            builder.Entity<Position>()
+                    .ToTable("Position")
                     .HasData(
-                        new Position { Id = 1, Title = "Manager", SysUser = "jill@hill.org" },
-                        new Position { Id = 2, Title = "Employee", SysUser = "jack@hill.org" }
+                        new Position { Id = -999001, Title = "President", SysUser = "jill@hill.org" },
+                        new Position { Id = -999002, Title = "Vice-president", SysUser = "jack@hill.org" }
                         );
 
         }

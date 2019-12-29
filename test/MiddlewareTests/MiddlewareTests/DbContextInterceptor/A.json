@@ -1,5 +1,16 @@
 {
-  "HeadersToClaims": {
-    "X-UserScope": "user_scope"
+  "DbContexts": {
+    "AppDbContext": {
+      "DatabaseProvider": "SqlServer",
+      "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=HrTest;Trusted_Connection=True;MultipleActiveResultSets=True;",
+      "Interceptor": {
+        "Enabled": true,
+        "InstanceNameSource": "XUserHeader",
+        "IsInMemory": false,
+        "IsolationLevel": "ReadCommitted",
+        "ResetSqlServerIdentities": false,
+        "ResetSqlServerSequences": false
+      }
+    }
   }
 }
