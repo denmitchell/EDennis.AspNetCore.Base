@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -50,8 +51,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 _logger.LogInformation($"Replacing {basePrefix} with {devPrefix} in HTTP Request");
 
                 //replace path & query string
-                req.Path = new PathString(context.Request.Path.Value.Replace(basePrefix, devPrefix));
                 req.QueryString = new QueryString(context.Request.QueryString.Value.Replace(basePrefix, devPrefix));
+                req.Path = new PathString(context.Request.Path.Value.Replace(basePrefix, devPrefix));
 
                 //replace route values
                 var rv = new RouteValueDictionary();
@@ -59,10 +60,19 @@ namespace EDennis.AspNetCore.Base.Web {
                     rv.Add(key, req.RouteValues[key].ToString().Replace(basePrefix, devPrefix));
 
                 req.RouteValues = rv;
-                   
+
                 //replace request body
-                req.EnableBuffering();
-                req.Body = Replace(req.Body, basePrefix, devPrefix);
+                if (req.Method.Equals("Post",StringComparison.OrdinalIgnoreCase) 
+                    || req.Method.Equals("Put", StringComparison.OrdinalIgnoreCase)
+                    || req.Method.Equals("Patch", StringComparison.OrdinalIgnoreCase)) {
+                    req.EnableBuffering();
+                    var body = req.Body;
+                    try {
+                        req.Body = Replace(req.Body, basePrefix, devPrefix);
+                    } catch {
+                        req.Body = body;
+                    }
+                }
 
                 //see https://stackoverflow.com/a/43404745
                 //store reference to original stream
@@ -92,7 +102,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 //repoint response body to the original stream object, 
                 //now holding the modified content
                 context.Response.Body = originalBody;
-
             }
         }
 

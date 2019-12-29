@@ -60,6 +60,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var input = jsonTestCase.GetObject<Person>("Input");
             var expected = jsonTestCase.GetObject<List<Person>>("Expected");
 
+            client.Post($"{url}/Reset", input);
             client.Post(url, input);
             var result = client.Get<List<Person>>(url);
             var actual = result.GetObject<List<Person>>();
@@ -94,7 +95,10 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             var url = $"Person";
 
+
             var input1 = jsonTestCase.GetObject<Person>("Input1");
+
+            client.Post($"{url}/Reset", input1);
             client.Post(url, input1);
 
             var input2 = jsonTestCase.GetObject<Person>("Input2");
@@ -137,8 +141,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<int>("Expected");
 
-            client.Put($"{url}/{id}", input);
-            var result = client.Get<List<Person>>(url);
+            client.Post($"{url}/Reset", input);
+            var result = client.Put($"{url}/{id}", input);
             var actual = result.GetStatusCode();
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 
@@ -166,14 +170,14 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             var input1 = jsonTestCase.GetObject<Person>("Input1");
             var input2 = jsonTestCase.GetObject<Person>("Input2");
+            client.Post($"{url}/Reset", input1);
             client.Post(url, input1);
             client.Post(url, input2);
 
             var queryString = jsonTestCase.GetObject<string>("QueryString");
             var expected = jsonTestCase.GetObject<List<Person>>("Expected");
 
-            client.Get<List<Person>>($"{url}?{queryString}");
-            var result = client.Get<List<Person>>(url);
+            var result = client.Get<List<Person>>($"{url}/IdNot?{queryString}");
             var actual = result.GetObject<List<Person>>();
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
 

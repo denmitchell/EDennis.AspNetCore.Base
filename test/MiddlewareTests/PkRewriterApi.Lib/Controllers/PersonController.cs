@@ -28,6 +28,25 @@ namespace PkRewriterApi.Controllers {
             _logger = logger;
         }
 
+
+        [HttpPost("Reset")]
+        public void Reset() {
+            Persons.Clear();
+            Persons.AddRange (new List<Person>
+            {
+                new Person {
+                    Id = -999001,
+                    FirstName = "Bob",
+                    LastName = "Barker"
+                },
+                new Person {
+                    Id = -999002,
+                    FirstName = "Monty",
+                    LastName = "Hall"
+                }
+            });
+        }
+
         [HttpGet]
         public IEnumerable<Person> Get() {
             return Persons;
@@ -38,7 +57,7 @@ namespace PkRewriterApi.Controllers {
             return Persons.FirstOrDefault(p => p.Id == id);
         }
 
-        [HttpGet("{idNot}")]
+        [HttpGet("IdNot")]
         public IEnumerable<Person> IdNot([FromQuery]int idNot) {
             return Persons.Where(p => p.Id != idNot);
         }
@@ -50,11 +69,15 @@ namespace PkRewriterApi.Controllers {
         }
 
         [HttpPut("{id}")]
-        public Person Update(Person person, [FromRoute]int id) {
-            var rec = Get(id);
-            rec.FirstName = person.FirstName;
-            rec.LastName = person.LastName;
-            return rec;
+        public ActionResult<Person> Update(Person person, [FromRoute]int id) {
+            if (Persons.Count(p => p.Id == id) == 0)
+                return new StatusCodeResult(400);
+            else {
+                var rec = Get(id);
+                rec.FirstName = person.FirstName;
+                rec.LastName = person.LastName;
+                return new OkObjectResult(rec);
+            }
         }
 
         [HttpPost]
