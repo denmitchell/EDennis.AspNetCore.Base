@@ -43,6 +43,12 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
             }
 
 
+            //get developer name from query/header
+            app.Use(async (context, next) => {
+                var method = context.Request.Method;
+                await next();
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

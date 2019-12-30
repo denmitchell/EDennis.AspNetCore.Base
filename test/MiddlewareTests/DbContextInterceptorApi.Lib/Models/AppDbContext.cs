@@ -18,7 +18,7 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
 
         public AppDbContext(DbContextOptionsProvider<AppDbContext> provider) :
             base(provider.DbContextOptions) {
-            if (provider.DisableAutoTransactions) {
+            if (!Database.IsInMemory() && provider.DisableAutoTransactions) {
                 Database.AutoTransactionsEnabled = false;
                 Database.UseTransaction(provider.Transaction as DbTransaction);
             }

@@ -82,6 +82,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var builder = new DbContextOptionsBuilder<TContext>();
             builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
 
+            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
+            context.Database.EnsureCreated();
+
             return
                 new DbConnection<TContext> {
                     DbContextOptionsBuilder = builder,

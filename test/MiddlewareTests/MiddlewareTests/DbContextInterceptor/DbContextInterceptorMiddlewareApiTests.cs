@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -91,7 +92,6 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var status = client.Configure("", jcfg);
 
             _output.WriteLine("Verifing ScopedConfiguration ...");
-
             //make sure that configuration was successful
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
@@ -111,6 +111,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var actual = result.GetObject<List<TEntity>>();
 
             _output.WriteLine("Testing Post/Create ...");
+            _output.WriteLine(actual.ToJsonString());
 
             Assert.True(actual.IsEqualOrWrite(testCase.CreateExpected, _output, true));
         }
@@ -130,6 +131,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var actual = result.GetObject<List<TEntity>>();
 
             _output.WriteLine("Testing Put/Update ...");
+            _output.WriteLine(actual.ToJsonString());
 
             Assert.True(actual.IsEqualOrWrite(testCase.UpdateExpected, _output, true));
         }
@@ -149,6 +151,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var actual = result.GetObject<List<TEntity>>();
 
             _output.WriteLine("Testing Delete ...");
+            _output.WriteLine(actual.ToJsonString());
 
             Assert.True(actual.IsEqualOrWrite(testCase.DeleteExpected, _output, true));
         }
@@ -161,14 +164,15 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _output.WriteLine($"Attempting Reset for User {userIndex} ...");
             var testCase = testCases[userIndex];
 
-            client.SendReset(testCase.User);
+            client.Get<List<TEntity>>(testCase.ResetUrl());
 
             var result = client.Get<List<TEntity>>(testCase.GetPostUrl());
             var actual = result.GetObject<List<TEntity>>();
 
             _output.WriteLine("Testing Reset ...");
+            _output.WriteLine(actual.ToJsonString());
 
-            Assert.True(actual.IsEqualOrWrite(testCase.DeleteExpected, _output, true));
+            Assert.True(actual.IsEqualOrWrite(testCase.BaseExpected, _output, true));
         }
 
 

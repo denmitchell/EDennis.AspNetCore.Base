@@ -50,24 +50,6 @@ namespace EDennis.AspNetCore.Base.Web {
                     instance = MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");
 
 
-                //Handle reset
-                //NOTE: Resets are sent as standalone requests with a special "Reset" Http Method
-                //          or a special "X-Testing-Reset" Request Header or query key
-                //      and a query string: instance=some_instance_name
-                if (method == Constants.RESET_METHOD 
-                    || context.Request.ContainsHeaderOrQueryKey(Constants.TESTING_RESET_KEY, out string _)) {
-                    if (_cache.ContainsKey(instance)) {
-                        if (_settings.CurrentValue.IsInMemory) {
-                            _cache[instance] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
-                            _logger.LogInformation("Db Interceptor resetting {DbContext}-{Instance}", typeof(TContext).Name, instance);
-                        } else {
-                            _cache[instance].IDbTransaction.Rollback();
-                            _logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance);
-                        }
-                        DbConnectionManager.Reset<TContext>(_cache[instance].IDbConnection, _settings.CurrentValue);
-                    }
-                    return;
-                }
 
                 _logger.LogInformation("Db Interceptor handling request: {RequestPath}", context.Request.Path);
 
@@ -80,6 +62,25 @@ namespace EDennis.AspNetCore.Base.Web {
                 dbContextOptionsProvider.Transaction = cachedCxn.IDbTransaction;
 
                 await _next(context);
+
+                //Handle reset
+                //NOTE: Resets are sent with the last request that is part of the same transaction
+                //      or as part of a standalone/throw-away GET request
+                if (context.Request.ContainsHeaderOrQueryKey(Constants.TESTING_RESET_KEY, out string _)) {
+                    if (_cache.ContainsKey(instance)) {
+                        if (_settings.CurrentValue.IsInMemory) {
+                            _cache[instance] = DbConnectionManager.GetInMemoryDbConnection<TContext>();
+                            _logger.LogInformation("Db Interceptor resetting {DbContext}-{Instance}", typeof(TContext).Name, instance); 
+                        } else {
+                            var level = _cache[instance].IDbTransaction.IsolationLevel;
+                            _cache[instance].IDbTransaction.Rollback();
+                            _cache[instance].IDbTransaction = _cache[instance].IDbConnection.BeginTransaction(level);
+                            _logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance);
+                        }
+                        DbConnectionManager.Reset<TContext>(_cache[instance].IDbConnection, _settings.CurrentValue);
+                    }
+                }
+
 
             }
         }
