@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.DbContextInterceptorMiddlewareApi;
@@ -6,6 +7,7 @@ using EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
 using EDennis.Samples.DbContextInterceptorMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
@@ -39,7 +41,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
         internal class TestJsonPosition : TestJsonAttribute {
             public TestJsonPosition(string methodName, string testScenario, string testCase)
-                : base("DbContextInterceptorApi", "PersonController",
+                : base("DbContextInterceptorApi", "PositionController",
                       methodName, testScenario, testCase, DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
             }
         }
@@ -51,12 +53,34 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             using var factory = new TestApis();
             var client = factory.CreateClient["DbContextInterceptorApi"]();
+
             _output.WriteLine($"Test case: {t}");
+
+            Configure<Person>(client, jsonTestCase.TestCase);
+
+            var testCases = new CrudTestCases<Person>(jsonTestCase);
+
+            TestCreate(client, testCases, 0);
+            TestCreate(client, testCases, 1);
+
+            TestUpdate(client, testCases, 0);
+            TestUpdate(client, testCases, 1);
+
+            TestDelete(client, testCases, 0);
+            TestDelete(client, testCases, 1);
+
+            TestReset(client, testCases, 0);
+            TestReset(client, testCases, 1);
+
+        }
+
+        private void Configure<TEntity>(HttpClient client, string testCase)
+        where TEntity : IHasIntegerId {
 
             _output.WriteLine("Executing ScopedConfiguration ...");
 
             //send configuration for test case
-            var jcfg = File.ReadAllText($"Person\\{jsonTestCase.TestCase}.json");
+            var jcfg = File.ReadAllText($"Person\\{testCase}.json");
             var status = client.Configure("", jcfg);
 
             _output.WriteLine("Verifing ScopedConfiguration ...");
@@ -64,73 +88,81 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             //make sure that configuration was successful
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
-            var user = jsonTestCase.GetObject<string>("User");
-            var createInput = jsonTestCase.GetObject<Person>("CreateInput");
-            var updateInput = jsonTestCase.GetObject<Person>("UpdateInput");
-            var id = createInput.Id;
-            
-            var createExpected = jsonTestCase.GetObject<List<Person>>("CreateExpected");
-            var updateExpected = jsonTestCase.GetObject<List<Person>>("UpdateExpected");
-            var deleteExpected = jsonTestCase.GetObject<List<Person>>("DeleteExpected");
-
-            var getUrl = $"Person?X-User={user}X-Developer={user}";
-            var getUrlOtherUser = $"Person?X-User=someOtherUser";
-
-            _output.WriteLine("Attempting POST ...");
-
-            client.Post(getUrl, createInput);
-            
-            var createResult = client.Get<List<Person>>(getUrl);
-            var createActual = createResult.GetObject<List<Person>>();
-
-            _output.WriteLine("Verifying ScopedConfiguration ...");
-
-            Assert.True(createActual.IsEqualOrWrite(createExpected, _output, true));
-
-
-            var otherUserResult = client.Get<List<Person>>(getUrlOtherUser);
-            var otherUserActual = otherUserResult.GetObject<List<Person>>();
-
-            Assert.True(otherUserActual.IsEqualOrWrite(deleteExpected, _output, true));
-
-            var url = $"Person/{updateInput.Id}?X-User={user}";
-            client.Put(url, updateInput);
-
-            var updateResult = client.Get<List<Person>>(url);
-            var updateActual = updateResult.GetObject<List<Person>>();
-
-            Assert.True(updateActual.IsEqualOrWrite(updateExpected, _output, true));
-
-            otherUserResult = client.Get<List<Person>>(getUrlOtherUser);
-            otherUserActual = otherUserResult.GetObject<List<Person>>();
-
-            Assert.True(otherUserActual.IsEqualOrWrite(deleteExpected, _output, true));
-
-            url = $"Person/{updateInput.Id}?X-User={user}";
-            client.Delete<Person>(url);
-
-            var deleteResult = client.Get<List<Person>>(url);
-            var deleteActual = updateResult.GetObject<List<Person>>();
-
-            Assert.True(deleteActual.IsEqualOrWrite(deleteExpected, _output, true));
-
-            url = $"Person";
-            client.Post(url, createInput);
-
-            createResult = client.Get<List<Person>>(url);
-            createActual = createResult.GetObject<List<Person>>();
-
-            Assert.True(createActual.IsEqualOrWrite(createExpected, _output, true));
-
-            url = $"Person?X-Testing-Reset=jack@hill.org";
-        
-            var resetResult = client.Get<List<Person>>(url);
-            var resetActual = resetResult.GetObject<List<Person>>();
-
-            Assert.True(resetActual.IsEqualOrWrite(deleteExpected, _output, true));
-
         }
 
+        private void TestCreate<TEntity>(HttpClient client, CrudTestCases<TEntity> testCases, int userIndex)
+            where TEntity : IHasIntegerId {
+
+            _output.WriteLine($"Attempting Post/Create for User {userIndex} ...");
+            var testCase = testCases[userIndex];
+
+            foreach (var input in testCase.CreateInputs) {
+                client.Post(testCase.GetPostUrl(), input);
+            }
+
+            var result = client.Get<List<TEntity>>(testCase.GetPostUrl());
+            var actual = result.GetObject<List<TEntity>>();
+
+            _output.WriteLine("Testing Post/Create ...");
+
+            Assert.True(actual.IsEqualOrWrite(testCase.CreateExpected, _output, true));
+        }
+
+
+        private void TestUpdate<TEntity>(HttpClient client, CrudTestCases<TEntity> testCases, int userIndex)
+            where TEntity : IHasIntegerId {
+
+            _output.WriteLine($"Attempting Put/Update for User {userIndex} ...");
+            var testCase = testCases[userIndex];
+
+            foreach (var input in testCase.UpdateInputs) {
+                client.Put(testCase.PutDeleteUrl(input.Id), input);
+            }
+
+            var result = client.Get<List<TEntity>>(testCase.GetPostUrl());
+            var actual = result.GetObject<List<TEntity>>();
+
+            _output.WriteLine("Testing Put/Update ...");
+
+            Assert.True(actual.IsEqualOrWrite(testCase.UpdateExpected, _output, true));
+        }
+
+
+        private void TestDelete<TEntity>(HttpClient client, CrudTestCases<TEntity> testCases, int userIndex)
+            where TEntity : IHasIntegerId {
+
+            _output.WriteLine($"Attempting Delete for User {userIndex} ...");
+            var testCase = testCases[userIndex];
+
+            foreach (var id in testCase.DeleteIds) {
+                client.Delete<TEntity>(testCase.PutDeleteUrl(id));
+            }
+
+            var result = client.Get<List<TEntity>>(testCase.GetPostUrl());
+            var actual = result.GetObject<List<TEntity>>();
+
+            _output.WriteLine("Testing Delete ...");
+
+            Assert.True(actual.IsEqualOrWrite(testCase.DeleteExpected, _output, true));
+        }
+
+
+
+        private void TestReset<TEntity>(HttpClient client, CrudTestCases<TEntity> testCases, int userIndex)
+            where TEntity : IHasIntegerId {
+
+            _output.WriteLine($"Attempting Reset for User {userIndex} ...");
+            var testCase = testCases[userIndex];
+
+            client.Post<TEntity>(testCase.ResetUrl(),default);
+
+            var result = client.Get<List<TEntity>>(testCase.GetPostUrl());
+            var actual = result.GetObject<List<TEntity>>();
+
+            _output.WriteLine("Testing Reset ...");
+
+            Assert.True(actual.IsEqualOrWrite(testCase.DeleteExpected, _output, true));
+        }
 
 
     }
