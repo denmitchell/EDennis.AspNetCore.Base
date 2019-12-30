@@ -5,6 +5,7 @@ using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.DbContextInterceptorMiddlewareApi;
 using EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
 using EDennis.Samples.DbContextInterceptorMiddlewareApi.Tests;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -25,6 +26,11 @@ namespace EDennis.AspNetCore.MiddlewareTests {
     public class DbContextInterceptorMiddlewareApiTests {
 
         private readonly ITestOutputHelper _output;
+        private readonly static BlockingCollection<bool> bc = new BlockingCollection<bool>();
+
+        static DbContextInterceptorMiddlewareApiTests(){
+            bc.Add(true);
+        }
 
         public DbContextInterceptorMiddlewareApiTests(
             ITestOutputHelper output) {
@@ -51,26 +57,27 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonPerson("CUD", "", "B")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["DbContextInterceptorApi"]();
+                using var factory = new TestApis();
+                var client = factory.CreateClient["DbContextInterceptorApi"]();
 
-            _output.WriteLine($"Test case: {t}");
+                _output.WriteLine($"Test case: {t}");
 
-            Configure<Person>(client, jsonTestCase.TestCase);
+                Configure<Person>(client, jsonTestCase.TestCase);
 
-            var testCases = new CrudTestCases<Person>(jsonTestCase);
+                var testCases = new CrudTestCases<Person>(jsonTestCase);
 
-            TestCreate(client, testCases, 0);
-            TestCreate(client, testCases, 1);
+                TestCreate(client, testCases, 0);
+                TestCreate(client, testCases, 1);
 
-            TestUpdate(client, testCases, 0);
-            TestUpdate(client, testCases, 1);
+                TestUpdate(client, testCases, 0);
+                TestUpdate(client, testCases, 1);
 
-            TestDelete(client, testCases, 0);
-            TestDelete(client, testCases, 1);
+                TestDelete(client, testCases, 0);
+                TestDelete(client, testCases, 1);
 
-            TestReset(client, testCases, 0);
-            TestReset(client, testCases, 1);
+                TestReset(client, testCases, 0);
+                TestReset(client, testCases, 1);
+
 
         }
 
@@ -154,7 +161,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _output.WriteLine($"Attempting Reset for User {userIndex} ...");
             var testCase = testCases[userIndex];
 
-            client.Post<TEntity>(testCase.ResetUrl(),default);
+            client.SendReset(testCase.User);
 
             var result = client.Get<List<TEntity>>(testCase.GetPostUrl());
             var actual = result.GetObject<List<TEntity>>();

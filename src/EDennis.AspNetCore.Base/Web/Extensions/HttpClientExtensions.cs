@@ -250,14 +250,12 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static void SendReset(this HttpClient client, string operationName,
-            string instanceName)
+        public static void SendReset(this HttpClient client, string instance)
         {
-            client.SendResetAsync(operationName, instanceName);
+            client.SendResetAsync(instance);
         }
 
-        public static async void SendResetAsync(this HttpClient client, string operationName,
-            string instanceName)
+        public static async void SendResetAsync(this HttpClient client, string instance)
         {
             try {
                 using var tcp = new TcpClient(client.BaseAddress.Host, client.BaseAddress.Port) {
@@ -265,7 +263,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     ReceiveTimeout = 1000
                 };
                 var builder = new StringBuilder()
-                    .AppendLine($"{Constants.RESET_METHOD} /?instance={instanceName} HTTP/1.1")
+                    .AppendLine($"{Constants.RESET_METHOD} /?instance={instance} HTTP/1.1")
                     .AppendLine($"Host: {client.BaseAddress.Host}")
                     .AppendLine("Connection: close")
                     .AppendLine();
