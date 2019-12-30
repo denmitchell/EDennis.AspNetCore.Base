@@ -59,7 +59,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>Entity whose primary key matches the provided input</returns>
         [MethodCallback]
         public virtual TEntity GetById(params object[] keyValues) {
-            return Context.Find<TEntity>(keyValues);
+            var entity = Context.Find<TEntity>(keyValues);
+            if (entity != null)
+                Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
 
@@ -70,7 +73,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>Entity whose primary key matches the provided input</returns>
         [MethodCallback]
         public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
-            return await Context.FindAsync<TEntity>(keyValues);
+            var entity = await Context.FindAsync<TEntity>(keyValues);
+            if (entity != null)
+                Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
 
@@ -249,11 +255,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //copy property values from entity to existing (resultEntity)
             Context.Entry(existing).CurrentValues.SetValues(entity);
+            Context.Entry(existing).State = EntityState.Detached;
 
             Context.Update(entity);
             Context.SaveChanges();
             return existing;
         }
+
+
 
 
         /// <summary>
@@ -275,6 +284,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //copy property values from entity to existing
             Context.Entry(existing).CurrentValues.SetValues(entity);
+            Context.Entry(existing).State = EntityState.Detached;
 
             Context.Update(entity);
             await Context.SaveChangesAsync();
@@ -297,6 +307,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            Context.Entry(existing).State = EntityState.Detached;
+
 
             Context.Update(existing);
             Context.SaveChanges();
@@ -319,6 +331,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            Context.Entry(existing).State = EntityState.Detached;
 
             Context.Update(existing);
             await Context.SaveChangesAsync();

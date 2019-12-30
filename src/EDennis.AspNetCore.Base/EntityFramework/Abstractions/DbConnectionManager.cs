@@ -102,7 +102,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             dbConnection.IDbConnection.Open();
             dbConnection.IDbTransaction = dbConnection.IDbConnection.BeginTransaction(settings.IsolationLevel);
 
-            builder.UseSqlite(dbConnection.IDbConnection as SqlConnection);
+            builder.UseSqlServer(dbConnection.IDbConnection as SqlConnection);
             dbConnection.DbContextOptionsBuilder = builder;
             return dbConnection;
         }

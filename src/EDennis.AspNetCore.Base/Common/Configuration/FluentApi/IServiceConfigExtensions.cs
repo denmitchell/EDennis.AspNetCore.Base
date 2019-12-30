@@ -287,10 +287,15 @@ namespace EDennis.AspNetCore.Base {
             where TContext : DbContext {
 
             var settings = serviceConfig.BindAndConfigure<DbContextSettings<TContext>>(path);
+            serviceConfig.Configure<DbContextInterceptorSettings<TContext>>($"{path}:Interceptor");
+            serviceConfig.Services.PostConfigure<DbContextInterceptorSettings<TContext>>(options => {
+                options.ConnectionString = settings.ConnectionString;
+                options.DatabaseProvider = settings.DatabaseProvider;
+            });
 
             serviceConfig.Services.AddDbContext<TContext>(builder => {
                 DbConnectionManager.ConfigureDbContextOptionsBuilder(builder, settings);
-            });
+            },ServiceLifetime.Transient,ServiceLifetime.Transient);
 
             serviceConfig.Services.AddScoped<DbContextOptionsProvider<TContext>>();
             serviceConfig.Services.TryAddSingleton<DbConnectionCache<TContext>>();

@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
 
@@ -16,7 +17,12 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
         public DbSet<Position> Position { get; set; }
 
         public AppDbContext(DbContextOptionsProvider<AppDbContext> provider) :
-            base(provider.DbContextOptions) { }
+            base(provider.DbContextOptions) {
+            if (provider.DisableAutoTransactions) {
+                Database.AutoTransactionsEnabled = false;
+                Database.UseTransaction(provider.Transaction as DbTransaction);
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder builder) {
 

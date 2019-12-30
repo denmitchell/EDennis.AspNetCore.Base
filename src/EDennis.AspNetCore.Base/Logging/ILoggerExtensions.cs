@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace EDennis.AspNetCore.Base.Logging {
+namespace EDennis.AspNetCore.Base.Logging.Extensions {
     public static class ILoggerExtensions {
         /// <summary>
         /// Returns the minimum log level for a given logger

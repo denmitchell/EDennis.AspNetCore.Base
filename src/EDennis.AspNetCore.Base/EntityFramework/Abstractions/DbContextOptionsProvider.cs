@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
@@ -32,6 +33,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     public class DbContextOptionsProvider<TContext>
         where TContext : DbContext {
         public DbContextOptions<TContext> DbContextOptions { get; set; }
+        public bool DisableAutoTransactions { get; set; }
+        public IDbTransaction Transaction { get; set; }
         public DbContextOptionsProvider(DbContextOptions<TContext> options) { DbContextOptions = options; }
     }
 

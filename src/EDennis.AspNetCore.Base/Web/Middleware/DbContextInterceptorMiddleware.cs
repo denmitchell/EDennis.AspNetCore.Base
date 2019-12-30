@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -41,7 +42,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
                 var method = req.Method;
-                var instance = req.Query[Constants.TESTING_INSTANCE_KEY][0];
+    
+                string instance = null;
+                if(req.Query.ContainsKey(Constants.TESTING_INSTANCE_KEY))
+                    instance = req.Query[Constants.TESTING_INSTANCE_KEY][0];
+                else
+                    instance = MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");
+
 
                 //Handle reset
                 //NOTE: Resets are sent as standalone requests with a special "Reset" Http Method
@@ -64,12 +71,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 _logger.LogInformation("Db Interceptor handling request: {RequestPath}", context.Request.Path);
 
-                var instanceName = instance ?? MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");
 
-                var cachedCxn = _cache.GetOrAdd(instanceName,(key)
+                var cachedCxn = _cache.GetOrAdd(instance,(key)
                     => DbConnectionManager.GetDbConnection(_settings.CurrentValue));
                 
                 dbContextOptionsProvider.DbContextOptions = cachedCxn.DbContextOptionsBuilder.Options;
+                dbContextOptionsProvider.DisableAutoTransactions = true;
+                dbContextOptionsProvider.Transaction = cachedCxn.IDbTransaction;
 
                 await _next(context);
 

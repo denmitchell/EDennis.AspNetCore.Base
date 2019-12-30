@@ -1,4 +1,5 @@
-﻿using MethodBoundaryAspect.Fody.Attributes;
+﻿using EDennis.AspNetCore.Base.Logging.Extensions;
+using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
