@@ -18,20 +18,18 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         where TEntity : IHasIntegerId {
 
         public CrudTestCase(int userIndex, JsonTestCase jsonTestCase, string basePath) {
-            User = jsonTestCase.GetObject<string>($"User{userIndex}");
+            BasePath = basePath;
             BaseExpected = jsonTestCase.GetObject<List<TEntity>>($"BaseExpected");
-            CreateInputs = new List<TEntity> {
-                jsonTestCase.GetObject<TEntity>($"CreateInput{userIndex}a"),
-                jsonTestCase.GetObject<TEntity>($"CreateInput{userIndex}b")
-            };
-            UpdateInputs = new List<TEntity> {
-                jsonTestCase.GetObject<TEntity>($"UpdateInput{userIndex}")
-            };
+            User = jsonTestCase.GetObject<string>($"User{userIndex}");
+            CreateInputs = jsonTestCase.GetObject<List<TEntity>>($"CreateInputs{userIndex}");
+            CreateExpected = jsonTestCase.GetObject<List<TEntity>>($"CreateExpected{userIndex}");
+            UpdateInputs = jsonTestCase.GetObject<List<TEntity>>($"UpdateInputs{userIndex}");
             UpdateExpected = jsonTestCase.GetObject<List<TEntity>>($"UpdateExpected{userIndex}");
             DeleteIds = jsonTestCase.GetObject<int[]>($"DeleteIds{userIndex}");
             DeleteExpected = jsonTestCase.GetObject<List<TEntity>>($"DeleteExpected{userIndex}");
         }
 
+        public string BasePath { get; set; }
         public string User { get; set; }
         public List<TEntity> BaseExpected { get; set; }
         public List<TEntity> CreateInputs { get; set; }
@@ -42,13 +40,13 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         public List<TEntity> DeleteExpected { get; set; }
 
         public string GetPostUrl() 
-            => $"Person?X-User={User}&X-DeveloperName={User}";
+            => $"{BasePath}?X-User={User}&X-DeveloperName={User}";
 
         public string PutDeleteUrl(int id) 
-            => $"Person/{id}?X-User={User}&X-DeveloperName={User}";
+            => $"{BasePath}/{id}?X-User={User}&X-DeveloperName={User}";
 
         public string ResetUrl()
-            => $"Person/?X-User={User}&X-DeveloperName={User}&{Constants.TESTING_RESET_KEY}={User}";
+            => $"{BasePath}/?X-User={User}&X-DeveloperName={User}&{Constants.TESTING_RESET_KEY}={User}";
 
     }
 }

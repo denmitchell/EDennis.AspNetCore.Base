@@ -80,7 +80,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _output.WriteLine("Executing ScopedConfiguration ...");
 
             //send configuration for test case
-            var jcfg = File.ReadAllText($"Person\\{testCase}.json");
+            var jcfg = File.ReadAllText($"DbContextInterceptor\\{testCase}.json");
             var status = client.Configure("", jcfg);
 
             _output.WriteLine("Verifing ScopedConfiguration ...");

@@ -76,7 +76,7 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
 
             app.UseHeadersToClaims();
 
-            app.UseUserLogger();
+            app.UseScopedLogger();
 
             app.UseScopeProperties();
 

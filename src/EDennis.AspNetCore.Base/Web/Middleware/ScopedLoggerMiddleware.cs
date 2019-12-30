@@ -67,7 +67,7 @@ namespace EDennis.AspNetCore.Base.Web {
     }
 
     public static partial class IApplicationBuilderExtensions_Middleware {
-        public static IApplicationBuilder UseUserLogger(this IApplicationBuilder app) { 
+        public static IApplicationBuilder UseScopedLogger(this IApplicationBuilder app) { 
             app.UseMiddleware<ScopedLoggerMiddleware>();
             return app;
         }

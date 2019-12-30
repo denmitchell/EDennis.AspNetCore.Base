@@ -6,9 +6,9 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
     /// <summary>
     /// To Add Migration :
     /// with DefaultProject = EDennis.Samples.DbContextConfigsApi ...
-    ///     PM > Add-Migration Initial -Context DbContext1 -Project EDennis.Samples.DbContextConfigsApi.Lib -StartupProject EDennis.Samples.DbContextConfigsApi
+    ///     PM > Add-Migration Initial -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
     /// To Update Database:
-    ///     PM > Update-Database -Context DbContext1 -Project EDennis.Samples.DbContextConfigsApi.Lib -StartupProject EDennis.Samples.DbContextConfigsApi
+    ///     PM > Update-Database -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
     /// </summary>
     public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<AppDbContext> { }
     public class AppDbContext : DbContext {
