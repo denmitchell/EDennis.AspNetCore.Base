@@ -49,6 +49,15 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
             app.UseAuthorization();
 
             app.UseScopedConfiguration();
+
+            //get developer name from query/header
+            app.Use(async (context, next) => {
+                if (context.Request.ContainsHeaderOrQueryKey("X-DeveloperName", out string developerName)) {
+                    Configuration["DeveloperName"] = developerName;
+                }
+                await next();
+            });
+
             app.UseScopeProperties();
             app.UsePkRewriter();
             app.UseDbContextInterceptor<AppDbContext>();

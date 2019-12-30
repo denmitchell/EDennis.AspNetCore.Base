@@ -5,7 +5,7 @@
       "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=HrTest;Trusted_Connection=True;MultipleActiveResultSets=True;",
       "Interceptor": {
         "Enabled": true,
-        "InstanceNameSource": "XUserHeader",
+        "InstanceNameSource": "XUserQueryString",
         "IsInMemory": true
       }
     }

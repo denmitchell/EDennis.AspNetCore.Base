@@ -49,27 +49,22 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonPerson("CUD", "", "B")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
-            /*
-            CreateInput
-            CreateExpected
-            UpdateInput
-            UpdateExpected
-            DeleteExpected
-            */
-            //TODO: Create test cases in Excel
-            //TODO: initiate Create, Update, Delete
-
             using var factory = new TestApis();
             var client = factory.CreateClient["DbContextInterceptorApi"]();
             _output.WriteLine($"Test case: {t}");
+
+            _output.WriteLine("Executing ScopedConfiguration ...");
 
             //send configuration for test case
             var jcfg = File.ReadAllText($"Person\\{jsonTestCase.TestCase}.json");
             var status = client.Configure("", jcfg);
 
+            _output.WriteLine("Verifing ScopedConfiguration ...");
+
             //make sure that configuration was successful
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
+            var user = jsonTestCase.GetObject<string>("User");
             var createInput = jsonTestCase.GetObject<Person>("CreateInput");
             var updateInput = jsonTestCase.GetObject<Person>("UpdateInput");
             var id = createInput.Id;
@@ -78,17 +73,64 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var updateExpected = jsonTestCase.GetObject<List<Person>>("UpdateExpected");
             var deleteExpected = jsonTestCase.GetObject<List<Person>>("DeleteExpected");
 
+            var getUrl = $"Person?X-User={user}X-Developer={user}";
+            var getUrlOtherUser = $"Person?X-User=someOtherUser";
 
-            var url = $"Person?{headersQueryString}";
+            _output.WriteLine("Attempting POST ...");
 
-            var result = client.GetAsync(client.BaseAddress.ToString() + url).Result;
-            var content = result.Content.ReadAsStringAsync().Result;
-            _output.WriteLine(content);
+            client.Post(getUrl, createInput);
+            
+            var createResult = client.Get<List<Person>>(getUrl);
+            var createActual = createResult.GetObject<List<Person>>();
 
-            //var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            _output.WriteLine("Verifying ScopedConfiguration ...");
 
-            //Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+            Assert.True(createActual.IsEqualOrWrite(createExpected, _output, true));
+
+
+            var otherUserResult = client.Get<List<Person>>(getUrlOtherUser);
+            var otherUserActual = otherUserResult.GetObject<List<Person>>();
+
+            Assert.True(otherUserActual.IsEqualOrWrite(deleteExpected, _output, true));
+
+            var url = $"Person/{updateInput.Id}?X-User={user}";
+            client.Put(url, updateInput);
+
+            var updateResult = client.Get<List<Person>>(url);
+            var updateActual = updateResult.GetObject<List<Person>>();
+
+            Assert.True(updateActual.IsEqualOrWrite(updateExpected, _output, true));
+
+            otherUserResult = client.Get<List<Person>>(getUrlOtherUser);
+            otherUserActual = otherUserResult.GetObject<List<Person>>();
+
+            Assert.True(otherUserActual.IsEqualOrWrite(deleteExpected, _output, true));
+
+            url = $"Person/{updateInput.Id}?X-User={user}";
+            client.Delete<Person>(url);
+
+            var deleteResult = client.Get<List<Person>>(url);
+            var deleteActual = updateResult.GetObject<List<Person>>();
+
+            Assert.True(deleteActual.IsEqualOrWrite(deleteExpected, _output, true));
+
+            url = $"Person";
+            client.Post(url, createInput);
+
+            createResult = client.Get<List<Person>>(url);
+            createActual = createResult.GetObject<List<Person>>();
+
+            Assert.True(createActual.IsEqualOrWrite(createExpected, _output, true));
+
+            url = $"Person?X-Testing-Reset=jack@hill.org";
+        
+            var resetResult = client.Get<List<Person>>(url);
+            var resetActual = resetResult.GetObject<List<Person>>();
+
+            Assert.True(resetActual.IsEqualOrWrite(deleteExpected, _output, true));
+
         }
+
 
 
     }
