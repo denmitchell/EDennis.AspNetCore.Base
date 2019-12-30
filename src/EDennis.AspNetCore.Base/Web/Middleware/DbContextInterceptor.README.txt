@@ -1,0 +1,24 @@
+﻿- DbContextInterceptor middleware depends upon ...
+	-- the use of a DbConnection object that caches 
+		--- the DbContextOptions 
+		--- the SqlConnection 
+		--- the SqlTransaction (which will not auto-commit)
+	-- A DbConnectionCache singleton that holds named instances of DbConnection objects,
+	   where the key is the User
+
+- The middleware assumes the following are true
+	-- The DbContext sub-class has a single constructor that accepts a DbContextOptionsProvider, which wraps DbContextOptions
+	-- DbContextInterceptorSettings.Enabled = true 
+	-- A User is resolved on each HttpRequest
+
+- The middleware works as follows:
+	-- via DI, it retrieves a scoped instance of DbContextOptionsProvider
+	-- it checks to see whether the Request has a special RESET method or query string
+		-- if so, it will rollback the transaction or create a new connection/in-memory db
+		-- if not, it will use the existing transaction/connection/db
+	-- it adds or gets the relevant DbConnection object from the DbConnectionCache
+	-- it extracts the DbContextOptions object from the DbConnection object
+	-- it updates the DbContextOptions property of the DbContextOptionsProvider
+
+
+
