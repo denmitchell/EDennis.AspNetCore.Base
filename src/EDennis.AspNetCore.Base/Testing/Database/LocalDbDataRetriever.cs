@@ -27,6 +27,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TEntity : class, new() {
             var data = context.Set<TEntity>()
                 .AsNoTracking()
+                .Where(linqExpression)
+                .Skip(pageSize*(pageNumber - 1))
+                .Take(pageSize)
                 .ToList();
             return data.ToArray();
         }
@@ -40,19 +43,20 @@ namespace EDennis.AspNetCore.Base.Testing {
         public static TEntity[] Retrieve<TEntity>(string dbName, string tableName, string server) {
             var sqlCols = GetColumnSql(tableName);
             var sql = $"select * from {tableName}";
-            using (var cxn = new SqlConnection($"Server={server};Database={dbName};Trusted_Connection=True;")) {
-                var cols = cxn.Query<string>(sqlCols).AsList().ToArray();
-                sql = sql.Replace("*", string.Join(',', cols));
-                var data = cxn.Query<TEntity>(sql).AsList().ToArray();
-                return data;
-            }
+            using var cxn = new SqlConnection($"Server={server};Database={dbName};Trusted_Connection=True;");
+            var cols = cxn.Query<string>(sqlCols).AsList().ToArray();
+            sql = sql.Replace("*", string.Join(',', cols));
+            var data = cxn.Query<TEntity>(sql).AsList().ToArray();
+            return data;
         }
 
-        public static TEntity[] Retrieve<TEntity>(string dbName, string tableName, string server, string sql) {
-            using (var cxn = new SqlConnection($"Server={server};Database={dbName};Trusted_Connection=True;")) {
-                var data = cxn.Query<TEntity>(sql).AsList().ToArray();
-                return data;
-            }
+        public static TEntity[] Retrieve<TEntity>(string dbName, string server, string sql, string[] additionalConnectionStringSegments) {
+            var cxnString = $"Server={server};Database={dbName};Trusted_Connection=True;";
+            if (additionalConnectionStringSegments != null && additionalConnectionStringSegments.Length > 0)
+                cxnString += string.Join(';', additionalConnectionStringSegments);
+            using var cxn = new SqlConnection(cxnString);
+            var data = cxn.Query<TEntity>(sql).AsList().ToArray();
+            return data;
         }
 
 
