@@ -12,17 +12,12 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
     ///     PM > Update-Database -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
     /// </summary>
     public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<AppDbContext> { }
-    public class AppDbContext : DbContext {
+    public class AppDbContext : ResettableDbContext<AppDbContext> {
         public DbSet<Person> Person { get; set; }
         public DbSet<Position> Position { get; set; }
 
         public AppDbContext(DbContextOptionsProvider<AppDbContext> provider) :
-            base(provider.DbContextOptions) {
-            if (!Database.IsInMemory() && provider.DisableAutoTransactions) {
-                Database.AutoTransactionsEnabled = false;
-                Database.UseTransaction(provider.Transaction as DbTransaction);
-            }
-        }
+            base(provider) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
 
