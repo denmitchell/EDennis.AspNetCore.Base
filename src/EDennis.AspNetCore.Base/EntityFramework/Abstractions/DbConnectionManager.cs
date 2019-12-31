@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -136,6 +138,25 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             return cxnString;
 
+        }
+
+        public static void Reset<TContext>(DbConnectionCache<TContext> cache, string instance, DbContextInterceptorSettings<TContext> settings,
+            ILogger logger = null)
+            where TContext : DbContext {
+            if (cache.ContainsKey(instance)) {
+                if (settings.IsInMemory) {
+                    cache[instance] = GetInMemoryDbConnection<TContext>();
+                    if(logger != null)
+                        logger.LogInformation("Db Interceptor resetting {DbContext}-{Instance}", typeof(TContext).Name, instance);
+                } else {
+                    var level = cache[instance].IDbTransaction.IsolationLevel;
+                    cache[instance].IDbTransaction.Rollback();
+                    cache[instance].IDbTransaction = cache[instance].IDbConnection.BeginTransaction(level);
+                    if (logger != null)
+                        logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance);
+                }
+                Reset(cache[instance].IDbConnection, settings);
+            }
         }
 
 
