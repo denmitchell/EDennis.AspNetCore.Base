@@ -6,7 +6,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
         public static Rgb[] RgbRecords { get; set; }
             = new Rgb[] {
                 new Rgb {
-                        Id = 1,
+                        Id = -999001,
                         Name = "AliceBlue",
                         Red = 240,
                         Green = 248,
@@ -15,7 +15,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,18,12,29,34),
                 },
                 new Rgb {
-                        Id = 2,
+                        Id = -999002,
                         Name = "AntiqueWhite",
                         Red = 250,
                         Green = 235,
@@ -24,7 +24,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,17,12,29,50),
                 },
                 new Rgb {
-                        Id = 3,
+                        Id = -999003,
                         Name = "Aqua",
                         Red = 0,
                         Green = 255,
@@ -33,7 +33,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,16,12,29,50),
                 },
                 new Rgb {
-                        Id = 4,
+                        Id = -999004,
                         Name = "Aquamarine",
                         Red = 127,
                         Green = 255,
@@ -42,7 +42,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,15,12,29,50),
                 },
                 new Rgb {
-                        Id = 5,
+                        Id = -999005,
                         Name = "Azure",
                         Red = 240,
                         Green = 255,
@@ -51,7 +51,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,14,12,29,50),
                 },
                 new Rgb {
-                        Id = 6,
+                        Id = -999006,
                         Name = "Beige",
                         Red = 245,
                         Green = 245,
@@ -60,7 +60,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,13,12,29,50),
                 },
                 new Rgb {
-                        Id = 7,
+                        Id = -999007,
                         Name = "Bisque",
                         Red = 255,
                         Green = 228,
@@ -69,7 +69,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,12,12,29,50),
                 },
                 new Rgb {
-                        Id = 8,
+                        Id = -999008,
                         Name = "Black",
                         Red = 0,
                         Green = 0,
@@ -78,7 +78,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,11,12,29,50),
                 },
                 new Rgb {
-                        Id = 9,
+                        Id = -999009,
                         Name = "BlanchedAlmond",
                         Red = 255,
                         Green = 235,
@@ -87,7 +87,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,10,12,29,50),
                 },
                 new Rgb {
-                        Id = 10,
+                        Id = -999010,
                         Name = "Blue",
                         Red = 0,
                         Green = 0,
@@ -96,7 +96,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,9,12,29,50),
                 },
                 new Rgb {
-                        Id = 11,
+                        Id = -999011,
                         Name = "BlueViolet",
                         Red = 138,
                         Green = 43,
@@ -105,7 +105,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,8,12,29,50),
                 },
                 new Rgb {
-                        Id = 12,
+                        Id = -999012,
                         Name = "Brown",
                         Red = 165,
                         Green = 42,
@@ -114,7 +114,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,7,12,29,50),
                 },
                 new Rgb {
-                        Id = 13,
+                        Id = -999013,
                         Name = "BurlyWood",
                         Red = 222,
                         Green = 184,
@@ -123,7 +123,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,6,12,29,50),
                 },
                 new Rgb {
-                        Id = 14,
+                        Id = -999014,
                         Name = "CadetBlue",
                         Red = 95,
                         Green = 158,
@@ -132,7 +132,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,5,12,29,50),
                 },
                 new Rgb {
-                        Id = 15,
+                        Id = -999015,
                         Name = "Chartreuse",
                         Red = 127,
                         Green = 255,
@@ -141,7 +141,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,4,12,29,50),
                 },
                 new Rgb {
-                        Id = 16,
+                        Id = -999016,
                         Name = "Chocolate",
                         Red = 210,
                         Green = 105,
@@ -150,7 +150,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,3,12,29,50),
                 },
                 new Rgb {
-                        Id = 17,
+                        Id = -999017,
                         Name = "Coral",
                         Red = 255,
                         Green = 127,
@@ -159,7 +159,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,2,12,29,50),
                 },
                 new Rgb {
-                        Id = 18,
+                        Id = -999018,
                         Name = "CornflowerBlue",
                         Red = 100,
                         Green = 149,
@@ -168,7 +168,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,6,1,12,29,50),
                 },
                 new Rgb {
-                        Id = 19,
+                        Id = -999019,
                         Name = "Cornsilk",
                         Red = 255,
                         Green = 248,
@@ -177,7 +177,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,31,12,29,50),
                 },
                 new Rgb {
-                        Id = 20,
+                        Id = -999020,
                         Name = "Crimson",
                         Red = 220,
                         Green = 20,
@@ -186,7 +186,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,30,12,29,50),
                 },
                 new Rgb {
-                        Id = 21,
+                        Id = -999021,
                         Name = "Cyan",
                         Red = 0,
                         Green = 255,
@@ -195,7 +195,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,29,12,29,50),
                 },
                 new Rgb {
-                        Id = 22,
+                        Id = -999022,
                         Name = "DarkBlue",
                         Red = 0,
                         Green = 0,
@@ -204,7 +204,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,28,12,29,50),
                 },
                 new Rgb {
-                        Id = 23,
+                        Id = -999023,
                         Name = "DarkCyan",
                         Red = 0,
                         Green = 139,
@@ -213,7 +213,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,27,12,29,50),
                 },
                 new Rgb {
-                        Id = 24,
+                        Id = -999024,
                         Name = "DarkGray",
                         Red = 169,
                         Green = 169,
@@ -222,7 +222,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,25,12,29,50),
                 },
                 new Rgb {
-                        Id = 25,
+                        Id = -999025,
                         Name = "DarkGreen",
                         Red = 0,
                         Green = 100,
@@ -231,7 +231,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,23,12,29,50),
                 },
                 new Rgb {
-                        Id = 26,
+                        Id = -999026,
                         Name = "DarkGrey",
                         Red = 169,
                         Green = 169,
@@ -240,7 +240,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,24,12,29,50),
                 },
                 new Rgb {
-                        Id = 27,
+                        Id = -999027,
                         Name = "DarkKhaki",
                         Red = 189,
                         Green = 183,
@@ -249,7 +249,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,22,12,29,50),
                 },
                 new Rgb {
-                        Id = 28,
+                        Id = -999028,
                         Name = "DarkGoldenRod",
                         Red = 184,
                         Green = 134,
@@ -258,7 +258,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,26,12,29,50),
                 },
                 new Rgb {
-                        Id = 29,
+                        Id = -999029,
                         Name = "DarkMagenta",
                         Red = 139,
                         Green = 0,
@@ -267,7 +267,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,21,12,29,50),
                 },
                 new Rgb {
-                        Id = 30,
+                        Id = -999030,
                         Name = "DarkOliveGreen",
                         Red = 85,
                         Green = 107,
@@ -276,7 +276,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,20,12,29,50),
                 },
                 new Rgb {
-                        Id = 31,
+                        Id = -999031,
                         Name = "DarkOrange",
                         Red = 255,
                         Green = 140,
@@ -285,7 +285,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,19,12,29,50),
                 },
                 new Rgb {
-                        Id = 32,
+                        Id = -999032,
                         Name = "DarkOrchid",
                         Red = 153,
                         Green = 50,
@@ -294,7 +294,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,18,12,29,50),
                 },
                 new Rgb {
-                        Id = 33,
+                        Id = -999033,
                         Name = "DarkRed",
                         Red = 139,
                         Green = 0,
@@ -303,7 +303,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,17,12,29,50),
                 },
                 new Rgb {
-                        Id = 34,
+                        Id = -999034,
                         Name = "DarkSalmon",
                         Red = 233,
                         Green = 150,
@@ -312,7 +312,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,16,12,29,50),
                 },
                 new Rgb {
-                        Id = 35,
+                        Id = -999035,
                         Name = "DarkSeaGreen",
                         Red = 143,
                         Green = 188,
@@ -321,7 +321,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,15,12,29,50),
                 },
                 new Rgb {
-                        Id = 36,
+                        Id = -999036,
                         Name = "DarkSlateBlue",
                         Red = 72,
                         Green = 61,
@@ -330,7 +330,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,14,12,29,50),
                 },
                 new Rgb {
-                        Id = 37,
+                        Id = -999037,
                         Name = "DarkSlateGray",
                         Red = 47,
                         Green = 79,
@@ -339,7 +339,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,13,12,29,50),
                 },
                 new Rgb {
-                        Id = 38,
+                        Id = -999038,
                         Name = "DarkSlateGrey",
                         Red = 47,
                         Green = 79,
@@ -348,7 +348,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,12,12,29,50),
                 },
                 new Rgb {
-                        Id = 39,
+                        Id = -999039,
                         Name = "DarkTurquoise",
                         Red = 0,
                         Green = 206,
@@ -357,7 +357,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,11,12,29,50),
                 },
                 new Rgb {
-                        Id = 40,
+                        Id = -999040,
                         Name = "DarkViolet",
                         Red = 148,
                         Green = 0,
@@ -366,7 +366,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,10,12,29,50),
                 },
                 new Rgb {
-                        Id = 41,
+                        Id = -999041,
                         Name = "DeepPink",
                         Red = 255,
                         Green = 20,
@@ -375,7 +375,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,9,12,29,50),
                 },
                 new Rgb {
-                        Id = 42,
+                        Id = -999042,
                         Name = "DeepSkyBlue",
                         Red = 0,
                         Green = 191,
@@ -384,7 +384,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,8,12,29,50),
                 },
                 new Rgb {
-                        Id = 43,
+                        Id = -999043,
                         Name = "DimGray",
                         Red = 105,
                         Green = 105,
@@ -393,7 +393,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,7,12,29,50),
                 },
                 new Rgb {
-                        Id = 44,
+                        Id = -999044,
                         Name = "DimGrey",
                         Red = 105,
                         Green = 105,
@@ -402,7 +402,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,6,12,29,50),
                 },
                 new Rgb {
-                        Id = 45,
+                        Id = -999045,
                         Name = "DodgerBlue",
                         Red = 30,
                         Green = 144,
@@ -411,7 +411,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,5,12,29,50),
                 },
                 new Rgb {
-                        Id = 46,
+                        Id = -999046,
                         Name = "FireBrick",
                         Red = 178,
                         Green = 34,
@@ -420,7 +420,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,4,12,29,50),
                 },
                 new Rgb {
-                        Id = 47,
+                        Id = -999047,
                         Name = "FloralWhite",
                         Red = 255,
                         Green = 250,
@@ -429,7 +429,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,3,12,29,50),
                 },
                 new Rgb {
-                        Id = 48,
+                        Id = -999048,
                         Name = "ForestGreen",
                         Red = 34,
                         Green = 139,
@@ -438,7 +438,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,2,12,29,50),
                 },
                 new Rgb {
-                        Id = 49,
+                        Id = -999049,
                         Name = "Fuchsia",
                         Red = 255,
                         Green = 0,
@@ -447,7 +447,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,5,1,12,29,50),
                 },
                 new Rgb {
-                        Id = 50,
+                        Id = -999050,
                         Name = "Gainsboro",
                         Red = 220,
                         Green = 220,
@@ -456,7 +456,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,30,12,29,50),
                 },
                 new Rgb {
-                        Id = 51,
+                        Id = -999051,
                         Name = "GhostWhite",
                         Red = 248,
                         Green = 248,
@@ -465,7 +465,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,29,12,29,50),
                 },
                 new Rgb {
-                        Id = 52,
+                        Id = -999052,
                         Name = "Gray",
                         Red = 128,
                         Green = 128,
@@ -474,7 +474,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,26,12,29,50),
                 },
                 new Rgb {
-                        Id = 53,
+                        Id = -999053,
                         Name = "Green",
                         Red = 0,
                         Green = 128,
@@ -483,7 +483,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,24,12,29,50),
                 },
                 new Rgb {
-                        Id = 54,
+                        Id = -999054,
                         Name = "GreenYellow",
                         Red = 173,
                         Green = 255,
@@ -492,7 +492,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,23,12,29,50),
                 },
                 new Rgb {
-                        Id = 55,
+                        Id = -999055,
                         Name = "Grey",
                         Red = 128,
                         Green = 128,
@@ -501,7 +501,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,25,12,29,50),
                 },
                 new Rgb {
-                        Id = 56,
+                        Id = -999056,
                         Name = "HoneyDew",
                         Red = 240,
                         Green = 255,
@@ -510,7 +510,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,22,12,29,50),
                 },
                 new Rgb {
-                        Id = 57,
+                        Id = -999057,
                         Name = "HotPink",
                         Red = 255,
                         Green = 105,
@@ -519,7 +519,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,21,12,29,50),
                 },
                 new Rgb {
-                        Id = 58,
+                        Id = -999058,
                         Name = "IndianRed ",
                         Red = 205,
                         Green = 92,
@@ -528,7 +528,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,20,12,29,50),
                 },
                 new Rgb {
-                        Id = 59,
+                        Id = -999059,
                         Name = "Indigo ",
                         Red = 75,
                         Green = 0,
@@ -537,7 +537,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,19,12,29,50),
                 },
                 new Rgb {
-                        Id = 60,
+                        Id = -999060,
                         Name = "Ivory",
                         Red = 255,
                         Green = 255,
@@ -546,7 +546,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,18,12,29,50),
                 },
                 new Rgb {
-                        Id = 61,
+                        Id = -999061,
                         Name = "Khaki",
                         Red = 240,
                         Green = 230,
@@ -555,7 +555,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,17,12,29,50),
                 },
                 new Rgb {
-                        Id = 62,
+                        Id = -999062,
                         Name = "Lavender",
                         Red = 230,
                         Green = 230,
@@ -564,7 +564,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,16,12,29,50),
                 },
                 new Rgb {
-                        Id = 63,
+                        Id = -999063,
                         Name = "LavenderBlush",
                         Red = 255,
                         Green = 240,
@@ -573,7 +573,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,15,12,29,50),
                 },
                 new Rgb {
-                        Id = 64,
+                        Id = -999064,
                         Name = "LawnGreen",
                         Red = 124,
                         Green = 252,
@@ -582,7 +582,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,14,12,29,50),
                 },
                 new Rgb {
-                        Id = 65,
+                        Id = -999065,
                         Name = "Gold",
                         Red = 255,
                         Green = 215,
@@ -591,7 +591,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,28,12,29,50),
                 },
                 new Rgb {
-                        Id = 66,
+                        Id = -999066,
                         Name = "GoldenRod",
                         Red = 218,
                         Green = 165,
@@ -600,7 +600,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,27,12,29,50),
                 },
                 new Rgb {
-                        Id = 67,
+                        Id = -999067,
                         Name = "LemonChiffon",
                         Red = 255,
                         Green = 250,
@@ -609,7 +609,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,13,12,29,50),
                 },
                 new Rgb {
-                        Id = 68,
+                        Id = -999068,
                         Name = "LightBlue",
                         Red = 173,
                         Green = 216,
@@ -618,7 +618,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,12,12,29,50),
                 },
                 new Rgb {
-                        Id = 69,
+                        Id = -999069,
                         Name = "LightCoral",
                         Red = 240,
                         Green = 128,
@@ -627,7 +627,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,11,12,29,50),
                 },
                 new Rgb {
-                        Id = 70,
+                        Id = -999070,
                         Name = "LightCya",
                         Red = 224,
                         Green = 255,
@@ -636,7 +636,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,10,12,29,50),
                 },
                 new Rgb {
-                        Id = 71,
+                        Id = -999071,
                         Name = "LightGray",
                         Red = 211,
                         Green = 211,
@@ -645,7 +645,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,8,12,29,50),
                 },
                 new Rgb {
-                        Id = 72,
+                        Id = -999072,
                         Name = "LightGreen",
                         Red = 144,
                         Green = 238,
@@ -654,7 +654,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,6,12,29,50),
                 },
                 new Rgb {
-                        Id = 73,
+                        Id = -999073,
                         Name = "LightGrey",
                         Red = 211,
                         Green = 211,
@@ -663,7 +663,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,7,12,29,50),
                 },
                 new Rgb {
-                        Id = 74,
+                        Id = -999074,
                         Name = "LightGoldenRodYellow",
                         Red = 250,
                         Green = 250,
@@ -672,7 +672,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,9,12,29,50),
                 },
                 new Rgb {
-                        Id = 75,
+                        Id = -999075,
                         Name = "LightPink",
                         Red = 255,
                         Green = 182,
@@ -681,7 +681,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,5,12,29,50),
                 },
                 new Rgb {
-                        Id = 76,
+                        Id = -999076,
                         Name = "LightSalmon",
                         Red = 255,
                         Green = 160,
@@ -690,7 +690,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,4,12,29,50),
                 },
                 new Rgb {
-                        Id = 77,
+                        Id = -999077,
                         Name = "LightSeaGreen",
                         Red = 32,
                         Green = 178,
@@ -699,7 +699,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,3,12,29,50),
                 },
                 new Rgb {
-                        Id = 78,
+                        Id = -999078,
                         Name = "LightSkyBlue",
                         Red = 135,
                         Green = 206,
@@ -708,7 +708,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,2,12,29,50),
                 },
                 new Rgb {
-                        Id = 79,
+                        Id = -999079,
                         Name = "LightSlateGray",
                         Red = 119,
                         Green = 136,
@@ -717,7 +717,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,4,1,12,29,50),
                 },
                 new Rgb {
-                        Id = 80,
+                        Id = -999080,
                         Name = "LightSlateGrey",
                         Red = 119,
                         Green = 136,
@@ -726,7 +726,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,31,12,29,50),
                 },
                 new Rgb {
-                        Id = 81,
+                        Id = -999081,
                         Name = "LightSteelBlue",
                         Red = 176,
                         Green = 196,
@@ -735,7 +735,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,30,12,29,50),
                 },
                 new Rgb {
-                        Id = 82,
+                        Id = -999082,
                         Name = "LightYellow",
                         Red = 255,
                         Green = 255,
@@ -744,7 +744,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,29,12,29,50),
                 },
                 new Rgb {
-                        Id = 83,
+                        Id = -999083,
                         Name = "Lime",
                         Red = 0,
                         Green = 255,
@@ -753,7 +753,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,28,12,29,50),
                 },
                 new Rgb {
-                        Id = 84,
+                        Id = -999084,
                         Name = "LimeGreen",
                         Red = 50,
                         Green = 205,
@@ -762,7 +762,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,27,12,29,50),
                 },
                 new Rgb {
-                        Id = 85,
+                        Id = -999085,
                         Name = "Line",
                         Red = 250,
                         Green = 240,
@@ -771,7 +771,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,26,12,29,50),
                 },
                 new Rgb {
-                        Id = 86,
+                        Id = -999086,
                         Name = "Magenta",
                         Red = 255,
                         Green = 0,
@@ -780,7 +780,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,25,12,29,50),
                 },
                 new Rgb {
-                        Id = 87,
+                        Id = -999087,
                         Name = "Maroon",
                         Red = 128,
                         Green = 0,
@@ -789,7 +789,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,24,12,29,50),
                 },
                 new Rgb {
-                        Id = 88,
+                        Id = -999088,
                         Name = "MediumAquaMarine",
                         Red = 102,
                         Green = 205,
@@ -798,7 +798,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,23,12,29,50),
                 },
                 new Rgb {
-                        Id = 89,
+                        Id = -999089,
                         Name = "MediumBlue",
                         Red = 0,
                         Green = 0,
@@ -807,7 +807,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,22,12,29,50),
                 },
                 new Rgb {
-                        Id = 90,
+                        Id = -999090,
                         Name = "MediumOrchid",
                         Red = 186,
                         Green = 85,
@@ -816,7 +816,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,21,12,29,50),
                 },
                 new Rgb {
-                        Id = 91,
+                        Id = -999091,
                         Name = "MediumPurple",
                         Red = 147,
                         Green = 112,
@@ -825,7 +825,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,20,12,29,50),
                 },
                 new Rgb {
-                        Id = 92,
+                        Id = -999092,
                         Name = "MediumSeaGreen",
                         Red = 60,
                         Green = 179,
@@ -834,7 +834,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,19,12,29,50),
                 },
                 new Rgb {
-                        Id = 93,
+                        Id = -999093,
                         Name = "MediumSlateBlue",
                         Red = 123,
                         Green = 104,
@@ -843,7 +843,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,18,12,29,50),
                 },
                 new Rgb {
-                        Id = 94,
+                        Id = -999094,
                         Name = "MediumSpringGreen",
                         Red = 0,
                         Green = 250,
@@ -852,7 +852,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,17,12,29,50),
                 },
                 new Rgb {
-                        Id = 95,
+                        Id = -999095,
                         Name = "MediumTurquoise",
                         Red = 72,
                         Green = 209,
@@ -861,7 +861,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,16,12,29,50),
                 },
                 new Rgb {
-                        Id = 96,
+                        Id = -999096,
                         Name = "MediumVioletRed",
                         Red = 199,
                         Green = 21,
@@ -870,7 +870,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,15,12,29,50),
                 },
                 new Rgb {
-                        Id = 97,
+                        Id = -999097,
                         Name = "MidnightBlue",
                         Red = 25,
                         Green = 25,
@@ -879,7 +879,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,14,12,29,50),
                 },
                 new Rgb {
-                        Id = 98,
+                        Id = -999098,
                         Name = "MintCream",
                         Red = 245,
                         Green = 255,
@@ -888,7 +888,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,13,12,29,50),
                 },
                 new Rgb {
-                        Id = 99,
+                        Id = -999099,
                         Name = "MistyRose",
                         Red = 255,
                         Green = 228,
@@ -897,7 +897,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,12,12,29,50),
                 },
                 new Rgb {
-                        Id = 100,
+                        Id = -999100,
                         Name = "Moccasin",
                         Red = 255,
                         Green = 228,
@@ -906,7 +906,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,11,12,29,50),
                 },
                 new Rgb {
-                        Id = 101,
+                        Id = -999101,
                         Name = "NavajoWhite",
                         Red = 255,
                         Green = 222,
@@ -915,7 +915,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,10,12,29,50),
                 },
                 new Rgb {
-                        Id = 102,
+                        Id = -999102,
                         Name = "Navy",
                         Red = 0,
                         Green = 0,
@@ -924,7 +924,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,9,12,29,50),
                 },
                 new Rgb {
-                        Id = 103,
+                        Id = -999103,
                         Name = "OldLace",
                         Red = 253,
                         Green = 245,
@@ -933,7 +933,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,8,12,29,50),
                 },
                 new Rgb {
-                        Id = 104,
+                        Id = -999104,
                         Name = "Olive",
                         Red = 128,
                         Green = 128,
@@ -942,7 +942,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,7,12,29,50),
                 },
                 new Rgb {
-                        Id = 105,
+                        Id = -999105,
                         Name = "OliveDrab",
                         Red = 107,
                         Green = 142,
@@ -951,7 +951,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,6,12,29,50),
                 },
                 new Rgb {
-                        Id = 106,
+                        Id = -999106,
                         Name = "Orange",
                         Red = 255,
                         Green = 165,
@@ -960,7 +960,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,5,12,29,50),
                 },
                 new Rgb {
-                        Id = 107,
+                        Id = -999107,
                         Name = "OrangeRed",
                         Red = 255,
                         Green = 69,
@@ -969,7 +969,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,4,12,29,50),
                 },
                 new Rgb {
-                        Id = 108,
+                        Id = -999108,
                         Name = "Orchid",
                         Red = 218,
                         Green = 112,
@@ -978,7 +978,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,3,12,29,50),
                 },
                 new Rgb {
-                        Id = 109,
+                        Id = -999109,
                         Name = "PaleGreen",
                         Red = 152,
                         Green = 251,
@@ -987,7 +987,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,1,12,29,50),
                 },
                 new Rgb {
-                        Id = 110,
+                        Id = -999110,
                         Name = "PaleGoldenRod",
                         Red = 238,
                         Green = 232,
@@ -996,7 +996,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,3,2,12,29,50),
                 },
                 new Rgb {
-                        Id = 111,
+                        Id = -999111,
                         Name = "PaleTurquoise",
                         Red = 175,
                         Green = 238,
@@ -1005,7 +1005,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,28,12,29,50),
                 },
                 new Rgb {
-                        Id = 112,
+                        Id = -999112,
                         Name = "PaleVioletRed",
                         Red = 219,
                         Green = 112,
@@ -1014,7 +1014,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,27,12,29,50),
                 },
                 new Rgb {
-                        Id = 113,
+                        Id = -999113,
                         Name = "PapayaWhip",
                         Red = 255,
                         Green = 239,
@@ -1023,7 +1023,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,26,12,29,50),
                 },
                 new Rgb {
-                        Id = 114,
+                        Id = -999114,
                         Name = "PeachPuff",
                         Red = 255,
                         Green = 218,
@@ -1032,7 +1032,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,25,12,29,50),
                 },
                 new Rgb {
-                        Id = 115,
+                        Id = -999115,
                         Name = "Peru",
                         Red = 205,
                         Green = 133,
@@ -1041,7 +1041,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,24,12,29,50),
                 },
                 new Rgb {
-                        Id = 116,
+                        Id = -999116,
                         Name = "Pink",
                         Red = 255,
                         Green = 192,
@@ -1050,7 +1050,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,23,12,29,50),
                 },
                 new Rgb {
-                        Id = 117,
+                        Id = -999117,
                         Name = "Plum",
                         Red = 221,
                         Green = 160,
@@ -1059,7 +1059,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,22,12,29,50),
                 },
                 new Rgb {
-                        Id = 118,
+                        Id = -999118,
                         Name = "PowderBlue",
                         Red = 176,
                         Green = 224,
@@ -1068,7 +1068,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,21,12,29,50),
                 },
                 new Rgb {
-                        Id = 119,
+                        Id = -999119,
                         Name = "Purple",
                         Red = 128,
                         Green = 0,
@@ -1077,7 +1077,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,20,12,29,50),
                 },
                 new Rgb {
-                        Id = 120,
+                        Id = -999120,
                         Name = "RebeccaPurple",
                         Red = 102,
                         Green = 51,
@@ -1086,7 +1086,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,19,12,29,50),
                 },
                 new Rgb {
-                        Id = 121,
+                        Id = -999121,
                         Name = "Red",
                         Red = 255,
                         Green = 0,
@@ -1095,7 +1095,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,18,12,29,50),
                 },
                 new Rgb {
-                        Id = 122,
+                        Id = -999122,
                         Name = "RosyBrown",
                         Red = 188,
                         Green = 143,
@@ -1104,7 +1104,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,17,12,29,50),
                 },
                 new Rgb {
-                        Id = 123,
+                        Id = -999123,
                         Name = "RoyalBlue",
                         Red = 65,
                         Green = 105,
@@ -1113,7 +1113,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,16,12,29,50),
                 },
                 new Rgb {
-                        Id = 124,
+                        Id = -999124,
                         Name = "SaddleBrown",
                         Red = 139,
                         Green = 69,
@@ -1122,7 +1122,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,15,12,29,50),
                 },
                 new Rgb {
-                        Id = 125,
+                        Id = -999125,
                         Name = "Salmon",
                         Red = 250,
                         Green = 128,
@@ -1131,7 +1131,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,14,12,29,50),
                 },
                 new Rgb {
-                        Id = 126,
+                        Id = -999126,
                         Name = "SandyBrown",
                         Red = 244,
                         Green = 164,
@@ -1140,7 +1140,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,13,12,29,50),
                 },
                 new Rgb {
-                        Id = 127,
+                        Id = -999127,
                         Name = "SeaGreen",
                         Red = 46,
                         Green = 139,
@@ -1149,7 +1149,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,12,12,29,50),
                 },
                 new Rgb {
-                        Id = 128,
+                        Id = -999128,
                         Name = "SeaShell",
                         Red = 255,
                         Green = 245,
@@ -1158,7 +1158,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,11,12,29,50),
                 },
                 new Rgb {
-                        Id = 129,
+                        Id = -999129,
                         Name = "Sienna",
                         Red = 160,
                         Green = 82,
@@ -1167,7 +1167,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,10,12,29,50),
                 },
                 new Rgb {
-                        Id = 130,
+                        Id = -999130,
                         Name = "Silver",
                         Red = 192,
                         Green = 192,
@@ -1176,7 +1176,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,9,12,29,50),
                 },
                 new Rgb {
-                        Id = 131,
+                        Id = -999131,
                         Name = "SkyBlue",
                         Red = 135,
                         Green = 206,
@@ -1185,7 +1185,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,8,12,29,50),
                 },
                 new Rgb {
-                        Id = 132,
+                        Id = -999132,
                         Name = "SlateBlue",
                         Red = 106,
                         Green = 90,
@@ -1194,7 +1194,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,7,12,29,50),
                 },
                 new Rgb {
-                        Id = 133,
+                        Id = -999133,
                         Name = "SlateGray",
                         Red = 112,
                         Green = 128,
@@ -1203,7 +1203,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,6,12,29,50),
                 },
                 new Rgb {
-                        Id = 134,
+                        Id = -999134,
                         Name = "SlateGrey",
                         Red = 112,
                         Green = 128,
@@ -1212,7 +1212,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,5,12,29,50),
                 },
                 new Rgb {
-                        Id = 135,
+                        Id = -999135,
                         Name = "Snow",
                         Red = 255,
                         Green = 250,
@@ -1221,7 +1221,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,4,12,29,50),
                 },
                 new Rgb {
-                        Id = 136,
+                        Id = -999136,
                         Name = "SpringGreen",
                         Red = 0,
                         Green = 255,
@@ -1230,7 +1230,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,3,12,29,50),
                 },
                 new Rgb {
-                        Id = 137,
+                        Id = -999137,
                         Name = "SteelBlue",
                         Red = 70,
                         Green = 130,
@@ -1239,7 +1239,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,2,12,29,50),
                 },
                 new Rgb {
-                        Id = 138,
+                        Id = -999138,
                         Name = "Tan",
                         Red = 210,
                         Green = 180,
@@ -1248,7 +1248,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,2,1,12,29,50),
                 },
                 new Rgb {
-                        Id = 139,
+                        Id = -999139,
                         Name = "Teal",
                         Red = 0,
                         Green = 128,
@@ -1257,7 +1257,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,31,12,29,50),
                 },
                 new Rgb {
-                        Id = 140,
+                        Id = -999140,
                         Name = "Thistle",
                         Red = 216,
                         Green = 191,
@@ -1266,7 +1266,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,30,12,29,50),
                 },
                 new Rgb {
-                        Id = 141,
+                        Id = -999141,
                         Name = "Tomato",
                         Red = 255,
                         Green = 99,
@@ -1275,7 +1275,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,29,12,29,50),
                 },
                 new Rgb {
-                        Id = 142,
+                        Id = -999142,
                         Name = "Turquoise",
                         Red = 64,
                         Green = 224,
@@ -1284,7 +1284,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,28,12,29,50),
                 },
                 new Rgb {
-                        Id = 143,
+                        Id = -999143,
                         Name = "Violet",
                         Red = 238,
                         Green = 130,
@@ -1293,7 +1293,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,27,12,29,50),
                 },
                 new Rgb {
-                        Id = 144,
+                        Id = -999144,
                         Name = "Wheat",
                         Red = 245,
                         Green = 222,
@@ -1302,7 +1302,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,26,12,29,50),
                 },
                 new Rgb {
-                        Id = 145,
+                        Id = -999145,
                         Name = "White",
                         Red = 255,
                         Green = 255,
@@ -1311,7 +1311,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,25,12,29,50),
                 },
                 new Rgb {
-                        Id = 146,
+                        Id = -999146,
                         Name = "WhiteSmoke",
                         Red = 245,
                         Green = 245,
@@ -1320,7 +1320,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,24,12,29,50),
                 },
                 new Rgb {
-                        Id = 147,
+                        Id = -999147,
                         Name = "Yellow",
                         Red = 255,
                         Green = 255,
@@ -1329,7 +1329,7 @@ namespace EDennis.Samples.Colors2Repo.Models {
                         DateAdded = new DateTime(2019,1,23,12,29,50),
                 },
                 new Rgb {
-                        Id = 148,
+                        Id = -999148,
                         Name = "YellowGreen",
                         Red = 154,
                         Green = 205,

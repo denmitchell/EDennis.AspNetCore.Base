@@ -6,7 +6,7 @@ namespace Colors.Models {
         public static Color[] ColorRecords { get; set; }
             = new Color[] {
                 new Color {
-                        Id = 1,
+                        Id = -99901,
                         SysStart = new DateTime(2018,1,1,0,0,0),
                         Name = "black",
                         SysEnd = new DateTime(9999,12,31,23,59,59),
@@ -14,7 +14,7 @@ namespace Colors.Models {
                         SysUserNext = null,
                 },
                 new Color {
-                        Id = 2,
+                        Id = -99902,
                         SysStart = new DateTime(2018,2,2,0,0,0),
                         Name = "white",
                         SysEnd = new DateTime(9999,12,31,23,59,59),
@@ -22,7 +22,7 @@ namespace Colors.Models {
                         SysUserNext = null,
                 },
                 new Color {
-                        Id = 3,
+                        Id = -99903,
                         SysStart = new DateTime(2018,3,3,0,0,0),
                         Name = "gray",
                         SysEnd = new DateTime(9999,12,31,23,59,59),
@@ -30,7 +30,7 @@ namespace Colors.Models {
                         SysUserNext = null,
                 },
                 new Color {
-                        Id = 4,
+                        Id = -99904,
                         SysStart = new DateTime(2018,4,4,0,0,0),
                         Name = "red",
                         SysEnd = new DateTime(9999,12,31,23,59,59),
@@ -38,7 +38,7 @@ namespace Colors.Models {
                         SysUserNext = null,
                 },
                 new Color {
-                        Id = 5,
+                        Id = -99905,
                         SysStart = new DateTime(2018,5,5,0,0,0),
                         Name = "green",
                         SysEnd = new DateTime(9999,12,31,23,59,59),
@@ -46,7 +46,7 @@ namespace Colors.Models {
                         SysUserNext = null,
                 },
                 new Color {
-                        Id = 6,
+                        Id = -99906,
                         SysStart = new DateTime(2018,6,6,0,0,0),
                         Name = "blue",
                         SysEnd = new DateTime(9999,12,31,23,59,59),
@@ -57,7 +57,7 @@ namespace Colors.Models {
         public static Color[] ColorHistoryRecords { get; set; }
             = new Color[] {
                 new Color {
-                        Id = 1,
+                        Id = -99901,
                         SysStart = new DateTime(2015,1,1,0,0,0),
                         Name = "tan",
                         SysEnd = new DateTime(2015,12,31,23,59,59),
@@ -65,7 +65,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 1,
+                        Id = -99901,
                         SysStart = new DateTime(2016,1,1,0,0,0),
                         Name = "brown",
                         SysEnd = new DateTime(2016,12,31,23,59,59),
@@ -73,7 +73,7 @@ namespace Colors.Models {
                         SysUserNext = "jill@hill.org",
                 },
                 new Color {
-                        Id = 1,
+                        Id = -99901,
                         SysStart = new DateTime(2017,1,1,0,0,0),
                         Name = "beige",
                         SysEnd = new DateTime(2017,12,31,23,59,59),
@@ -81,7 +81,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 2,
+                        Id = -99902,
                         SysStart = new DateTime(2015,2,2,0,0,0),
                         Name = "chiffon",
                         SysEnd = new DateTime(2016,2,1,23,59,59),
@@ -89,7 +89,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 2,
+                        Id = -99902,
                         SysStart = new DateTime(2016,2,2,0,0,0),
                         Name = "ivory",
                         SysEnd = new DateTime(2017,2,1,23,59,59),
@@ -97,7 +97,7 @@ namespace Colors.Models {
                         SysUserNext = "jill@hill.org",
                 },
                 new Color {
-                        Id = 2,
+                        Id = -99902,
                         SysStart = new DateTime(2017,2,2,0,0,0),
                         Name = "pearl",
                         SysEnd = new DateTime(2018,2,1,23,59,59),
@@ -105,7 +105,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 3,
+                        Id = -99903,
                         SysStart = new DateTime(2014,3,3,0,0,0),
                         Name = "smoke",
                         SysEnd = new DateTime(2015,3,2,23,59,59),
@@ -113,7 +113,7 @@ namespace Colors.Models {
                         SysUserNext = "jill@hill.org",
                 },
                 new Color {
-                        Id = 3,
+                        Id = -99903,
                         SysStart = new DateTime(2015,3,3,0,0,0),
                         Name = "pewter",
                         SysEnd = new DateTime(2016,3,2,23,59,59),
@@ -121,7 +121,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 3,
+                        Id = -99903,
                         SysStart = new DateTime(2016,3,3,0,0,0),
                         Name = "charcoal",
                         SysEnd = new DateTime(2017,3,2,23,59,59),
@@ -129,7 +129,7 @@ namespace Colors.Models {
                         SysUserNext = "jill@hill.org",
                 },
                 new Color {
-                        Id = 3,
+                        Id = -99903,
                         SysStart = new DateTime(2017,3,3,0,0,0),
                         Name = "slate",
                         SysEnd = new DateTime(2018,3,2,23,59,59),
@@ -137,7 +137,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 4,
+                        Id = -99904,
                         SysStart = new DateTime(2017,4,4,0,0,0),
                         Name = "crimson",
                         SysEnd = new DateTime(2018,4,3,23,59,59),
@@ -145,7 +145,7 @@ namespace Colors.Models {
                         SysUserNext = "jill@hill.org",
                 },
                 new Color {
-                        Id = 5,
+                        Id = -99905,
                         SysStart = new DateTime(2016,5,5,0,0,0),
                         Name = "sage",
                         SysEnd = new DateTime(2017,5,4,23,59,59),
@@ -153,7 +153,7 @@ namespace Colors.Models {
                         SysUserNext = "jack@hill.org",
                 },
                 new Color {
-                        Id = 5,
+                        Id = -99905,
                         SysStart = new DateTime(2017,5,5,0,0,0),
                         Name = "chartreuse",
                         SysEnd = new DateTime(2018,5,4,23,59,59),
