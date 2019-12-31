@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
-using EDennis.AspNetCore.Base;
+﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace EDennis.Samples.Colors.InternalApi.Models {
+namespace Colors.Models {
 
-    public class ColorRepo : WriteableTemporalRepo<Color, ColorDbContext, ColorHistoryDbContext> {
+    public class ColorRepo : TemporalRepo<
+        Color, ColorHistory, ColorDbContext, ColorHistoryDbContext> {
         public ColorRepo(ColorDbContext context, ColorHistoryDbContext historyContext, 
-            ScopeProperties22 scopeProperties, 
-            ILogger<WriteableRepo<Color, ColorDbContext>> logger) 
-            : base(context, historyContext, scopeProperties, logger) {
+            IScopeProperties scopeProperties, 
+            ILogger<ColorRepo> logger,
+            IScopedLogger scopedLogger) 
+            : base(context, historyContext, scopeProperties, logger, scopedLogger) {
         }
     }
 }

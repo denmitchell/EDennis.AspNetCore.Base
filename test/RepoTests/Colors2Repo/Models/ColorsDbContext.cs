@@ -4,18 +4,18 @@ using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EDennis.Samples.Colors2Api.Models
+namespace EDennis.Samples.Colors2Repo.Models
 {
 
     public class ColorDbContextDesignTimeFactory :
         MigrationsExtensionsDbContextDesignTimeFactory<ColorsDbContext>{ }
 
 
-    public partial class ColorsDbContext : DbContext
+    public partial class ColorsDbContext : ResettableDbContext<ColorsDbContext>
     {
 
-        public ColorsDbContext(DbContextOptions<ColorsDbContext> options)
-            : base(options) {
+        public ColorsDbContext(DbContextOptionsProvider<ColorsDbContext> provider)
+            : base(provider) {
         }
 
         public virtual DbSet<Rgb> Rgb { get; set; }
@@ -24,9 +24,14 @@ namespace EDennis.Samples.Colors2Api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
+            modelBuilder.HasSequence<int>("seqRgb");
+
             modelBuilder.Entity<Rgb>(entity => {
 
                 entity.ToTable("Rgb");
+
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEXT VALUE FOR seqRgb");
 
                 entity.HasKey(e => e.Id)
                     .HasName("pkRgb");
@@ -46,7 +51,7 @@ namespace EDennis.Samples.Colors2Api.Models
                         .HasValueGenerator<MaxPlusOneValueGenerator<Rgb>>();
 
                     modelBuilder.Entity<Rgb>()
-                        .HasData(ColorsDbContextDataFactory.dbo_RgbRecords);
+                        .HasData(ColorsDbContextDataFactory.RgbRecords);
                 }
 
 

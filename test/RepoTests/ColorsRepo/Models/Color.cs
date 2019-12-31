@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace EDennis.Samples.Colors.InternalApi.Models
+namespace Colors.Models
 {
-    public partial class Color : IHasLongId, IEFCoreTemporalModel
+    public partial class ColorHistory : Color { }
+    public partial class Color : IHasIntegerId, IEFCoreTemporalModel
     {
         public int Id { get; set; }
         public DateTime SysStart { get; set; } //NOTE: ALWAYS POSITION SysStart immediately after the primary key

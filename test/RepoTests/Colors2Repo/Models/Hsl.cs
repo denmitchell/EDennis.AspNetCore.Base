@@ -1,8 +1,9 @@
-﻿using System;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using System;
 
-namespace EDennis.Samples.Colors2Api.Models
+namespace EDennis.Samples.Colors2Repo.Models
 {
-    public class Hsl {
+    public class Hsl : IHasSysUser {
         public int Id { get; set; }
         public string Name { get; set; }
         public int Hue { get; set; }

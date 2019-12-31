@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-using EDennis.AspNetCore.Base;
+﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace EDennis.Samples.Colors2Api.Models
-{
-    public class HslRepo : ReadonlyRepo<Hsl, ColorsDbContext> {
-        public HslRepo(ColorsDbContext context, IScopeProperties scopeProperties, IEnumerable<ILogger<ReadonlyRepo<Hsl, ColorsDbContext>>> loggers) : base(context, scopeProperties, loggers) {
-        }
+namespace EDennis.Samples.Colors2Repo.Models {
+    public class HslRepo : SqlServerRepo<Hsl, ColorsDbContext> {
+        public HslRepo(ColorsDbContext context,
+            IScopeProperties scopeProperties,
+            ILogger<HslRepo> logger,
+            IScopedLogger scopedLogger)
+            : base(context, scopeProperties, logger, scopedLogger) { }
     }
 }

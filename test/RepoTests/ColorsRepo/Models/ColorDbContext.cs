@@ -2,7 +2,7 @@
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
 
-namespace EDennis.Samples.Colors.InternalApi.Models {
+namespace Colors.Models {
 
 
     public class ColorDbContextDesignTimeFactory :
@@ -12,75 +12,65 @@ namespace EDennis.Samples.Colors.InternalApi.Models {
         MigrationsExtensionsDbContextDesignTimeFactory<ColorHistoryDbContext> { }
 
 
-    public class ColorHistoryDbContext : ColorDbContextBase {
-        public ColorHistoryDbContext(DbContextOptions<ColorHistoryDbContext> options)
+    public class ColorHistoryDbContext : ResettableDbContext<ColorHistoryDbContext> {
+
+        public ColorHistoryDbContext(DbContextOptionsProvider<ColorHistoryDbContext> options)
             : base(options) { }
+
+        public virtual DbSet<ColorHistory> ColorHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Color>()
-                .ToTable<Color>("Color", "dbo_history");
+            modelBuilder.Entity<ColorHistory>(entity => {
 
-            modelBuilder.Entity<Color>()
-                .HasKey(e=> new { e.Id, e.SysStart });
+                entity.ToTable("Color", "dbo_history");
+                entity.HasKey(e => new { e.Id, e.SysStart });
+                entity.Property(e => e.Name)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
 
-
-
-            if (Database.IsInMemory()) {
-
-                modelBuilder.Entity<Color>()
-                    //.HasData(ColorDbContextDataFactory.ColorHistoryRecords);
-                    .HasData(ColorHistoryDbContextDataFactory.ColorHistoryRecordsFromRetriever);
-            }
+                if (Database.IsInMemory())
+                    entity.HasData(ColorHistoryDbContextDataFactory.ColorHistoryRecordsFromRetriever);
+               
+            });
 
         }
 
     }
 
-    public class ColorDbContext : ColorDbContextBase {
-        public ColorDbContext(DbContextOptions<ColorDbContext> options)
-            : base(options) { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Color>()
-                .ToTable<Color>("Color", "dbo")
-                .HasKey(e => e.Id);
-            
-
-            if (Database.IsInMemory()) {
-
-                modelBuilder.Entity<Color>()
-                    .Property(e => e.Id)
-                    .HasValueGenerator<MaxPlusOneValueGenerator<Color>>();
-
-                modelBuilder.Entity<Color>()
-                    //.HasData(ColorDbContextDataFactory.dbo_ColorRecords);
-                    .HasData(ColorDbContextDataFactory.ColorRecordsFromRetriever);
-            }
-
-        }
-
-    }
-
-    public abstract class ColorDbContextBase : DbContext {
-
-
-        public ColorDbContextBase(DbContextOptions options)
-            : base(options) { }
+    public class ColorDbContext : ResettableDbContext<ColorDbContext> {
+        public ColorDbContext(DbContextOptionsProvider<ColorDbContext> provider)
+            : base(provider) { }
 
         public virtual DbSet<Color> Colors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Color>()
-                .Property(e => e.Name)
-                .HasMaxLength(30)
-                .IsUnicode(false);
+            modelBuilder.HasSequence<int>("seqColor");
 
+            modelBuilder.Entity<Color>(entity => {
+
+                entity.ToTable("Color", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                if (Database.IsInMemory()) {
+                    entity.HasData(ColorDbContextDataFactory.ColorRecordsFromRetriever);
+                    entity.Property(e => e.Id)
+                        .HasValueGenerator<MaxPlusOneValueGenerator<Color>>();
+                } else {
+                    entity.Property(e => e.Id)
+                        .HasDefaultValueSql("NEXT VALUE FOR seqColor");
+                }
+
+            });
 
         }
+
     }
+
 }

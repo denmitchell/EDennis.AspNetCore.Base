@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using EDennis.MigrationsExtensions;
 using System.IO;
 
-namespace EDennis.Samples.Colors2Api.Migrations
+namespace EDennis.Samples.Colors2Repo.Migrations
 {
     public partial class Initial : Migration
     {
