@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Text;
 using System.Text.Json;
 
-namespace EDennis.AspNetCore.Base.Testing.Database {
+namespace EDennis.AspNetCore.Base.Testing {
     public class PkRewriterDataReader : DbDataReader {
 
         public PkRewriter PkRewriter { get; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using EDennis.AspNetCore.Base.Testing;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -45,19 +46,21 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
                 var devName = _config[_settings.CurrentValue.DeveloperNameEnvironmentVariable];
-                var devPrefix = _settings.CurrentValue.DeveloperPrefixes[devName].ToString();
-                var basePrefix = _settings.CurrentValue.BasePrefix.ToString();
+                var devPrefix = _settings.CurrentValue.DeveloperPrefixes[devName];
+                var basePrefix = _settings.CurrentValue.BasePrefix;
 
-                _logger.LogInformation($"Replacing {basePrefix} with {devPrefix} in HTTP Request");
+                var rewriter = new PkRewriter(devPrefix, basePrefix); 
+
+                _logger.LogInformation($"Replacing {rewriter.BasePrefix} with {rewriter.DeveloperPrefix} in HTTP Request");
 
                 //replace path & query string
-                req.QueryString = new QueryString(context.Request.QueryString.Value.Replace(basePrefix, devPrefix));
-                req.Path = new PathString(context.Request.Path.Value.Replace(basePrefix, devPrefix));
+                req.QueryString = new QueryString(rewriter.Encode(context.Request.QueryString.Value));
+                req.Path = new PathString(rewriter.Encode(context.Request.Path.Value));
 
                 //replace route values
                 var rv = new RouteValueDictionary();
                 foreach (var key in req.RouteValues.Keys)
-                    rv.Add(key, req.RouteValues[key].ToString().Replace(basePrefix, devPrefix));
+                    rv.Add(key, rewriter.Encode(req.RouteValues[key].ToString()));
 
                 req.RouteValues = rv;
 
@@ -68,7 +71,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     req.EnableBuffering();
                     var body = req.Body;
                     try {
-                        req.Body = Replace(req.Body, basePrefix, devPrefix);
+                        req.Body = Transform(req.Body, rewriter.Encode);
                     } catch {
                         req.Body = body;
                     }
@@ -90,7 +93,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 //modify the response body by replacing developer prefix with base prefix
                 memStream.Position = 0;
                 string responseBody = new StreamReader(memStream).ReadToEnd();
-                responseBody = responseBody.Replace(devPrefix, basePrefix);
+                responseBody = rewriter.Decode(responseBody);
 
                 //generate a stream from the modified responseBody string
                 var modifiedBody = MiddlewareUtils.StringToStream(responseBody);
@@ -106,13 +109,21 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+        private static Stream Transform(Stream stream, Func<string,string> transform) {
+
+            var body = MiddlewareUtils.StreamToString(stream);
+            body = transform(body);
+
+            return MiddlewareUtils.StringToStream(body);
+        }
+
+
         private static Stream Replace(Stream stream, string replaceWhat, string replaceWith) {
 
             var body = MiddlewareUtils.StreamToString(stream);
             body = body.Replace(replaceWhat, replaceWith);
 
             return MiddlewareUtils.StringToStream(body);
-
         }
 
     }

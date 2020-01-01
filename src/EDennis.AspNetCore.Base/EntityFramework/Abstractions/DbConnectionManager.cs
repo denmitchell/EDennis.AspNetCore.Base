@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -27,10 +28,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public static DbContextOptionsBuilder ConfigureDbContextOptionsBuilder<TContext>(DbContextOptionsBuilder builder, DbContextSettings<TContext> settings)
+        public static DbContextOptionsBuilder ConfigureDbContextOptionsBuilder<TContext>(DbContextOptionsBuilder builder, 
+            DbContextSettings<TContext> settings, IInterceptor[] interceptors = null)
             where TContext : DbContext {
 
-            return (settings.DatabaseProvider) switch
+            var _ = (settings.DatabaseProvider) switch
             {
                 DatabaseProvider.SqlServer => builder.UseSqlServer(settings.ConnectionString),
                 DatabaseProvider.Sqlite => builder.UseSqlite(settings.ConnectionString),
@@ -38,13 +40,21 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 _ => null
             };
 
+            if (interceptors != null && settings.DatabaseProvider != DatabaseProvider.InMemory)
+                builder.AddInterceptors(interceptors);
+
+            return builder;
+
         }
 
 
-        public static TContext GetDbContext<TContext>(DbConnection<TContext> dbConnection, DbContextSettings<TContext> settings)
+        public static TContext GetDbContext<TContext>(DbConnection<TContext> dbConnection, 
+            DbContextSettings<TContext> settings, IInterceptor[] interceptors = null
+            )
             where TContext : DbContext {
 
             var builder = new DbContextOptionsBuilder<TContext>();
+
             builder = (settings.DatabaseProvider) switch
             {
                 DatabaseProvider.SqlServer => builder.UseSqlServer(dbConnection.IDbConnection as SqlConnection),
@@ -53,13 +63,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 _ => null
             };
 
+            if (interceptors != null && settings.DatabaseProvider != DatabaseProvider.InMemory)
+                builder.AddInterceptors(interceptors);
+
             var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
             var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
             return context;
         }
 
 
-        public static TContext GetDbContext<TContext>(DbContextSettings<TContext> settings)
+        public static TContext GetDbContext<TContext>(DbContextSettings<TContext> settings, 
+            IInterceptor[] interceptors = null)
             where TContext : DbContext {
 
             var builder = new DbContextOptionsBuilder<TContext>();
@@ -70,6 +84,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 DatabaseProvider.InMemory => builder.UseInMemoryDatabase(Guid.NewGuid().ToString()),
                 _ => null
             };
+
+            if (interceptors != null && settings.DatabaseProvider != DatabaseProvider.InMemory)
+                builder.AddInterceptors(interceptors);
 
             var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
             var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });

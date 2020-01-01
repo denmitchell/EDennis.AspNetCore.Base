@@ -2,6 +2,7 @@
 using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -42,14 +43,25 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public static TRepo CreateRepo<TRepo, TEntity, TContext>(IConfiguration config,
-        string dbContextConfigKey, IScopeProperties scopeProperties)
+        string dbContextConfigKey, IScopeProperties scopeProperties, 
+        string pkRewriterConfigKey = IServiceConfigExtensions.DEFAULT_PK_REWRITER_PATH)
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
         where TRepo : IRepo<TEntity, TContext> {
 
-            var settings = GetSettings<TContext>(config, dbContextConfigKey);
+            var settings = GetDbContextSettings<TContext>(config, dbContextConfigKey);
             var dbConnection = DbConnectionManager.GetDbConnection(settings.Interceptor);
-            var context = DbConnectionManager.GetDbContext(dbConnection, settings);
+
+            var pkRewriterSettings = GetPkRewriterSettings(config, pkRewriterConfigKey);
+            var devName = config[pkRewriterSettings.DeveloperNameEnvironmentVariable];
+            var devPrefix = pkRewriterSettings.DeveloperPrefixes[devName];
+            var basePrefix = pkRewriterSettings.BasePrefix;
+
+            var interceptors = new IInterceptor[]
+                { new PkRewriterInterceptor(
+                    new PkRewriter(devPrefix,basePrefix))
+                };
+            var context = DbConnectionManager.GetDbContext(dbConnection, settings, interceptors);
 
             return (TRepo)Activator.CreateInstance(typeof(TRepo),
                 new object[] { context, scopeProperties, NullLogger.Instance, new NullScopedLogger() });
@@ -98,20 +110,33 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public static TTemporalRepo CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(IConfiguration config,
             string dbContextConfigKey, string historyDbContextConfigKey,
-            IScopeProperties scopeProperties)
+            IScopeProperties scopeProperties,
+            string pkRewriterConfigKey = IServiceConfigExtensions.DEFAULT_PK_REWRITER_PATH)
             where TEntity : class, IEFCoreTemporalModel, new()
             where THistoryEntity : TEntity
             where TContext : DbContext
             where THistoryContext : DbContext
             where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> {
 
-            var settings = GetSettings<TContext>(config, dbContextConfigKey);
-            var dbConnection = DbConnectionManager.GetDbConnection(settings.Interceptor);
-            var context = DbConnectionManager.GetDbContext(dbConnection, settings);
 
-            var historySettings = GetSettings<THistoryContext>(config, dbContextConfigKey);
+            var pkRewriterSettings = GetPkRewriterSettings(config, pkRewriterConfigKey);
+            var devName = config[pkRewriterSettings.DeveloperNameEnvironmentVariable];
+            var devPrefix = pkRewriterSettings.DeveloperPrefixes[devName];
+            var basePrefix = pkRewriterSettings.BasePrefix;
+
+            var interceptors = new IInterceptor[]
+                { new PkRewriterInterceptor(
+                    new PkRewriter(devPrefix,basePrefix))
+                };
+
+            var settings = GetDbContextSettings<TContext>(config, dbContextConfigKey);
+            var dbConnection = DbConnectionManager.GetDbConnection(settings.Interceptor);
+            var context = DbConnectionManager.GetDbContext(dbConnection, settings,interceptors);
+
+            var historySettings = GetDbContextSettings<THistoryContext>(config, historyDbContextConfigKey);
             var historyDbConnection = DbConnectionManager.GetDbConnection(historySettings.Interceptor);
-            var historyContext = DbConnectionManager.GetDbContext(historyDbConnection, historySettings);
+            var historyContext = DbConnectionManager.GetDbContext(historyDbConnection, historySettings, interceptors);
+
 
             var repo = (TTemporalRepo)Activator.CreateInstance(typeof(TTemporalRepo),
                 new object[] { context, historyContext, scopeProperties, NullLogger.Instance, new NullScopedLogger() });
@@ -123,13 +148,18 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        private static DbContextSettings<TContext> GetSettings<TContext>(IConfiguration config, string configKey)
+        private static DbContextSettings<TContext> GetDbContextSettings<TContext>(IConfiguration config, string configKey)
             where TContext : DbContext {
             var settings = new DbContextSettings<TContext>();
             config.GetSection(configKey).Bind(settings);
             return settings;
         }
 
+        private static PkRewriterSettings GetPkRewriterSettings(IConfiguration config, string configKey){
+            var settings = new PkRewriterSettings();
+            config.GetSection(configKey).Bind(settings);
+            return settings;
+        }
 
 
 

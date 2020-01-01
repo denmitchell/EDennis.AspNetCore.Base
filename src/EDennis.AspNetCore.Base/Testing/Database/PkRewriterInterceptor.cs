@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace EDennis.AspNetCore.Base.Testing.Database {
+namespace EDennis.AspNetCore.Base.Testing {
 
     /// <summary>
     /// sample use
@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Testing.Database {
         public X() {
             builder.AddInterceptors(new IInterceptor[]
                 { new PkRewriterInterceptor(
-                    new PkRewriter(-999000, 501)) 
+                    new PkRewriter(501,-999000)) 
                 });
         }
     }
