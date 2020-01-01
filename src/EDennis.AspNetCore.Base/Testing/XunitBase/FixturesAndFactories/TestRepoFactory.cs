@@ -1,166 +1,152 @@
-﻿using Castle.Core.Logging;
-using EDennis.AspNetCore.Base.EntityFramework;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Logging;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public class TestRepoFactory {
+    public class TestRepoFactory<TRepo, TEntity, TContext>
+            where TEntity : class, IHasSysUser, new()
+            where TContext : ResettableDbContext<TContext>
+            where TRepo : IRepo<TEntity, TContext>  {
 
         public const string DEFAULT_USER = "tester@example.org";
+        public const string DEFAULT_PKREWRITER_CONFIG_KEY = IServiceConfigExtensions.DEFAULT_PK_REWRITER_PATH;
+        public const string DEFAULT_DBCONTEXT_CONFIG_KEY = IServiceConfigExtensions.DEFAULT_DBCONTEXTS_PATH;
 
+        private IConfiguration _configuration;
+        private PkRewriterSettings _pkRewriterSettings;
+        private IScopeProperties _scopeProperties;
+        private ILogger _logger;
+        private IScopedLogger _scopedLogger;
+        private IInterceptor[] _interceptors;
+        private DbContextSettings<TContext> _dbContextSettings;
+        private DbConnection<TContext> _dbConnection;
+        private TContext _dbContext;
 
-        public static TRepo CreateRepo<TRepo, TEntity, TContext>()
-            where TEntity : class, IHasSysUser, new()
-            where TContext : DbContext
-            where TRepo : IRepo<TEntity, TContext> 
-            => CreateRepo<TRepo, TEntity, TContext>(new ConfigurationFixture().Configuration, 
-                typeof(TContext).Name,
-                new ScopeProperties { User = DEFAULT_USER }
-                );
-        
+        public virtual IConfiguration Configuration {
+            get {
+                if (_configuration == null) {
+                    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    _configuration = new ConfigurationBuilder()
+                        .AddJsonFile($"appsettings.{env}.json")
+                        .Build();
+                }
+                return _configuration;
+            }
+            set {
+                _configuration = value;
+            }
+        }
+        public virtual PkRewriterSettings PkRewriterSettings {
+            get {
+                if (_pkRewriterSettings == null) {
+                    _pkRewriterSettings = new PkRewriterSettings();
+                    Configuration.GetSection(DEFAULT_PKREWRITER_CONFIG_KEY).Bind(_pkRewriterSettings);
+                }
+                return _pkRewriterSettings;
+            }
+            set {
+                _pkRewriterSettings = value;
+            }
+        }
+        public virtual IScopeProperties ScopeProperties {
+            get {
+                if (_scopeProperties == null)
+                    _scopeProperties = new ScopeProperties { User = DEFAULT_USER };
+                return _scopeProperties;
+            }
+            set {
+                _scopeProperties = value;
+            }
+        }
+        public virtual ILogger Logger {
+            get {
+                if (_logger == null)
+                    _logger = NullLogger.Instance;
+                return NullLogger.Instance;
+            }
+            set {
+                _logger = value;
+            }
+        }
 
-        public static TRepo CreateRepo<TRepo, TEntity, TContext>(IConfiguration config)
-            where TEntity : class, IHasSysUser, new()
-            where TContext : DbContext
-            where TRepo : IRepo<TEntity, TContext>
-            => CreateRepo<TRepo, TEntity, TContext>(config, typeof(TContext).Name,
-                new ScopeProperties { User = DEFAULT_USER }
-                );
+        public virtual IScopedLogger ScopedLogger {
+            get {
+                if (_scopedLogger == null)
+                    _scopedLogger = new NullScopedLogger();
+                return _scopedLogger;
+            }
+            set {
+                _scopedLogger = value;
+            }
+        }
 
+        public virtual IInterceptor[] Interceptors { 
+            get {
+                if (_interceptors == null) {
+                    var devName = PkRewriterSettings.DeveloperNameEnvironmentVariable;
+                    var devPrefix = PkRewriterSettings.DeveloperPrefixes[devName];
+                    var basePrefix = PkRewriterSettings.BasePrefix;
 
-        public static TRepo CreateRepo<TRepo, TEntity, TContext>(IConfiguration config,
-            string dbContextConfigKey)
-            where TEntity : class, IHasSysUser, new()
-            where TContext : DbContext
-            where TRepo : IRepo<TEntity, TContext>
-            => CreateRepo<TRepo, TEntity, TContext>(config, dbContextConfigKey,
-                new ScopeProperties { User = DEFAULT_USER }
-                );
-
-
-        public static TRepo CreateRepo<TRepo, TEntity, TContext>(IConfiguration config,
-        string dbContextConfigKey, IScopeProperties scopeProperties, 
-        string pkRewriterConfigKey = IServiceConfigExtensions.DEFAULT_PK_REWRITER_PATH)
-        where TEntity : class, IHasSysUser, new()
-        where TContext : DbContext
-        where TRepo : IRepo<TEntity, TContext> {
-
-            var settings = GetDbContextSettings<TContext>(config, dbContextConfigKey);
-            var dbConnection = DbConnectionManager.GetDbConnection(settings.Interceptor);
-
-            var pkRewriterSettings = GetPkRewriterSettings(config, pkRewriterConfigKey);
-            var devName = config[pkRewriterSettings.DeveloperNameEnvironmentVariable];
-            var devPrefix = pkRewriterSettings.DeveloperPrefixes[devName];
-            var basePrefix = pkRewriterSettings.BasePrefix;
-
-            var interceptors = new IInterceptor[]
-                { new PkRewriterInterceptor(
-                    new PkRewriter(devPrefix,basePrefix))
-                };
-            var context = DbConnectionManager.GetDbContext(dbConnection, settings, interceptors);
-
-            return (TRepo)Activator.CreateInstance(typeof(TRepo),
-                new object[] { context, scopeProperties, NullLogger.Instance, new NullScopedLogger() });
+                    _interceptors = new IInterceptor[]
+                        {
+                        new PkRewriterInterceptor(
+                            new PkRewriter(devPrefix,basePrefix))
+                        };
+                }
+                return _interceptors;
+            } 
+            set {
+                _interceptors = value;
+            }
         }
 
 
+        public virtual DbContextSettings<TContext> DbContextSettings {
+            get {
+                if (_dbContextSettings == null) {
+                    _dbContextSettings = new DbContextSettings<TContext>();
+                    var configKey = $"{DEFAULT_DBCONTEXT_CONFIG_KEY}:{typeof(TContext).Name}";
+                    Configuration.GetSection(configKey).Bind(_dbContextSettings);
+                }
+                return _dbContextSettings;
+            }
+            set {
+                _dbContextSettings = value;
+            }
+        }
 
-        public static TTemporalRepo CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>()
-            where TEntity : class, IEFCoreTemporalModel, new()
-            where THistoryEntity : TEntity
-            where TContext : DbContext
-            where THistoryContext : DbContext
-            where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>
-            => CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(
-                new ConfigurationFixture().Configuration, typeof(TContext).Name, typeof(THistoryContext).Name,
-                new ScopeProperties { User = DEFAULT_USER }
-                );
+        public virtual DbConnection<TContext> DbConnection {
+            get {
+                if (_dbConnection == null) {
+                    _dbConnection = DbConnectionManager.GetDbConnection(DbContextSettings.Interceptor);
+                }
+                return _dbConnection;
+            }
+            set {
+                _dbConnection = value;
+            }
+        }
 
-
-
-        public static TTemporalRepo CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(
-            IConfiguration config)
-            where TEntity : class, IEFCoreTemporalModel, new()
-            where THistoryEntity : TEntity
-            where TContext : DbContext
-            where THistoryContext : DbContext
-            where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>
-            => CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(
-                config, typeof(TContext).Name, typeof(THistoryContext).Name,
-                new ScopeProperties { User = DEFAULT_USER }
-                );
-
-
-        public static TTemporalRepo CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(IConfiguration config,
-            string dbContextConfigKey, string historyDbContextConfigKey)
-            where TEntity : class, IEFCoreTemporalModel, new()
-            where THistoryEntity : TEntity
-            where TContext : DbContext
-            where THistoryContext : DbContext
-            where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>
-            => CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(
-                config, dbContextConfigKey, historyDbContextConfigKey,
-                new ScopeProperties { User = DEFAULT_USER }
-                );
-
-
-        public static TTemporalRepo CreateTemporalRepo<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(IConfiguration config,
-            string dbContextConfigKey, string historyDbContextConfigKey,
-            IScopeProperties scopeProperties,
-            string pkRewriterConfigKey = IServiceConfigExtensions.DEFAULT_PK_REWRITER_PATH)
-            where TEntity : class, IEFCoreTemporalModel, new()
-            where THistoryEntity : TEntity
-            where TContext : DbContext
-            where THistoryContext : DbContext
-            where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> {
-
-
-            var pkRewriterSettings = GetPkRewriterSettings(config, pkRewriterConfigKey);
-            var devName = config[pkRewriterSettings.DeveloperNameEnvironmentVariable];
-            var devPrefix = pkRewriterSettings.DeveloperPrefixes[devName];
-            var basePrefix = pkRewriterSettings.BasePrefix;
-
-            var interceptors = new IInterceptor[]
-                { new PkRewriterInterceptor(
-                    new PkRewriter(devPrefix,basePrefix))
-                };
-
-            var settings = GetDbContextSettings<TContext>(config, dbContextConfigKey);
-            var dbConnection = DbConnectionManager.GetDbConnection(settings.Interceptor);
-            var context = DbConnectionManager.GetDbContext(dbConnection, settings,interceptors);
-
-            var historySettings = GetDbContextSettings<THistoryContext>(config, historyDbContextConfigKey);
-            var historyDbConnection = DbConnectionManager.GetDbConnection(historySettings.Interceptor);
-            var historyContext = DbConnectionManager.GetDbContext(historyDbConnection, historySettings, interceptors);
-
-
-            var repo = (TTemporalRepo)Activator.CreateInstance(typeof(TTemporalRepo),
-                new object[] { context, historyContext, scopeProperties, NullLogger.Instance, new NullScopedLogger() });
-
-            return repo;
+        public virtual TContext DbContext {
+            get {
+                if (_dbContext == null)
+                    _dbContext = DbConnectionManager.GetDbContext(
+                        DbConnection, DbContextSettings, Interceptors);
+                return _dbContext;
+            }
+            set {
+                _dbContext = value;
+            }
         }
 
 
-
-
-
-        private static DbContextSettings<TContext> GetDbContextSettings<TContext>(IConfiguration config, string configKey)
-            where TContext : DbContext {
-            var settings = new DbContextSettings<TContext>();
-            config.GetSection(configKey).Bind(settings);
-            return settings;
-        }
-
-        private static PkRewriterSettings GetPkRewriterSettings(IConfiguration config, string configKey){
-            var settings = new PkRewriterSettings();
-            config.GetSection(configKey).Bind(settings);
-            return settings;
-        }
-
+        public virtual TRepo CreateRepo() => (TRepo) Activator.CreateInstance(typeof(TRepo),
+                new object[] { DbContext, ScopeProperties, Logger, ScopedLogger });
 
 
     }
