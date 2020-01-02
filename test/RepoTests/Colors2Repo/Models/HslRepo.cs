@@ -3,9 +3,9 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace EDennis.Samples.Colors2Repo.Models {
-    public class HslRepo : SqlServerRepo<Hsl, ColorsDbContext> {
-        public HslRepo(ColorsDbContext context,
+namespace Colors2.Models {
+    public class HslRepo : SqlServerRepo<Hsl, Color2DbContext> {
+        public HslRepo(Color2DbContext context,
             IScopeProperties scopeProperties,
             ILogger<HslRepo> logger,
             IScopedLogger scopedLogger)

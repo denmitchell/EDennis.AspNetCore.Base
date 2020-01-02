@@ -1,0 +1,22 @@
+﻿using EDennis.MigrationsExtensions;
+using System.IO;
+
+ColorsRepo
+    ColorDbContext:
+            migrationBuilder.CreateMaintenanceProcedures();
+            migrationBuilder.CreateTestJsonTableSupport();
+            ...
+            migrationBuilder.SaveMappings();            
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));			
+			...
+            migrationBuilder.DropTestJsonTableSupport();
+            migrationBuilder.DropMaintenanceProcedures();
+
+
+    ColorHistoryDbContext:
+            ...
+            migrationBuilder.SaveMappings();
+            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert_History.sql"));
+			...
+			
+					

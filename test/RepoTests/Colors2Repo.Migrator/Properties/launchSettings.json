@@ -1,0 +1,19 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "AddMigration": {
+      "commandName": "Project",
+      "commandLineArgs": "AddMigration=Colors2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "UpdateDatabase": {
+      "commandName": "Project",
+      "commandLineArgs": "UpdateDatabase=Colors2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

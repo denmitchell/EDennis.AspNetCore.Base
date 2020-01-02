@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "AddMigration=Colors": {
+      "commandName": "Project",
+      "commandLineArgs": "AddMigration=Colors",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "AddMigration=Colors2": {
+      "commandName": "Project",
+      "commandLineArgs": "AddMigration=Colors2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "UpdateDatabase=Colors": {
+      "commandName": "Project",
+      "commandLineArgs": "UpdateDatabase=Colors",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "UpdateDatabase=Colors2": {
+      "commandName": "Project",
+      "commandLineArgs": "UpdateDatabase=Colors2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

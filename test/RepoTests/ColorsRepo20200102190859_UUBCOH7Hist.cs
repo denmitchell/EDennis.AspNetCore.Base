@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using EDennis.MigrationsExtensions;
-using System.IO;
 
-namespace EDennis.Samples.Colors.InternalApi.Migrations.ColorHistoryDb
+namespace Colors.Migrations
 {
-    public partial class Initial : Migration
+    public partial class UUBCOH7Hist : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,10 +26,6 @@ namespace EDennis.Samples.Colors.InternalApi.Migrations.ColorHistoryDb
                 {
                     table.PrimaryKey("PK_Color", x => new { x.Id, x.SysStart });
                 });
-
-            migrationBuilder.SaveMappings();
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert_History.sql"));
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

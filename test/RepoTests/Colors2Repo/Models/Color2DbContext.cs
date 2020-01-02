@@ -4,17 +4,17 @@ using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EDennis.Samples.Colors2Repo.Models
+namespace Colors2.Models
 {
 
     public class ColorDbContextDesignTimeFactory :
-        MigrationsExtensionsDbContextDesignTimeFactory<ColorsDbContext>{ }
+        MigrationsExtensionsDbContextDesignTimeFactory<Color2DbContext>{ }
 
 
-    public partial class ColorsDbContext : ResettableDbContext<ColorsDbContext>
+    public partial class Color2DbContext : ResettableDbContext<Color2DbContext>
     {
 
-        public ColorsDbContext(DbContextOptionsProvider<ColorsDbContext> provider)
+        public Color2DbContext(DbContextOptionsProvider<Color2DbContext> provider)
             : base(provider) {
         }
 

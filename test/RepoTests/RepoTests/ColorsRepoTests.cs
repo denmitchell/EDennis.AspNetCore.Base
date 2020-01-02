@@ -6,6 +6,7 @@ using EDennis.NetCoreTestingUtilities.Extensions;
 using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
+using System.Linq;
 
 namespace RepoTests {
     public class ColorsRepoTests
@@ -25,11 +26,13 @@ namespace RepoTests {
         }
 
         private IEnumerable<Color> BaseExpected(JsonTestCase jsonTestCase) {
-            return null;
+            var readSeed = jsonTestCase.GetObject<List<Color>>($"ReadSeed");
+            var writeSeed = jsonTestCase.GetObject<List<Color>>($"WriteSeed");
+            return readSeed.Union(writeSeed);
         }
 
-        private void Seed(JsonTestCase jsonTestCase) {
-            var inputs = jsonTestCase.GetObject<List<Color>>($"Seed");
+        private void WriteSeed(JsonTestCase jsonTestCase) {
+            var inputs = jsonTestCase.GetObject<List<Color>>($"WriteSeed");
             foreach (var input in inputs)
                 Repo.Create(input);
         }
@@ -49,8 +52,55 @@ namespace RepoTests {
 
             var actual = Repo.Query.ToPagedList();
 
-            Assert.True(actual.IsEqualOrWrite(expected,3,propertiesToIgnore,Output,true));
+            Assert.True(actual.IsEqualAndWrite(expected,3,propertiesToIgnore,Output,true));
         }
+
+
+        [Theory]
+        [TestJsonA("Update", "", "A")]
+        [TestJsonA("Update", "", "B")]
+        public void Update(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            WriteSeed(jsonTestCase);
+
+            var input = jsonTestCase.GetObject<Color>("Input");
+            var id = jsonTestCase.GetObject<Color>("Id");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected");
+            var expectedHistory = jsonTestCase.GetObject<List<ColorHistory>>("ExpectedHistory");
+
+            Repo.Update(input,id);
+
+            var actual = Repo.Query.ToPagedList();
+            var actualHistory = Repo.GetByIdHistory(id);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, propertiesToIgnore, Output, true));
+            Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, propertiesToIgnore, Output, true));
+        }
+
+        [Theory]
+        [TestJsonA("Delete", "", "A")]
+        [TestJsonA("Delete", "", "B")]
+        public void Delete(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            WriteSeed(jsonTestCase);
+
+            var id = jsonTestCase.GetObject<Color>("Id");
+            var expected = jsonTestCase.GetObject<List<Color>>("Expected");
+            var expectedHistory = jsonTestCase.GetObject<List<ColorHistory>>("ExpectedHistory");
+
+            Repo.Delete(id);
+
+            var actual = Repo.Query.ToPagedList();
+            var actualHistory = Repo.GetByIdHistory(id);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, propertiesToIgnore, Output, true));
+            Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, propertiesToIgnore, Output, true));
+        }
+
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using System;
 
-namespace EDennis.Samples.Colors2Repo.Models
+namespace Colors2.Models
 {
     public class Rgb: IHasIntegerId, IHasSysUser
     {
