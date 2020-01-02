@@ -2,14 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
-    public class TestTemporalRepoFactory<TRepo, TEntity, THistoryEntity, TContext, THistoryContext> 
-        : TestRepoFactory<TRepo, TEntity, TContext >
+namespace EDennis.AspNetCore.Base.Testing {
+    public class TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> 
+        : TestRepoFactory<TTemporalRepo, TEntity, TContext >
             where TEntity : class, IHasSysUser, IEFCoreTemporalModel, new()
-            where THistoryEntity : TEntity, IHasSysUser, IEFCoreTemporalModel, new()
+            where THistoryEntity : TEntity
             where TContext : ResettableDbContext<TContext>
             where THistoryContext : ResettableDbContext<THistoryContext>
-            where TRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>{
+            where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>{
 
         private DbContextSettings<THistoryContext> _historyDbContextSettings;
         private DbConnection<THistoryContext> _historyDbConnection;
@@ -54,7 +54,7 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.FixturesAndFactories {
         }
 
 
-        public new virtual TRepo CreateRepo() => (TRepo)Activator.CreateInstance(typeof(TRepo),
+        public new virtual TTemporalRepo CreateRepo() => (TTemporalRepo)Activator.CreateInstance(typeof(TTemporalRepo),
                 new object[] { DbContext, HistoryDbContext, ScopeProperties, Logger, ScopedLogger });
 
 

@@ -1,5 +1,4 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using System;
 using Xunit;
 using Xunit.Abstractions;
@@ -7,25 +6,25 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class TemporalRepoTests<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> 
-            : IClassFixture<TemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>>, IDisposable
+            : IClassFixture<TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>>, IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity: TEntity
-        where TContext : DbContext
-        where THistoryContext : DbContext
+        where TContext : ResettableDbContext<TContext>
+        where THistoryContext : ResettableDbContext<THistoryContext>
         where TTemporalRepo : TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> {
 
         protected ITestOutputHelper Output { get; }
         protected TTemporalRepo Repo { get; }
-        protected TemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> Fixture { get; }
+        private readonly TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity,TContext,THistoryContext> _fixture;
 
-        public TemporalRepoTests(ITestOutputHelper output, TemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> fixture) {
+        public TemporalRepoTests(ITestOutputHelper output, TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> fixture) {
             Output = output;
             Repo = fixture.Repo;
-            Fixture = fixture;
+            _fixture = fixture;
         }
 
         public void Dispose() {
-            Fixture.Reset();
+            _fixture.Dispose();
         }
     }
 }

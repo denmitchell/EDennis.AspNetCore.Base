@@ -1,5 +1,4 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using System;
 using Xunit;
 using Xunit.Abstractions;
@@ -7,23 +6,23 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class RepoTests<TRepo, TEntity, TContext> 
-            : IClassFixture<RepoFixture<TRepo, TEntity, TContext>>, IDisposable
+            : IClassFixture<TestRepoFixture<TRepo, TEntity, TContext>>, IDisposable
         where TEntity : class, IHasSysUser, new()
-        where TContext : DbContext
+        where TContext : ResettableDbContext<TContext>
         where TRepo : Repo<TEntity, TContext> {
 
         protected ITestOutputHelper Output { get; }
         protected TRepo Repo { get; }
-        protected RepoFixture<TRepo, TEntity, TContext> Fixture { get; }
+        private readonly TestRepoFixture<TRepo, TEntity, TContext> _fixture;
 
-        public RepoTests(ITestOutputHelper output, RepoFixture<TRepo, TEntity, TContext> fixture) {
+        public RepoTests(ITestOutputHelper output, TestRepoFixture<TRepo, TEntity, TContext> fixture) {
             Output = output;
             Repo = fixture.Repo;
-            Fixture = fixture;
+            _fixture = fixture;
         }
 
         public void Dispose() {
-            Fixture.Reset();
+            _fixture.Dispose();
         }
     }
 }

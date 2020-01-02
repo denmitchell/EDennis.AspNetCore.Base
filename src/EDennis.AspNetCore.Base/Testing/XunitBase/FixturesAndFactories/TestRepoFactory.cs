@@ -26,6 +26,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         private DbContextSettings<TContext> _dbContextSettings;
         private DbConnection<TContext> _dbConnection;
         private TContext _dbContext;
+        private string _developerName;
+        private string _instance;
 
         public virtual IConfiguration Configuration {
             get {
@@ -51,6 +53,26 @@ namespace EDennis.AspNetCore.Base.Testing {
             }
             set {
                 _pkRewriterSettings = value;
+            }
+        }
+        public virtual string DeveloperName {
+            get {
+                if (_developerName == null)
+                    _developerName = Environment.GetEnvironmentVariable(PkRewriterSettings.DeveloperNameEnvironmentVariable);
+                return _developerName;
+            }
+            set {
+                _developerName = value;
+            }
+        }
+        public virtual string Instance {
+            get {
+                if (_instance == null)
+                    _instance = $"{DeveloperName}:{Guid.NewGuid().ToString()}";
+                return _developerName;
+            }
+            set {
+                _developerName = value;
             }
         }
         public virtual IScopeProperties ScopeProperties {
@@ -148,6 +170,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual TRepo CreateRepo() => (TRepo) Activator.CreateInstance(typeof(TRepo),
                 new object[] { DbContext, ScopeProperties, Logger, ScopedLogger });
 
+
+        public virtual void ResetRepo() => DbConnectionManager.Reset(DbConnection, DbContextSettings.Interceptor, Instance, Logger);
 
     }
 

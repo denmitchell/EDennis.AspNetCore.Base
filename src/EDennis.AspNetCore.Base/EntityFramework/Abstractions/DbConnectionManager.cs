@@ -1,9 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -160,37 +158,34 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public static void Reset<TContext>(DbConnectionCache<TContext> cache, string instance, DbContextInterceptorSettings<TContext> settings,
             ILogger logger = null)
             where TContext : DbContext {
-            if (cache.ContainsKey(instance)) {
-                if (settings.IsInMemory) {
-                    cache[instance] = GetInMemoryDbConnection<TContext>();
-                    if(logger != null)
-                        logger.LogInformation("Db Interceptor resetting {DbContext}-{Instance}", typeof(TContext).Name, instance);
-                } else {
-                    var level = cache[instance].IDbTransaction.IsolationLevel;
-                    cache[instance].IDbTransaction.Rollback();
-                    cache[instance].IDbTransaction = cache[instance].IDbConnection.BeginTransaction(level);
-                    if (logger != null)
-                        logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance);
-                }
-                Reset(cache[instance].IDbConnection, settings);
+            if (cache.ContainsKey(instance))
+                Reset(cache[instance], settings, instance, logger);
+        }
+
+
+        public static void Reset<TContext>(DbConnection<TContext> connection, DbContextSettings<TContext> settings, string instance = null, ILogger logger = null)
+            where TContext : DbContext {
+            Reset(connection, settings.Interceptor, instance, logger);
+        }
+
+        public static void Reset<TContext>(DbConnection<TContext> connection, DbContextInterceptorSettings<TContext> settings, string instance = null, ILogger logger = null )
+            where TContext : DbContext {
+
+            if (settings.IsInMemory) {
+                connection = GetInMemoryDbConnection<TContext>();
+                if (logger != null)
+                    logger.LogInformation("Db Interceptor resetting {DbContext}-{Instance}", typeof(TContext).Name, instance ?? "");
+            } else {
+                var level = connection.IDbTransaction.IsolationLevel;
+                connection.IDbTransaction.Rollback();
+                connection.IDbTransaction = connection.IDbConnection.BeginTransaction(level);
+                if (logger != null)
+                    logger.LogInformation("Db Interceptor rolling back {DbContext}-{Instance}", typeof(TContext).Name, instance ?? "");
             }
-        }
-
-
-        public static void Reset<TContext>(IDbConnection connection, DbContextSettings<TContext> settings)
-            where TContext : DbContext {
-            if (settings.Interceptor.ResetSqlServerIdentities)
-                ResetSqlServerIdentities(connection);
-            if (settings.Interceptor.ResetSqlServerSequences)
-                ResetSqlServerSequences(connection);
-        }
-
-        public static void Reset<TContext>(IDbConnection connection, DbContextInterceptorSettings<TContext> settings)
-            where TContext : DbContext {
             if (settings.ResetSqlServerIdentities)
-                ResetSqlServerIdentities(connection);
+                ResetSqlServerIdentities(connection.IDbConnection);
             if (settings.ResetSqlServerSequences)
-                ResetSqlServerSequences(connection);
+                ResetSqlServerSequences(connection.IDbConnection);
         }
 
 
