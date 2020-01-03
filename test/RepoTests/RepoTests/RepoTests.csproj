@@ -27,7 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Colors2Repo\TestJson_NeedsUpdating.xlsx">
+    <None Update="Colors2Repo\CreateMarsala.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Code</SubType>
+    </None>
+    <None Update="Colors2Repo\CreateLucite.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Code</SubType>
+    </None>
+    <None Update="Colors2Repo\Seeds.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ColorsRepo\TestJson.xlsx">
