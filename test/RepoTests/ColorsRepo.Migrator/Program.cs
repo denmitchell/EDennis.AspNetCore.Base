@@ -16,8 +16,8 @@ namespace ColorsRepo.Migrator {
 
             switch (command) {
                 case "AddMigration=Colors":
-                    MigrationsUtils.AddMigrations<ColorDbContext>(migrationName, "Colors", projectInfo["Colors"].Directory);
                     MigrationsUtils.AddMigrations<ColorHistoryDbContext>(migrationName + "Hist", "Colors", projectInfo["Colors"].Directory);
+                    MigrationsUtils.AddMigrations<ColorDbContext>(migrationName, "Colors", projectInfo["Colors"].Directory);
                     break;
                 case "UpdateDatabase=Colors":
                     MigrationsUtils.UpdateDatabase<ColorDbContext>(true);

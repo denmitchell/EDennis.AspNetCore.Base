@@ -30,8 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MigrationsSql\PostUp\" />
     <Folder Include="MigrationsSql\PreUp\" />
+    <Folder Include="MigrationsSql\TemporalInserts\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -52,10 +52,10 @@
     <None Update="FodyWeavers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsSql\TemporalInserts\Initial_Insert.sql">
+    <None Update="MigrationsSql\PostUp\Initial_Insert.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsSql\TemporalInserts\Initial_Insert_History.sql">
+    <None Update="MigrationsSql\PostUp\History\Initial_Insert_History.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

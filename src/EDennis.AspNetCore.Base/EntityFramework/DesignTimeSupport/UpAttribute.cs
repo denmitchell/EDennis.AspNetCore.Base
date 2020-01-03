@@ -64,7 +64,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             if (TemporalInsertsFolder != null && Directory.Exists(TemporalInsertsFolder)) {
                 foreach (var file in Directory.GetFiles(TemporalInsertsFolder).OrderBy(f => f))
-                    migrationBuilder.DoTemporalInserts(File.ReadAllText(file));
+                    migrationBuilder.DoTemporalInserts(file);
             }
 
         }

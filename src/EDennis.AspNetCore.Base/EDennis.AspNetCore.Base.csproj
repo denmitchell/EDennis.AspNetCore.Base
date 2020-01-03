@@ -86,9 +86,5 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.0" />
   </ItemGroup>  
   
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\EDennis.MigrationsExtensions\EDennis.MigrationsExtensions\EDennis.MigrationsExtensions.csproj" />
-  </ItemGroup>  
-  
 
 </Project>

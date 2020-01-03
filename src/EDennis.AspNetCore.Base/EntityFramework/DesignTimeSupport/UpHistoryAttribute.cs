@@ -16,8 +16,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public UpHistoryAttribute( 
             bool saveMappings = true, 
-            string preSqlFolder = "MigrationsSql\\PreUp", 
-            string postSqlFolder = "MigrationsSql\\PostUp") {
+            string preSqlFolder = "MigrationsSql\\PreUp\\History", 
+            string postSqlFolder = "MigrationsSql\\PostUp\\History") {
             SaveMappings = saveMappings;
             PreSqlFolder = preSqlFolder;
             PostSqlFolder = postSqlFolder;

@@ -2,11 +2,13 @@ using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using EDennis.MigrationsExtensions;
 using System.IO;
+using EDennis.AspNetCore.Base.EntityFramework;
 
 namespace Colors.Migrations
 {
     public partial class KK12GSEHist : Migration
     {
+        [UpHistory]
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
@@ -29,8 +31,6 @@ namespace Colors.Migrations
                     table.PrimaryKey("PK_Color", x => new { x.Id, x.SysStart });
                 });
 
-            migrationBuilder.SaveMappings();
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert_History.sql"));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

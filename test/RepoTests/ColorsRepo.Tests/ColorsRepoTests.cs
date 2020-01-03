@@ -15,7 +15,7 @@ namespace RepoTests {
         public ColorsRepoTests(ITestOutputHelper output, TestTemporalRepoFixture<ColorRepo, Color, ColorHistory, ColorDbContext, ColorHistoryDbContext> fixture) 
             : base(output, fixture) { }
 
-        protected string[] propertiesToIgnore { get; }
+        protected string[] PropertiesToIgnore { get; }
             = new string[] { "SysStart", "SysEnd" };
 
         internal class TestJsonA : TestJsonAttribute {
@@ -52,7 +52,7 @@ namespace RepoTests {
 
             var actual = Repo.Query.ToPagedList();
 
-            Assert.True(actual.IsEqualAndWrite(expected,3,propertiesToIgnore,Output,true));
+            Assert.True(actual.IsEqualAndWrite(expected,3,PropertiesToIgnore,Output,true));
         }
 
 
@@ -75,8 +75,8 @@ namespace RepoTests {
             var actual = Repo.Query.ToPagedList();
             var actualHistory = Repo.GetByIdHistory(id);
 
-            Assert.True(actual.IsEqualAndWrite(expected, 3, propertiesToIgnore, Output, true));
-            Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, propertiesToIgnore, Output, true));
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+            Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, PropertiesToIgnore, Output, true));
         }
 
         [Theory]
@@ -97,8 +97,8 @@ namespace RepoTests {
             var actual = Repo.Query.ToPagedList();
             var actualHistory = Repo.GetByIdHistory(id);
 
-            Assert.True(actual.IsEqualAndWrite(expected, 3, propertiesToIgnore, Output, true));
-            Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, propertiesToIgnore, Output, true));
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+            Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, PropertiesToIgnore, Output, true));
         }
 
 

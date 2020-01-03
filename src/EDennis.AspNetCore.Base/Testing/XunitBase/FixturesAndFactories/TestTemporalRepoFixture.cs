@@ -3,7 +3,7 @@ using System;
 
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> : IDisposable
+    public class TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> : IDisposable
         where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity : TEntity
