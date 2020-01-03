@@ -1,16 +1,4 @@
-﻿/*
-create table Rgb (
-  Id int identity not null,
-  Name varchar(50),
-  Red int,
-  Green int,
-  Blue int,
-  SysUser varchar(50),
-  DateAdded DateTime,
-  constraint pkRgb primary key (id)
-);
-*/
-insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999001,'AliceBlue', 240, 248, 255, 'jill@hill.org', CAST('2019-06-18T12:29:34.0000000' AS DateTime2))
+﻿insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999001,'AliceBlue', 240, 248, 255, 'jill@hill.org', CAST('2019-06-18T12:29:34.0000000' AS DateTime2))
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999002,'AntiqueWhite', 250, 235, 215, 'jill@hill.org', CAST('2019-06-17T12:29:50.0000000' AS DateTime2))
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999003,'Aqua', 0, 255, 255, 'jill@hill.org', CAST('2019-06-16T12:29:50.0000000' AS DateTime2))
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999004,'Aquamarine', 127, 255, 212, 'jack@hill.org', CAST('2019-06-15T12:29:50.0000000' AS DateTime2))

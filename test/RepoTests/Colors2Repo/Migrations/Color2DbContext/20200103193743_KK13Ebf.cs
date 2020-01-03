@@ -1,17 +1,14 @@
 using System;
+using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.EntityFrameworkCore.Migrations;
-using EDennis.MigrationsExtensions;
-using System.IO;
 
 namespace Colors2.Migrations
 {
-    public partial class KK12GjP : Migration
+    public partial class KK13Ebf : Migration
     {
+        [Up]
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateMaintenanceProcedures();
-            migrationBuilder.CreateTestJsonTableSupport();
-
             migrationBuilder.CreateSequence<int>(
                 name: "seqRgb");
 
@@ -25,19 +22,18 @@ namespace Colors2.Migrations
                     Green = table.Column<int>(nullable: false),
                     Blue = table.Column<int>(nullable: false),
                     SysUser = table.Column<string>(unicode: false, maxLength: 50, nullable: true),
-                    DateAdded = table.Column<DateTime>(nullable: false)
+                    DateAdded = table.Column<DateTime>(nullable: false),
+                    SysStart = table.Column<DateTime>(nullable: false, defaultValueSql: "(getdate())"),
+                    SysEnd = table.Column<DateTime>(nullable: false, defaultValueSql: "(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))"),
+                    SysUserNext = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pkRgb", x => x.Id);
                 });
-            migrationBuilder.SaveMappings();
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\RgbInserts.sql"));
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\vwHsl.sql"));
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\HslByColorName.sql"));
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\RgbJsonByColorName.sql"));
         }
 
+        [Down]
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -45,9 +41,6 @@ namespace Colors2.Migrations
 
             migrationBuilder.DropSequence(
                 name: "seqRgb");
-
-            migrationBuilder.DropTestJsonTableSupport();
-            migrationBuilder.DropMaintenanceProcedures();
         }
     }
 }

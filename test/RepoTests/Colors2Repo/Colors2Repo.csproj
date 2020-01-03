@@ -13,6 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="MigrationsSql\TemporalInserts\" />
+    <Folder Include="MigrationsSql\PreUp\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -42,16 +45,19 @@
     <None Update="appsettings.Local.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsInserts\HslByColorName.sql">
+    <None Update="FodyWeavers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsInserts\RgbInserts.sql">
+    <None Update="MigrationsSql\PostUp\02_HslByColorName.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsInserts\RgbJsonByColorName.sql">
+    <None Update="MigrationsSql\PostUp\04_RgbInserts.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsInserts\vwHsl.sql">
+    <None Update="MigrationsSql\PostUp\03_RgbJsonByColorName.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\01_vwHsl.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

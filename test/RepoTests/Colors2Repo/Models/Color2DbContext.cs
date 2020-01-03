@@ -44,6 +44,16 @@ namespace Colors2.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+
+                entity.Property(e => e.SysStart)
+                    .HasDefaultValueSql("(getdate())")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.SysEnd)
+                    .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
+                    .ValueGeneratedOnAddOrUpdate();
+
+
                 if (Database.IsInMemory()) {
 
                     modelBuilder.Entity<Rgb>()

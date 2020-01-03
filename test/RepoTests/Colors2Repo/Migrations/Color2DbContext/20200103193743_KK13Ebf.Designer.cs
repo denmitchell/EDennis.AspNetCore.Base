@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Colors2.Migrations
 {
     [DbContext(typeof(Color2DbContext))]
-    [Migration("20200102214526_KK12GjP")]
-    partial class KK12GjP
+    [Migration("20200103193743_KK13Ebf")]
+    partial class KK13Ebf
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,10 +46,23 @@ namespace Colors2.Migrations
                     b.Property<int>("Red")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("SysEnd")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))");
+
+                    b.Property<DateTime>("SysStart")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
                     b.Property<string>("SysUser")
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50)
                         .IsUnicode(false);
+
+                    b.Property<string>("SysUserNext")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id")
                         .HasName("pkRgb");

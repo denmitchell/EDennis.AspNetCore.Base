@@ -2,15 +2,17 @@ using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using EDennis.MigrationsExtensions;
 using System.IO;
+using EDennis.AspNetCore.Base.EntityFramework;
 
 namespace Colors.Migrations
 {
     public partial class KK12GSE : Migration
     {
+        [Up]
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateMaintenanceProcedures();
-            migrationBuilder.CreateTestJsonTableSupport();
+            //migrationBuilder.CreateMaintenanceProcedures();
+            //migrationBuilder.CreateTestJsonTableSupport();
 
             migrationBuilder.EnsureSchema(
                 name: "dbo");
@@ -35,11 +37,13 @@ namespace Colors.Migrations
                     table.PrimaryKey("PK_Color", x => x.Id);
                 });
 
-            migrationBuilder.SaveMappings();
-            migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
+            //migrationBuilder.SaveMappings();
+            //migrationBuilder.CreateSqlServerTemporalTables();
+            //migrationBuilder.Sql(File.ReadAllText("MigrationsInserts\\Initial_Insert.sql"));
 
         }
 
+        [Down]
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -49,8 +53,8 @@ namespace Colors.Migrations
             migrationBuilder.DropSequence(
                 name: "seqColor");
 
-            migrationBuilder.DropTestJsonTableSupport();
-            migrationBuilder.DropMaintenanceProcedures();
+            //migrationBuilder.DropTestJsonTableSupport();
+            //migrationBuilder.DropMaintenanceProcedures();
         }
     }
 }
