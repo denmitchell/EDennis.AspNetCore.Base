@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 
@@ -7,8 +8,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity : TEntity
-        where TContext : ResettableDbContext<TContext>
-        where THistoryContext: ResettableDbContext<THistoryContext> 
+        where TContext : DbContext //ResettableDbContext<TContext>
+        where THistoryContext: DbContext //ResettableDbContext<THistoryContext> 
         {
 
         public TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity,TContext,THistoryContext> Factory { get; }

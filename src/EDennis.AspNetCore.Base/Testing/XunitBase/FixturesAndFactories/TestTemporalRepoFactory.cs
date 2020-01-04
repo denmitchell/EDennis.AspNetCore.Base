@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -7,8 +8,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         : TestRepoFactory<TTemporalRepo, TEntity, TContext >
             where TEntity : class, IHasSysUser, IEFCoreTemporalModel, new()
             where THistoryEntity : TEntity
-            where TContext : ResettableDbContext<TContext>
-            where THistoryContext : ResettableDbContext<THistoryContext>
+            where TContext : DbContext//ResettableDbContext<TContext>
+            where THistoryContext : DbContext //ResettableDbContext<THistoryContext>
             where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>{
 
         private DbContextSettings<THistoryContext> _historyDbContextSettings;
@@ -21,6 +22,14 @@ namespace EDennis.AspNetCore.Base.Testing {
                     _historyDbContextSettings = new DbContextSettings<THistoryContext>();
                     var configKey = $"{DEFAULT_DBCONTEXT_CONFIG_KEY}:{typeof(THistoryContext).Name}";
                     Configuration.GetSection(configKey).Bind(_historyDbContextSettings);
+                    if (_historyDbContextSettings.Interceptor == null) {
+                        _historyDbContextSettings.Interceptor = new DbContextInterceptorSettings<THistoryContext> {
+                            DatabaseProvider = _historyDbContextSettings.DatabaseProvider
+                        };
+                    }
+                    if (_historyDbContextSettings.Interceptor.ConnectionString == null)
+                        _historyDbContextSettings.Interceptor.ConnectionString = _historyDbContextSettings.ConnectionString;
+
                 }
                 return _historyDbContextSettings;
             }

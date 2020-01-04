@@ -21,7 +21,7 @@ namespace RepoTests {
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
                 : base("ColorsRepo", "ColorRepo",
-                      methodName, testScenario, testCase, DatabaseProvider.Excel, "ColorsRepo\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, DatabaseProvider.Excel, "TestJson.xlsx") {
             }
         }
 
@@ -37,6 +37,12 @@ namespace RepoTests {
                 Repo.Create(input);
         }
 
+        [Fact]
+        public void GetTestJsonForProject() {
+            var attr = new TestJsonAttribute("ColorsRepo", "ColorRepo", "Create", "", "A", DatabaseProvider.Excel, "TestJson.xlsx");
+            var cases = attr.GetData(null);
+        }
+
 
         [Theory]
         [TestJsonA("Create", "", "A")]
@@ -44,6 +50,8 @@ namespace RepoTests {
         public void Create(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
+
+            WriteSeed(jsonTestCase);
 
             var input = jsonTestCase.GetObject<Color>("Input");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected");

@@ -65,31 +65,43 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 builder.AddInterceptors(interceptors);
 
             var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+
+            if (interceptors != null) {
+                dbContextOptionsProvider.DisableAutoTransactions = true;
+                dbContextOptionsProvider.Transaction = dbConnection.IDbTransaction;
+            }
+            
             var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
             return context;
         }
 
 
-        public static TContext GetDbContext<TContext>(DbContextSettings<TContext> settings, 
-            IInterceptor[] interceptors = null)
-            where TContext : DbContext {
+        //public static TContext GetDbContext<TContext>(DbContextSettings<TContext> settings, 
+        //    IInterceptor[] interceptors = null)
+        //    where TContext : DbContext {
 
-            var builder = new DbContextOptionsBuilder<TContext>();
-            builder = (settings.DatabaseProvider) switch
-            {
-                DatabaseProvider.SqlServer => builder.UseSqlServer(settings.ConnectionString),
-                DatabaseProvider.Sqlite => builder.UseSqlite(settings.ConnectionString),
-                DatabaseProvider.InMemory => builder.UseInMemoryDatabase(Guid.NewGuid().ToString()),
-                _ => null
-            };
+        //    var builder = new DbContextOptionsBuilder<TContext>();
+        //    builder = (settings.DatabaseProvider) switch
+        //    {
+        //        DatabaseProvider.SqlServer => builder.UseSqlServer(settings.ConnectionString),
+        //        DatabaseProvider.Sqlite => builder.UseSqlite(settings.ConnectionString),
+        //        DatabaseProvider.InMemory => builder.UseInMemoryDatabase(Guid.NewGuid().ToString()),
+        //        _ => null
+        //    };
 
-            if (interceptors != null && settings.DatabaseProvider != DatabaseProvider.InMemory)
-                builder.AddInterceptors(interceptors);
+        //    if (interceptors != null && settings.DatabaseProvider != DatabaseProvider.InMemory)
+        //        builder.AddInterceptors(interceptors);
 
-            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
-            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
-            return context;
-        }
+        //    var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
+
+        //    if (interceptors != null) {
+        //        dbContextOptionsProvider.DisableAutoTransactions = true;
+        //        dbContextOptionsProvider.Transaction = dbConnection.IDbTransaction;
+        //    }
+
+        //    var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
+        //    return context;
+        //}
 
 
 

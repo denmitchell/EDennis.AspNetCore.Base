@@ -102,15 +102,6 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public void UpdateDatabase<TContext>()
-            where TContext: DbContext {
-            var settings = new DbContextSettings<TContext>();
-            Configuration.GetSection($"DbContexts:{typeof(TContext).Name}").Bind(settings);
-            using var ctx = DbConnectionManager.GetDbContext(settings);
-            ctx.Database.Migrate();
-        }
-
-
         #region CanPingAsync
         public static bool CanPingAsync<TProgram1>(TProgram1 program1)
             where TProgram1 : IProgram{

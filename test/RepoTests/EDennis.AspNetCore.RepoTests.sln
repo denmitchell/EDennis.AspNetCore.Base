@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorsRepo.Migrator", "Colo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo.Migrator", "Colors2Repo.Migrator\Colors2Repo.Migrator.csproj", "{FA874F2E-5B5F-407B-A4ED-F1C8C94C8304}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorsRepo.Tests", "ColorsRepo.Tests\ColorsRepo.Tests.csproj", "{B365E37B-4D6F-4D0B-950E-5E3D8E3C613A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorsRepo.Tests", "ColorsRepo.Tests\ColorsRepo.Tests.csproj", "{B365E37B-4D6F-4D0B-950E-5E3D8E3C613A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2Repo.Tests", "Colors2Repo.Tests\Colors2Repo.Tests.csproj", "{0983095B-E212-4A9D-8E9A-DF0624A25C00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo.Tests", "Colors2Repo.Tests\Colors2Repo.Tests.csproj", "{0983095B-E212-4A9D-8E9A-DF0624A25C00}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.NetCoreTestingUtilities", "..\..\..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj", "{182E652D-6687-4C60-BF89-0D6F42CF38D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{0983095B-E212-4A9D-8E9A-DF0624A25C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0983095B-E212-4A9D-8E9A-DF0624A25C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0983095B-E212-4A9D-8E9A-DF0624A25C00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{182E652D-6687-4C60-BF89-0D6F42CF38D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{182E652D-6687-4C60-BF89-0D6F42CF38D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{182E652D-6687-4C60-BF89-0D6F42CF38D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{182E652D-6687-4C60-BF89-0D6F42CF38D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

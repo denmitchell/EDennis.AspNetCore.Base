@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -10,8 +11,8 @@ using System;
 namespace EDennis.AspNetCore.Base.Testing {
     public class TestRepoFactory<TRepo, TEntity, TContext>
             where TEntity : class, IHasSysUser, new()
-            where TContext : ResettableDbContext<TContext>
-            where TRepo : IRepo<TEntity, TContext>  {
+            where TContext : DbContext//ResettableDbContext<TContext>
+            where TRepo : IRepo<TEntity, TContext> {
 
         public const string DEFAULT_USER = "tester@example.org";
         public const string DEFAULT_PKREWRITER_CONFIG_KEY = IServiceConfigExtensions.DEFAULT_PK_REWRITER_PATH;
@@ -20,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         private IConfiguration _configuration;
         private PkRewriterSettings _pkRewriterSettings;
         private IScopeProperties _scopeProperties;
-        private ILogger _logger;
+        private ILogger<TRepo> _logger;
         private IScopedLogger _scopedLogger;
         private IInterceptor[] _interceptors;
         private DbContextSettings<TContext> _dbContextSettings;
@@ -58,7 +59,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual string DeveloperName {
             get {
                 if (_developerName == null)
-                    _developerName = Environment.GetEnvironmentVariable(PkRewriterSettings.DeveloperNameEnvironmentVariable);
+                    _developerName = Configuration[PkRewriterSettings.DeveloperNameEnvironmentVariable];
                 return _developerName;
             }
             set {
@@ -85,11 +86,11 @@ namespace EDennis.AspNetCore.Base.Testing {
                 _scopeProperties = value;
             }
         }
-        public virtual ILogger Logger {
+        public virtual ILogger<TRepo> Logger {
             get {
                 if (_logger == null)
-                    _logger = NullLogger.Instance;
-                return NullLogger.Instance;
+                    _logger = NullLogger<TRepo>.Instance;
+                return _logger;
             }
             set {
                 _logger = value;
@@ -107,11 +108,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             }
         }
 
-        public virtual IInterceptor[] Interceptors { 
+        public virtual IInterceptor[] Interceptors {
             get {
                 if (_interceptors == null) {
-                    var devName = PkRewriterSettings.DeveloperNameEnvironmentVariable;
-                    var devPrefix = PkRewriterSettings.DeveloperPrefixes[devName];
+                    var devPrefix = PkRewriterSettings.DeveloperPrefixes[DeveloperName];
                     var basePrefix = PkRewriterSettings.BasePrefix;
 
                     _interceptors = new IInterceptor[]
@@ -121,7 +121,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                         };
                 }
                 return _interceptors;
-            } 
+            }
             set {
                 _interceptors = value;
             }
@@ -134,6 +134,13 @@ namespace EDennis.AspNetCore.Base.Testing {
                     _dbContextSettings = new DbContextSettings<TContext>();
                     var configKey = $"{DEFAULT_DBCONTEXT_CONFIG_KEY}:{typeof(TContext).Name}";
                     Configuration.GetSection(configKey).Bind(_dbContextSettings);
+                    if(_dbContextSettings.Interceptor == null) {
+                        _dbContextSettings.Interceptor = new DbContextInterceptorSettings<TContext> {
+                            DatabaseProvider = _dbContextSettings.DatabaseProvider
+                        };
+                    }
+                    if (_dbContextSettings.Interceptor.ConnectionString == null)
+                        _dbContextSettings.Interceptor.ConnectionString = _dbContextSettings.ConnectionString;
                 }
                 return _dbContextSettings;
             }
@@ -141,6 +148,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 _dbContextSettings = value;
             }
         }
+
 
         public virtual DbConnection<TContext> DbConnection {
             get {
@@ -167,7 +175,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        public virtual TRepo CreateRepo() => (TRepo) Activator.CreateInstance(typeof(TRepo),
+        public virtual TRepo CreateRepo() => (TRepo)Activator.CreateInstance(typeof(TRepo),
                 new object[] { DbContext, ScopeProperties, Logger, ScopedLogger });
 
 
