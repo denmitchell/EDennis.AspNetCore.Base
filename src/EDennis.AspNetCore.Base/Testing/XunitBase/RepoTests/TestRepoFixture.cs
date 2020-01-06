@@ -7,7 +7,7 @@ namespace EDennis.AspNetCore.Base.Testing {
     public class TestRepoFixture<TRepo, TEntity, TContext> : IDisposable
         where TRepo : IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
-        where TContext : DbContext //ResettableDbContext<TContext> 
+        where TContext : DbContext 
         {
 
         public TestRepoFactory<TRepo,TEntity,TContext> Factory { get; }

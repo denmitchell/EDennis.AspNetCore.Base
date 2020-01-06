@@ -4,8 +4,11 @@ using System.Linq;
 
 namespace EDennis.AspNetCore.Base.Web {
     public static partial class RequestExtensions {
-        public static bool ContainsHeaderOrQueryKey(this HttpRequest request, string key, out string value) {
-            if (request.Headers.Keys.Any(k => k.Equals(key, StringComparison.OrdinalIgnoreCase))) {
+        public static bool ContainsPathHeaderOrQueryKey(this HttpRequest request, string key, out string value, string defaultValue = null) {
+            if (request.Path.Value.Contains(key, StringComparison.OrdinalIgnoreCase)) {
+                value = defaultValue;
+                return true;
+            } else if (request.Headers.Keys.Any(k => k.Equals(key, StringComparison.OrdinalIgnoreCase))) {
                 value = request.Headers[key];
                 return true;
             } else if (request.Query.Keys.Any(k => k.Equals(key, StringComparison.OrdinalIgnoreCase))) {

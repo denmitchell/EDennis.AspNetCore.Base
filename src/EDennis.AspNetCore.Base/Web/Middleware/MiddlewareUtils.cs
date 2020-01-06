@@ -98,6 +98,7 @@ namespace EDennis.AspNetCore.Base.Web {
             UserSource.SessionId => context.Session?.Id,
             UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_KEY),
             UserSource.XUserQueryString => context.Request.Query[Constants.USER_KEY].ToString(),
+            UserSource.WindowsUserName => Environment.GetEnvironmentVariable("USERNAME").ToString(),
             _ => null
         };
 

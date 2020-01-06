@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using System;
 using Xunit;
 using Xunit.Abstractions;
@@ -9,8 +10,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             : IClassFixture<TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>>, IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity: TEntity
-        where TContext : ResettableDbContext<TContext>
-        where THistoryContext : ResettableDbContext<THistoryContext>
+        where TContext : DbContext
+        where THistoryContext : DbContext
         where TTemporalRepo : TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> {
 
         protected ITestOutputHelper Output { get; }

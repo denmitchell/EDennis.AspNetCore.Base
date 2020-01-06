@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TContext">The DbContextBase type</typeparam>
     public class MigrationsExtensionsDbContextDesignTimeFactory<TContext> 
         : IDesignTimeDbContextFactory<TContext>
-        where TContext : ResettableDbContext<TContext> {
+        where TContext : DbContext {
 
         //holds configuration data
         private IConfiguration _config;
@@ -60,8 +60,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     .UseSqlServer(settings.ConnectionString)
                     .ReplaceService<IMigrationsSqlGenerator, MigrationsExtensionsSqlGenerator>();
 
-            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
-            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { builder.Options });
             return context;
 
         }

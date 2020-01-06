@@ -21,13 +21,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public TemporalRepo(TContext context, THistoryContext historyContext,
+        public TemporalRepo(DbContextProvider<TContext> provider, DbContextProvider<THistoryContext> historyProvider,
             IScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger,
-            IScopedLogger scopedLogger) : base(context, scopeProperties, logger, scopedLogger) {
+            IScopedLogger scopedLogger) : base(provider, scopeProperties, logger, scopedLogger) {
 
-            Context = context;
-            HistoryContext = historyContext;
+            HistoryContext = historyProvider.Context;
             ScopeProperties = scopeProperties;
         }
 

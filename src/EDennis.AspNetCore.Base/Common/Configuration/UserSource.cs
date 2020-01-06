@@ -10,6 +10,7 @@
         JwtClientIdClaim,
         SessionId,
         XUserHeader,
-        XUserQueryString
+        XUserQueryString,
+        WindowsUserName
     }
 }

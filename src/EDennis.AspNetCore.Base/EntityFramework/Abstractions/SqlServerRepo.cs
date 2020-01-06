@@ -19,11 +19,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         protected List<StoredProcedureDef> _spDefs;
 
-        public SqlServerRepo(TContext context,
+        public SqlServerRepo(DbContextProvider<TContext> provider,
             IScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger,
             IScopedLogger scopedLogger)
-            : base(context, scopeProperties, logger, scopedLogger) {
+            : base(provider, scopeProperties, logger, scopedLogger) {
         }
 
         /// <summary>

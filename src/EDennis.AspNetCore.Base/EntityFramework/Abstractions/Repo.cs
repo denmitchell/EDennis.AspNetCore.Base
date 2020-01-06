@@ -1,18 +1,11 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
-using EDennis.AspNetCore.Base.Web;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Reflection;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
@@ -38,12 +31,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
-        public Repo(TContext context,
+        public Repo(DbContextProvider<TContext> provider,
             IScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger,
             IScopedLogger scopedLogger) {
 
-            Context = context;
+            Context = provider.Context;
             ScopeProperties = scopeProperties;
             Logger = logger;
             ScopedLogger = scopedLogger;

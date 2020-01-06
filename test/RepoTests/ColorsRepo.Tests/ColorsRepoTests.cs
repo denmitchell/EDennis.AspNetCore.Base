@@ -41,6 +41,7 @@ namespace RepoTests {
         public void GetTestJsonForProject() {
             var attr = new TestJsonAttribute("ColorsRepo", "ColorRepo", "Create", "", "A", DatabaseProvider.Excel, "TestJson.xlsx");
             var cases = attr.GetData(null);
+            Assert.NotNull(cases);
         }
 
 

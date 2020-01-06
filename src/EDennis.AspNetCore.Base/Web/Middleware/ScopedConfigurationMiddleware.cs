@@ -33,7 +33,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 var method = req.Method;
 
                 if (method == Constants.CONFIG_METHOD 
-                    || req.ContainsHeaderOrQueryKey(Constants.CONFIG_QUERY_KEY, out string _)) {
+                    || req.ContainsPathHeaderOrQueryKey(Constants.CONFIG_QUERY_KEY, out string _)) {
 
                     if (!enabled)
                         return;

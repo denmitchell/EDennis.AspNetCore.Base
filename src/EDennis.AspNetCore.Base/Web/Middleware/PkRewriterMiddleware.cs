@@ -36,7 +36,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
 
             //handle bypass query/header
-            if (req.ContainsHeaderOrQueryKey(Constants.PK_REWRITER_BYPASS_KEY, out string bypassStr))
+            if (req.ContainsPathHeaderOrQueryKey(Constants.PK_REWRITER_BYPASS_KEY, out string bypassStr))
                 if (bypassStr == "true")
                     enabled = false;
 

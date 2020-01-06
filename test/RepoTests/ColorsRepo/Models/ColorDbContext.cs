@@ -31,9 +31,9 @@ namespace Colors.Models {
         MigrationsExtensionsDbContextDesignTimeFactory<ColorHistoryDbContext> { }
 
 
-    public class ColorHistoryDbContext : ResettableDbContext<ColorHistoryDbContext> {
+    public class ColorHistoryDbContext : DbContext {
 
-        public ColorHistoryDbContext(DbContextOptionsProvider<ColorHistoryDbContext> options)
+        public ColorHistoryDbContext(DbContextOptions<ColorHistoryDbContext> options)
             : base(options) { }
 
 
@@ -62,9 +62,9 @@ namespace Colors.Models {
 
     }
 
-    public class ColorDbContext : ResettableDbContext<ColorDbContext> {
-        public ColorDbContext(DbContextOptionsProvider<ColorDbContext> provider)
-            : base(provider) { }
+    public class ColorDbContext : DbContext {
+        public ColorDbContext(DbContextOptions<ColorDbContext> options)
+            : base(options) { }
 
         public virtual DbSet<Color> Colors { get; set; }
 

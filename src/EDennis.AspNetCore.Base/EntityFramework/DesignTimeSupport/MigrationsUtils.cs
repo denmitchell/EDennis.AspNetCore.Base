@@ -14,7 +14,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     public static class MigrationsUtils {
 
         public static void UpdateDatabase<TContext>(bool dropFirst)
-            where TContext : ResettableDbContext<TContext> {
+            where TContext : DbContext {
 
             using var db = GetDbContext<TContext>();
             Console.WriteLine($"Updating database for {typeof(TContext).Name} ...");
@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public static void AddMigrations<TContext>(string migrationName, string projectNamespace, string destinationDir)
-            where TContext : ResettableDbContext<TContext> {
+            where TContext : DbContext {
 
             Console.WriteLine($"Adding migration {migrationName} for {projectNamespace} ...");
 
@@ -60,7 +60,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
         public static TContext GetDbContext<TContext>()
-            where TContext : ResettableDbContext<TContext> {
+            where TContext : DbContext {
 
             //note: if the same driver project is being used with multiple repo projects, each
             //with their own appsettings files, ensure that the files are set to Copy Always,
@@ -78,9 +78,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             builder.UseSqlServer(settings.ConnectionString)
                    .ReplaceService<IMigrationsSqlGenerator, MigrationsExtensionsSqlGenerator>();
 
-            var provider = new DbContextOptionsProvider<TContext>(builder.Options);
-
-            return (TContext)Activator.CreateInstance(typeof(TContext), new object[] { provider });
+            return (TContext)Activator.CreateInstance(typeof(TContext), new object[] {builder.Options });
         }
 
 

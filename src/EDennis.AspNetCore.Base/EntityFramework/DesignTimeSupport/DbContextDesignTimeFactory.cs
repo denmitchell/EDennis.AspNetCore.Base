@@ -17,7 +17,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TContext">The DbContextBase type</typeparam>
     /// <seealso cref="MigrationsExtensionsDbContextDesignTimeFactory{TContext}"/>
     public class DbContextDesignTimeFactory<TContext> : IDesignTimeDbContextFactory<TContext> 
-        where TContext : ResettableDbContext<TContext> {
+        where TContext : DbContext {
 
         //holds configuration data
         private IConfiguration _config;
@@ -61,8 +61,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 _ => null
             };
 
-            var dbContextOptionsProvider = new DbContextOptionsProvider<TContext>(builder.Options);
-            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { dbContextOptionsProvider });
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { builder.Options });
             return context;
 
         }

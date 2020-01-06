@@ -7,19 +7,6 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    /// <summary>
-    /// sample use
-    /// </summary>
-    internal class X {
-        DbContextOptionsBuilder builder;
-        public X() {
-            builder.AddInterceptors(new IInterceptor[]
-                { new PkRewriterInterceptor(
-                    new PkRewriter(501,-999000)) 
-                });
-        }
-    }
-
     public class PkRewriterInterceptor : IDbCommandInterceptor {
 
 

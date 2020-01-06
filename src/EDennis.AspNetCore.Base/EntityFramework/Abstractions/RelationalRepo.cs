@@ -1,14 +1,10 @@
 ﻿using Dapper;
 using EDennis.AspNetCore.Base.Logging;
-using EDennis.AspNetCore.Base.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
@@ -17,10 +13,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
-        public RelationalRepo(TContext context,
+        public RelationalRepo(DbContextProvider<TContext> provider,
             IScopeProperties scopeProperties,
             ILogger<Repo<TEntity, TContext>> logger,
-            IScopedLogger scopedLogger) : base(context, scopeProperties, logger, scopedLogger) {
+            IScopedLogger scopedLogger) : base(provider, scopeProperties, logger, scopedLogger) {
         }
 
         /// <summary>

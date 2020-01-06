@@ -1,9 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -14,12 +12,12 @@ namespace EDennis.AspNetCore.Base.Web {
         where TContext : DbContext {
 
         protected readonly RequestDelegate _next;
-        protected readonly IOptionsMonitor<DbContextInterceptorSettings<TContext>> _settings;
+        protected readonly IOptionsMonitor<DbContextSettings<TContext>> _settings;
         protected readonly DbConnectionCache<TContext> _cache;
         protected readonly ILogger<DbContextInterceptorMiddleware<TContext>> _logger;
 
         public DbContextInterceptorMiddleware(RequestDelegate next,
-            IOptionsMonitor<DbContextInterceptorSettings<TContext>> settings,
+            IOptionsMonitor<DbContextSettings<TContext>> settings,
             DbConnectionCache<TContext> cache,
             ILogger<DbContextInterceptorMiddleware<TContext>> logger) {
             _next = next;
@@ -30,11 +28,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public async Task InvokeAsync(HttpContext context,
-            DbContextOptionsProvider<TContext> dbContextOptionsProvider) {
+            DbContextProvider<TContext> dbContextProvider) {
 
 
             var req = context.Request;
-            var enabled = (_settings.CurrentValue?.Enabled ?? new bool?(false)).Value;
+            var enabled = (_settings.CurrentValue?.Interceptor?.Enabled ?? new bool?(false)).Value;
 
             if (!enabled || req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 await _next(context);
@@ -43,19 +41,20 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 var method = req.Method;
 
-                //get instance name
+                //get instance name, which typically is set to the user name
                 string instance;
                 if (req.Query.ContainsKey(Constants.TESTING_INSTANCE_KEY))
                     instance = req.Query[Constants.TESTING_INSTANCE_KEY][0];
                 else
-                    instance = MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.InstanceNameSource, "DbContextInterceptor InstanceName");
+                    instance = MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.Interceptor.InstanceNameSource, "DbContextInterceptor InstanceName");
 
 
                 _logger.LogInformation("DbContextInterceptor handling request: {RequestPath}", context.Request.Path);
 
 
-                //add or retrieve cached connection
-                var cachedCxn = _cache.GetOrAdd(instance, _settings.CurrentValue, dbContextOptionsProvider);
+                //replace the default DbContext with a context where transactions are controlled
+                _cache.SetDbContext(instance, _settings.CurrentValue, dbContextProvider);
+
 
                 await _next(context);
 
@@ -63,9 +62,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 //Handle reset
                 //NOTE: Resets are sent with the last request that is part of the same transaction
                 //      or as part of a standalone/throw-away GET request
-                if (context.Request.ContainsHeaderOrQueryKey(Constants.TESTING_RESET_KEY, out _)) 
-                    DbConnectionManager.Reset(_cache, instance, _settings.CurrentValue, _logger);
-                
+                if (context.Request.ContainsPathHeaderOrQueryKey(Constants.TESTING_RESET_KEY, out string resolvedInstance, instance))
+                    DbContextProvider<TContext>.Reset(_settings.CurrentValue, _cache[resolvedInstance], _logger);
 
             }
         }

@@ -1,8 +1,6 @@
-﻿using System;
-using EDennis.AspNetCore.Base.EntityFramework;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Colors2.Models
 {
@@ -11,11 +9,11 @@ namespace Colors2.Models
         MigrationsExtensionsDbContextDesignTimeFactory<Color2DbContext>{ }
 
 
-    public partial class Color2DbContext : ResettableDbContext<Color2DbContext>
+    public partial class Color2DbContext : DbContext
     {
 
-        public Color2DbContext(DbContextOptionsProvider<Color2DbContext> provider)
-            : base(provider) {
+        public Color2DbContext(DbContextOptions<Color2DbContext> options)
+            : base(options) {
         }
 
         public virtual DbSet<Rgb> Rgb { get; set; }
