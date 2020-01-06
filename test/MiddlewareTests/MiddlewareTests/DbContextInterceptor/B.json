@@ -2,7 +2,7 @@
   "DbContexts": {
     "AppDbContext": {
       "DatabaseProvider": "SqlServer",
-      "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=HrTest;Trusted_Connection=True;MultipleActiveResultSets=True;",
+      "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=DbContextInterceptorDb2;Trusted_Connection=True;MultipleActiveResultSets=True;",
       "Interceptor": {
         "Enabled": true,
         "InstanceNameSource": "XUserQueryString",
