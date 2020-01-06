@@ -59,7 +59,7 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
 
             //get developer name from query/header
             app.Use(async (context, next) => {
-                if (context.Request.ContainsHeaderOrQueryKey("X-DeveloperName", out string developerName)) {
+                if (context.Request.ContainsPathHeaderOrQueryKey("X-DeveloperName", out string developerName)) {
                     Configuration["DeveloperName"] = developerName;
                 }
                 await next();

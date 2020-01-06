@@ -12,12 +12,12 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
     ///     PM > Update-Database -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
     /// </summary>
     public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<AppDbContext> { }
-    public class AppDbContext : ResettableDbContext<AppDbContext> {
+    public class AppDbContext : DbContext {
         public DbSet<Person> Person { get; set; }
         public DbSet<Position> Position { get; set; }
 
-        public AppDbContext(DbContextOptionsProvider<AppDbContext> provider) :
-            base(provider) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) :
+            base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
 

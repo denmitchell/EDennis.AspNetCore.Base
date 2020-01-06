@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
     public class PersonRepo : SqlServerRepo<Person, AppDbContext> {
-        public PersonRepo(AppDbContext context, IScopeProperties scopeProperties, ILogger<Repo<Person, AppDbContext>> logger, IScopedLogger scopedLogger) : base(context, scopeProperties, logger, scopedLogger) {
+        public PersonRepo(DbContextProvider<AppDbContext> provider, IScopeProperties scopeProperties, ILogger<Repo<Person, AppDbContext>> logger, IScopedLogger scopedLogger) : base(provider, scopeProperties, logger, scopedLogger) {
         }
     }
 }
