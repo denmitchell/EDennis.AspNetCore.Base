@@ -13,8 +13,8 @@ namespace EDennis.Samples.DbContextConfigsApi {
         public DbSet<Person> Person { get; set; }
         public DbSet<Position> Position { get; set; }
 
-        public DbContext2(DbContextOptionsProvider<DbContext2> provider) :
-            base(provider.DbContextOptions) { }
+        public DbContext2(DbContextOptions<DbContext2> options) :
+            base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             builder.Entity<Person>()

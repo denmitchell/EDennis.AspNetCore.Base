@@ -11,8 +11,8 @@ namespace EDennis.Samples.DbContextConfigsApi {
         public DbSet<Person> Person { get; set; }
         public DbSet<Position> Position { get; set; }
 
-        public DbContext3(DbContextOptionsProvider<DbContext3> provider) :
-            base(provider.DbContextOptions) { }
+        public DbContext3(DbContextOptions<DbContext3> options) :
+            base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             builder.Entity<Person>()

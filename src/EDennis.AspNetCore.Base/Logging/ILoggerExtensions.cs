@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace EDennis.AspNetCore.Base.Logging.Extensions {
+namespace EDennis.AspNetCore.Base.Logging {
     public static class ILoggerExtensions {
         /// <summary>
         /// Returns the minimum log level for a given logger
@@ -36,7 +36,7 @@ namespace EDennis.AspNetCore.Base.Logging.Extensions {
             return LogLevel.None;
         }
 
-        public static IEnumerable<KeyValuePair<string, object>> GetScope(this ILogger logger, MethodExecutionArgs args) {
+        public static IEnumerable<KeyValuePair<string, object>> GetScope(this ILogger _, MethodExecutionArgs args) {
             List<KeyValuePair<string, object>> logScope = new List<KeyValuePair<string, object>>();
             var formatted = args.Arguments.Format();
             var parms = args.Method.GetParameters();
@@ -50,7 +50,7 @@ namespace EDennis.AspNetCore.Base.Logging.Extensions {
             return logScope;
         }
 
-        public static IEnumerable<KeyValuePair<string, object>> GetScope(this ILogger logger, string key, object value) {
+        public static IEnumerable<KeyValuePair<string, object>> GetScope(this ILogger _, string key, object value) {
             var scope = new List<KeyValuePair<string, object>> {
                 KeyValuePair.Create(key, value)
             };

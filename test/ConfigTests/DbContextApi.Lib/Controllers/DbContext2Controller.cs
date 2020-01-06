@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace EDennis.Samples.DbContextConfigsApi.Lib.Controllers {
         private readonly Dictionary<string, string> _dbContextProps
             = new Dictionary<string, string>();
 
-        public DbContext2Controller(DbContext2 dbContext, ILogger<DbContext2Controller> logger) {
-            _dbContext = dbContext;
+        public DbContext2Controller(DbContextProvider<DbContext2> provider, ILogger<DbContext2Controller> logger) {
+            _dbContext = provider.Context;
             _logger = logger;
 
             _dbContextProps.Add("DatabaseProviderName", _dbContext.Database.ProviderName);
