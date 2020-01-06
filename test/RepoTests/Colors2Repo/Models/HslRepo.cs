@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Colors2.Models {
     public class HslRepo : SqlServerRepo<Hsl, Color2DbContext> {
-        public HslRepo(Color2DbContext context,
+        public HslRepo(DbContextProvider<Color2DbContext> provider,
             IScopeProperties scopeProperties,
             ILogger<HslRepo> logger,
             IScopedLogger scopedLogger)
-            : base(context, scopeProperties, logger, scopedLogger) { }
+            : base(provider, scopeProperties, logger, scopedLogger) { }
     }
 }

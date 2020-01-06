@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Colors2.Models
 {
@@ -23,31 +24,26 @@ namespace Colors2.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
             modelBuilder.HasSequence<int>("seqRgb");
+            modelBuilder.HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
-            modelBuilder.Entity<Rgb>(entity => {
+            modelBuilder.Entity<Rgb>(e => {
 
-                entity.ToTable("Rgb");
-
-                entity.Property(e => e.Id)
-                    .HasDefaultValueSql("NEXT VALUE FOR seqRgb");
-
-                entity.HasKey(e => e.Id)
+                e.ToTable("Rgb");
+                e.HasKey(e => e.Id)
                     .HasName("pkRgb");
-
-                entity.Property(e => e.Name)
+                e.Property(e => e.Id)
+                    .HasDefaultValueSql("NEXT VALUE FOR seqRgb")
+                    .ValueGeneratedOnAdd();
+                e.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.SysUser)
+                e.Property(e => e.SysUser)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-
-                entity.Property(e => e.SysStart)
+                e.Property(e => e.SysStart)
                     .HasDefaultValueSql("(getdate())")
                     .ValueGeneratedOnAddOrUpdate();
-
-                entity.Property(e => e.SysEnd)
+                e.Property(e => e.SysEnd)
                     .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
                     .ValueGeneratedOnAddOrUpdate();
 
@@ -62,12 +58,11 @@ namespace Colors2.Models
                         .HasData(ColorsDbContextDataFactory.RgbRecords);
                 }
 
-
             });
 
-            modelBuilder.Entity<Hsl>(entity => {
-                entity
-                .HasNoKey().ToView("vwHsl");
+
+            modelBuilder.Entity<Hsl>(e => {
+                e.HasNoKey().ToView("vwHsl");
             });
 
         }

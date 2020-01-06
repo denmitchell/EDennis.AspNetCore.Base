@@ -6,10 +6,10 @@ using Microsoft.Extensions.Logging;
 namespace Colors2.Models
 {
     public class RgbRepo : SqlServerRepo<Rgb, Color2DbContext> {
-        public RgbRepo(Color2DbContext context, 
+        public RgbRepo(DbContextProvider<Color2DbContext> provider, 
             IScopeProperties scopeProperties, 
             ILogger<RgbRepo> logger, 
             IScopedLogger scopedLogger) 
-            : base(context, scopeProperties, logger, scopedLogger) {}
+            : base(provider, scopeProperties, logger, scopedLogger) {}
     }
 }

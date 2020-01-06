@@ -7,11 +7,11 @@ namespace Colors.Models {
 
     public class ColorRepo : TemporalRepo<
         Color, ColorHistory, ColorDbContext, ColorHistoryDbContext> {
-        public ColorRepo(ColorDbContext context, ColorHistoryDbContext historyContext, 
+        public ColorRepo(DbContextProvider<ColorDbContext> provider, DbContextProvider<ColorHistoryDbContext> historyContext, 
             IScopeProperties scopeProperties, 
             ILogger<ColorRepo> logger,
             IScopedLogger scopedLogger) 
-            : base(context, historyContext, scopeProperties, logger, scopedLogger) {
+            : base(provider, historyContext, scopeProperties, logger, scopedLogger) {
         }
     }
 }
