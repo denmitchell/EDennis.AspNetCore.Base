@@ -125,7 +125,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 new object[] { DbContextProvider, ScopeProperties, Logger, ScopedLogger });
 
 
-        public virtual void ResetRepo() => DbContextProvider<TContext>.Reset(DbContextSettings,CachedConnection);
+        public virtual void ResetRepo() {
+            DbContextProvider<TContext>.Reset(DbContextSettings, CachedConnection);
+        }
 
     }
 

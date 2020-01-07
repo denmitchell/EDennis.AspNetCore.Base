@@ -7,25 +7,24 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class TemporalRepoTests<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> 
-            : IClassFixture<TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>>, IDisposable
+        : IDisposable
         where TEntity : class, IEFCoreTemporalModel, new()
-        where THistoryEntity: TEntity
+        where THistoryEntity: class, TEntity, new()
         where TContext : DbContext
         where THistoryContext : DbContext
         where TTemporalRepo : TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> {
 
         protected ITestOutputHelper Output { get; }
         protected TTemporalRepo Repo { get; }
-        private readonly TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity,TContext,THistoryContext> _fixture;
-
-        public TemporalRepoTests(ITestOutputHelper output, TestTemporalRepoFixture<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> fixture) {
+        protected TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> Factory { get; }
+        public TemporalRepoTests(ITestOutputHelper output) {
             Output = output;
-            Repo = fixture.Repo;
-            _fixture = fixture;
+            Factory = new TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>();
+            Repo = Factory.CreateRepo();
         }
 
         public void Dispose() {
-            _fixture.Dispose();
+            Factory.ResetRepo();
         }
     }
 }

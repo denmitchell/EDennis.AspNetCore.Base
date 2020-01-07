@@ -12,8 +12,8 @@ namespace RepoTests {
     public class ColorsRepoTests
         : TemporalRepoTests<ColorRepo, Color, ColorHistory, ColorDbContext, ColorHistoryDbContext>{
         
-        public ColorsRepoTests(ITestOutputHelper output, TestTemporalRepoFixture<ColorRepo, Color, ColorHistory, ColorDbContext, ColorHistoryDbContext> fixture) 
-            : base(output, fixture) { }
+        public ColorsRepoTests(ITestOutputHelper output) 
+            : base(output) { }
 
         protected string[] PropertiesToIgnore { get; }
             = new string[] { "SysStart", "SysEnd" };
@@ -75,7 +75,7 @@ namespace RepoTests {
             WriteSeed(jsonTestCase);
 
             var input = jsonTestCase.GetObject<Color>("Input");
-            var id = jsonTestCase.GetObject<Color>("Id");
+            var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected");
             var expectedHistory = jsonTestCase.GetObject<List<ColorHistory>>("ExpectedHistory");
 
@@ -97,7 +97,7 @@ namespace RepoTests {
 
             WriteSeed(jsonTestCase);
 
-            var id = jsonTestCase.GetObject<Color>("Id");
+            var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Color>>("Expected");
             var expectedHistory = jsonTestCase.GetObject<List<ColorHistory>>("ExpectedHistory");
 

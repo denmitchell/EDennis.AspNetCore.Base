@@ -7,23 +7,23 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing {
 
     public abstract class RepoTests<TRepo, TEntity, TContext> 
-            : IClassFixture<TestRepoFixture<TRepo, TEntity, TContext>>, IDisposable
+            : IDisposable
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext
         where TRepo : Repo<TEntity, TContext> {
 
         protected ITestOutputHelper Output { get; }
         protected TRepo Repo { get; }
-        private readonly TestRepoFixture<TRepo, TEntity, TContext> _fixture;
+        protected TestRepoFactory<TRepo, TEntity, TContext> Factory { get; }
 
-        public RepoTests(ITestOutputHelper output, TestRepoFixture<TRepo, TEntity, TContext> fixture) {
+        public RepoTests(ITestOutputHelper output) {
             Output = output;
-            Repo = fixture.Repo;
-            _fixture = fixture;
+            Factory = new TestRepoFactory<TRepo, TEntity, TContext>();
+            Repo = Factory.CreateRepo();
         }
 
         public void Dispose() {
-            _fixture.Dispose();
+            Factory.ResetRepo();
         }
     }
 }

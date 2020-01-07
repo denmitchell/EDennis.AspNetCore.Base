@@ -9,5 +9,6 @@ namespace EDennis.AspNetCore.Base {
         where TContext: DbContext {
         public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.SqlServer;
         public string ConnectionString { get; set; }
+        public bool EnableSensitiveDataLogging { get; set; }
     }
 }

@@ -203,8 +203,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     $"Cannot create a null {entity.GetType().Name}");
 
             SetSysUser(entity);
-            var a = Context.Model.GetAnnotations().ToList();
-            var c = Context.Database.GetDbConnection().ConnectionString;
             Context.Add(entity);
             Context.SaveChanges();
             return entity;

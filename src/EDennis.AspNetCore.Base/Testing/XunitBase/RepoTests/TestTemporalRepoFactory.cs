@@ -17,6 +17,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         private DbContextProvider<THistoryContext> _dbContextProvider;
 
 
+        public TestTemporalRepoFactory() :base() {
+            HistoryDbContext = DbContextProvider<THistoryContext>.GetInterceptorContext(HistoryDbContextSettings, HistoryCachedConnection);
+        }
 
 
         public virtual DbContextSettings<THistoryContext> HistoryDbContextSettings {

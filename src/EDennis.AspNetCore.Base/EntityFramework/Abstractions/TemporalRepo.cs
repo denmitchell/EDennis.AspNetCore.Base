@@ -10,7 +10,7 @@ using EDennis.AspNetCore.Base.Logging;
 namespace EDennis.AspNetCore.Base.EntityFramework {
     public class TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> : Repo<TEntity, TContext>, ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> 
         where TEntity : class, IEFCoreTemporalModel, new()
-        where THistoryEntity : TEntity
+        where THistoryEntity : class, TEntity, new()
         where TContext : DbContext
         where THistoryContext : DbContext {
 
@@ -243,7 +243,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .Take(pageSize)
                 .AsNoTracking();
 
-            var history = HistoryContext.Set<TEntity>()
+            var history = HistoryContext.Set<THistoryEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
@@ -283,7 +283,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .Take(pageSize)
                 .AsNoTracking();
 
-            var history = HistoryContext.Set<TEntity>()
+            var history = HistoryContext.Set<THistoryEntity>()
                 .Where(predicate)
                 .Where(asOfPredicate)
                 .Skip(pageSize * (pageNumber - 1))
@@ -309,23 +309,27 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
         public List<TEntity> GetByIdHistory(params object[] key) {
-            var current = Context.Find<TEntity>(key);
-            var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
 
-            var history = HistoryContext.Set<TEntity>()
+            var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
+
+            var current = Context.Set<TEntity>()
                 .Where(primaryKeyPredicate)
                 .AsNoTracking()
                 .ToList();
 
-            var all = new List<TEntity> { current }.Union(history).ToList();
+            var history = HistoryContext.Set<THistoryEntity>()
+                .Where(primaryKeyPredicate)
+                .AsNoTracking()
+                .ToList();
+
+            var all = current.Union(history).ToList();
             return all;
         }
 
 
 
         public TEntity GetByIdAsOf(DateTime asOf, params object[] key) {
-            var current = Context.Find<TEntity>(key);
-            var primaryKeyPredicate = GetPrimaryKeyPredicate(current);
+            var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);
 
             var curr = Context.Set<TEntity>()
@@ -334,7 +338,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 .AsNoTracking()
                 .ToList();
 
-            var history = HistoryContext.Set<TEntity>()
+            var history = HistoryContext.Set<THistoryEntity>()
                 .Where(primaryKeyPredicate)
                 .Where(asOfPredicate)
                 .AsNoTracking()
@@ -345,19 +349,18 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        private Expression<Func<TEntity, bool>> GetPrimaryKeyPredicate(TEntity entity) {
+        private Expression<Func<TEntity, bool>> GetPrimaryKeyPredicate(params object[] key) {
 
-            var state = Context.Entry(entity);
-            var metadata = state.Metadata;
-            var primaryKey = metadata.FindPrimaryKey();
+            var keyProps = Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
 
             var pe = Expression.Parameter(typeof(TEntity), "e");
             Expression finalExpression = null;
 
-            foreach (var pkProperty in primaryKey.Properties) {
+            for (int i = 0; i < keyProps.Count(); i++) {
+                var pkProperty = keyProps[i];
                 var type = typeof(TEntity);
                 var left = Expression.Property(pe, type.GetProperty(pkProperty.Name));
-                var right = Expression.Constant(pkProperty.GetGetter().GetClrValue(entity));
+                var right = Expression.Constant(key[i]);
                 var eq = Expression.Equal(left, right);
                 if (finalExpression != null)
                     finalExpression = Expression.AndAlso(finalExpression, eq);

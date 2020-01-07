@@ -88,7 +88,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 IsolationLevel = (settings.Interceptor == null)
                 ? IsolationLevel.ReadCommitted : settings.Interceptor.IsolationLevel,
                 ResetSqlServerIdentities = settings.Interceptor.ResetSqlServerIdentities,
-                ResetSqlServerSequences = settings.Interceptor.ResetSqlServerSequences
+                ResetSqlServerSequences = settings.Interceptor.ResetSqlServerSequences,
+                EnableSensitiveDataLogging = settings.Interceptor.EnableSensitiveDataLogging || settings.EnableSensitiveDataLogging
             };
 
             return interceptorSettings;
@@ -105,6 +106,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 cachedConnection.DbTransaction = cachedConnection.DbConnection.BeginTransaction(settings.IsolationLevel);
             }
             builder.UseSqlServer(cachedConnection.DbConnection as SqlConnection);
+            if (settings.EnableSensitiveDataLogging)
+                builder.EnableSensitiveDataLogging();
         }
 
         private static void ConfigureForSqlite(DbContextOptionsBuilder builder, string connectionString) {
@@ -119,6 +122,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 cachedConnection.DbTransaction = cachedConnection.DbConnection.BeginTransaction(settings.IsolationLevel);
             }
             builder.UseSqlite(cachedConnection.DbConnection as SqliteConnection);
+            if (settings.EnableSensitiveDataLogging)
+                builder.EnableSensitiveDataLogging();
         }
 
 
