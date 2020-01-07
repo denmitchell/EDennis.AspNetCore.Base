@@ -42,6 +42,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Create", "", "A")]
         [TestJsonA("Create", "", "B")]
         [TestJsonA("Create", "", "C")]
+        [TestJsonA("Create", "", "D")]
         public void Create(string t, JsonTestCase jsonTestCase) {
 
             using var factory = new TestApis();

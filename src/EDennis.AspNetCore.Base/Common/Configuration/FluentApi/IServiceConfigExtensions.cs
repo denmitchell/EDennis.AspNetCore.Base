@@ -20,16 +20,6 @@ namespace EDennis.AspNetCore.Base {
     /// an interface that wraps IServiceCollection and IConfiguration and provides navigation
     /// through the configuration tree.  Extensions on this interface allow for a fluent
     /// experience with configuration.
-    /// 
-    /// The current set of extension methods provides configuration of the following:
-    /// <list type="bullet">
-    /// <item>An individual Api</item>
-    /// <item>An individual DbContext</item>
-    /// <item>ScopeProperties settings (for middleware)</item>
-    /// <item>MockHeaders settings (for middleware)</item>
-    /// <item>MockClient settings (for middleware)</item>
-    /// <item>HeadersToClaims settings (for middleware)</item>
-    /// </list>
     /// </summary>
     public static class IServiceConfigExtensions {
 
@@ -82,33 +72,6 @@ namespace EDennis.AspNetCore.Base {
             return serviceConfig;
 
         }
-
-
-        //public static IServiceConfig AddSerilogFodyScopedLogger(this IServiceConfig serviceConfig) 
-        //    => AddSerilogFodyScopedLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_PATH);
-
-        //public static IServiceConfig AddSerilogFodyScopedLogger(this IServiceConfig serviceConfig, string scopedLoggerKey){
-        //    serviceConfig.AddScopedLogger<FodyScopedLogger>(scopedLoggerKey);
-        //    serviceConfig.AddScopedLoggerAssignments(() => new SerilogScopedLoggerAssignments(serviceConfig.Configuration, scopedLoggerKey));
-        //    return serviceConfig;
-        //}
-
-
-        //public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig)
-        //    where TScopedLogger : class, IScopedLogger 
-        //    => AddScopedLogger<TScopedLogger>(serviceConfig, DEFAULT_SCOPED_LOGGER_PATH);
-
-
-        //public static IServiceConfig AddScopedLogger<TScopedLogger>(this IServiceConfig serviceConfig, string scopedLoggerKey)
-        //    where TScopedLogger : class, IScopedLogger {
-        //    return serviceConfig;
-        //}
-
-        //public static IServiceConfig AddScopedLoggerAssignments<TScopedLoggerAssignments>(this IServiceConfig serviceConfig, Func<TScopedLoggerAssignments> ctor)
-        //    where TScopedLoggerAssignments : class, IScopedLoggerAssignments {
-        //    serviceConfig.Services.AddSingleton<IScopedLoggerAssignments>(provider=>ctor());
-        //    return serviceConfig;
-        //}
 
 
         public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig,
@@ -342,6 +305,7 @@ namespace EDennis.AspNetCore.Base {
 
 
         public static IServiceConfig AddPkRewriter(this IServiceConfig serviceConfig, string path) {
+            serviceConfig.Services.AddSingleton<PerDeveloperIdCache>();
             serviceConfig.Configure<PkRewriterSettings>(path);
             return serviceConfig;
         }
@@ -367,14 +331,6 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig) =>
             AddScopeProperties(serviceConfig, DEFAULT_SCOPE_PROPERTIES_PATH);
-
-        //public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig, string path) {
-        //    serviceConfig.Configure<UserLoggerSettings>(path);
-        //    return serviceConfig;
-        //}
-
-        //public static IServiceConfig AddUserLogger(this IServiceConfig serviceConfig) =>
-        //    AddUserLogger(serviceConfig, DEFAULT_USER_LOGGER_PATH);
 
 
         private static string GetApiKey(Type type) {

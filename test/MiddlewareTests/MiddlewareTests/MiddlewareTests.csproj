@@ -22,6 +22,7 @@
     <None Remove="MockHeaders\A.json" />
     <None Remove="MockHeaders\B.json" />
     <None Remove="MockHeaders\C.json" />
+    <None Remove="PkRewriter\D.json" />
     <None Remove="ScopeProperties\A.json" />
     <None Remove="ScopeProperties\B.json" />
     <None Remove="ScopeProperties\C.json" />
@@ -82,6 +83,11 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="PkRewriter\B.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PkRewriter\D.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

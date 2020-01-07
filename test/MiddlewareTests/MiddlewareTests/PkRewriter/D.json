@@ -1,0 +1,11 @@
+{
+  "DeveloperName": "moe",
+  "PkRewriter": {
+    "ExplicitIds": {
+      "/Person": {
+        "IdFieldName": "Id",
+        "BaseId": -999301
+      }
+    }
+  }
+}
