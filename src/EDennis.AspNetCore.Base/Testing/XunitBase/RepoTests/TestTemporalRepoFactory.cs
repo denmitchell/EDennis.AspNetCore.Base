@@ -70,6 +70,10 @@ namespace EDennis.AspNetCore.Base.Testing {
                 new object[] { DbContextProvider, HistoryDbContextProvider, ScopeProperties, Logger, ScopedLogger });
 
 
+        public new virtual void ResetRepo() {
+            DbContextProvider<TContext>.Reset(DbContextSettings, CachedConnection);
+            DbContextProvider<THistoryContext>.Reset(HistoryDbContextSettings, HistoryCachedConnection);
+        }
 
     }
 }
