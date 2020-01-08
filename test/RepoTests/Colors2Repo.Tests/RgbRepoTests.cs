@@ -39,7 +39,7 @@ namespace RepoTests {
 
         [Fact]
         public void GetTestJsonForProject() {
-            var attr = new TestJsonAttribute("Color2Db", "ColorsRepo", "RgbRepo", "Create", "", "A");
+            var attr = new TestJsonAttribute("Color2Db", "Colors2Repo", "RgbRepo", "Create", "", "A");
             var cases = attr.GetData(null);
             Assert.NotNull(cases);
         }
@@ -71,13 +71,14 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            var input = jsonTestCase.GetObject<Rgb>("Input");
+            var input = jsonTestCase.GetObject<dynamic>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
 
             Repo.Update(input,id);
 
-            var actual = Repo.Query.ToPagedList();
+            var actual = Repo.Query.Where(e => e.Id <= start).ToList();
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
