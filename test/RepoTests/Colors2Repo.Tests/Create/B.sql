@@ -1,47 +1,48 @@
 ﻿use Color2Db;
+declare @ProjectName varchar(255) = 'Colors2Repo'
+declare @ClassName varchar(255) = 'RgbRepo'
+declare @MethodName varchar(255) = 'Create'
+declare @TestScenario varchar(255) = ''
 declare @TestCase varchar(255) = 'B'
+
 declare @Name varchar(255) = 'Marsala'
 declare @Red int = 150
 declare @Green int = 82
 declare @Blue int = 81
+declare @TargetId int = -999149
 
 -- Limit the window of records inspected for testing purposes
---	-9990149	@ReadOnlyEnd - 1	@NewRecordId
---  -9990148	@ReadOnlyEnd
---  -9990147    @ReadOnlyEnd + 1
---  -9990146    @ReadOnlyEnd + 2
---  -9990145    @ReadOnlyStart		Start of test records
-declare @ReadOnlyCount int = 4
-declare @ReadOnlyStart int
-declare @ReadOnlyEnd int
-declare @NewRecordId int
-
-select @ReadOnlyEnd = min(Id) from Rgb;
-set @ReadOnlyStart = @ReadOnlyEnd + @ReadOnlyCount - 1
-set @NewRecordId = @ReadOnlyEnd - 1
+--	-999149		@TargetId
+--  -999148		
+--  -999147		
+--  -999146		
+--  -999145		
+--  -999144		
+--  -999143		@WindowStart		Start of test window		
+declare @WindowStart int = -999143
 
 begin transaction
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) 
     values 
-        (@NewRecordId, @Name, @Red, @Green, @Blue, 'tester@example.org', GETDATE())
+        (@TargetId, @Name, @Red, @Green, @Blue, 'tester@example.org', GETDATE())
 
 declare @Input varchar(max) = 
 (
-	select * from Rgb where Id = @NewRecordId
+	select * from Rgb where Id = @TargetId
 	for json path, without_array_wrapper
 )
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb where Id <= @ReadOnlyStart
+	select * from Rgb where Id <= @WindowStart
 	for json path
 );
 
 rollback transaction
 --exec _.ResetSequences --only needed if no explicit Ids are provided
 
-exec _.SaveTestJson 'Colors2Repo', 'RgbRepo', 'Create', '', @TestCase, 'Input', @Input
-exec _.SaveTestJson 'Colors2Repo', 'RgbRepo', 'Create', '', @TestCase, 'Expected', @Expected
-exec _.SaveTestJson 'Colors2Repo', 'RgbRepo', 'Create', '', @TestCase, 'ReadOnlyStart', @ReadOnlyStart
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowStart', @WindowStart
 
-exec _.GetTestJson 'Colors2Repo', 'RgbRepo', 'Create', '', @TestCase
+exec _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

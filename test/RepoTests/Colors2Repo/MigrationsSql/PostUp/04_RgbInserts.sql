@@ -141,12 +141,10 @@ insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999140
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999141,'Tomato', 255, 99, 71, 'jack@hill.org', CAST('2019-01-29T12:29:50.0000000' AS DateTime2))
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999142,'Turquoise', 64, 224, 208, 'jill@hill.org', CAST('2019-01-28T12:29:50.0000000' AS DateTime2))
 
--- ReadSeed (use < -999142 as filter for tests -- to keep expected results small)
+-- WindowStart (use < -999142 as filter for tests -- to keep expected results small)
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999143,'Violet', 238, 130, 238, 'jill@hill.org', CAST('2019-01-27T12:29:50.0000000' AS DateTime2))
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999144,'Wheat', 245, 222, 179, 'jill@hill.org', CAST('2019-01-26T12:29:50.0000000' AS DateTime2))
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999145,'White', 255, 255, 255, 'jill@hill.org', CAST('2019-01-25T12:29:50.0000000' AS DateTime2))
-
--- WriteSeed (created before each unit test)
---insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999146,'WhiteSmoke', 245, 245, 245, 'jill@hill.org', CAST('2019-01-24T12:29:50.0000000' AS DateTime2))
---insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999147,'Yellow', 255, 255, 0, 'jack@hill.org', CAST('2019-01-23T12:29:50.0000000' AS DateTime2))
---insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999148,'YellowGreen', 154, 205, 50, 'jack@hill.org', CAST('2019-01-22T12:29:50.0000000' AS DateTime2))
+insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999146,'WhiteSmoke', 245, 245, 245, 'jill@hill.org', CAST('2019-01-24T12:29:50.0000000' AS DateTime2))
+insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999147,'Yellow', 255, 255, 0, 'jack@hill.org', CAST('2019-01-23T12:29:50.0000000' AS DateTime2))
+insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) values (-999148,'YellowGreen', 154, 205, 50, 'jack@hill.org', CAST('2019-01-22T12:29:50.0000000' AS DateTime2))

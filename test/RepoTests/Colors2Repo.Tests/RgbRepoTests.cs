@@ -52,11 +52,9 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            //WriteSeed(jsonTestCase); no need to seed for create
-
             var input = jsonTestCase.GetObject<Rgb>("Input");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-            var start = jsonTestCase.GetObject<int>("ReadOnlyStart");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
 
             Repo.Create(input);
 
@@ -72,8 +70,6 @@ namespace RepoTests {
         public void Update(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
-
-            WriteSeed(jsonTestCase);
 
             var input = jsonTestCase.GetObject<Rgb>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
@@ -93,14 +89,13 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            WriteSeed(jsonTestCase);
-
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
 
             Repo.Delete(id);
 
-            var actual = Repo.Query.ToPagedList();
+            var actual = Repo.Query.Where(e => e.Id <= start).ToList();
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
