@@ -20,8 +20,8 @@ namespace RepoTests {
 
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
-                : base("Colors2Repo", "RgbRepo",
-                      methodName, testScenario, testCase, DatabaseProvider.Excel, "TestJson.xlsx") {
+                : base("Color2Db","Colors2Repo", "RgbRepo",
+                      methodName, testScenario, testCase) {
             }
         }
 
@@ -52,14 +52,15 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            WriteSeed(jsonTestCase);
+            //WriteSeed(jsonTestCase); no need to seed for create
 
             var input = jsonTestCase.GetObject<Rgb>("Input");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var start = jsonTestCase.GetObject<int>("ReadOnlyStart");
 
             Repo.Create(input);
 
-            var actual = Repo.Query.ToPagedList();
+            var actual = Repo.Query.Where(e=>e.Id <=start).ToList();
 
             Assert.True(actual.IsEqualAndWrite(expected,3,PropertiesToIgnore,Output,true));
         }
