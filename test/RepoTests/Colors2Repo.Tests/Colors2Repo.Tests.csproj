@@ -41,27 +41,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Query\CreateLucite.sql">
+    <None Update="GetById\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Query\CreateMarsala.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="GetById\CreateLucite.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="GetById\CreateMarsala.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="Delete\CreateLucite.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="Delete\CreateMarsala.sql">
+    <None Update="GetById\B.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
@@ -84,6 +68,11 @@
     <None Update="Seed\Seeds.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Query\" />
   </ItemGroup>
 
 </Project>
