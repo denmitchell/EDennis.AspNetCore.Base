@@ -295,6 +295,37 @@ namespace RepoTests {
         }
 
 
+        [Theory]
+        [TestJsonA("GetScalarFromSql", "", "A")]
+        [TestJsonA("GetScalarFromSql", "", "B")]
+        public void GetScalarFromSql(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var sql = jsonTestCase.GetObject<string>("Sql");
+            var expected = jsonTestCase.GetObject<int>("Expected");
+
+            var actual = Repo.GetScalarFromSql<int>(sql);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+        [Theory]
+        [TestJsonA("GetScalarFromSql", "", "A")]
+        [TestJsonA("GetScalarFromSql", "", "B")]
+        public async Task GetScalarFromSqlAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var sql = jsonTestCase.GetObject<string>("Sql");
+            var expected = jsonTestCase.GetObject<int>("Expected");
+
+            var actual = await Repo.GetScalarFromSqlAsync<int>(sql);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
 
         public void StillToDo() {
 
