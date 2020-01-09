@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Dynamic;
 using System.Text.Json;
-using Colors2Repo.Tests;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -333,6 +332,8 @@ namespace RepoTests {
         [TestJsonA("GetJsonColumnFromStoredProcedure", "", "B")]
         public void GetJsonColumnFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
+            Output.WriteLine($"Test case: {t}");
+
             var spName = jsonTestCase.GetObject<string>("SpName");
             var colorName = jsonTestCase.GetObject<string>("ColorName");
             var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
@@ -347,6 +348,28 @@ namespace RepoTests {
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
 
+
+
+        [Theory]
+        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "A")]
+        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "B")]
+        public async Task GetJsonColumnFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
+
+
+            var expectedJson = jsonTestCase.GetObject<string>("Expected");
+            var expected = JsonSerializer.Deserialize<Rgb>(expectedJson);
+
+            var actualJson = await Repo.GetJsonColumnFromStoredProcedureAsync(spName, parameters);
+            var actual = JsonSerializer.Deserialize<Rgb>(actualJson);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
 
 
 
