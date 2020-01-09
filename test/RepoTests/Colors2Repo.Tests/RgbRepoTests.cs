@@ -9,6 +9,7 @@ using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Dynamic;
+using System.Text.Json;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -202,8 +203,65 @@ namespace RepoTests {
         }
 
 
+        [Theory]
+        [TestJsonA("GetFromDynamicLinq", "WhereOrderBySelectTake", "A")]
+        [TestJsonA("GetFromDynamicLinq", "WhereOrderBySkipTake", "B")]
+        public async Task GetFromDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            string where = jsonTestCase.TestScenario.Contains("Where") ? jsonTestCase.GetObject<string>("Where") : null;
+            string orderBy = jsonTestCase.TestScenario.Contains("OrderBy") ? jsonTestCase.GetObject<string>("OrderBy") : null;
+            string select = jsonTestCase.TestScenario.Contains("Select") ? jsonTestCase.GetObject<string>("Select") : null;
+            int? skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int?>("Skip") : null;
+            int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
+
+
+            var expected = DynamicConverter.ToPropertyDictionaryList(jsonTestCase.GetObject<List<dynamic>>("Expected"));
+
+            var actual = DynamicConverter.ToPropertyDictionaryList(await Repo.GetFromDynamicLinqAsync(where, orderBy, select, skip, take));
+
+            Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, true));
+
+        }
+
+
+        [Theory]
+        [TestJsonA("GetFromJsonSql", "", "A")]
+        [TestJsonA("GetFromJsonSql", "", "B")]
+        public void GetFromJsonSql(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var sql = jsonTestCase.GetObject<string>("Sql");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            var actualJson = Repo.GetFromJsonSql(sql);
+            var actual = JsonSerializer.Deserialize<List<Rgb>>(actualJson);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+
+        [Theory]
+        [TestJsonA("GetFromJsonSql", "", "A")]
+        [TestJsonA("GetFromJsonSql", "", "B")]
+        public async Task GetFromJsonSqlAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var sql = jsonTestCase.GetObject<string>("Sql");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            var actualJson = await Repo.GetFromJsonSqlAsync(sql);
+            var actual = JsonSerializer.Deserialize<List<Rgb>>(actualJson);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
         public void StillToDo() {
-            //Repo.GetFromDynamicLinqAsync;
             //Repo.GetFromJsonSql;
             //Repo.GetFromJsonSqlAsync;
             //Repo.GetFromSql;
