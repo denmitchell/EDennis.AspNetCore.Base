@@ -8,6 +8,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Dynamic;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -191,20 +192,14 @@ namespace RepoTests {
             int? skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int?>("Skip") : null;
             int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
 
-            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-                .ToList<dynamic>();
 
-            var actual = Repo.GetFromDynamicLinq(where, orderBy, select, skip, take)
-                .ToList<dynamic>();
+            var expected  = DynamicConverter.ToPropertyDictionaryList(jsonTestCase.GetObject<List<dynamic>>("Expected"));
 
-            var expected2 = actual.Copy();
-            expected2.Clear();
-            var expected3 = ObjectExtensions.Merge(expected2, expected);
+            var actual = DynamicConverter.ToPropertyDictionaryList(Repo.GetFromDynamicLinq(where, orderBy, select, skip, take));
 
-            Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected3, 3, PropertiesToIgnore, Output, true));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected, 3, PropertiesToIgnore, Output, true));
 
         }
-
 
 
         public void StillToDo() {
@@ -223,4 +218,28 @@ namespace RepoTests {
 
 
     }
+
+    //public static class DynamicConverter {
+
+    //    public static Dictionary<string, object> ToPropertyDictionary(dynamic obj) {
+    //        var expando = new ExpandoObject();
+    //        var dictionary = (IDictionary<string, object>)expando;
+
+    //        foreach (var property in obj.GetType().GetProperties())
+    //            try {
+    //                dictionary.Add(property.Name, property.GetValue(obj));
+    //            } catch { }
+    //        return new Dictionary<string,object>(expando);
+    //    }
+
+    //    public static List<Dictionary<string, object>> ToPropertyDictionaryList(IEnumerable<dynamic> list) {
+    //        var dlist = new List<Dictionary<string,object>>();
+    //        foreach (var item in list) {
+    //            dlist.Add(ToPropertyDictionary(item));
+    //        }
+    //        return dlist;
+    //    }
+
+    //}
+
 }
