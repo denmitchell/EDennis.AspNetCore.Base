@@ -252,7 +252,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public virtual void BuildStoredProcedureDefs() {
+        protected virtual void BuildStoredProcedureDefs() {
 
             var cxn = Context.Database.GetDbConnection();
 

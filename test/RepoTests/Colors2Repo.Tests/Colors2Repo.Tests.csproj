@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Query\**" />
+    <EmbeddedResource Remove="Query\**" />
+    <None Remove="Query\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="..\Colors2Repo\appsettings.Development.json" Link="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -65,11 +71,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Query\" />
   </ItemGroup>
 
 </Project>

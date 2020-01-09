@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RepoTests {
     public class RgbRepoTests
-        : RepoTests<RgbRepo, Rgb, Color2DbContext>{
-        
-        public RgbRepoTests(ITestOutputHelper output) 
+        : RepoTests<RgbRepo, Rgb, Color2DbContext> {
+
+        public RgbRepoTests(ITestOutputHelper output)
             : base(output) { }
 
         protected string[] PropertiesToIgnore { get; }
@@ -20,21 +21,9 @@ namespace RepoTests {
 
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
-                : base("Color2Db","Colors2Repo", "RgbRepo",
+                : base("Color2Db", "Colors2Repo", "RgbRepo",
                       methodName, testScenario, testCase) {
             }
-        }
-
-        private IEnumerable<Rgb> BaseExpected(JsonTestCase jsonTestCase) {
-            var readSeed = jsonTestCase.GetObject<List<Rgb>>($"ReadSeed");
-            var writeSeed = jsonTestCase.GetObject<List<Rgb>>($"WriteSeed");
-            return readSeed.Union(writeSeed);
-        }
-
-        private void WriteSeed(JsonTestCase jsonTestCase) {
-            var inputs = jsonTestCase.GetObject<List<Rgb>>($"WriteSeed");
-            foreach (var input in inputs)
-                Repo.Create(input);
         }
 
         [Fact]
@@ -58,11 +47,28 @@ namespace RepoTests {
 
             Repo.Create(input);
 
-            var actual = Repo.Query.Where(e=>e.Id <=start).ToList();
+            var actual = Repo.Query.Where(e => e.Id <= start).ToList();
 
-            Assert.True(actual.IsEqualAndWrite(expected,3,PropertiesToIgnore,Output,true));
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
 
+        [Theory]
+        [TestJsonA("Create", "", "A")]
+        [TestJsonA("Create", "", "B")]
+        public async Task CreateAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var input = jsonTestCase.GetObject<Rgb>("Input");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+
+            await Repo.CreateAsync(input);
+
+            var actual = Repo.Query.Where(e => e.Id <= start).ToList();
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
 
         [Theory]
         [TestJsonA("Update", "", "A")]
@@ -76,12 +82,32 @@ namespace RepoTests {
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
 
-            Repo.Update(input,id);
+            Repo.Update(input, id);
 
             var actual = Repo.Query.Where(e => e.Id <= start).ToList();
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
+
+        [Theory]
+        [TestJsonA("Update", "", "A")]
+        [TestJsonA("Update", "", "B")]
+        public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var input = jsonTestCase.GetObject<dynamic>("Input");
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+
+            await Repo.UpdateAsync(input, id);
+
+            var actual = Repo.Query.Where(e => e.Id <= start).ToList();
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
 
         [Theory]
         [TestJsonA("Delete", "", "A")]
@@ -100,6 +126,100 @@ namespace RepoTests {
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
+
+
+        [Theory]
+        [TestJsonA("Delete", "", "A")]
+        [TestJsonA("Delete", "", "B")]
+        public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+
+            await Repo.DeleteAsync(id);
+
+            var actual = Repo.Query.Where(e => e.Id <= start).ToList();
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+        [Theory]
+        [TestJsonA("GetById", "", "A")]
+        [TestJsonA("GetById", "", "B")]
+        public void GetById(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Rgb>("Expected");
+
+            var actual = Repo.GetById(id);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+        [Theory]
+        [TestJsonA("GetById", "", "A")]
+        [TestJsonA("GetById", "", "B")]
+        public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<Rgb>("Expected");
+
+            var actual = await Repo.GetByIdAsync(id);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+        [Theory]
+        [TestJsonA("GetFromDynamicLinq", "WhereOrderBySelectTake", "A")]
+        [TestJsonA("GetFromDynamicLinq", "WhereOrderBySkipTake", "B")]
+        public void GetFromDynamicLinq(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            string where = jsonTestCase.TestScenario.Contains("Where") ? jsonTestCase.GetObject<string>("Where") : null;
+            string orderBy = jsonTestCase.TestScenario.Contains("OrderBy") ? jsonTestCase.GetObject<string>("OrderBy") : null;
+            string select = jsonTestCase.TestScenario.Contains("Select") ? jsonTestCase.GetObject<string>("Select") : null;
+            int? skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int?>("Skip") : null;
+            int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
+
+            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
+                .ToList<dynamic>();
+
+            var actual = Repo.GetFromDynamicLinq(where, orderBy, select, skip, take)
+                .ToList<dynamic>();
+
+            var expected2 = actual.Copy();
+            expected2.Clear();
+            var expected3 = ObjectExtensions.Merge(expected2, expected);
+
+            Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected3, 3, PropertiesToIgnore, Output, true));
+
+        }
+
+
+
+        public void StillToDo() {
+            //Repo.GetFromDynamicLinqAsync;
+            //Repo.GetFromJsonSql;
+            //Repo.GetFromJsonSqlAsync;
+            //Repo.GetFromSql;
+            //Repo.GetFromSqlAsync;
+            //Repo.GetFromStoredProcedure;
+            //Repo.GetJsonColumnFromStoredProcedure;
+            //Repo.GetJsonColumnFromStoredProcedureAsync;
+            //Repo.GetScalarFromSql;
+            //Repo.GetScalarFromSqlAsync;
+        }
+
 
 
     }
