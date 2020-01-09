@@ -10,20 +10,20 @@ go
 if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
-use Colors2;
-declare @ProjectName varchar(255) = 'EDennis.Samples.Colors2Api'
-declare @ClassName varchar(255) = 'HslController'
+use Color2Db;
+declare @ProjectName varchar(255) = 'Colors2Repo'
+declare @ClassName varchar(255) = 'HslRepo'
 declare @MethodName varchar(255) = 'GetFromStoredProcedure'
-declare @TestScenario varchar(255) = 'HslByColorName'
-declare @TestCase varchar(255) = 'AliceBlue'
+declare @TestScenario varchar(255) = ''
+declare @TestCase varchar(255) = 'A'
 
-declare @SpName varchar(255) = @TestScenario
-declare @ColorName varchar(255) = @TestCase
+declare @SpName varchar(255) = 'HslByColorName'
+declare @ColorName varchar(255) = 'AliceBlue'
 
 
 select * into #SpResults 
     from openrowset('SQLNCLI', 
-	  'Server=(localdb)\MSSQLLocalDb;Database=Colors2;Trusted_Connection=yes;',
+	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
       'EXEC HslByColorName ''AliceBlue''')
 
 declare 

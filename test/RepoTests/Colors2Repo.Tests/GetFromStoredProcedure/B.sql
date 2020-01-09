@@ -1,5 +1,4 @@
-﻿use Colors2;
-go
+﻿go
 sp_configure 'Show Advanced Options', 1
 go
 reconfigure
@@ -11,19 +10,20 @@ go
 if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
-declare @ProjectName varchar(255) = 'EDennis.Samples.Colors2Api'
-declare @ClassName varchar(255) = 'HslController'
+use Color2Db;
+declare @ProjectName varchar(255) = 'Colors2Repo'
+declare @ClassName varchar(255) = 'HslRepo'
 declare @MethodName varchar(255) = 'GetFromStoredProcedure'
-declare @TestScenario varchar(255) = 'HslByColorName'
-declare @TestCase varchar(255) = 'DarkKhaki'
+declare @TestScenario varchar(255) = ''
+declare @TestCase varchar(255) = 'B'
 
-declare @SpName varchar(255) = @TestScenario
+declare @SpName varchar(255) = 'HslByColorName'
 declare @ColorName varchar(255) = 'DarkKhaki'
 
 
 select * into #SpResults 
     from openrowset('SQLNCLI', 
-	  'Server=(localdb)\MSSQLLocalDb;Database=Colors2;Trusted_Connection=yes;',
+	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
       'EXEC HslByColorName ''DarkKhaki''')
 
 declare 

@@ -261,16 +261,53 @@ namespace RepoTests {
         }
 
 
+
+        [Theory]
+        [TestJsonA("GetFromSql", "", "A")]
+        [TestJsonA("GetFromSql", "", "B")]
+        public void GetFromSql(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var sql = jsonTestCase.GetObject<string>("Sql");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            var actual = Repo.GetFromSql(sql);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+
+        [Theory]
+        [TestJsonA("GetFromSql", "", "A")]
+        [TestJsonA("GetFromSql", "", "B")]
+        public async Task GetFromSqlAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var sql = jsonTestCase.GetObject<string>("Sql");
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+
+            var actual = await Repo.GetFromSqlAsync(sql);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+
         public void StillToDo() {
-            //Repo.GetFromJsonSql;
-            //Repo.GetFromJsonSqlAsync;
+
             //Repo.GetFromSql;
             //Repo.GetFromSqlAsync;
-            //Repo.GetFromStoredProcedure;
-            //Repo.GetJsonColumnFromStoredProcedure;
-            //Repo.GetJsonColumnFromStoredProcedureAsync;
+
             //Repo.GetScalarFromSql;
             //Repo.GetScalarFromSqlAsync;
+
+            //Repo.GetFromStoredProcedure;
+            //Repo.GetFromStoredProcedureAsync;
+            //Repo.GetJsonColumnFromStoredProcedure;
+            //Repo.GetJsonColumnFromStoredProcedureAsync;
         }
 
 
