@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Dynamic;
 using System.Text.Json;
+using Colors2Repo.Tests;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -327,42 +328,28 @@ namespace RepoTests {
         }
 
 
-        public void StillToDo() {
+        [Theory]
+        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "A")]
+        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "B")]
+        public void GetJsonColumnFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
-            //Repo.GetScalarFromSql;
-            //Repo.GetScalarFromSqlAsync;
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
 
-            //Repo.GetFromStoredProcedure;
-            //Repo.GetFromStoredProcedureAsync;
-            //Repo.GetJsonColumnFromStoredProcedure;
-            //Repo.GetJsonColumnFromStoredProcedureAsync;
+
+            var expectedJson = jsonTestCase.GetObject<string>("Expected");
+            var expected = JsonSerializer.Deserialize<Rgb>(expectedJson);
+
+            var actualJson = Repo.GetJsonColumnFromStoredProcedure(spName, parameters);
+            var actual = JsonSerializer.Deserialize<Rgb>(actualJson);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
 
 
 
+
     }
-
-    //public static class DynamicConverter {
-
-    //    public static Dictionary<string, object> ToPropertyDictionary(dynamic obj) {
-    //        var expando = new ExpandoObject();
-    //        var dictionary = (IDictionary<string, object>)expando;
-
-    //        foreach (var property in obj.GetType().GetProperties())
-    //            try {
-    //                dictionary.Add(property.Name, property.GetValue(obj));
-    //            } catch { }
-    //        return new Dictionary<string,object>(expando);
-    //    }
-
-    //    public static List<Dictionary<string, object>> ToPropertyDictionaryList(IEnumerable<dynamic> list) {
-    //        var dlist = new List<Dictionary<string,object>>();
-    //        foreach (var item in list) {
-    //            dlist.Add(ToPropertyDictionary(item));
-    //        }
-    //        return dlist;
-    //    }
-
-    //}
 
 }

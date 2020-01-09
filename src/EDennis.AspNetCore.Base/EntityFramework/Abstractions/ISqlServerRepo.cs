@@ -8,8 +8,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         where TContext : DbContext {
         string GetFromJsonSql(string fromJsonSql);
         Task<string> GetFromJsonSqlAsync(string fromJsonSql);
-        dynamic GetFromStoredProcedure(string spName, IEnumerable<KeyValuePair<string, string>> parms);
-        Task<dynamic> GetFromStoredProcedureAsync(string spName, IEnumerable<KeyValuePair<string, string>> parms);
+        List<dynamic> GetFromStoredProcedure(string spName, IEnumerable<KeyValuePair<string, string>> parms);
+        Task<List<dynamic>> GetFromStoredProcedureAsync(string spName, IEnumerable<KeyValuePair<string, string>> parms);
         string GetJsonColumnFromStoredProcedure(string spName, IEnumerable<KeyValuePair<string, string>> parms);
         Task<string> GetJsonColumnFromStoredProcedureAsync(string spName, IEnumerable<KeyValuePair<string, string>> parms);
     }

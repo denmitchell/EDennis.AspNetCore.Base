@@ -174,7 +174,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public virtual dynamic GetFromStoredProcedure(string spName,
+        public virtual List<dynamic> GetFromStoredProcedure(string spName,
             IEnumerable<KeyValuePair<string, string>> parms) {
 
             if (_spDefs == null) {
@@ -189,7 +189,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
 
-            dynamic result;
+            IEnumerable<dynamic> result;
 
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
@@ -206,7 +206,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     commandType: CommandType.StoredProcedure);
             }
 
-            return result;
+            return result.ToList();
 
         }
 
@@ -215,7 +215,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public virtual async Task<dynamic> GetFromStoredProcedureAsync(string spName,
+        public virtual async Task<List<dynamic>> GetFromStoredProcedureAsync(string spName,
             IEnumerable<KeyValuePair<string, string>> parms) {
 
             if (_spDefs == null) {
@@ -230,7 +230,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
 
-            dynamic result;
+            IEnumerable<dynamic> result;
 
             if (Context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
@@ -247,7 +247,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     commandType: CommandType.StoredProcedure);
             }
 
-            return result;
+            return result.ToList();
 
         }
 
