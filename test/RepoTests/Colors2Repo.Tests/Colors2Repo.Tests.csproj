@@ -48,6 +48,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
+    <None Update="GetScalarFromSql\A.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Code</SubType>
+    </None>
+    <None Update="GetScalarFromSql\B.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Code</SubType>
+    </None>
     <None Update="GetFromSql\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>

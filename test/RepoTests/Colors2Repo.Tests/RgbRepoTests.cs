@@ -298,9 +298,6 @@ namespace RepoTests {
 
         public void StillToDo() {
 
-            //Repo.GetFromSql;
-            //Repo.GetFromSqlAsync;
-
             //Repo.GetScalarFromSql;
             //Repo.GetScalarFromSqlAsync;
 
