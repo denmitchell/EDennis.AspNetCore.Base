@@ -18,7 +18,7 @@ namespace Colors2.Migrations
                 .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("Relational:Sequence:.seqRgb", "'seqRgb', '', '1', '1', '', '', 'Int32', 'False'")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
             modelBuilder.Entity("Colors2.Models.Rgb", b =>
                 {

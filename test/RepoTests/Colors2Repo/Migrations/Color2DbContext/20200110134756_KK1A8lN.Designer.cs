@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Colors2.Migrations
 {
     [DbContext(typeof(Color2DbContext))]
-    [Migration("20200103193743_KK13Ebf")]
-    partial class KK13Ebf
+    [Migration("20200110134756_KK1A8lN")]
+    partial class KK1A8lN
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,7 +20,7 @@ namespace Colors2.Migrations
                 .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("Relational:Sequence:.seqRgb", "'seqRgb', '', '1', '1', '', '', 'Int32', 'False'")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
             modelBuilder.Entity("Colors2.Models.Rgb", b =>
                 {

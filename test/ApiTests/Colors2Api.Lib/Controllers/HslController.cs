@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Colors2Api.Lib.Controllers {
     public class HslController : SqlServerReadonlyController<Hsl, Color2DbContext> {
-        public HslController(HslRepo repo, ILogger<SqlServerReadonlyController<Hsl, Color2DbContext>> logger) : base(repo, logger) { }
+        public HslController(HslRepo repo, ILogger<SqlServerReadonlyController<Hsl, Color2DbContext>> logger) 
+            : base(repo, logger) { }
     }
 }

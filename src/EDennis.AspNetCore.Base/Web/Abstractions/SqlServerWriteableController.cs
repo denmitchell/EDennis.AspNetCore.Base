@@ -72,25 +72,6 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         /// <summary>
-        /// Updates an object.  This overload requires a full object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPut("{id}")]
-        public IActionResult Put([FromBody]TEntity value, [FromRoute]int id) {
-            if (id != value.Id)
-                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
-            try {
-                var updated = Repo.Update(value, id);
-                return CreatedAtAction("Get", updated.Id, updated);
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
-            }
-        }
-
-
-        /// <summary>
         /// Updates an object.  This overload takes a partial object
         /// </summary>
         /// <param name="value"></param>
@@ -128,24 +109,6 @@ namespace EDennis.AspNetCore.Base.Web {
             Put(value, id);
 
 
-        /// <summary>
-        /// Updates an object asynchronously.  Using PUT requires a full object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPut("async/{id}")]
-        public async Task<IActionResult> PutAsync([FromBody]TEntity value, [FromRoute]int id) {
-            if (id != value.Id)
-                return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
-            try {
-                var updated = await Repo.UpdateAsync(value, id);
-                return CreatedAtAction("Get", updated.Id, updated);
-            } catch (MissingEntityException ex) {
-                return new BadRequestObjectResult(ex.Message);
-            }
-        }
-
 
         /// <summary>
         /// Asynchronously updates an object.  This overload takes a partial object
@@ -153,7 +116,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="value"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("async/{id}")]
         public async Task<IActionResult> PutAsync([FromBody]dynamic value, [FromRoute]int id) {
 
             try {
@@ -180,7 +143,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="value"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
+        [HttpPatch("async/{id}")]
         public async Task<IActionResult> PatchAsync([FromBody]dynamic value, [FromRoute]int id) =>
             await PutAsync(value, id);
 

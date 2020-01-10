@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Colors2.Migrations
 {
-    public partial class KK13Ebf : Migration
+    public partial class KK1A8lN : Migration
     {
         [Up]
         protected override void Up(MigrationBuilder migrationBuilder)
