@@ -3,22 +3,28 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
+
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class SqlServerRepoController<TEntity, TContext> : ControllerBase
+    public abstract class SqlServerReadonlyController<TEntity, TContext> : ControllerBase
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext {
 
-        private readonly ISqlServerRepo<TEntity, TContext> _repo;
+        public ISqlServerRepo<TEntity, TContext> Repo { get; }
+        public ILogger<SqlServerReadonlyController<TEntity,TContext>> Logger { get; }
 
-        public SqlServerRepoController(ISqlServerRepo<TEntity, TContext> repo) {
-            _repo = repo;
+        public SqlServerReadonlyController(ISqlServerRepo<TEntity, TContext> repo,
+            ILogger<SqlServerReadonlyController<TEntity, TContext>> logger) {
+            Repo = repo;
+            Logger = logger;
         }
+
 
         /// <summary>
         /// Get from OData query string
@@ -36,7 +42,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int skip,
                 [FromQuery]int top
             ) {
-            return _repo.Query;
+            return Repo.Query;
         }
 
 
@@ -60,7 +66,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 select, sort, filter, skip, take, totalSummary,
                 group, groupSummary);
 
-            var result = DataSourceLoader.Load(_repo.Query, loadOptions);
+            var result = DataSourceLoader.Load(Repo.Query, loadOptions);
             return Ok(result);
         }
 
@@ -84,7 +90,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? skip = null,
                 [FromQuery]int? take = null
                 ) {
-            return new ObjectResult(_repo.GetFromDynamicLinq(
+            return new ObjectResult(Repo.GetFromDynamicLinq(
                 where, orderBy, select, skip, take));
         }
 
@@ -108,12 +114,19 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? skip = null,
                 [FromQuery]int? take = null
                 ) {
-            return new ObjectResult(await _repo.GetFromDynamicLinqAsync(
+            return new ObjectResult(await Repo.GetFromDynamicLinqAsync(
                 where, orderBy, select, skip, take));
         }
 
 
-
+        /// <summary>
+        /// Executes a stored procedure and returns the result.
+        /// Note: there are no application-level constraints
+        /// that limit repos to executing read-only 
+        /// stored procedures.
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
         [HttpGet("sp")]
         public IActionResult GetFromStoredProcedure([FromQuery] string spName) {
 
@@ -122,10 +135,19 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
 
-            return Ok(_repo.GetFromStoredProcedure(
+            return Ok(Repo.GetFromStoredProcedure(
                 spName, parms));
         }
 
+
+        /// <summary>
+        /// Asynchronously executes a stored procedure and returns the result.
+        /// Note: there are no application-level constraints
+        /// that limit repos to executing read-only 
+        /// stored procedures.
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
         [HttpGet("sp/async")]
         public async Task<IActionResult> GetFromStoredProcedureAsync([FromQuery] string spName) {
 
@@ -134,10 +156,16 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
 
-            return Ok(await _repo.GetFromStoredProcedureAsync(
+            return Ok(await Repo.GetFromStoredProcedureAsync(
                 spName, parms));
         }
 
+
+        /// <summary>
+        /// Obtains a json result from a stored procedure
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
         [HttpGet("json")]
         public ActionResult<string> GetJsonColumnFromStoredProcedure([FromQuery] string spName) {
 
@@ -145,7 +173,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var json = _repo.GetJsonColumnFromStoredProcedure(
+            var json = Repo.GetJsonColumnFromStoredProcedure(
                 spName, parms);
 
 
@@ -153,6 +181,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
+        /// <summary>
+        /// Asynchrously obtains a json result from a stored procedure
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
         [HttpGet("json/async")]
         public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync([FromQuery] string spName) {
 
@@ -161,12 +194,13 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
 
-            var json = await _repo.GetJsonColumnFromStoredProcedureAsync(
+            var json = await Repo.GetJsonColumnFromStoredProcedureAsync(
                 spName, parms);
 
 
             return Content(json, "application/json");
         }
+
 
     }
 }

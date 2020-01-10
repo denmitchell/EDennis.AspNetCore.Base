@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace EDennis.AspNetCore.ApiTests {
+namespace Colors2Api.EndpointTests {
     public class UnitTest1 {
         [Fact]
         public void Test1() {
