@@ -1,9 +1,9 @@
-﻿use Colors2;
-declare @ProjectName varchar(255) = 'EDennis.Samples.Colors2Api'
+﻿use Color2Db;
+declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetDynamicLinq'
 declare @TestScenario varchar(255) = 'WhereSkipTake'
-declare @TestCase varchar(255) = 'RedGt200Skip2Take5'
+declare @TestCase varchar(255) = 'A'
 
 declare @Where varchar(255) = 'Red gt 200'
 declare @Skip int = 2

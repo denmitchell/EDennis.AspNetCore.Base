@@ -34,7 +34,7 @@ namespace Colors2Api.ControllerTests {
         public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var ea = GetDevExtreme_ExpectedActual(jsonTestCase, Output);
-            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
 
@@ -44,7 +44,7 @@ namespace Colors2Api.ControllerTests {
         public void GetDynamicLinq(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var ea = GetDynamicLinq_ExpectedActual(jsonTestCase, Output);
-            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
 

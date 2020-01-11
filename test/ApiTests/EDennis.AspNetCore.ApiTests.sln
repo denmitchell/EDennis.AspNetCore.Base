@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2Api", "Colors2Api\Colors2Api.csproj", "{F68C29FF-722A-402F-B14A-80850ABB6881}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Api", "Colors2Api\Colors2Api.csproj", "{F68C29FF-722A-402F-B14A-80850ABB6881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2Api.Lib", "Colors2Api.Lib\Colors2Api.Lib.csproj", "{8FC41FDC-6F16-4EEC-8C48-BF12D833BFB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Api.Lib", "Colors2Api.Lib\Colors2Api.Lib.csproj", "{8FC41FDC-6F16-4EEC-8C48-BF12D833BFB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2Api.ControllerTests", "Colors2Api.ControllerTests\Colors2Api.ControllerTests.csproj", "{02B168B9-83C1-4BF5-8A69-55E0896B5740}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Api.ControllerTests", "Colors2Api.ControllerTests\Colors2Api.ControllerTests.csproj", "{02B168B9-83C1-4BF5-8A69-55E0896B5740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2Api.EndpointTests", "Colors2Api.EndpointTests\Colors2Api.EndpointTests.csproj", "{82BC9AB7-E53C-489C-9056-DF88BC7FEF8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Api.EndpointTests", "Colors2Api.EndpointTests\Colors2Api.EndpointTests.csproj", "{82BC9AB7-E53C-489C-9056-DF88BC7FEF8E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{F808DC21-C8FF-4658-8305-223603CB4A0C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo", "..\RepoTests\Colors2Repo\Colors2Repo.csproj", "{C5EC22DD-9610-4A12-9CD7-727B2B2FDAED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo.Migrator", "..\RepoTests\Colors2Repo.Migrator\Colors2Repo.Migrator.csproj", "{8A74F555-477D-42DE-A322-FECE634C33CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.NetCoreTestingUtilities", "..\..\..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj", "{D8428265-7814-4BE8-A24A-400960AD83D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{8A74F555-477D-42DE-A322-FECE634C33CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A74F555-477D-42DE-A322-FECE634C33CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A74F555-477D-42DE-A322-FECE634C33CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8428265-7814-4BE8-A24A-400960AD83D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8428265-7814-4BE8-A24A-400960AD83D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8428265-7814-4BE8-A24A-400960AD83D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8428265-7814-4BE8-A24A-400960AD83D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
