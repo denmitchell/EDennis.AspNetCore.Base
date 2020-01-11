@@ -1,9 +1,9 @@
-﻿use Colors2;
-declare @ProjectName varchar(255) = 'EDennis.Samples.Colors2Api'
+﻿use Color2Db;
+declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetDynamicLinq'
 declare @TestScenario varchar(255) = 'WhereOrderBySelectTake'
-declare @TestCase varchar(255) = 'NameContainsBlueSelectNameDescSysUserTake10'
+declare @TestCase varchar(255) = 'B'
 
 declare @Where varchar(255) = 'Name.Contains("Blue")'
 declare @Select varchar(255) = 'new(Name,SysUser)'

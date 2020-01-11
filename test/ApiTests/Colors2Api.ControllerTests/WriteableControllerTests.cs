@@ -3,6 +3,7 @@ using Colors2Api.Lib.Controllers;
 using EDennis.AspNetCore.Base.Testing;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -26,94 +27,25 @@ namespace Colors2Api.ControllerTests {
 
         //NOTE: OData is endpoint testable only
 
+
         [Theory]
         [TestJson_("GetDevExtreme", "FilterSkipTake", "A")]
         [TestJson_("GetDevExtreme", "FilterSortSelectTake", "B")]
         public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
-
-            var select = jsonTestCase.TestScenario.Contains("Select") ? jsonTestCase.GetObject<string>("Select") : default;
-            var filter = jsonTestCase.GetObject<string>("Filter");
-            var sort = jsonTestCase.TestScenario.Contains("Sort") ? jsonTestCase.GetObject<string>("Sort") : default;
-            var skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int>("Skip") : default;
-            var take = jsonTestCase.GetObject<int>("Take");
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
-
-            var actualDynamic = GetDevExtremeResult(select, sort, filter, skip, take, null, null, null);
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
-
-            Assert.True(actual.IsEqualOrWrite(expected, Output));
+            var ea = GetDevExtreme_ExpectedActual(jsonTestCase, Output);
+            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
         }
 
 
-        //[Theory]
-        //[TestJson_("GetDevExtreme", "FilterSortSelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
-        //public void GetDevExtreme2(string t, JsonTestCase jsonTestCase) {
-        //    Output.WriteLine(t);
-        //    Output.WriteLine($"Db instance name: {InstanceName}");
-
-        //    var filter = jsonTestCase.GetObject<string>("Filter");
-        //    var select = jsonTestCase.GetObject<string>("Select");
-        //    var sort = jsonTestCase.GetObject<string>("Sort");
-        //    var take = jsonTestCase.GetObject<int>("Take");
-        //    var expected = jsonTestCase
-        //        .GetObject<ICollection<dynamic>>("Expected")
-        //        .OrderByDescending(x => x.Name)
-        //        .ToList();
-
-        //    var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme?filter={filter}&select={select}&sort={sort}&take={take}")
-        //        .GetObject<DeserializableLoadResult<dynamic>>();
-        //    var actual = loadResult.data
-        //        .ToList();
-
-        //    Assert.True(actual.IsEqualOrWrite(expected, Output));
-        //}
-
-        //[Theory]
-        //[TestJson_("GetDynamicLinq", "WhereSkipTake", "RedGt200Skip2Take5")]
-        //public void GetDynamicLinq1(string t, JsonTestCase jsonTestCase) {
-        //    Output.WriteLine(t);
-        //    Output.WriteLine($"Db instance name: {InstanceName}");
-
-        //    var where = jsonTestCase.GetObject<string>("Where");
-        //    var skip = jsonTestCase.GetObject<int>("Skip");
-        //    var take = jsonTestCase.GetObject<int>("Take");
-        //    var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-        //        .OrderBy(x => x.Name)
-        //        .ToList();
-
-        //    var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&skip={skip}&take={take}")
-        //        .GetObject<List<dynamic>>()
-        //        .OrderBy(x => x.Name)
-        //        .ToList();
-
-        //    Assert.True(actual.IsEqualOrWrite(expected, Output));
-        //}
-
-        //[Theory]
-        //[TestJson_("GetDynamicLinq", "WhereOrderBySelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
-        //public void GetDynamicLinq2(string t, JsonTestCase jsonTestCase) {
-        //    Output.WriteLine(t);
-        //    Output.WriteLine($"Db instance name: {InstanceName}");
-
-        //    var where = jsonTestCase.GetObject<string>("Where");
-        //    var select = jsonTestCase.GetObject<string>("Select");
-        //    var orderBy = jsonTestCase.GetObject<string>("OrderBy");
-        //    var take = jsonTestCase.GetObject<int>("Take");
-
-        //    var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-        //        .OrderByDescending(x => x.Name)
-        //        .ToList();
-
-        //    var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&select={select}&orderBy={orderBy}&take={take}")
-        //        .GetObject<List<dynamic>>()
-        //        .ToList();
-
-        //    Assert.True(actual.IsEqualOrWrite(expected, Output));
-
-        //}
+        [Theory]
+        [TestJson_("GetDynamicLinq", "WhereSkipTake", "A")] //RedGt200Skip2Take5
+        [TestJson_("GetDynamicLinq", "WhereOrderBySelectTake", "B")] //NameContainsBlueSelectNameDescSysUserTake10
+        public void GetDynamicLinq(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            var ea = GetDynamicLinq_ExpectedActual(jsonTestCase, Output);
+            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
+        }
 
 
         //[Theory]
