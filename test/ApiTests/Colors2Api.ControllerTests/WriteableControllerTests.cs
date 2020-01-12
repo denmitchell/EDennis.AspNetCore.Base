@@ -30,8 +30,8 @@ namespace Colors2Api.ControllerTests {
 
 
         [Theory]
-        [TestJson_("GetDevExtreme", "FilterSkipTake", "A")]
-        [TestJson_("GetDevExtreme", "FilterSortSelectTake", "B")]
+        [TestJson_("GetDevExtreme", "WriteableControllerTests|FilterSkipTake", "A")]
+        [TestJson_("GetDevExtreme", "WriteableControllerTests|FilterSortSelectTake", "B")]
         public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
             var ea = GetDevExtreme_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -39,16 +39,16 @@ namespace Colors2Api.ControllerTests {
 
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "WhereSkipTake", "A")] //RedGt200Skip2Take5
-        [TestJson_("GetDynamicLinq", "WhereOrderBySelectTake", "B")] //NameContainsBlueSelectNameDescSysUserTake10
+        [TestJson_("GetDynamicLinq", "WriteableControllerTests|WhereSkipTake", "A")] //RedGt200Skip2Take5
+        [TestJson_("GetDynamicLinq", "WriteableControllerTests|WhereOrderBySelectTake", "B")] //NameContainsBlueSelectNameDescSysUserTake10
         public void GetDynamicLinq(string t, JsonTestCase jsonTestCase) {
             var ea = GetDynamicLinq_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "WhereSkipTake", "A")] //RedGt200Skip2Take5
-        [TestJson_("GetDynamicLinq", "WhereOrderBySelectTake", "B")] //NameContainsBlueSelectNameDescSysUserTake10
+        [TestJson_("GetDynamicLinq", "WriteableControllerTests|WhereSkipTake", "A")] //RedGt200Skip2Take5
+        [TestJson_("GetDynamicLinq", "WriteableControllerTests|WhereOrderBySelectTake", "B")] //NameContainsBlueSelectNameDescSysUserTake10
         public async Task GetDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await GetDynamicLinqAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -56,65 +56,39 @@ namespace Colors2Api.ControllerTests {
 
 
         [Theory]
-        [TestJson_("Get", "", "1")]
-        [TestJson_("Get", "", "2")]
+        [TestJson_("Get", "WriteableControllerTests", "A")]
+        [TestJson_("Get", "WriteableControllerTests", "B")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             var ea = Get_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
         }
 
-        //[Theory]
-        //[TestJson_("GetAsync", "", "1")]
-        //[TestJson_("GetAsync", "", "2")]
-        //public void GetAsync(string t, JsonTestCase jsonTestCase) {
-        //    Output.WriteLine(t);
-        //    Output.WriteLine($"Db instance name: {InstanceName}");
 
-        //    var id = jsonTestCase.GetObject<int>("Id");
-        //    var expected = jsonTestCase.GetObject<Rgb>("Expected");
-
-        //    var actual = HttpClient.Get<Rgb>($"api/rgb/async/{id}")
-        //        .GetObject<Rgb>();
-
-        //    Assert.True(actual.IsEqualOrWrite(expected, Output));
-        //}
+        [Theory]
+        [TestJson_("Get", "WriteableControllerTests", "A")]
+        [TestJson_("Get", "WriteableControllerTests", "B")]
+        public async Task GetAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
+        }
 
 
-        //[Theory]
-        //[TestJson_("Delete", "", "1")]
-        //[TestJson_("Delete", "", "2")]
-        //public void Delete(string t, JsonTestCase jsonTestCase) {
-        //    Output.WriteLine(t);
-        //    Output.WriteLine($"Db instance name: {InstanceName}");
+        [Theory]
+        [TestJson_("Delete", "WriteableControllerTests", "A")]
+        [TestJson_("Delete", "WriteableControllerTests", "B")]
+        public void Delete(string t, JsonTestCase jsonTestCase) {
+            var ea = Delete_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
+        }
 
-        //    var id = jsonTestCase.GetObject<int>("Id");
-        //    var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
 
-        //    HttpClient.Delete<Rgb>($"api/rgb/{id}");
-
-        //    var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-        //        .GetObject<List<Rgb>>();
-
-        //    Assert.True(actual.IsEqualOrWrite(expected, Output));
-        //}
-
-        //[Theory]
-        //[TestJson_("DeleteAsync", "", "1")]
-        //[TestJson_("DeleteAsync", "", "2")]
-        //public void DeleteAsync(string t, JsonTestCase jsonTestCase) {
-        //    Output.WriteLine(t);
-        //    Output.WriteLine($"Db instance name: {InstanceName}");
-
-        //    var id = jsonTestCase.GetObject<int>("Id");
-        //    var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-        //    HttpClient.Delete<Rgb>($"api/rgb/async/{id}");
-
-        //    var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-        //        .GetObject<List<Rgb>>();
-
-        //    Assert.True(actual.IsEqualOrWrite(expected, Output));
-        //}
+        [Theory]
+        [TestJson_("Delete", "WriteableControllerTests", "A")]
+        [TestJson_("Delete", "WriteableControllerTests", "B")]
+        public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await DeleteAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualOrWrite(ea.Expected, Output));
+        }
 
         //[Theory]
         //[TestJson_("Put", "", "1")]

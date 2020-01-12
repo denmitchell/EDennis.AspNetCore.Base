@@ -17,5 +17,6 @@ declare
 );
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Id', @Id
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'WindowStart', @WindowStart
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase

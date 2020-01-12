@@ -188,5 +188,46 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+        public async Task<ExpectedActual<TEntity>> GetAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<TEntity>("Expected");
+
+            var actual = (await Controller.GetAsync(id))
+                .GetObject<TEntity>();
+
+            return new ExpectedActual<TEntity> { Expected = expected, Actual = actual };
+        }
+
+
+        public ExpectedActual<List<TEntity>> Delete_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+
+            Controller.Delete(id);
+
+            var actual = Controller.Repo.Query.Where(x => x.Id <= start).ToList();
+
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
+        }
+
+
+        public async Task<ExpectedActual<List<TEntity>>> DeleteAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+
+            await Controller.DeleteAsync(id);
+
+            var actual = Controller.Repo.Query.Where(x => x.Id <= start).ToList();
+
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
+        }
     }
 }
