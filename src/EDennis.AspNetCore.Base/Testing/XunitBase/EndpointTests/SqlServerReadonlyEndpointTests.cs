@@ -26,7 +26,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        private ExpectedActualList<Dictionary<string, object>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActualList<Dictionary<string, object>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
@@ -178,7 +178,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        private ExpectedActualList<Dictionary<string, object>> GetOData_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActualList<Dictionary<string, object>> GetOData_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);

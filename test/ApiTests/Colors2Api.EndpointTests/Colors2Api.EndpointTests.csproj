@@ -19,4 +19,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\..\RepoTests\Colors2Repo\Colors2Repo.csproj" />
+    <ProjectReference Include="..\Colors2Api.Lib\Colors2Api.Lib.csproj" />
+    <ProjectReference Include="..\Colors2Api\Colors2Api.csproj" />
+  </ItemGroup>
+
 </Project>
