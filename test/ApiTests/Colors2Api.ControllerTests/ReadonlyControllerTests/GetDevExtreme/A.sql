@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetDevExtreme'
-declare @TestScenario varchar(255) = 'FilterSkipTake'
+declare @TestScenario varchar(255) = 'ReadonlyControllerTests|FilterSkipTake'
 declare @TestCase varchar(255) = 'A'
 
 declare @Filter varchar(255) = '["Hue",">","200"]'

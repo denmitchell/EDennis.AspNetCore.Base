@@ -14,10 +14,10 @@ go
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetJsonColumnFromStoredProcedure'
-declare @TestScenario varchar(255) = 'RgbJsonByColorName'
+declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|RgbJsonByColorName'
 declare @TestCase varchar(255) = 'B'
 
-declare @SpName varchar(255) = @TestScenario
+declare @SpName varchar(255) = 'RgbJsonByColorName'
 declare @ColorName varchar(255) = 'DarkKhaki'
 
 

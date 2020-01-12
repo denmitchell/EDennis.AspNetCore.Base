@@ -14,10 +14,10 @@ use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetFromStoredProcedure'
-declare @TestScenario varchar(255) = 'HslByColorName'
+declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|HslByColorName'
 declare @TestCase varchar(255) = 'A'
 
-declare @SpName varchar(255) = @TestScenario
+declare @SpName varchar(255) = 'HslByColorName'
 declare @ColorName varchar(255) = 'AliceBlue'
 
 

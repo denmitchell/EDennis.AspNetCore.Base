@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetDynamicLinq'
-declare @TestScenario varchar(255) = 'WhereOrderBySelectTake'
+declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|WhereOrderBySelectTake'
 declare @TestCase varchar(255) = 'B'
 
 declare @Where varchar(255) = 'Name.Contains("Blue")'

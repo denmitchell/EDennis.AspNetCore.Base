@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetOData'
-declare @TestScenario varchar(255) = 'FilterSkipTop'
+declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|FilterSkipTop'
 declare @TestCase varchar(255) = 'A'
 
 declare @Filter varchar(255) = 'Hue gt 200'

@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetOData'
-declare @TestScenario varchar(255) = 'FilterOrderBySelectTop'
+declare @TestScenario varchar(255) = 'WriteableEndpointTests|FilterOrderBySelectTop'
 declare @TestCase varchar(255) = 'A'
 
 declare @Filter varchar(255) = 'contains(Name, ''Blue'')'

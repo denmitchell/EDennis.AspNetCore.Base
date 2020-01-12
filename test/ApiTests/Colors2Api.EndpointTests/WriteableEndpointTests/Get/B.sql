@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'Get'
-declare @TestScenario varchar(255) = ''
+declare @TestScenario varchar(255) = 'WriteableEndpointTests'
 declare @TestCase varchar(255) = 'B'
 
 declare @Id int = -999146
