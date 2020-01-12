@@ -1,6 +1,7 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Net.Http;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,10 +21,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         protected Apis Apis { get; }
         public virtual string InstanceName { get; } = Guid.NewGuid().ToString();
 
+        public HttpClient HttpClient { get; }
+
         public LauncherEndpointTests(ITestOutputHelper output,
             LauncherFixture<TProgram, TLauncher> launcherFixture) {
             Output = output;
             LauncherFixture = launcherFixture;
+            HttpClient = launcherFixture.HttpClient;
             Apis = new Apis();
             Program.Configuration.GetSection(Program.ApisConfigurationSection).Bind(Apis);
         }
