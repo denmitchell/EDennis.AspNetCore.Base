@@ -5,7 +5,7 @@ declare @MethodName varchar(255) = 'Get'
 declare @TestScenario varchar(255) = ''
 declare @TestCase varchar(255) = 'A'
 
-declare @Id int = convert(int,@TestCase)
+declare @Id int = -999145
 
 declare 
 	@Expected varchar(max) = 

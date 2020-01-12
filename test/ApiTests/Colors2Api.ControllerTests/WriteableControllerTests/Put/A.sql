@@ -14,7 +14,7 @@ declare @Blue int = 145
 declare 
 	@Input varchar(max) = 
 (
-	select @ID Id, @TestCase Name, @Red Red, @Green Green, @Blue Blue, SysUser, DateAdded
+	select @ID Id, @TestCase Name, @Red Red, @Green Green, @Blue Blue, 'tester@example.org' SysUser, '2020-01-01' DateAdded
 		for json path, without_array_wrapper
 );
 
