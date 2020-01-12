@@ -5,6 +5,7 @@ declare @MethodName varchar(255) = 'GetDynamicLinq'
 declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|WhereOrderBySelectTake'
 declare @TestCase varchar(255) = 'B'
 
+declare @ControllerPath varchar(255) = 'api/Hsl'
 declare @Where varchar(255) = 'Name.Contains("Blue")'
 declare @Select varchar(255) = 'new(Name,SysUser)'
 declare @OrderBy varchar(255) = 'Name desc'
@@ -26,4 +27,5 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'OrderBy', @OrderBy
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Take', @Take
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase

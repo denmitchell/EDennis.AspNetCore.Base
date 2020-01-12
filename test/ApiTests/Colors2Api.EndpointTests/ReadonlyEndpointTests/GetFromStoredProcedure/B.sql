@@ -17,6 +17,7 @@ declare @MethodName varchar(255) = 'GetFromStoredProcedure'
 declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|HslByColorName'
 declare @TestCase varchar(255) = 'B'
 
+declare @ControllerPath varchar(255) = 'api/Hsl'
 declare @SpName varchar(255) = 'HslByColorName'
 declare @ColorName varchar(255) = 'DarkKhaki'
 
@@ -36,6 +37,7 @@ declare
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
 
 if object_id('tempdb..#SpResults') is not null drop table #SpResults

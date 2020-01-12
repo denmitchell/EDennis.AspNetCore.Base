@@ -166,7 +166,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-
         /// <summary>
         /// Returns actual and expected results from GetOData.
         /// Note: this method looks for the following optional TestJson
@@ -228,6 +227,82 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
         }
+
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public ExpectedActualList<Dictionary<string, object>> GetFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false);
+        }
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public async Task<ExpectedActualList<Dictionary<string, object>>> GetFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return await Task.Run(() =>
+                GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true));
+        }
+
+
+        private ExpectedActualList<Dictionary<string, object>> GetFromStoredProcedure_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+            Output.WriteLine(t);
+
+            var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var paramValues = jsonTestCase.GetObject<Dictionary<string,string>>("ParamValues", Output);
+
+            var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
+
+            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
+            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
+
+            var queryStrings = new List<string>();
+
+            queryStrings.Add($"spName={spName}");
+            foreach (var key in paramValues.Keys)
+                queryStrings.Add($"{key}={paramValues[key]}");
+
+            var url = $"{controllerPath}/sp{(isAsync ? "/async" : "")}?{string.Join('&', queryStrings)}";
+
+            Output.WriteLine($"url: {url}");
+
+            IActionResult actualDynamicResult;
+            if (isAsync)
+                actualDynamicResult = HttpClient.GetAsync<List<dynamic>>(url).Result;
+            else
+                actualDynamicResult = HttpClient.Get<List<dynamic>>(url);
+
+            var statusCode = actualDynamicResult.GetStatusCode();
+
+            List<dynamic> actualDynamic;
+            if (statusCode > 299)
+                actualDynamic = new List<dynamic> { new {
+                    StatusCode = statusCode,
+                    Text = actualDynamicResult.GetObject<string>() }
+                };
+            else
+                actualDynamic = actualDynamicResult.GetObject<List<dynamic>>();
+
+            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
+
+            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
+        }
+
+
 
 
     }

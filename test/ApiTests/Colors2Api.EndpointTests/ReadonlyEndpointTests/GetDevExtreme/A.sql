@@ -5,6 +5,7 @@ declare @MethodName varchar(255) = 'GetDevExtreme'
 declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|FilterSkipTake'
 declare @TestCase varchar(255) = 'A'
 
+declare @ControllerPath varchar(255) = 'api/Hsl'
 declare @Filter varchar(255) = '["Hue",">","200"]'
 declare @Skip int = 2
 declare @Take int = 5
@@ -23,4 +24,5 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Skip', @Skip
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Take', @Take
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase

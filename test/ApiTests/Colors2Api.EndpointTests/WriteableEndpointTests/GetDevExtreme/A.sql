@@ -4,6 +4,7 @@ declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetDevExtreme'
 declare @TestScenario varchar(255) = 'WriteableEndpointTests|FilterSortSelectTake'
 declare @TestCase varchar(255) = 'A'
+declare @ControllerPath varchar(255) = 'api/Rgb'
 
 declare @Filter varchar(255) = '["Name","Contains","Blue"]'
 declare @Select varchar(255) = '["Name","SysUser"]'
@@ -26,4 +27,5 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Sort', @Sort
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Take', @Take
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase

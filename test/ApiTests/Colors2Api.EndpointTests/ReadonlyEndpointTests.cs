@@ -7,10 +7,6 @@ using System.Linq;
 using L=Colors2Api.Lib;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using System.Threading.Tasks;
-//using EDennis.NetCoreTestingUtilities.Extensions;
-//using Newtonsoft.Json.Linq;
-//using System.Collections.Generic;
-//using System.Net.Http;
 
 
 namespace Colors2Api.EndpointTests {
@@ -45,7 +41,7 @@ namespace Colors2Api.EndpointTests {
 
         [Theory]
         [TestJson_("GetDevExtreme", "ReadonlyEndpointTests|FilterSkipTake", "A")]
-        [TestJson_("GetDevExtreme", "ReadonlyEndpointTests|FilterSortSelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
+        [TestJson_("GetDevExtreme", "ReadonlyEndpointTests|FilterSortSelectTake", "B")]
         public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
             var ea = GetDevExtreme_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -70,25 +66,25 @@ namespace Colors2Api.EndpointTests {
         }
 
 
-        //        [Theory]
-        //        [TestJson_("GetFromStoredProcedure", "HslByColorName", "AliceBlue")]
-        //        [TestJson_("GetFromStoredProcedure", "HslByColorName", "DarkKhaki")]
-        //        public void GetFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
-        //            Output.WriteLine(t);
-        //            Output.WriteLine($"Db instance name: {InstanceName}");
+        [Theory]
+        [TestJson_("GetFromStoredProcedure", "HslByColorName", "AliceBlue")]
+        [TestJson_("GetFromStoredProcedure", "HslByColorName", "DarkKhaki")]
+        public void GetFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            Output.WriteLine($"Db instance name: {InstanceName}");
 
-        //            var spName = jsonTestCase.GetObject<string>("SpName");
-        //            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
 
-        //            dynamic expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-        //                .FirstOrDefault();
+            dynamic expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
+                .FirstOrDefault();
 
-        //            dynamic actual = HttpClient.Get<List<dynamic>>($"api/hsl/sp?spName={spName}&colorName={colorName}")
-        //                .GetObject<List<dynamic>>()
-        //                .FirstOrDefault();
+            dynamic actual = HttpClient.Get<List<dynamic>>($"api/hsl/sp?spName={spName}&colorName={colorName}")
+                .GetObject<List<dynamic>>()
+                .FirstOrDefault();
 
-        //            Assert.Equal(expected,actual);
-        //        }
+            Assert.Equal(expected, actual);
+        }
 
 
         //        [Theory]

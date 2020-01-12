@@ -4,6 +4,7 @@ declare @ClassName varchar(255) = 'HslController'
 declare @MethodName varchar(255) = 'GetDynamicLinq'
 declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|WhereSkipTake'
 declare @TestCase varchar(255) = 'A'
+declare @ControllerPath varchar(255) = 'api/Hsl'
 
 declare @Where varchar(255) = 'Hue gt 200'
 declare @Skip int = 2
@@ -23,4 +24,5 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Skip', @Skip
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Take', @Take
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
