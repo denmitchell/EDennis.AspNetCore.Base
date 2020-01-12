@@ -240,7 +240,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="output"></param>
         /// <returns></returns>
         public ExpectedActualList<Dictionary<string, object>> GetFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
-            return GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false);
+            return GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, false);
         }
 
 
@@ -253,13 +253,44 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<Dictionary<string, object>>> GetFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActualList<Dictionary<string, object>>> GetFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
-                GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true));
+                GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, false));
         }
 
 
-        private ExpectedActualList<Dictionary<string, object>> GetFromStoredProcedure_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetJsonColumnFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public ExpectedActualList<Dictionary<string, object>> GetJsonColumnFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, true);
+        }
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetJsonColumnFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public async Task<ExpectedActualList<Dictionary<string, object>>> GetJsonColumnFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return await Task.Run(() =>
+                GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, true));
+        }
+
+
+        private ExpectedActualList<Dictionary<string, object>> GetFromStoredProcedure_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync, bool isJsonColumn) {
             Output.WriteLine(t);
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
@@ -276,7 +307,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             foreach (var key in paramValues.Keys)
                 queryStrings.Add($"{key}={paramValues[key]}");
 
-            var url = $"{controllerPath}/sp{(isAsync ? "/async" : "")}?{string.Join('&', queryStrings)}";
+            var url = $"{controllerPath}/{(isJsonColumn ? "json": "sp")}{(isAsync ? "/async" : "")}?{string.Join('&', queryStrings)}";
 
             Output.WriteLine($"url: {url}");
 
