@@ -1,19 +1,13 @@
 ﻿using Colors2.Models;
 using Colors2Api.Lib.Controllers;
 using EDennis.AspNetCore.Base.Testing;
-using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace EDennis.Samples.Colors2Api.Tests
-{
+namespace EDennis.Samples.Colors2Api.Tests {
 
     [Collection("Controller Tests")]
     public class ReadonlyControllerTests : SqlServerReadonlyControllerTests<HslController, HslRepo, Hsl, Color2DbContext> {
