@@ -11,7 +11,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
     [ApiController]
     [Route("api/[controller]")]
-    public class SqlServerWriteableController<TEntity, TContext> : SqlServerReadonlyController<TEntity, TContext>
+    public abstract class SqlServerWriteableController<TEntity, TContext> : SqlServerReadonlyController<TEntity, TContext>
             where TEntity : class, IHasIntegerId, IHasSysUser, new()
             where TContext : DbContext {
 

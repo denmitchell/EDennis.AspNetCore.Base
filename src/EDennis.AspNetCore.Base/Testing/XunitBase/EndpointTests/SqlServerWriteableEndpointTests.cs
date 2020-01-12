@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
-    class SqlServerWriteableEndpointTests {
+    public abstract class SqlServerWriteableEndpointTests {
     }
 }
