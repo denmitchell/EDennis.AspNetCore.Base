@@ -62,9 +62,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (select != default)
                 queryStrings.Add($"select={select}");
-            else if (filter != default)
+            if (filter != default)
                 queryStrings.Add($"filter={filter}");
-            else if (sort != default)
+            if (sort != default)
                 queryStrings.Add($"sort={sort}");
 
             queryStrings.Add($"skip={skip}");
@@ -96,46 +96,33 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// Returns actual and expected results from GetDynamicLinq.
+        /// Returns actual and expected results from GetDevExtreme.
         /// Note: this method looks for the following optional TestJson
         /// parameters (case sensitive):
-        /// Where, OrderBy, Select, Skip, and Take
+        /// Select, Filter, Sort, Skip, Take, 
+        ///    and ControllerPath
         /// </summary>
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
         public ExpectedActualList<Dictionary<string, object>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
-            Output.WriteLine(t);
-            var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
-            var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
-            var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
-            var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
-            var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
-
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
-
-            var actualDynamic = GetDynamicLinqResult(where, orderBy, select, skip, take);
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
-
-            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
+            return GetDynamicLinq_ExpectedActual_Base(t, jsonTestCase, u => HttpClient.Get<List<dynamic>>(u));
         }
 
 
         /// <summary>
-        /// Use this method for testing if you want full control over
-        /// entry of the parameters to the controller method.
+        /// Returns actual and expected results from GetDevExtreme.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// Select, Filter, Sort, Skip, Take, 
+        ///    and ControllerPath
         /// </summary>
-        /// <param name="where"></param>
-        /// <param name="orderBy"></param>
-        /// <param name="select"></param>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<List<dynamic>> GetDynamicLinqAsyncResult(string where, string orderBy, string select, int? skip, int? take) {
-            var iar = await Controller.GetDynamicLinqAsync(where, orderBy, select, skip, take);
-            var data = ((List<dynamic>)(iar as ObjectResult).Value);
-            return data;
+        public async Task<ExpectedActualList<Dictionary<string, object>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return await Task.Run(() =>
+                GetDynamicLinq_ExpectedActual_Base(t, jsonTestCase, u => HttpClient.GetAsync<List<dynamic>>(u).Result));
         }
 
 
@@ -143,31 +130,56 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// Returns actual and expected results from GetDynamicLinq.
         /// Note: this method looks for the following optional TestJson
         /// parameters (case sensitive):
-        /// Where, OrderBy, Select, Skip, and Take
+        /// Where, OrderBy, Select, Skip, Take, and ControllerPath
         /// </summary>
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<Dictionary<string, object>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
-
+        private ExpectedActualList<Dictionary<string, object>> GetDynamicLinq_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, Func<string, dynamic> getMethod) {
             Output.WriteLine(t);
-
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
+            var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
 
             var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
             var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
 
-            var actualDynamic = await GetDynamicLinqAsyncResult(where, orderBy, select, skip, take);
+            var queryStrings = new List<string>();
+
+            if (where != default)
+                queryStrings.Add($"where={where}");
+            if (orderBy != default)
+                queryStrings.Add($"orderBy={orderBy}");
+            if (select != default)
+                queryStrings.Add($"select={select}");
+            if (skip != default)
+                queryStrings.Add($"skip={skip}");
+            if (take != default)
+                queryStrings.Add($"take={take}");
+
+            var url = $"{controllerPath}/linq?{string.Join('&', queryStrings)}";
+
+            Output.WriteLine($"url: {url}");
+
+            var actualDynamicResult = getMethod(url);
+            var statusCode = actualDynamicResult.GetStatusCode();
+
+            List<dynamic> actualDynamic;
+            if (statusCode > 299)
+                actualDynamic = new List<dynamic> { new {
+                    StatusCode = statusCode,
+                    Text = actualDynamicResult.GetObject<string>() }
+                };
+            else
+                actualDynamic = actualDynamicResult.GetObject<List<dynamic>>();
+
             var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
 
             return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
         }
-
-
 
 
 
