@@ -4,7 +4,8 @@ declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'Post'
 declare @TestScenario varchar(255) = 'WriteableControllerTests'
 declare @TestCase varchar(255) = 'B'
-declare @WindowStart int = -999143
+declare @WindowStart int = -999148
+declare @WindowEnd int = -999143
 
 declare @Id int = -999202
 declare @Red int = 202
@@ -26,7 +27,7 @@ declare
 	@Expected varchar(max) = 
 (
 	select * from Rgb
-	where Id <= @WindowStart
+	where Id between @WindowStart and @WindowEnd or Id = @Id
 	for json path
 );
 
@@ -35,6 +36,7 @@ exec _.ResetIdentities
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'WindowStart', @WindowStart
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'WindowEnd', @WindowEnd
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
 

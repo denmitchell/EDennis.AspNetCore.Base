@@ -207,10 +207,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
+            var end = jsonTestCase.GetObject<int>("WindowEnd");
 
             Controller.Delete(id);
 
-            var actual = Controller.Repo.Query.Where(x => x.Id <= start).ToList();
+            var actual = Controller.Repo.Query.Where(x => x.Id >= start && x.Id <= end).ToList();
 
             return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
         }
@@ -222,12 +223,78 @@ namespace EDennis.AspNetCore.Base.Testing {
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
+            var end = jsonTestCase.GetObject<int>("WindowEnd");
 
             await Controller.DeleteAsync(id);
 
-            var actual = Controller.Repo.Query.Where(x => x.Id <= start).ToList();
+            var actual = Controller.Repo.Query.Where(x => x.Id >= start && x.Id <= end).ToList();
 
             return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
         }
+
+        public ExpectedActual<List<TEntity>> Post_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var input = jsonTestCase.GetObject<TEntity>("Input");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+            var end = jsonTestCase.GetObject<int>("WindowEnd");
+
+            Controller.Post(input);
+
+            var actual = Controller.Repo.Query.Where(x => (x.Id >= start && x.Id <= end) || x.Id == input.Id).ToList();
+
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
+        }
+
+
+        public async Task<ExpectedActual<List<TEntity>>> PostAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var input = jsonTestCase.GetObject<TEntity>("Input");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+            var end = jsonTestCase.GetObject<int>("WindowEnd");
+
+            await Controller.PostAsync(input);
+
+            var actual = Controller.Repo.Query.Where(x => (x.Id >= start && x.Id <= end) || x.Id == input.Id).ToList();
+
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
+        }
+
+
+        public ExpectedActual<List<TEntity>> Put_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<TEntity>("Input");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+            var end = jsonTestCase.GetObject<int>("WindowEnd");
+
+            Controller.Put(input,id);
+
+            var actual = Controller.Repo.Query.Where(x => x.Id >= start && x.Id <= end).ToList();
+
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
+        }
+
+        public async Task<ExpectedActual<List<TEntity>>> PutAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<TEntity>("Input");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var start = jsonTestCase.GetObject<int>("WindowStart");
+            var end = jsonTestCase.GetObject<int>("WindowEnd");
+
+            await Controller.PutAsync(input, id);
+
+            var actual = Controller.Repo.Query.Where(x => x.Id >= start && x.Id <= end).ToList();
+
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
+        }
+
     }
 }
