@@ -153,6 +153,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
+
+        /*
+         * ODATA REQUIRES WORKAROUNDS IN .NET CORE 3.1 AND BREAKS SWAGGER UI
+
         /// <summary>
         /// Returns actual and expected results from GetOData.
         /// Note: this method looks for the following optional TestJson
@@ -182,14 +186,14 @@ namespace EDennis.AspNetCore.Base.Testing {
             var queryStrings = new List<string>();
 
             if (select != default)
-                queryStrings.Add($"select={select}");
+                queryStrings.Add($"$select={select}");
             if (filter != default)
-                queryStrings.Add($"where={filter}");
+                queryStrings.Add($"$where={filter}");
             if (orderBy != default)
-                queryStrings.Add($"orderBy={orderBy}");
+                queryStrings.Add($"$orderBy={orderBy}");
 
-            queryStrings.Add($"skip={skip}");
-            queryStrings.Add($"top={top}");
+            queryStrings.Add($"$skip={skip}");
+            queryStrings.Add($"$top={top}");
 
             var url = $"{controllerPath}/odata?{string.Join('&', queryStrings)}";
 
@@ -210,7 +214,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
         }
 
-
+        */
 
         /// <summary>
         /// Returns actual and expected results from GetFromStoredProcedure.

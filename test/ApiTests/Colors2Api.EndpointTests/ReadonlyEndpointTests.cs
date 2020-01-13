@@ -27,7 +27,8 @@ namespace Colors2Api.EndpointTests {
         }
 
 
-
+        /*
+         * ODATA REQUIRES WORKAROUNDS IN .NET CORE 3.1, AND BREAKS SWAGGER UI
         [Theory]
         [TestJson_("GetOData", "ReadonlyEndpointTests|FilterSkipTop", "A")]
         [TestJson_("GetOData", "ReadonlyEndpointTests|FilterOrderBySelectTop", "B")]
@@ -35,7 +36,7 @@ namespace Colors2Api.EndpointTests {
             var ea = GetOData_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
-
+        */
 
 
         [Theory]

@@ -35,12 +35,16 @@ namespace EDennis.AspNetCore.Base.Web {
             _jsonSerializerOptions.Converters.Add(new PartialEntityConverter());
         }
 
+        /*
+         * 
+         * ODATA REQUIRES TOO MANY WORKAROUNDS IN 3.1, AND BREAKS SWAGGER UI
 
         /// <summary>
         /// Get from OData query string
         /// </summary>
         /// <returns></returns>
         [EnableQuery]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ODataQueryFilter]
         [HttpGet("odata")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
@@ -55,6 +59,7 @@ namespace EDennis.AspNetCore.Base.Web {
             return Repo.Query;
         }
 
+    */
 
         /// <summary>
         /// Get from DevExtreme DataSourceLoader query string
