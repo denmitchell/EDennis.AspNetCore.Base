@@ -13,12 +13,15 @@ namespace EDennis.AspNetCore.Base.Testing {
             where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>{
 
         private DbContextSettings<THistoryContext> _historyDbContextSettings;
+        private StoredProcedureDefs<THistoryContext> _historyStoredProcedureDefs;
         private CachedConnection<THistoryContext> _historyCachedConnection;
         private DbContextProvider<THistoryContext> _dbContextProvider;
 
 
         public TestTemporalRepoFactory() :base() {
             HistoryDbContext = DbContextProvider<THistoryContext>.GetInterceptorContext(HistoryDbContextSettings, HistoryCachedConnection);
+            if (HistoryDbContext is ISqlServerDbContext<THistoryContext>)
+                (HistoryDbContext as ISqlServerDbContext<THistoryContext>).StoredProcedureDefs = HistoryStoredProcedureDefs;
         }
 
 
@@ -52,10 +55,21 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual THistoryContext HistoryDbContext { get; set; }
 
 
+        public virtual StoredProcedureDefs<THistoryContext> HistoryStoredProcedureDefs {
+            get {
+                if (_historyStoredProcedureDefs == null)
+                    _historyStoredProcedureDefs = new StoredProcedureDefs<THistoryContext>(HistoryDbContext);
+                return _historyStoredProcedureDefs;
+            }
+            set {
+                _historyStoredProcedureDefs = value;
+            }
+        }
+
         public virtual DbContextProvider<THistoryContext> HistoryDbContextProvider {
             get {
                 if (_dbContextProvider == null) {
-                    _dbContextProvider = new DbContextProvider<THistoryContext>(HistoryDbContext);
+                    _dbContextProvider = new DbContextProvider<THistoryContext>(HistoryDbContext, HistoryStoredProcedureDefs);
                 }
                 return _dbContextProvider;
             }

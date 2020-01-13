@@ -43,7 +43,7 @@ namespace RepoTests {
             var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
             var expected = DynamicConverter.ToPropertyDictionaryList(expectedDynamic);
 
-            var actualDynamic = Repo.GetFromStoredProcedure(spName, parameters);
+            var actualDynamic = Repo.Context.GetFromStoredProcedure(spName, parameters);
             var actual = DynamicConverter.ToPropertyDictionaryList(actualDynamic);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
@@ -66,7 +66,7 @@ namespace RepoTests {
             var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
             var expected = DynamicConverter.ToPropertyDictionaryList(expectedDynamic);
 
-            var actualDynamic = await Repo.GetFromStoredProcedureAsync(spName, parameters);
+            var actualDynamic = await Repo.Context.GetFromStoredProcedureAsync(spName, parameters);
             var actual = DynamicConverter.ToPropertyDictionaryList(actualDynamic);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));

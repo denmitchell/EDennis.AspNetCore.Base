@@ -23,10 +23,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         private DbContextSettings<TContext> _dbContextSettings;
         private CachedConnection<TContext> _cachedConnection;
         private DbContextProvider<TContext> _dbContextProvider;
+        private StoredProcedureDefs<TContext> _storedProcedureDefs;
 
 
         public TestRepoFactory() {
             DbContext = DbContextProvider<TContext>.GetInterceptorContext(DbContextSettings, CachedConnection);
+            if (DbContext is ISqlServerDbContext<TContext>)
+                (DbContext as ISqlServerDbContext<TContext>).StoredProcedureDefs = StoredProcedureDefs;
         }
 
 
@@ -108,10 +111,23 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual TContext DbContext { get; set; }
 
 
+
+        public virtual StoredProcedureDefs<TContext> StoredProcedureDefs {
+            get {
+                if (_storedProcedureDefs == null)
+                    _storedProcedureDefs = new StoredProcedureDefs<TContext>(DbContext);
+                return _storedProcedureDefs;
+            }
+            set {
+                _storedProcedureDefs = value;
+            }
+        }
+
+
         public virtual DbContextProvider<TContext> DbContextProvider {
             get {
                 if (_dbContextProvider == null) {
-                    _dbContextProvider = new DbContextProvider<TContext>(DbContext);
+                    _dbContextProvider = new DbContextProvider<TContext>(DbContext, StoredProcedureDefs);
                 }
                 return _dbContextProvider;
             }

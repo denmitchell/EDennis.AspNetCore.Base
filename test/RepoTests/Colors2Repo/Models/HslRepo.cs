@@ -4,7 +4,7 @@ using EDennis.AspNetCore.Base.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Colors2.Models {
-    public class HslRepo : SqlServerRepo<Hsl, Color2DbContext> {
+    public class HslRepo : Repo<Hsl, Color2DbContext> {
         public HslRepo(DbContextProvider<Color2DbContext> provider,
             IScopeProperties scopeProperties,
             ILogger<HslRepo> logger,

@@ -252,6 +252,7 @@ namespace EDennis.AspNetCore.Base {
             var settings = serviceConfig.BindAndConfigure<DbContextSettings<TContext>>(path);
 
             serviceConfig.Services.AddSingleton<DbConnectionCache<TContext>>();
+            serviceConfig.Services.TryAddSingleton<StoredProcedureDefs<TContext>>();
             serviceConfig.Services.AddScoped<DbContextProvider<TContext>>();
 
             serviceConfig.Services.AddDbContext<TContext>(builder => {
@@ -274,7 +275,6 @@ namespace EDennis.AspNetCore.Base {
             serviceConfig.Services.AddScoped<TRepo, TRepo>();
             return serviceConfig;
         }
-
 
 
         public static IServiceConfig AddHeadersToClaims(this IServiceConfig serviceConfig, string path) {

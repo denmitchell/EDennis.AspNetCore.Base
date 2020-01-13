@@ -15,7 +15,7 @@ namespace EDennis.AspNetCore.Base.Web {
             where TEntity : class, IHasIntegerId, IHasSysUser, new()
             where TContext : DbContext, ISqlServerDbContext<TContext> {
 
-        public SqlServerWriteableController(ISqlServerRepo<TEntity, TContext> repo, 
+        public SqlServerWriteableController(Repo<TEntity, TContext> repo, 
             ILogger<SqlServerReadonlyController<TEntity, TContext>> logger)
             : base(repo, logger) { }
 

@@ -19,7 +19,7 @@ namespace Colors2.Models
 
         public virtual DbSet<Rgb> Rgb { get; set; }
         public virtual DbSet<Hsl> Hsl { get; set; }
-
+        public StoredProcedureDefs<Color2DbContext> StoredProcedureDefs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 

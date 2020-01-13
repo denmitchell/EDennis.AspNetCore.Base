@@ -25,12 +25,6 @@ namespace RepoTests {
             }
         }
 
-        private IEnumerable<Color> BaseExpected(JsonTestCase jsonTestCase) {
-            var readSeed = jsonTestCase.GetObject<List<Color>>($"ReadSeed");
-            var writeSeed = jsonTestCase.GetObject<List<Color>>($"WriteSeed");
-            return readSeed.Union(writeSeed);
-        }
-
         private void WriteSeed(JsonTestCase jsonTestCase) {
             var inputs = jsonTestCase.GetObject<List<Color>>($"WriteSeed");
             foreach (var input in inputs)

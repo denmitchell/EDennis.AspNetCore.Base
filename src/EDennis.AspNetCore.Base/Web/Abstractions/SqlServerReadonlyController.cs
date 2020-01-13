@@ -21,12 +21,12 @@ namespace EDennis.AspNetCore.Base.Web {
             where TEntity : class, IHasSysUser, new()
             where TContext : DbContext, ISqlServerDbContext<TContext> {
 
-        public ISqlServerRepo<TEntity, TContext> Repo { get; }
+        public Repo<TEntity, TContext> Repo { get; }
         public ILogger<SqlServerReadonlyController<TEntity, TContext>> Logger { get; }
 
-        private JsonSerializerOptions _jsonSerializerOptions;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public SqlServerReadonlyController(ISqlServerRepo<TEntity, TContext> repo,
+        public SqlServerReadonlyController(Repo<TEntity, TContext> repo,
             ILogger<SqlServerReadonlyController<TEntity, TContext>> logger) {
             Repo = repo;
             Logger = logger;
@@ -183,7 +183,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
 
-            return Ok(await Repo.GetFromStoredProcedureAsync(
+            return Ok(await Repo.Context.GetFromStoredProcedureAsync(
                 spName, parms));
         }
 
@@ -200,7 +200,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var json = Repo.GetJsonColumnFromStoredProcedure(
+            var json = Repo.Context.GetJsonColumnFromStoredProcedure(
                 spName, parms);
 
 
@@ -221,7 +221,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
 
-            var json = await Repo.GetJsonColumnFromStoredProcedureAsync(
+            var json = await Repo.Context.GetJsonColumnFromStoredProcedureAsync(
                 spName, parms);
 
 
