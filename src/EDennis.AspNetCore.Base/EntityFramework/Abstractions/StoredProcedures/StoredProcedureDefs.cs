@@ -11,8 +11,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     public class StoredProcedureDefs<TContext> : List<StoredProcedureDef> 
         where TContext : DbContext {
 
+        
+        public StoredProcedureDefs(DbContextSettings<TContext> settings) {
+            var builder = new DbContextOptionsBuilder<TContext>();
+            DbContextProvider<TContext>.BuildBuilder(builder, settings);
+            var options = builder.Options;
 
-        public StoredProcedureDefs(TContext context) {
+            using var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { options });
             if(context.Database.IsSqlServer())
                 BuildStoredProcedureDefs(context);
         }

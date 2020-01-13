@@ -252,7 +252,9 @@ namespace EDennis.AspNetCore.Base {
             var settings = serviceConfig.BindAndConfigure<DbContextSettings<TContext>>(path);
 
             serviceConfig.Services.AddSingleton<DbConnectionCache<TContext>>();
-            serviceConfig.Services.TryAddSingleton<StoredProcedureDefs<TContext>>();
+            serviceConfig.Services.AddSingleton(
+                new StoredProcedureDefs<TContext>(settings)
+                );
             serviceConfig.Services.AddScoped<DbContextProvider<TContext>>();
 
             serviceConfig.Services.AddDbContext<TContext>(builder => {

@@ -115,7 +115,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual StoredProcedureDefs<TContext> StoredProcedureDefs {
             get {
                 if (_storedProcedureDefs == null)
-                    _storedProcedureDefs = new StoredProcedureDefs<TContext>(DbContext);
+                    _storedProcedureDefs = new StoredProcedureDefs<TContext>(DbContextSettings);
                 return _storedProcedureDefs;
             }
             set {

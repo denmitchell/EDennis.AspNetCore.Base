@@ -298,9 +298,9 @@ namespace EDennis.AspNetCore.Base.Testing {
             var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
             var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
 
-            var queryStrings = new List<string>();
-
-            queryStrings.Add($"spName={spName}");
+            var queryStrings = new List<string> {
+                $"spName={spName}"
+            };
             foreach (var key in paramValues.Keys)
                 queryStrings.Add($"{key}={paramValues[key]}");
 

@@ -35,9 +35,6 @@ namespace EDennis.AspNetCore.Base.Web {
             _jsonSerializerOptions.Converters.Add(new PartialEntityConverter());
         }
 
-        public abstract Dictionary<string, Type> StoredProcedureReturnTypes { get; } 
-
-
 
         /// <summary>
         /// Get from OData query string
@@ -153,17 +150,18 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            MethodInfo method = typeof(ISqlServerDbContext<TContext>)
-                .GetMethod("GetFromStoredProcedure",BindingFlags.Static);
+            //MethodInfo method = typeof(ISqlServerDbContext<TContext>)
+            //    .GetMethod("GetFromStoredProcedure",BindingFlags.Static);
 
-            Type returnType = typeof(object);
-            if (StoredProcedureReturnTypes.TryGetValue(spName, out Type retType))
-                returnType = retType;
-            MethodInfo generic = method.MakeGenericMethod(returnType);
+            //Type returnType = typeof(object);
+            //if (StoredProcedureReturnTypes.TryGetValue(spName, out Type retType))
+            //    returnType = retType;
+            //MethodInfo generic = method.MakeGenericMethod(returnType);
 
-            var result = generic.Invoke(null, new object[] { spName, parms });
+            //var result = generic.Invoke(null, new object[] { spName, parms });
 
-            return Ok(result);
+            return Ok(Repo.Context.GetFromStoredProcedure(
+                spName, parms));
         }
 
 

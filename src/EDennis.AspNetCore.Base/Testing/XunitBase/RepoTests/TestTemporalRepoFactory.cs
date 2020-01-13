@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual StoredProcedureDefs<THistoryContext> HistoryStoredProcedureDefs {
             get {
                 if (_historyStoredProcedureDefs == null)
-                    _historyStoredProcedureDefs = new StoredProcedureDefs<THistoryContext>(HistoryDbContext);
+                    _historyStoredProcedureDefs = new StoredProcedureDefs<THistoryContext>(HistoryDbContextSettings);
                 return _historyStoredProcedureDefs;
             }
             set {

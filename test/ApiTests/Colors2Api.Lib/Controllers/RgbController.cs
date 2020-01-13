@@ -9,10 +9,5 @@ namespace Colors2Api.Lib.Controllers {
         public RgbController(RgbRepo repo, ILogger<SqlServerWriteableController<Rgb, Color2DbContext>> logger) 
             : base(repo, logger) { }
 
-        public override Dictionary<string, Type> StoredProcedureReturnTypes
-            => new Dictionary<string, Type> {
-                { "HslByColorName", typeof(List<Hsl>) },
-                { "RgbJsonByColorName", typeof(List<Rgb>) }
-            };
     }
 }
