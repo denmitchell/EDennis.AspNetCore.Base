@@ -21,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         RepoTests<TRepo, TEntity, TContext>
         where TController : SqlServerReadonlyController<TEntity,TContext>
         where TEntity : class, IHasSysUser, new()
-        where TContext : DbContext
+        where TContext : DbContext, ISqlServerDbContext<TContext>
         where TRepo : Repo<TEntity, TContext> {
 
         public SqlServerReadonlyController<TEntity,TContext> Controller { get; }

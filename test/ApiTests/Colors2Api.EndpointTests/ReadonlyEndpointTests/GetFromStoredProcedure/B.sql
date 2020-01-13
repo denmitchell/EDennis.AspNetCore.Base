@@ -21,6 +21,11 @@ declare @ControllerPath varchar(255) = 'api/Hsl'
 declare @SpName varchar(255) = 'HslByColorName'
 declare @ColorName varchar(255) = 'DarkKhaki'
 
+declare @ParamValues varchar(max) =
+(
+	select @ColorName ColorName
+	for json path, without_array_wrapper
+);
 
 select * into #SpResults 
     from openrowset('SQLNCLI', 
@@ -38,6 +43,7 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ParamValues', @ParamValues
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
 
 if object_id('tempdb..#SpResults') is not null drop table #SpResults

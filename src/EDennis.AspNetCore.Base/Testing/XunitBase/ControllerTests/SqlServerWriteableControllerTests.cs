@@ -20,7 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         RepoTests<TRepo, TEntity, TContext>
         where TController : SqlServerWriteableController<TEntity,TContext>
         where TEntity : class, IHasSysUser, IHasIntegerId, new()
-        where TContext : DbContext
+        where TContext : DbContext, ISqlServerDbContext<TContext>
         where TRepo : Repo<TEntity, TContext> {
 
         public SqlServerWriteableController<TEntity,TContext> Controller { get; }

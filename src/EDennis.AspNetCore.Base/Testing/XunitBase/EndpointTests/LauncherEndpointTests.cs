@@ -17,7 +17,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         protected ITestOutputHelper Output { get; }
         protected LauncherFixture<TProgram, TLauncher> LauncherFixture { get; }
-        public virtual ProgramBase Program { get; set; }
+        public virtual IProgram Program { get; set; }
         protected Apis Apis { get; }
         public virtual string InstanceName { get; } = Guid.NewGuid().ToString();
 
@@ -28,8 +28,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output = output;
             LauncherFixture = launcherFixture;
             HttpClient = launcherFixture.HttpClient;
-            Apis = new Apis();
-            Program.Configuration.GetSection(Program.ApisConfigurationSection).Bind(Apis);
+            Program = launcherFixture.Program;
+            Apis = launcherFixture.Program.Apis;
         }
 
 

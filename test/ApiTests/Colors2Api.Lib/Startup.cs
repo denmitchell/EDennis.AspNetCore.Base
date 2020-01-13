@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Colors2.Models;
 using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +26,9 @@ namespace Colors2Api.Lib {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+                //.AddJsonOptions(configure => {
+                //    configure.JsonSerializerOptions.Converters.Add(new PartialEntityConverter());
+                //});
 
             var _ = new ServiceConfig(services, Configuration)
                 .AddScopeProperties()

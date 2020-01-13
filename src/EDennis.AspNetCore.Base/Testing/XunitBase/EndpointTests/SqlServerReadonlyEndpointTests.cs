@@ -1,15 +1,19 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Serialization;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class SqlServerReadonlyEndpointTests<TProgram, TLauncher> : LauncherEndpointTests<TProgram, TLauncher>
+    public abstract class SqlServerReadonlyEndpointTests<TEntity, TProgram, TLauncher> : LauncherEndpointTests<TProgram, TLauncher>
+        where TEntity : class, new()
         where TProgram : IProgram, new()
         where TLauncher : ILauncher, new() {
 
@@ -84,7 +88,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public ExpectedActualList<Dictionary<string, object>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActualList<TEntity> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return GetDynamicLinq_ExpectedActual_Base(t, jsonTestCase, false);
         }
 
@@ -99,7 +103,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<Dictionary<string, object>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActualList<TEntity>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
                 GetDynamicLinq_ExpectedActual_Base(t, jsonTestCase, true));
         }
@@ -114,7 +118,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        private ExpectedActualList<Dictionary<string, object>> GetDynamicLinq_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        private ExpectedActualList<TEntity> GetDynamicLinq_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
@@ -123,8 +127,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
 
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
             var queryStrings = new List<string>();
 
@@ -143,26 +146,20 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult actualDynamicResult;
+            IActionResult actualResult;
             if (isAsync)
-                actualDynamicResult = HttpClient.GetAsync<List<dynamic>>(url).Result;
+                actualResult = HttpClient.GetAsync<List<TEntity>>(url).Result;
             else
-                actualDynamicResult = HttpClient.Get<List<dynamic>>(url);
+                actualResult = HttpClient.Get<List<TEntity>>(url);
 
-            var statusCode = actualDynamicResult.GetStatusCode();
 
-            List<dynamic> actualDynamic;
+            var statusCode = actualResult.GetStatusCode();
             if (statusCode > 299)
-                actualDynamic = new List<dynamic> { new {
-                    StatusCode = statusCode,
-                    Text = actualDynamicResult.GetObject<string>() }
-                };
-            else
-                actualDynamic = actualDynamicResult.GetObject<List<dynamic>>();
+                throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
 
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
+            var actual = actualResult.GetObject<List<TEntity>>();
 
-            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
+            return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
         }
 
 

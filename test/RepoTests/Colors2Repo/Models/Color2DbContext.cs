@@ -10,7 +10,7 @@ namespace Colors2.Models
         MigrationsExtensionsDbContextDesignTimeFactory<Color2DbContext>{ }
 
 
-    public class Color2DbContext : DbContext
+    public class Color2DbContext : DbContext, ISqlServerDbContext<Color2DbContext>
     {
 
         public Color2DbContext(DbContextOptions<Color2DbContext> options)

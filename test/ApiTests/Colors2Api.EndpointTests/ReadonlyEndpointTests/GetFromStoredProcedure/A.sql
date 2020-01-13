@@ -27,6 +27,13 @@ select * into #SpResults
 	  'Server=(localdb)\MSSQLLocalDb;Database=Colors2;Trusted_Connection=yes;',
       'EXEC HslByColorName ''AliceBlue''')
 
+declare @ParamValues varchar(max) =
+(
+	select @ColorName ColorName
+	for json path, without_array_wrapper
+);
+
+
 declare 
 	@Expected varchar(max) = 
 (
@@ -38,6 +45,7 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ParamValues', @ParamValues
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
 
 if object_id('tempdb..#SpResults') is not null drop table #SpResults

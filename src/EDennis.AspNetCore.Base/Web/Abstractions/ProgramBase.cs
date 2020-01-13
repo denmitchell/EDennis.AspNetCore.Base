@@ -57,20 +57,21 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual string ApisConfigurationSection { get; } = "Apis";
         public abstract Type Startup { get; }
 
+        public Apis Apis { get; }
         public Api Api { get; }
 
         public ProgramBase() {
 
-            var apis = new Apis();
+            Apis = new Apis();
             var config = Configuration;
             var projectName = GetType().Assembly.GetName().Name.Replace(".Lib","");
             try {
-                config.GetSection(ApisConfigurationSection).Bind(apis);
+                config.GetSection(ApisConfigurationSection).Bind(Apis);
             } catch (Exception) {
                 throw new ApplicationException($"Cannot bind to {ApisConfigurationSection} in Configuration.");
             }
             try {
-                Api = apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Value;
+                Api = Apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Value;
             } catch (Exception) {
                 throw new ApplicationException($"Cannot bind to {ApisConfigurationSection}:{projectName} in Configuration.");
             }

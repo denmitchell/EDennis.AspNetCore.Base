@@ -1,5 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
 using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Serialization;
+using EDennis.NetCoreTestingUtilities.Extensions;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,9 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System;
+using System.Reflection;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -14,16 +19,24 @@ namespace EDennis.AspNetCore.Base.Web {
     [Route("api/[controller]")]
     public abstract class SqlServerReadonlyController<TEntity, TContext> : ControllerBase
             where TEntity : class, IHasSysUser, new()
-            where TContext : DbContext {
+            where TContext : DbContext, ISqlServerDbContext<TContext> {
 
         public ISqlServerRepo<TEntity, TContext> Repo { get; }
-        public ILogger<SqlServerReadonlyController<TEntity,TContext>> Logger { get; }
+        public ILogger<SqlServerReadonlyController<TEntity, TContext>> Logger { get; }
+
+        private JsonSerializerOptions _jsonSerializerOptions;
 
         public SqlServerReadonlyController(ISqlServerRepo<TEntity, TContext> repo,
             ILogger<SqlServerReadonlyController<TEntity, TContext>> logger) {
             Repo = repo;
             Logger = logger;
+
+            _jsonSerializerOptions = new JsonSerializerOptions();
+            _jsonSerializerOptions.Converters.Add(new PartialEntityConverter());
         }
+
+        public abstract Dictionary<string, Type> StoredProcedureReturnTypes { get; } 
+
 
 
         /// <summary>
@@ -90,8 +103,11 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? skip = null,
                 [FromQuery]int? take = null
                 ) {
-            return new ObjectResult(Repo.GetFromDynamicLinq(
-                where, orderBy, select, skip, take));
+            var dList = Repo.GetFromDynamicLinq(
+                where, orderBy, select, skip, take);
+            var pe = PartialEntity<TEntity>.CreateList(dList);
+            var json = JsonSerializer.Serialize(pe, _jsonSerializerOptions);
+            return new ContentResult { Content = json, ContentType = "application/json" };
         }
 
 
@@ -114,8 +130,11 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? skip = null,
                 [FromQuery]int? take = null
                 ) {
-            return new ObjectResult(await Repo.GetFromDynamicLinqAsync(
-                where, orderBy, select, skip, take));
+            var dList = await Repo.GetFromDynamicLinqAsync(
+                where, orderBy, select, skip, take);
+            var pe = PartialEntity<TEntity>.CreateList(dList);
+            var json = JsonSerializer.Serialize(pe, _jsonSerializerOptions);
+            return new ContentResult { Content = json, ContentType = "application/json" };
         }
 
 
@@ -134,9 +153,17 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
+            MethodInfo method = typeof(ISqlServerDbContext<TContext>)
+                .GetMethod("GetFromStoredProcedure",BindingFlags.Static);
 
-            return Ok(Repo.GetFromStoredProcedure(
-                spName, parms));
+            Type returnType = typeof(object);
+            if (StoredProcedureReturnTypes.TryGetValue(spName, out Type retType))
+                returnType = retType;
+            MethodInfo generic = method.MakeGenericMethod(returnType);
+
+            var result = generic.Invoke(null, new object[] { spName, parms });
+
+            return Ok(result);
         }
 
 
