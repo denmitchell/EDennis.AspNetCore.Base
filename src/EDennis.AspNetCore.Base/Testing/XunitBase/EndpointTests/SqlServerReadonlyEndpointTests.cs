@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public ExpectedActualList<Dictionary<string, object>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActualList<TEntity> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
@@ -57,24 +58,18 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
-            var actualDynamicResult = HttpClient.Get<List<dynamic>>(url);
-            var statusCode = actualDynamicResult.GetStatusCode();
+            var actualLoadResult = HttpClient.Get<DeserializableLoadResult<TEntity>>(url);
+            var statusCode = actualLoadResult.GetStatusCode();
 
-            List<dynamic> actualDynamic;
+            List<TEntity> actual;
             if (statusCode > 299)
-                actualDynamic = new List<dynamic> { new {
-                    StatusCode = statusCode,
-                    Text = actualDynamicResult.GetObject<string>() }
-                };
+                throw new Exception($"StatusCode={statusCode},Text={actualLoadResult.GetObject<string>()}");
             else
-                actualDynamic = actualDynamicResult.GetObject<List<dynamic>>();
+                actual = actualLoadResult.GetObject<DeserializableLoadResult<TEntity>>().data.ToList();
 
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
-
-            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
+            return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
         }
 
 
