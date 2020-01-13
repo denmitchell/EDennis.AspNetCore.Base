@@ -144,7 +144,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("sp")]
-        public IActionResult GetFromStoredProcedure([FromQuery] string spName) {
+        public IActionResult GetListFromStoredProcedure([FromQuery] string spName) {
 
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")
@@ -166,12 +166,56 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("sp/async")]
-        public async Task<IActionResult> GetFromStoredProcedureAsync([FromQuery] string spName) {
+        public async Task<IActionResult> GetListFromStoredProcedureAsync([FromQuery] string spName) {
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
             var result = await Repo.Context.GetListFromStoredProcedureAsync<TContext, TEntity>(
+                spName, parms);
+
+            return Ok(result);
+        }
+
+
+
+        /// <summary>
+        /// Executes a stored procedure and returns the result.
+        /// Note: there are no application-level constraints
+        /// that limit repos to executing read-only 
+        /// stored procedures.
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
+        [HttpGet("sp/single")]
+        public IActionResult GetSingleFromStoredProcedure([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+            var result = Repo.Context.GetSingleFromStoredProcedure<TContext, TEntity>(
+                spName, parms);
+
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Asynchronously executes a stored procedure and returns the result.
+        /// Note: there are no application-level constraints
+        /// that limit repos to executing read-only 
+        /// stored procedures.
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
+        [HttpGet("sp/single/async")]
+        public async Task<IActionResult> GetSingleFromStoredProcedureAsync([FromQuery] string spName) {
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+            var result = await Repo.Context.GetSingleFromStoredProcedureAsync<TContext, TEntity>(
                 spName, parms);
 
             return Ok(result);
@@ -184,13 +228,13 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("json")]
-        public IActionResult GetJsonColumnFromStoredProcedure([FromQuery] string spName) {
+        public IActionResult GetListFromJsonStoredProcedure([FromQuery] string spName) {
 
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var result = Repo.Context.GetSingleFromJsonStoredProcedure<TContext,TEntity>(
+            var result = Repo.Context.GetListFromJsonStoredProcedure<TContext,TEntity>(
                 spName, parms);
 
             return Ok(result);
@@ -203,7 +247,47 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("json/async")]
-        public async Task<IActionResult> GetJsonColumnFromStoredProcedureAsync([FromQuery] string spName) {
+        public async Task<IActionResult> GetListFromJsonStoredProcedureAsync([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+            var result = await Repo.Context.GetListFromJsonStoredProcedureAsync<TContext, TEntity>(
+                spName, parms);
+
+            return Ok(result);
+        }
+
+
+
+
+        /// <summary>
+        /// Obtains a json result from a stored procedure
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
+        [HttpGet("json/single")]
+        public IActionResult GetSingleFromJsonStoredProcedure([FromQuery] string spName) {
+
+            var parms = HttpContext.Request.Query
+                .Where(q => q.Key != "spName")
+                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+
+            var result = Repo.Context.GetSingleFromJsonStoredProcedure<TContext, TEntity>(
+                spName, parms);
+
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        /// Asynchrously obtains a json result from a stored procedure
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
+        [HttpGet("json/single/async")]
+        public async Task<IActionResult> GetSingleFromJsonStoredProcedureAsync([FromQuery] string spName) {
 
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")

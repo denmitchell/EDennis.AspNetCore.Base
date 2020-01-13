@@ -48,13 +48,37 @@
     <None Update="FodyWeavers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="MigrationsSql\PostUp\02_RgbHslByColorNameContains.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_RgbHslByColorName.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_RgbJsonByColorNameContains.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_HslJsonByColorNameContains.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_RgbByColorNameContains.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_HslByColorNameContains.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_RgbByColorName.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="MigrationsSql\PostUp\02_HslByColorName.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsSql\PostUp\04_RgbInserts.sql">
+    <None Update="MigrationsSql\PostUp\02_HslJsonByColorName.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsSql\PostUp\03_RgbJsonByColorName.sql">
+    <None Update="MigrationsSql\PostUp\99_RgbInserts.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MigrationsSql\PostUp\02_RgbJsonByColorName.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MigrationsSql\PostUp\01_vwHsl.sql">

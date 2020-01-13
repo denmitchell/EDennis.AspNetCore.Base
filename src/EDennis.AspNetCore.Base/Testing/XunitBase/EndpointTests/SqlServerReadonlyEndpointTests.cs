@@ -389,7 +389,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             foreach (var key in paramValues.Keys)
                 queryStrings.Add($"{key}={paramValues[key]}");
 
-            var url = $"{controllerPath}/{(isJsonColumn ? "json" : "sp")}{(isAsync ? "/async" : "")}?{string.Join('&', queryStrings)}";
+            var url = $"{controllerPath}/{(isJsonColumn ? "json" : "sp")}/single{(isAsync ? "/async" : "")}?{string.Join('&', queryStrings)}";
 
             Output.WriteLine($"url: {url}");
 
