@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
@@ -95,9 +96,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public List<dynamic> GetDynamicLinqResult(string where, string orderBy, string select, int? skip, int? take) {
+        public string GetDynamicLinqResult(string where, string orderBy, string select, int? skip, int? take) {
             var iar = Controller.GetDynamicLinq(where, orderBy, select, skip, take);
-            var data = ((List<dynamic>)(iar as ObjectResult).Value);
+            var data = ((string)(iar as ContentResult).Content);
             return data;
         }
 
@@ -111,7 +112,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public ExpectedActualList<Dictionary<string, object>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActualList<TEntity> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
@@ -119,13 +120,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
-            var actualDynamic = GetDynamicLinqResult(where, orderBy, select, skip, take);
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
+            var actualJson = GetDynamicLinqResult(where, orderBy, select, skip, take);
+            var actual = JsonSerializer.Deserialize<List<TEntity>>(actualJson);
 
-            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
+            return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
         }
 
 
@@ -139,9 +139,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public async Task<List<dynamic>> GetDynamicLinqAsyncResult(string where, string orderBy, string select, int? skip, int? take) {
+        public async Task<string> GetDynamicLinqAsyncResult(string where, string orderBy, string select, int? skip, int? take) {
             var iar = await Controller.GetDynamicLinqAsync(where, orderBy, select, skip, take);
-            var data = ((List<dynamic>)(iar as ObjectResult).Value);
+            var data = ((string)(iar as ContentResult).Content);
             return data;
         }
 
@@ -155,7 +155,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<Dictionary<string, object>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActualList<TEntity>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -165,13 +165,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
-            var actualDynamic = await GetDynamicLinqAsyncResult(where, orderBy, select, skip, take);
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
+            var actualJson = await GetDynamicLinqAsyncResult(where, orderBy, select, skip, take);
+            var actual = JsonSerializer.Deserialize<List<TEntity>>(actualJson);
 
-            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
+            return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
         }
 
 
