@@ -1,5 +1,4 @@
-﻿use Color2Db;
-go
+﻿go
 sp_configure 'Show Advanced Options', 1
 go
 reconfigure
@@ -11,15 +10,22 @@ go
 if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
+use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'HslController'
-declare @MethodName varchar(255) = 'GetSingleFromJsonStoredProcedure'
-declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|HslJsonByColorName'
+declare @ClassName varchar(255) = 'RgbController'
+declare @MethodName varchar(255) = 'GetSingleFromStoredProcedure'
+declare @TestScenario varchar(255) = 'WriteableEndpointTests|RgbByColorName'
 declare @TestCase varchar(255) = 'A'
 
-declare @ControllerPath varchar(255) = 'api/Hsl'
-declare @SpName varchar(255) = 'HslJsonByColorName'
+declare @ControllerPath varchar(255) = 'api/Rgb'
+declare @SpName varchar(255) = 'RgbByColorName'
 declare @ColorName varchar(255) = 'AliceBlue'
+
+
+select * into #SpResults 
+    from openrowset('SQLNCLI', 
+	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
+      'EXEC RgbByColorName ''AliceBlue''')
 
 declare @ParamValues varchar(max) =
 (
@@ -27,15 +33,11 @@ declare @ParamValues varchar(max) =
 	for json path, without_array_wrapper
 );
 
-select * into #SpResults 
-    from openrowset('SQLNCLI', 
-	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
-      'EXEC HslJsonByColorName ''AliceBlue''')
 
 declare 
 	@Expected varchar(max) = 
 (
-	select [Json] from #SpResults
+	select Red, Green, Blue from #SpResults
 	for json path, without_array_wrapper
 );
 

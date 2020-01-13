@@ -29,7 +29,7 @@ declare @ParamValues varchar(max) =
 
 select * into #SpResults 
     from openrowset('SQLNCLI', 
-	  'Server=(localdb)\MSSQLLocalDb;Database=Colors2;Trusted_Connection=yes;',
+	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
       'EXEC HslByColorName ''DarkKhaki''')
 
 declare 

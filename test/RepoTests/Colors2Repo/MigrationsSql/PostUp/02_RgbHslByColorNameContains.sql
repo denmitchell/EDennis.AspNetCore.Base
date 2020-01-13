@@ -2,7 +2,7 @@
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[RgbHslByColorName] 
+CREATE PROCEDURE [dbo].[RgbHslByColorNameContains] 
 	@ColorNameContains varchar(50)
 AS
 BEGIN

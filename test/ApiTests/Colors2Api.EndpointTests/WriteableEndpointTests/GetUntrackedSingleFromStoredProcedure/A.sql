@@ -12,13 +12,13 @@ if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
 declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'HslController'
-declare @MethodName varchar(255) = 'GetSingleFromJsonStoredProcedure'
-declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|HslJsonByColorName'
+declare @ClassName varchar(255) = 'RgbController'
+declare @MethodName varchar(255) = 'RgbHslByColorName'
+declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|RgbHslByColorName'
 declare @TestCase varchar(255) = 'A'
 
-declare @ControllerPath varchar(255) = 'api/Hsl'
-declare @SpName varchar(255) = 'HslJsonByColorName'
+declare @ControllerPath varchar(255) = 'api/Rgb'
+declare @SpName varchar(255) = 'RgbHslByColorName'
 declare @ColorName varchar(255) = 'AliceBlue'
 
 declare @ParamValues varchar(max) =
@@ -30,12 +30,12 @@ declare @ParamValues varchar(max) =
 select * into #SpResults 
     from openrowset('SQLNCLI', 
 	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
-      'EXEC HslJsonByColorName ''AliceBlue''')
+      'EXEC RgbHslByColorName ''AliceBlue''')
 
 declare 
 	@Expected varchar(max) = 
 (
-	select [Json] from #SpResults
+	select * from #SpResults
 	for json path, without_array_wrapper
 );
 

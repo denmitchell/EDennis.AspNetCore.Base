@@ -12,35 +12,35 @@ if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
 declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'HslController'
-declare @MethodName varchar(255) = 'GetSingleFromJsonStoredProcedure'
-declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|HslJsonByColorName'
-declare @TestCase varchar(255) = 'A'
+declare @ClassName varchar(255) = 'RgbController'
+declare @MethodName varchar(255) = 'RgbHslByColorName'
+declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|RgbHslByColorNameContains'
+declare @TestCase varchar(255) = 'B'
 
-declare @ControllerPath varchar(255) = 'api/Hsl'
-declare @SpName varchar(255) = 'HslJsonByColorName'
-declare @ColorName varchar(255) = 'AliceBlue'
+declare @ControllerPath varchar(255) = 'api/Rgb'
+declare @SpName varchar(255) = 'RgbHslByColorNameContains'
+declare @ColorNameContains varchar(255) = 'Red'
 
 declare @ParamValues varchar(max) =
 (
-	select @ColorName ColorName
-	for json path, without_array_wrapper
+	select @ColorNameContains ColorNameContains
+	for json path
 );
 
 select * into #SpResults 
     from openrowset('SQLNCLI', 
 	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
-      'EXEC HslJsonByColorName ''AliceBlue''')
+      'EXEC RgbHslByColorName ''DarkKhaki''')
 
 declare 
 	@Expected varchar(max) = 
 (
-	select [Json] from #SpResults
-	for json path, without_array_wrapper
+	select * from #SpResults
+	for json path
 );
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorNameContains', @ColorNameContains
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ParamValues', @ParamValues
