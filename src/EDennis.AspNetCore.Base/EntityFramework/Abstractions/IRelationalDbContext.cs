@@ -25,7 +25,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public static List<TEntity> GetFromSql<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string sql)
+        public static List<TEntity> GetListFromSql<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string sql)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -52,7 +52,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public static async Task<List<TEntity>> GetFromSqlAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string sql)
+        public static async Task<List<TEntity>> GetListFromSqlAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string sql)
             where TContext : DbContext {
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
@@ -78,18 +78,18 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public static List<dynamic> GetFromSql<TContext>(this ISqlServerDbContext<TContext> context, string sql)
+        public static TEntity GetSingleFromSql<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string sql)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            List<dynamic> result;
+            TEntity result;
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = cxn.Query<dynamic>(sql, transaction: dbTrans).AsList();
+                result = cxn.QuerySingle<TEntity>(sql, transaction: dbTrans);
             } else {
-                result = cxn.Query<dynamic>(sql).AsList();
+                result = cxn.QuerySingle<TEntity>(sql);
             }
 
             return result;
@@ -105,23 +105,21 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="sql">A valid SQL SELECT statement</param>
         /// <returns></returns>
-        public static async Task<List<dynamic>> GetFromSqlAsync<TContext>(this ISqlServerDbContext<TContext> context, string sql)
+        public static async Task<TEntity> GetSingleFromSqlAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string sql)
             where TContext : DbContext {
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            List<dynamic> result;
+            TEntity result;
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = (await cxn.QueryAsync<dynamic>(sql, transaction: dbTrans)).AsList();
+                result = (await cxn.QuerySingleAsync<TEntity>(sql, transaction: dbTrans));
             } else {
-                result = (await cxn.QueryAsync<dynamic>(sql)).AsList();
+                result = (await cxn.QuerySingleAsync<TEntity>(sql));
             }
             return result;
 
         }
-
-
 
 
         /// <summary>

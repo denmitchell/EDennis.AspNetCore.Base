@@ -13,19 +13,19 @@ go
 
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
-declare @MethodName varchar(255) = 'GetJsonColumnFromStoredProcedure'
+declare @MethodName varchar(255) = 'GetSingleFromJsonStoredProcedure'
 declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|RgbJsonByColorName'
-declare @TestCase varchar(255) = 'A'
+declare @TestCase varchar(255) = 'B'
 
 declare @ControllerPath varchar(255) = 'api/Hsl'
 declare @SpName varchar(255) = 'RgbJsonByColorName'
-declare @ColorName varchar(255) = 'AliceBlue'
+declare @ColorName varchar(255) = 'DarkKhaki'
 
 
 select * into #SpResults 
     from openrowset('SQLNCLI', 
 	  'Server=(localdb)\MSSQLLocalDb;Database=Colors2;Trusted_Connection=yes;',
-      'EXEC RgbJsonByColorName ''AliceBlue''')
+      'EXEC RgbJsonByColorName ''DarkKhaki''')
 
 declare 
 	@Expected varchar(max) = 

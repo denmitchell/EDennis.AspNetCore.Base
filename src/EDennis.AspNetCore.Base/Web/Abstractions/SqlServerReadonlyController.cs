@@ -150,7 +150,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var result = Repo.Context.GetFromStoredProcedure<TContext, TEntity>(
+            var result = Repo.Context.GetListFromStoredProcedure<TContext, TEntity>(
                 spName, parms);
 
             return Ok(result);
@@ -171,7 +171,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var result = await Repo.Context.GetFromStoredProcedureAsync<TContext, TEntity>(
+            var result = await Repo.Context.GetListFromStoredProcedureAsync<TContext, TEntity>(
                 spName, parms);
 
             return Ok(result);
@@ -190,7 +190,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var result = Repo.Context.GetJsonColumnFromStoredProcedure<TContext,TEntity>(
+            var result = Repo.Context.GetSingleFromJsonStoredProcedure<TContext,TEntity>(
                 spName, parms);
 
             return Ok(result);
@@ -209,7 +209,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var result = await Repo.Context.GetJsonColumnFromStoredProcedureAsync<TContext, TEntity>(
+            var result = await Repo.Context.GetSingleFromJsonStoredProcedureAsync<TContext, TEntity>(
                 spName, parms);
 
             return Ok(result);

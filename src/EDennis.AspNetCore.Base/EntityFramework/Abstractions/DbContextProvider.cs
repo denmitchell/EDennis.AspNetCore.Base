@@ -14,7 +14,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public DbContextProvider(TContext context, StoredProcedureDefs<TContext> spDefs) {
             Context = context;
-            if (typeof(TContext) is ISqlServerDbContext<TContext>)
+            if (typeof(ISqlServerDbContext<TContext>).IsAssignableFrom(typeof(TContext)))
                 (Context as ISqlServerDbContext<TContext>).StoredProcedureDefs = spDefs;
         }
 

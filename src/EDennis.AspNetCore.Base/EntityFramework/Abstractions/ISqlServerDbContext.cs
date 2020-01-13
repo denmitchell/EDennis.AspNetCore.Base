@@ -24,7 +24,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public static string GetFromJsonSql<TContext>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+        public static List<TEntity> GetListFromJsonSql<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
             where TContext : DbContext {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
@@ -39,7 +39,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } else {
                 result = cxn.ExecuteScalar<string>(sql);
             }
-            return result;
+            return JsonSerializer.Deserialize<List<TEntity>>(result);
 
         }
 
@@ -50,7 +50,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public static async Task<string> GetFromJsonSqlAsync<TContext>(this ISqlServerDbContext<TContext> context,  string fromJsonSql)
+        public static async Task<List<TEntity>> GetListFromJsonSqlAsync<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
             where TContext : DbContext {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
@@ -64,7 +64,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } else {
                 result = await cxn.ExecuteScalarAsync<string>(sql);
             }
-            return result;
+            return JsonSerializer.Deserialize<List<TEntity>>(result);
 
         }
 
@@ -76,7 +76,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public static List<TEntity> GetFromJsonSql<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+        public static TEntity GetSingleFromJsonSql<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
             where TContext : DbContext {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
@@ -91,7 +91,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } else {
                 result = cxn.ExecuteScalar<string>(sql);
             }
-            return JsonSerializer.Deserialize<List<TEntity>>(result);
+            return JsonSerializer.Deserialize<TEntity>(result);
 
         }
 
@@ -102,7 +102,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
         /// <returns></returns>
-        public static async Task<List<TEntity>> GetFromJsonSqlAsync<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+        public static async Task<TEntity> GetSingleFromJsonSqlAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
             where TContext : DbContext {
 
             var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
@@ -116,7 +116,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } else {
                 result = await cxn.ExecuteScalarAsync<string>(sql);
             }
-            return JsonSerializer.Deserialize<List<TEntity>>(result);
+            return JsonSerializer.Deserialize<TEntity>(result);
 
         }
 
@@ -127,93 +127,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// This can be used to return a flat or hierarchical JSON-structured
         /// result (e.g., using FOR JSON with SQL Server)
         /// </summary>
-        public static string GetJsonColumnFromStoredProcedure<TContext>(this ISqlServerDbContext<TContext> context,  string spName,
-            IEnumerable<KeyValuePair<string, string>> parms)
-            where TContext : DbContext {
-
-
-            DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
-
-
-            var cxn = context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-            string json;
-
-            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-
-                dynamic result = cxn.QuerySingle<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    transaction: dbTrans,
-                    commandType: CommandType.StoredProcedure);
-
-                json = result.Json ?? result.json ?? result.JSON;
-
-            } else {
-                dynamic result = cxn.QuerySingle<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    commandType: CommandType.StoredProcedure);
-
-                json = result.Json ?? result.json ?? result.JSON;
-            }
-
-            return json;
-
-        }
-
-
-
-        /// <summary>
-        /// Retrieves a string-typed column named "Json" from a database.
-        /// This can be used to return a flat or hierarchical JSON-structured
-        /// result (e.g., using FOR JSON with SQL Server)
-        /// </summary>
-        public static async Task<string> GetJsonColumnFromStoredProcedureAsync<TContext>(this ISqlServerDbContext<TContext> context,  string spName,
-            IEnumerable<KeyValuePair<string, string>> parms)
-            where TContext : DbContext {
-
-            DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
-
-
-            var cxn = context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-            string json;
-
-            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
-                var dbTrans = trans.GetDbTransaction();
-
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    transaction: dbTrans,
-                    commandType: CommandType.StoredProcedure);
-
-                json = result.Json ?? result.json ?? result.JSON;
-
-            } else {
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
-                    param: dynamicParameters,
-                    commandType: CommandType.StoredProcedure);
-
-                json = result.Json ?? result.json ?? result.JSON;
-            }
-
-            return json;
-
-
-        }
-
-
-
-        /// <summary>
-        /// Retrieves a string-typed column named "Json" from a database.
-        /// This can be used to return a flat or hierarchical JSON-structured
-        /// result (e.g., using FOR JSON with SQL Server)
-        /// </summary>
-        public static TEntity GetJsonColumnFromStoredProcedure<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+        public static TEntity GetSingleFromJsonStoredProcedure<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string spName,
             IEnumerable<KeyValuePair<string, string>> parms)
             where TContext : DbContext {
 
@@ -256,7 +170,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// This can be used to return a flat or hierarchical JSON-structured
         /// result (e.g., using FOR JSON with SQL Server)
         /// </summary>
-        public static async Task<TEntity> GetJsonColumnFromStoredProcedureAsync<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+        public static async Task<TEntity> GetSingleFromJsonStoredProcedureAsync<TContext,TEntity>(this ISqlServerDbContext<TContext> context, string spName,
             IEnumerable<KeyValuePair<string, string>> parms)
             where TContext : DbContext {
 
@@ -294,11 +208,96 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public static List<TEntity> GetListFromJsonStoredProcedure<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+            IEnumerable<KeyValuePair<string, string>> parms)
+            where TContext : DbContext {
+
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
+
+
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                dynamic result = cxn.Query<dynamic>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+                json = result.Json ?? result.json ?? result.JSON;
+
+            } else {
+                dynamic result = cxn.Query<dynamic>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+
+                json = result.Json ?? result.json ?? result.JSON;
+            }
+
+            return JsonSerializer.Deserialize<List<TEntity>>(json);
+
+        }
+
+
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public static async Task<List<TEntity>> GetListFromJsonStoredProcedureAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+            IEnumerable<KeyValuePair<string, string>> parms)
+            where TContext : DbContext {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
+
+
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+                json = result.Json ?? result.json ?? result.JSON;
+
+            } else {
+                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+
+                json = result.Json ?? result.json ?? result.JSON;
+            }
+
+            return JsonSerializer.Deserialize<List<TEntity>>(json);
+
+
+        }
+
+
 
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public static List<TEntity> GetFromStoredProcedure<TContext, TEntity>(this ISqlServerDbContext<TContext> context,  string spName,
+        public static List<TEntity> GetListFromStoredProcedure<TContext, TEntity>(this ISqlServerDbContext<TContext> context,  string spName,
             IEnumerable<KeyValuePair<string, string>> parms)
             where TContext : DbContext {
 
@@ -336,7 +335,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public static async Task<List<TEntity>> GetFromStoredProcedureAsync<TContext,TEntity>(this ISqlServerDbContext<TContext> context,  string spName,
+        public static async Task<List<TEntity>> GetListFromStoredProcedureAsync<TContext,TEntity>(this ISqlServerDbContext<TContext> context,  string spName,
             IEnumerable<KeyValuePair<string, string>> parms)
             where TContext : DbContext {
 
@@ -374,7 +373,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public static List<dynamic> GetFromStoredProcedure<TContext>(this ISqlServerDbContext<TContext> context, string spName,
+        public static TEntity GetSingleFromStoredProcedure<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
             IEnumerable<KeyValuePair<string, string>> parms)
             where TContext : DbContext {
 
@@ -386,24 +385,24 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
 
-            IEnumerable<dynamic> result;
+            TEntity result;
 
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                result = cxn.Query<dynamic>(sql: $"{spName}",
+                result = cxn.QuerySingle<TEntity>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
 
             } else {
-                result = cxn.Query<dynamic>(sql: $"{spName}",
+                result = cxn.QuerySingle<TEntity>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
 
-            return result.ToList();
+            return result;
 
         }
 
@@ -412,7 +411,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
-        public static async Task<List<dynamic>> GetFromStoredProcedureAsync<TContext>(this ISqlServerDbContext<TContext> context, string spName,
+        public static async Task<TEntity> GetSingleFromStoredProcedureAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
             IEnumerable<KeyValuePair<string, string>> parms)
             where TContext : DbContext {
 
@@ -424,24 +423,24 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
 
-            IEnumerable<dynamic> result;
+            TEntity result;
 
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
+                result = await cxn.QuerySingleAsync<TEntity>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
 
             } else {
-                result = await cxn.QueryAsync<dynamic>(sql: $"{spName}",
+                result = await cxn.QuerySingleAsync<TEntity>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
 
-            return result.ToList();
+            return result;
 
         }
 
@@ -449,8 +448,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-
-        public static void RebuildBuildStoredProcedureDefs<TContext>(ISqlServerDbContext<TContext> context)
+        public static void RebuildStoredProcedureDefs<TContext>(ISqlServerDbContext<TContext> context)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();

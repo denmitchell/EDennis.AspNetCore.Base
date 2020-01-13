@@ -221,8 +221,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public ExpectedActualList<TEntity> GetFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
-            return GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, false);
+        public ExpectedActualList<TEntity> GetListFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return GetListFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, false);
         }
 
 
@@ -235,9 +235,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<TEntity>> GetFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActualList<TEntity>> GetListFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
-                GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, false));
+                GetListFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, false));
         }
 
 
@@ -252,8 +252,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public ExpectedActualList<TEntity> GetJsonColumnFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
-            return GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, true);
+        public ExpectedActualList<TEntity> GetListFromJsonStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return GetListFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, true);
         }
 
 
@@ -266,13 +266,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<TEntity>> GetJsonColumnFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActualList<TEntity>> GetListFromJsonStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
-                GetFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, true));
+                GetListFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, true));
         }
 
 
-        private ExpectedActualList<TEntity> GetFromStoredProcedure_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync, bool isJsonColumn) {
+        private ExpectedActualList<TEntity> GetListFromStoredProcedure_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync, bool isJsonColumn) {
             Output.WriteLine(t);
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
@@ -308,6 +308,107 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
             return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
+        }
+
+
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public ExpectedActual<TEntity> GetSingleFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return GetSingleFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, false);
+        }
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public async Task<ExpectedActual<TEntity>> GetSingleFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return await Task.Run(() =>
+                GetSingleFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, false));
+        }
+
+
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetJsonColumnFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public ExpectedActual<TEntity> GetSingleFromJsonStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return GetSingleFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, false, true);
+        }
+
+
+        /// <summary>
+        /// Returns actual and expected results from GetJsonColumnFromStoredProcedure.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// SpName, ParamValues and ControllerPath
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public async Task<ExpectedActual<TEntity>> GetSingleFromJsonStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return await Task.Run(() =>
+                GetSingleFromStoredProcedure_ExpectedActual_Base(t, jsonTestCase, true, true));
+        }
+
+
+        private ExpectedActual<TEntity> GetSingleFromStoredProcedure_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync, bool isJsonColumn) {
+            Output.WriteLine(t);
+
+            var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var paramValues = jsonTestCase.GetObject<Dictionary<string, string>>("ParamValues", Output);
+
+            var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
+
+            var expected = jsonTestCase.GetObject<TEntity>("Expected");
+
+            var queryStrings = new List<string> {
+                $"spName={spName}"
+            };
+            foreach (var key in paramValues.Keys)
+                queryStrings.Add($"{key}={paramValues[key]}");
+
+            var url = $"{controllerPath}/{(isJsonColumn ? "json" : "sp")}{(isAsync ? "/async" : "")}?{string.Join('&', queryStrings)}";
+
+            Output.WriteLine($"url: {url}");
+
+            IActionResult actualResult;
+            if (isAsync)
+                actualResult = HttpClient.GetAsync<TEntity>(url).Result;
+            else
+                actualResult = HttpClient.Get<TEntity>(url);
+
+            var statusCode = actualResult.GetStatusCode();
+
+            TEntity actual;
+            if (statusCode > 299)
+                throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
+            else
+                actual = actualResult.GetObject<TEntity>();
+
+
+            return new ExpectedActual<TEntity> { Expected = expected, Actual = actual };
         }
 
 
