@@ -150,18 +150,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            //MethodInfo method = typeof(ISqlServerDbContext<TContext>)
-            //    .GetMethod("GetFromStoredProcedure",BindingFlags.Static);
+            var result = Repo.Context.GetFromStoredProcedure<TContext, TEntity>(
+                spName, parms);
 
-            //Type returnType = typeof(object);
-            //if (StoredProcedureReturnTypes.TryGetValue(spName, out Type retType))
-            //    returnType = retType;
-            //MethodInfo generic = method.MakeGenericMethod(returnType);
-
-            //var result = generic.Invoke(null, new object[] { spName, parms });
-
-            return Ok(Repo.Context.GetFromStoredProcedure(
-                spName, parms));
+            return Ok(result);
         }
 
 
@@ -175,14 +167,14 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns></returns>
         [HttpGet("sp/async")]
         public async Task<IActionResult> GetFromStoredProcedureAsync([FromQuery] string spName) {
-
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
+            var result = await Repo.Context.GetFromStoredProcedureAsync<TContext, TEntity>(
+                spName, parms);
 
-            return Ok(await Repo.Context.GetFromStoredProcedureAsync(
-                spName, parms));
+            return Ok(result);
         }
 
 
@@ -192,19 +184,18 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("json")]
-        public ActionResult<string> GetJsonColumnFromStoredProcedure([FromQuery] string spName) {
+        public IActionResult GetJsonColumnFromStoredProcedure([FromQuery] string spName) {
 
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-            var json = Repo.Context.GetJsonColumnFromStoredProcedure(
+            var result = Repo.Context.GetJsonColumnFromStoredProcedure<TContext,TEntity>(
                 spName, parms);
 
-
-            return Content(json, "application/json");
-
+            return Ok(result);
         }
+
 
         /// <summary>
         /// Asynchrously obtains a json result from a stored procedure
@@ -218,12 +209,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 .Where(q => q.Key != "spName")
                 .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
 
-
-            var json = await Repo.Context.GetJsonColumnFromStoredProcedureAsync(
+            var result = await Repo.Context.GetJsonColumnFromStoredProcedureAsync<TContext, TEntity>(
                 spName, parms);
 
-
-            return Content(json, "application/json");
+            return Ok(result);
         }
 
 
