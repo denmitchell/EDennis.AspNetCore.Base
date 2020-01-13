@@ -32,12 +32,32 @@ select * into #SpResults
 	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
       'EXEC HslJsonByColorName ''AliceBlue''')
 
+/*
+declare 
+	@ExpectedJsonColumn varchar(max) = 
+(
+	select [Json]
+	from #SpResults
+	for json path, without_array_wrapper
+);
+*/
+
+--use OPENJSON to convert Json column result to regular table
+--and then convert back to simplified Json
 declare 
 	@Expected varchar(max) = 
 (
-	select [Json] from #SpResults
-	for json path, without_array_wrapper
-);
+select * 
+    from openjson((select json from #SpResults))
+    WITH( 
+      Id int,  
+      Name varchar(255),  
+      Hue int,  
+      Saturation int,  
+      Luminance int
+     ) as recs
+ for json path, without_array_wrapper
+)
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName

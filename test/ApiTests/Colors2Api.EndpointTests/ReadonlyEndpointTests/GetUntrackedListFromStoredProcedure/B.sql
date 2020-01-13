@@ -24,7 +24,7 @@ declare @ColorNameContains varchar(255) = 'Red'
 declare @ParamValues varchar(max) =
 (
 	select @ColorNameContains ColorNameContains
-	for json path
+	for json path, without_array_wrapper
 );
 
 select * into #SpResults 

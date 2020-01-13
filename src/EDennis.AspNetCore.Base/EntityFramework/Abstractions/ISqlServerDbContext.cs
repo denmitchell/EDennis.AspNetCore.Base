@@ -144,19 +144,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = cxn.QuerySingle<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
 
             } else {
-                dynamic result = cxn.QuerySingle<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
             }
 
             return JsonSerializer.Deserialize<TEntity>(json);
@@ -186,19 +186,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
 
             } else {
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
             }
 
             return JsonSerializer.Deserialize<TEntity>(json);
@@ -230,20 +230,22 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = cxn.Query<dynamic>(sql: $"{spName}",
+                 JsonColumnResult result = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
 
             } else {
-                dynamic result = cxn.Query<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
             }
+
+            
 
             return JsonSerializer.Deserialize<List<TEntity>>(json);
 
@@ -272,19 +274,19 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
 
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     transaction: dbTrans,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
 
             } else {
-                dynamic result = await cxn.QuerySingleAsync<dynamic>(sql: $"{spName}",
+                JsonColumnResult result = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
 
-                json = result.Json ?? result.json ?? result.JSON;
+                json = result.Json;
             }
 
             return JsonSerializer.Deserialize<List<TEntity>>(json);

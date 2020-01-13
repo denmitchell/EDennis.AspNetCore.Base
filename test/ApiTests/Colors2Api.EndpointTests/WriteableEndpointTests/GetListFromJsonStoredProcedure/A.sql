@@ -24,7 +24,7 @@ declare @ColorNameContains varchar(255) = 'Blue'
 declare @ParamValues varchar(max) =
 (
 	select @ColorNameContains ColorNameContains
-	for json path
+	for json path, without_array_wrapper
 );
 
 select * into #SpResults 
@@ -32,12 +32,32 @@ select * into #SpResults
 	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
       'EXEC RgbJsonByColorNameContains ''Blue''')
 
+/*
+declare 
+	@ExpectedJsonColumn varchar(max) = 
+(
+	select [Json]
+	from #SpResults
+	for json path
+);
+*/
+
+--use OPENJSON to convert Json column result to regular table
+--and then convert back to simplified Json
 declare 
 	@Expected varchar(max) = 
 (
-	select [Json] from #SpResults
-	for json path
-);
+select * 
+    from openjson((select json from #SpResults))
+    WITH( 
+      Id int,  
+      Name varchar(255),  
+      Red int,  
+      Green int,  
+      Blue int
+     ) as recs
+ for json path
+)
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorNameContains', @ColorNameContains

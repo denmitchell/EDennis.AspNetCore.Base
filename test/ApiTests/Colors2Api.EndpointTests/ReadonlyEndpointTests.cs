@@ -84,8 +84,8 @@ namespace Colors2Api.EndpointTests {
 
 
         [Theory]
-        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|RgbJsonByColorName", "A")]
-        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|RgbJsonByColorName", "B")]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorName", "A")]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorName", "B")]
         public void GetSingleFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
             var ea = GetSingleFromJsonStoredProcedure_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -93,12 +93,50 @@ namespace Colors2Api.EndpointTests {
 
 
         [Theory]
-        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|RgbJsonByColorName", "A")]
-        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|RgbJsonByColorName", "B")]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorName", "A")]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorName", "B")]
         public async Task GetSingleFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await GetSingleFromJsonStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
+
+
+        [Theory]
+        [TestJson_("GetListFromStoredProcedure", "ReadonlyEndpointTests|HslByColorNameContains", "A")]
+        [TestJson_("GetListFromStoredProcedure", "ReadonlyEndpointTests|HslByColorNameContains", "B")]
+        public void GetListFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetListFromStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromStoredProcedure", "ReadonlyEndpointTests|HslByColorNameContains", "A")]
+        [TestJson_("GetListFromStoredProcedure", "ReadonlyEndpointTests|HslByColorNameContains", "B")]
+        public async Task GetListFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetListFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorNameContains", "A")]
+        [TestJson_("GetListFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorNameContains", "B")]
+        public void GetListFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetListFromJsonStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorNameContains", "A")]
+        [TestJson_("GetListFromJsonStoredProcedure", "ReadonlyEndpointTests|HslJsonByColorNameContains", "B")]
+        public async Task GetListFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetListFromJsonStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
 
     }
 }
