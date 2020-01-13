@@ -12,12 +12,22 @@ namespace Colors2Api.Lib.Controllers {
             : base(repo, logger) { }
 
 
-        [HttpGet("HslByColorName")]
-        public Hsl GetHslByColorName([FromQuery] string colorName) {
+        [HttpGet("RgbHslByColorName")]
+        public RgbHsl GetRgbHslByColorName([FromQuery] string colorName) {
             var parameters = new Params().Add("colorName", colorName);
-            var result = Repo.Context.GetSingleFromStoredProcedure<Color2DbContext,Hsl>("HslByColorName", parameters);
+            var result = Repo.Context.GetSingleFromStoredProcedure<Color2DbContext,RgbHsl>(
+                "RgbHslByColorName", parameters);
             return result;
         }
+
+        [HttpGet("RgbHslByColorNameContains")]
+        public List<RgbHsl> GetRgbHslByColorNameContains([FromQuery] string colorName) {
+            var parameters = new Params().Add("colorNameContains", colorName);
+            var result = Repo.Context.GetSingleFromStoredProcedure<Color2DbContext, List<RgbHsl>>(
+                "RgbHslByColorNameContains", parameters);
+            return result;
+        }
+
 
     }
 }
