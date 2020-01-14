@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
+using System.Text.Json;
 
 namespace EDennis.AspNetCore.Base.Serialization {
 
@@ -25,8 +27,11 @@ namespace EDennis.AspNetCore.Base.Serialization {
         /// <summary>
         /// All properties of the underlying Entity type
         /// </summary>
-        public static Dictionary<string,PropertyInfo> ClassProperties { get; }
+        public static Dictionary<string, PropertyInfo> ClassProperties { get; }
 
+        public static Dictionary<string, PropertyInfo> ClassPropertiesLowerCase { get; }
+
+        private static JsonSerializerOptions jsonSerializerOptions;
 
         /// <summary>
         /// Active properties of the current object
@@ -39,10 +44,15 @@ namespace EDennis.AspNetCore.Base.Serialization {
         /// </summary>
         static PartialEntity() {
             ClassProperties = new Dictionary<string, PropertyInfo>();
+            ClassPropertiesLowerCase = new Dictionary<string, PropertyInfo>();
             var props = typeof(TEntity).GetProperties();
             foreach (var prop in props) {
                 ClassProperties.Add(prop.Name, prop);
+                ClassPropertiesLowerCase.Add(prop.Name.ToLower(), prop);
             }
+
+            jsonSerializerOptions = new JsonSerializerOptions();
+            jsonSerializerOptions.Converters.Add(new PartialEntityConverter());
         }
 
 
@@ -94,7 +104,7 @@ namespace EDennis.AspNetCore.Base.Serialization {
         /// <returns></returns>
         public static List<PartialEntity<TEntity>> CreateList(List<dynamic> dynamicEntityList) {
             var list = new List<PartialEntity<TEntity>>();
-            foreach(var item in dynamicEntityList) {
+            foreach (var item in dynamicEntityList) {
                 list.Add(PartialEntity<TEntity>.Create(item));
             }
             return list;
@@ -120,6 +130,36 @@ namespace EDennis.AspNetCore.Base.Serialization {
         /// <returns></returns>
         public static List<TEntity> CreateAndUnwrap(List<dynamic> dynamicEntityList)
             => Unwrap(CreateList(dynamicEntityList));
+
+
+        public void Deserialize(string json) {
+            var partialEntity = new PartialEntity<TEntity>();
+            partialEntity.Entity = new TEntity();
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            Utf8JsonReader reader = new Utf8JsonReader(data);
+            while (reader.Read()) {
+                if (reader.TokenType == JsonTokenType.PropertyName) {
+                    var propertyNameLowerCase = reader.GetString().ToLower();
+                    if (ClassPropertiesLowerCase.TryGetValue(propertyNameLowerCase, out PropertyInfo pInfo)) {
+                        ObjectProperties.Add(pInfo.Name);
+                    }
+                }
+            }
+            Entity = JsonSerializer.Deserialize<TEntity>(json);
+        }
+
+        public string Serialize() {
+            var json = JsonSerializer.Serialize(this, typeof(PartialEntity<TEntity>), jsonSerializerOptions);
+            return json;
+        }
+
+
+        public void MergeInto(TEntity entity) {
+            foreach (var key in ObjectProperties) {
+                var prop = ClassProperties[key];
+                prop.SetValue(entity, prop.GetValue(Entity));
+            }
+        }
 
     }
 }

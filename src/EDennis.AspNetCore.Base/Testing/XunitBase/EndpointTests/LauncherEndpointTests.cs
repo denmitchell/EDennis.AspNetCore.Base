@@ -34,7 +34,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public void Dispose() {
-            MiddlewareUtils.Reset(Apis,InstanceName);
+            //MiddlewareUtils.Reset(Apis,InstanceName);
         }
 
     }

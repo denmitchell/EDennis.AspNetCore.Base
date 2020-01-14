@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 
 namespace Colors2Api.Lib.Controllers {
+    [Route("api/[controller]")]
+    [ApiController]
     public class RgbController : SqlServerWriteableController<Rgb, Color2DbContext> {
         public RgbController(RgbRepo repo, ILogger<SqlServerWriteableController<Rgb, Color2DbContext>> logger) 
             : base(repo, logger) { }
@@ -28,6 +30,9 @@ namespace Colors2Api.Lib.Controllers {
             return result;
         }
 
+        [HttpPost]
+        public override IActionResult Post([FromBody] Rgb rgb)
+            => base.Post(rgb);
 
     }
 }

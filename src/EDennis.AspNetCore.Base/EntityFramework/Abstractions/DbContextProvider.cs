@@ -10,12 +10,14 @@ using System.Data.Common;
 namespace EDennis.AspNetCore.Base.EntityFramework {
     public class DbContextProvider<TContext>
         where TContext : DbContext {
-        public TContext Context { get; set; }        
+        public TContext Context { get; set; }
+
 
         public DbContextProvider(TContext context, StoredProcedureDefs<TContext> spDefs) {
             Context = context;
-            if (typeof(ISqlServerDbContext<TContext>).IsAssignableFrom(typeof(TContext)))
+            if (typeof(ISqlServerDbContext<TContext>).IsAssignableFrom(typeof(TContext))) {
                 (Context as ISqlServerDbContext<TContext>).StoredProcedureDefs = spDefs;
+            }
         }
 
 
@@ -55,7 +57,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public static TContext GetInterceptorContext(DbContextSettings<TContext> settings, 
             CachedConnection<TContext> cachedConnection) {
 
-            var interceptorSettings = GetInterceptorSettings(settings);
+            var interceptorSettings = settings.Interceptor;
+            interceptorSettings.ConnectionString = interceptorSettings.ConnectionString ?? settings.ConnectionString;
+            interceptorSettings.DatabaseProvider = (interceptorSettings.DatabaseProvider == DatabaseProvider.Unspecified) ? settings.DatabaseProvider : interceptorSettings.DatabaseProvider;
 
             var builder = new DbContextOptionsBuilder<TContext>();
 
@@ -81,21 +85,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         }
 
-
-        private static DbContextInterceptorSettings<TContext> GetInterceptorSettings(DbContextSettings<TContext> settings) {
-            var interceptorSettings = new DbContextInterceptorSettings<TContext> {
-                ConnectionString = settings.Interceptor?.ConnectionString ?? settings.ConnectionString,
-                DatabaseProvider = (settings.Interceptor == null || settings.Interceptor.DatabaseProvider == default)
-                ? settings.DatabaseProvider : settings.Interceptor.DatabaseProvider,
-                IsolationLevel = (settings.Interceptor == null)
-                ? IsolationLevel.ReadCommitted : settings.Interceptor.IsolationLevel,
-                ResetSqlServerIdentities = settings.Interceptor.ResetSqlServerIdentities,
-                ResetSqlServerSequences = settings.Interceptor.ResetSqlServerSequences,
-                EnableSensitiveDataLogging = settings.Interceptor.EnableSensitiveDataLogging || settings.EnableSensitiveDataLogging
-            };
-
-            return interceptorSettings;
-        }
 
         private static void ConfigureForSqlServer(DbContextOptionsBuilder builder, string connectionString) {
             builder.UseSqlServer(connectionString);
@@ -148,7 +137,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public static void Reset(DbContextSettings<TContext> settings,
             CachedConnection<TContext> cachedConnection, ILogger logger = null) {
 
-            var interceptorSettings = GetInterceptorSettings(settings);
+            var interceptorSettings = settings.Interceptor;
+            interceptorSettings.ConnectionString = interceptorSettings.ConnectionString ?? settings.ConnectionString;
+            interceptorSettings.DatabaseProvider = (interceptorSettings.DatabaseProvider == DatabaseProvider.Unspecified) ? settings.DatabaseProvider : interceptorSettings.DatabaseProvider;
+
             var canRollback = (cachedConnection.DbConnection != null && cachedConnection.DbConnection.State == ConnectionState.Open && cachedConnection.DbTransaction != null);
             switch (interceptorSettings.DatabaseProvider) {
                 case DatabaseProvider.SqlServer:

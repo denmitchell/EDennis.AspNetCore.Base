@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Serialization;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -323,6 +324,58 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            Context.Entry(existing).State = EntityState.Detached;
+
+            Context.Update(existing);
+            await Context.SaveChangesAsync();
+            return existing; //updated entity
+        }
+
+
+
+
+
+
+
+        [MethodCallback]
+        public virtual TEntity Update(PartialEntity<TEntity> partialEntity, params object[] keyValues) {
+            if (partialEntity == null)
+                throw new MissingEntityException(
+                    $"Cannot update a null {typeof(TEntity).Name}");
+
+
+            //retrieve the existing entity
+            var existing = Context.Find<TEntity>(keyValues);
+
+            partialEntity.Entity.SysUser = ScopeProperties.User;
+
+            //copy property values from entity to existing
+            partialEntity.MergeInto(existing);
+            Context.Entry(existing).State = EntityState.Detached;
+
+            Context.Update(existing);
+            Context.SaveChanges();
+            return existing; //updated entity
+
+        }
+
+
+
+        [MethodCallback]
+        public virtual async Task<TEntity> UpdateAsync(PartialEntity<TEntity> partialEntity, params object[] keyValues) {
+            if (partialEntity == null)
+                throw new MissingEntityException(
+                    $"Cannot update a null {typeof(TEntity).Name}");
+
+            partialEntity.Entity.SysUser = ScopeProperties.User;
+
+            //retrieve the existing entity
+            var existing = await Context.FindAsync<TEntity>(keyValues);
+
+            partialEntity.Entity.SysUser = ScopeProperties.User;
+
+            //copy property values from entity to existing
+            partialEntity.MergeInto(existing);
             Context.Entry(existing).State = EntityState.Detached;
 
             Context.Update(existing);

@@ -17,6 +17,11 @@ namespace Colors2Api.EndpointTests {
         public ReadonlyEndpointTests(ITestOutputHelper output, 
             LauncherFixture<L.Program, Colors2ApiLauncher> launcherFixture) 
             : base(output, launcherFixture) {
+
+            if (HttpClient.DefaultRequestHeaders.Contains("X-User"))
+                HttpClient.DefaultRequestHeaders.Remove("X-User");
+            HttpClient.DefaultRequestHeaders.Add("X-User", "tester@example.org");
+
         }
 
 

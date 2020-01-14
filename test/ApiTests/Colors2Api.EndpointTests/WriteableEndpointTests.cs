@@ -17,6 +17,8 @@ namespace Colors2Api.EndpointTests {
             LauncherFixture<L.Program, Colors2ApiLauncher> launcherFixture)
             : base(output, launcherFixture) {
 
+            if (HttpClient.DefaultRequestHeaders.Contains("X-User"))
+                HttpClient.DefaultRequestHeaders.Remove("X-User");
             HttpClient.DefaultRequestHeaders.Add("X-User", "tester@example.org");
         }
 
@@ -30,8 +32,8 @@ namespace Colors2Api.EndpointTests {
         #region (from readonly)
 
         [Theory]
-        [TestJson_("GetDevExtreme", "WriteableEndpointTests|FilterSkipTake", "A")]
-        [TestJson_("GetDevExtreme", "WriteableEndpointTests|FilterSortSelectTake", "B")]
+        [TestJson_("GetDevExtreme", "WriteableEndpointTests|FilterSortSelectTake", "A")]
+        [TestJson_("GetDevExtreme", "WriteableEndpointTests|FilterSkipTake", "B")]
         public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
             var ea = GetDevExtreme_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -39,8 +41,8 @@ namespace Colors2Api.EndpointTests {
 
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereSkipTake", "A")]
-        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereOrderBySelectTake", "B")]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereOrderBySelectTake", "A")]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereSkipTake", "B")]
         public void GetDynamicLinq(string t, JsonTestCase jsonTestCase) {
             var ea = GetDynamicLinq_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -48,8 +50,8 @@ namespace Colors2Api.EndpointTests {
 
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereSkipTake", "A")]
-        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereOrderBySelectTake", "B")]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereOrderBySelectTake", "A")]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereSkipTake", "B")]
         public async Task GetDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await GetDynamicLinqAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -140,8 +142,8 @@ namespace Colors2Api.EndpointTests {
         }
 
         [Theory]
-        [TestJson_("GetAsync", "WriteableEndpointTests", "A")]
-        [TestJson_("GetAsync", "WriteableEndpointTests", "B")]
+        [TestJson_("Get", "WriteableEndpointTests", "A")]
+        [TestJson_("Get", "WriteableEndpointTests", "B")]
         public async Task GetAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await GetAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -157,8 +159,8 @@ namespace Colors2Api.EndpointTests {
         }
 
         [Theory]
-        [TestJson_("DeleteAsync", "WriteableEndpointTests", "A")]
-        [TestJson_("DeleteAsync", "WriteableEndpointTests", "B")]
+        [TestJson_("Delete", "WriteableEndpointTests", "A")]
+        [TestJson_("Delete", "WriteableEndpointTests", "B")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await DeleteAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -174,8 +176,8 @@ namespace Colors2Api.EndpointTests {
         }
 
         [Theory]
-        [TestJson_("PostAsync", "WriteableEndpointTests", "A")]
-        [TestJson_("PostAsync", "WriteableEndpointTests", "B")]
+        [TestJson_("Post", "WriteableEndpointTests", "A")]
+        [TestJson_("Post", "WriteableEndpointTests", "B")]
         public async Task PostAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await PostAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -191,13 +193,30 @@ namespace Colors2Api.EndpointTests {
         }
 
         [Theory]
-        [TestJson_("PutAsync", "WriteableEndpointTests", "A")]
-        [TestJson_("PutAsync", "WriteableEndpointTests", "B")]
+        [TestJson_("Put", "WriteableEndpointTests", "A")]
+        [TestJson_("Put", "WriteableEndpointTests", "B")]
         public async Task PutAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await PutAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
+
+
+        [Theory]
+        [TestJson_("Put", "WriteableEndpointTests", "A")]
+        [TestJson_("Put", "WriteableEndpointTests", "B")]
+        public void Patch(string t, JsonTestCase jsonTestCase) {
+            var ea = Patch_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("Put", "WriteableEndpointTests", "A")]
+        [TestJson_("Put", "WriteableEndpointTests", "B")]
+        public async Task PatchAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await PatchAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
 
     }
 }

@@ -1,16 +1,18 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
-    [ApiController]
-    [Route("api/[controller]")]
     public abstract class SqlServerWriteableController<TEntity, TContext> : SqlServerReadonlyController<TEntity, TContext>
             where TEntity : class, IHasIntegerId, IHasSysUser, new()
             where TContext : DbContext, ISqlServerDbContext<TContext> {
@@ -54,7 +56,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post([FromBody]TEntity value) {
+        public virtual IActionResult Post([FromBody]TEntity value) {
             var created = Repo.Create(value);
             return CreatedAtAction("Get", created.Id, created);
         }
@@ -65,7 +67,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost("async")]
-        public async Task<IActionResult> PostAsync([FromBody]TEntity value) {
+        public virtual async Task<IActionResult> PostAsync([FromBody]TEntity value) {
             var created = await Repo.CreateAsync(value);
             return CreatedAtAction("Get", created.Id, created);
         }
@@ -78,10 +80,10 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Put([FromBody]dynamic value, [FromRoute]int id) {
+        public IActionResult Put([FromBody]TEntity value, [FromRoute]int id) {
 
             try {
-                if (id != value.Id)
+                if (value.Id != id)
                     return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
             } catch (RuntimeBinderException) {
                 return new BadRequestObjectResult($"The provided object does not have an Id Property");
@@ -105,8 +107,16 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPatch("{id}")]
-        public IActionResult Patch([FromBody]dynamic value, [FromRoute]int id) =>
-            Put(value, id);
+        public IActionResult Patch([FromRoute]int id) {
+            string json;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
+                json = reader.ReadToEndAsync().Result;
+            }
+            var partialEntity = new PartialEntity<TEntity>();
+            partialEntity.Deserialize(json);
+            var updated = Repo.Update(partialEntity, id);
+            return Ok(updated);
+        }
 
 
 
@@ -117,8 +127,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPut("async/{id}")]
-        public async Task<IActionResult> PutAsync([FromBody]dynamic value, [FromRoute]int id) {
-
+        public async Task<IActionResult> PutAsync([FromBody]TEntity value, [FromRoute]int id) {
             try {
                 if (id != value.Id)
                     return new BadRequestObjectResult($"The provided object has an Id ({value.Id}) that differs from the route parameter ({id})");
@@ -144,8 +153,16 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPatch("async/{id}")]
-        public async Task<IActionResult> PatchAsync([FromBody]dynamic value, [FromRoute]int id) =>
-            await PutAsync(value, id);
+        public async Task<IActionResult> PatchAsync([FromRoute]int id) {
+            string json;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
+                json = await reader.ReadToEndAsync();
+            }
+            var partialEntity = new PartialEntity<TEntity>();
+            partialEntity.Deserialize(json);
+            var updated = await Repo.UpdateAsync(partialEntity, id);
+            return Ok(updated);
+        }
 
 
 

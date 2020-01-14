@@ -165,6 +165,34 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+
+        public static ObjectResult Patch<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+            return client.PatchAsync(relativeUrlFromBase, obj).Result;
+        }
+
+
+        public static async Task<ObjectResult> PatchAsync<T>(
+                this HttpClient client, string relativeUrlFromBase, T obj) {
+
+
+            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
+
+            //build the request message object for the PUT
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Patch,
+                RequestUri = new Uri(url),
+                Content = new BodyContent<T>(obj)
+            };
+
+            var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<T>(response);
+            return objResult;
+
+
+        }
+
+
+
         public static StatusCodeResult Delete<T>(this HttpClient client, string relativeUrlFromBase, T obj,
             bool flagAsUpdateFirst = false) {
             return client.DeleteAsync(relativeUrlFromBase, obj, flagAsUpdateFirst).Result;

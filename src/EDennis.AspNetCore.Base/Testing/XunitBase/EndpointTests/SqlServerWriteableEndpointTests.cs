@@ -80,7 +80,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             else
                 HttpClient.Delete<TEntity>(url);
 
-            var getUrl = $"{controllerPath}?where Id ge {start} and Id le {end}";
+            var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
             actualResult = HttpClient.Get<List<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
@@ -123,7 +123,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             else
                 HttpClient.Put(url,input);
 
-            var getUrl = $"{controllerPath}?where Id ge {start} and Id le {end}";
+            var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
             actualResult = HttpClient.Get<List<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
@@ -137,6 +137,47 @@ namespace EDennis.AspNetCore.Base.Testing {
             return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
         }
 
+
+        public async Task<ExpectedActualList<TEntity>> PatchAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            return await Task.Run(() =>
+                Patch_ExpectedActual_Base(t, jsonTestCase, true));
+        }
+
+        public ExpectedActualList<TEntity> Patch_ExpectedActual(string t, JsonTestCase jsonTestCase)
+            => Patch_ExpectedActual_Base(t, jsonTestCase, false);
+
+        public ExpectedActualList<TEntity> Patch_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+            Output.WriteLine(t);
+
+            var id = jsonTestCase.GetObject<int>("Id");
+            var input = jsonTestCase.GetObject<TEntity>("Input");
+            var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
+            var start = jsonTestCase.GetObject<string>("WindowStart", Output);
+            var end = jsonTestCase.GetObject<string>("WindowEnd", Output);
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+
+            var url = $"{controllerPath}/{(isAsync ? "async/" : "")}{id}";
+            Output.WriteLine($"url: {url}");
+
+            IActionResult actualResult;
+            if (isAsync)
+                HttpClient.PatchAsync(url, input).Wait();
+            else
+                HttpClient.Patch(url, input);
+
+            var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
+
+            actualResult = HttpClient.Get<List<TEntity>>(getUrl);
+            var statusCode = actualResult.GetStatusCode();
+
+            List<TEntity> actual;
+            if (statusCode > 299)
+                throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
+            else
+                actual = actualResult.GetObject<List<TEntity>>();
+
+            return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
+        }
 
 
         public async Task<ExpectedActualList<TEntity>> PostAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
@@ -166,7 +207,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             else
                 HttpClient.Post(url, input);
 
-            var getUrl = $"{controllerPath}?where (Id ge {start} and Id le {end}) or Id eq {id}";
+            var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
             actualResult = HttpClient.Get<List<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
