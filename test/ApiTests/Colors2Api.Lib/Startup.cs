@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Colors2.Models;
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Serialization;
+using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Formatter;
@@ -30,30 +31,13 @@ namespace Colors2Api.Lib {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers(op => {
-                op.EnableEndpointRouting = false;
-                foreach (var formatter in op.OutputFormatters
-                    .OfType<ODataOutputFormatter>()
-                    .Where(it => !it.SupportedMediaTypes.Any())) {
-                    formatter.SupportedMediaTypes.Add(
-                        new MediaTypeHeaderValue("application/prs.mock-odata"));
-                }
-                foreach (var formatter in op.InputFormatters
-                    .OfType<ODataInputFormatter>()
-                    .Where(it => !it.SupportedMediaTypes.Any())) {
-                    formatter.SupportedMediaTypes.Add(
-                        new MediaTypeHeaderValue("application/prs.mock-odata"));
-                }
-            });
-            services.AddOData();
+            services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
                 .AddScopeProperties()
-                .AddHeadersToClaims()
                 .AddDbContext<Color2DbContext>()
                 .AddRepo<RgbRepo>()
                 .AddRepo<HslRepo>()
-                .AddPkRewriter()
                 .AddNullScopedLogger();
 
             services.AddSwaggerGen(c => {
@@ -74,14 +58,13 @@ namespace Colors2Api.Lib {
             app.UseAuthorization();
 
 
-            app.UseMvc(routeBuilder => {
-                routeBuilder.Select().Filter();
-                routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
-            });
+            app.UseScopeProperties();
+            app.UseDbContextInterceptor<Color2DbContext>();
 
-            //app.UseEndpoints(endpoints => {
-            //    endpoints.MapControllers();
-            //});
+
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c => {

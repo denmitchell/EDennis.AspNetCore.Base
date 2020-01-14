@@ -1,358 +1,201 @@
-﻿//using EDennis.AspNetCore.Base.Testing;
-//using EDennis.AspNetCore.Base.Web;
-//using EDennis.NetCoreTestingUtilities;
-//using EDennis.NetCoreTestingUtilities.Extensions;
-//using Colors2.Models;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.Http;
-//using Xunit;
-//using Xunit.Abstractions;
-//using Colors2Api.Lib.Controllers;
-
-//namespace Colors2Api.ControllerTests
-//{
-
-//    [Collection("Endpoint Tests")]
-//    public class WriteableEndpointTests : SqlServerWriteableControllerTests<RgbController,RgbRepo,Rgb,Color2DbContext>
-//        {
-//        public WriteableEndpointTests(ITestOutputHelper output) : base(output) {
-//        }
-
-
-//        internal class TestJson_ : TestJsonAttribute {
-//            public TestJson_(string methodName, string testScenario, string testCase)
-//                : base("Colors2Db", "Colors2Api", "RgbController", methodName, testScenario, testCase) {
-//            }
-//        }
-
-
-
-//        [Theory]
-//        [TestJson_("GetOData", "FilterSkipTop", "RedGt200Skip2Top5")]
-//        public void GetOData1(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-
-//            var filter = jsonTestCase.GetObject<string>("Filter");
-//            var skip = jsonTestCase.GetObject<int>("Skip");
-//            var top = jsonTestCase.GetObject<int>("Top");
-//            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-//                .OrderBy(x => x.Name)
-//                .ToList();
-
-//            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/odata?$filter={filter}&$skip={skip}&$top={top}")
-//                .GetObject<List<dynamic>>()
-//                .OrderBy(x => x.Name)
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("GetOData", "FilterOrderBySelectTop", "NameContainsBlueSelectNameDescSysUserTop10")]
-//        public void GetOData2(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var filter = jsonTestCase.GetObject<string>("Filter");
-//            var select = jsonTestCase.GetObject<string>("Select");
-//            var orderBy = jsonTestCase.GetObject<string>("OrderBy");
-//            var top = jsonTestCase.GetObject<int>("Top");
-
-//            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-//                .OrderByDescending(x => x.Name)
-//                .ToList();
-
-//            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/odata?$filter={filter}&$select={select}&$orderBy={orderBy}&$top={top}")
-//                .GetObject<List<dynamic>>()
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-
-//        }
-
-
-//        [Theory]
-//        [TestJson_("GetDevExtreme", "FilterSkipTake", "RedGt200Skip2Take5")]
-//        public void GetDevExtreme1(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var filter = jsonTestCase.GetObject<string>("Filter");
-//            var skip = jsonTestCase.GetObject<int>("Skip");
-//            var take = jsonTestCase.GetObject<int>("Take");
-//            var expected = jsonTestCase
-//                .GetObject<ICollection<dynamic>>("Expected")
-//                .OrderBy(x=>x.Id)
-//                .ToList();
-
-
-//            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme?filter={filter}&skip={skip}&take={take}")
-//                .GetObject<DeserializableLoadResult<dynamic>>();
-//            var actual = loadResult.data
-//                .OrderBy(x => x.Id)
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-
-//        [Theory]
-//        [TestJson_("GetDevExtreme", "FilterSortSelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
-//        public void GetDevExtreme2(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var filter = jsonTestCase.GetObject<string>("Filter");
-//            var select = jsonTestCase.GetObject<string>("Select");
-//            var sort = jsonTestCase.GetObject<string>("Sort");
-//            var take = jsonTestCase.GetObject<int>("Take");
-//            var expected = jsonTestCase
-//                .GetObject<ICollection<dynamic>>("Expected")
-//                .OrderByDescending(x => x.Name)
-//                .ToList();
-
-//            var loadResult = HttpClient.Get<DeserializableLoadResult<dynamic>>($"api/rgb/devextreme?filter={filter}&select={select}&sort={sort}&take={take}")
-//                .GetObject<DeserializableLoadResult<dynamic>>();
-//            var actual = loadResult.data
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("GetDynamicLinq", "WhereSkipTake", "RedGt200Skip2Take5")]
-//        public void GetDynamicLinq1(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var where = jsonTestCase.GetObject<string>("Where");
-//            var skip = jsonTestCase.GetObject<int>("Skip");
-//            var take = jsonTestCase.GetObject<int>("Take");
-//            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-//                .OrderBy(x => x.Name)
-//                .ToList();
-
-//            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&skip={skip}&take={take}")
-//                .GetObject<List<dynamic>>()
-//                .OrderBy(x => x.Name)
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("GetDynamicLinq", "WhereOrderBySelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
-//        public void GetDynamicLinq2(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var where = jsonTestCase.GetObject<string>("Where");
-//            var select = jsonTestCase.GetObject<string>("Select");
-//            var orderBy = jsonTestCase.GetObject<string>("OrderBy");
-//            var take = jsonTestCase.GetObject<int>("Take");
-
-//            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-//                .OrderByDescending(x => x.Name)
-//                .ToList();
-
-//            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq?where={where}&select={select}&orderBy={orderBy}&take={take}")
-//                .GetObject<List<dynamic>>()
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-
-//        }
-
-
-//        [Theory]
-//        [TestJson_("GetDynamicLinqAsync", "WhereSkipTake", "RedGt200Skip2Take5")]
-//        public void GetDynamicLinqAsync1(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var where = jsonTestCase.GetObject<string>("Where");
-//            var skip = jsonTestCase.GetObject<int>("Skip");
-//            var take = jsonTestCase.GetObject<int>("Take");
-//            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-//                .OrderBy(x => x.Name)
-//                .ToList();
-
-//            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq/async?where={where}&skip={skip}&take={take}")
-//                .GetObject<List<dynamic>>()
-//                .OrderBy(x => x.Name)
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("GetDynamicLinqAsync", "WhereOrderBySelectTake", "NameContainsBlueSelectNameDescSysUserTake10")]
-//        public void GetDynamicLinqAsync2(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var where = jsonTestCase.GetObject<string>("Where");
-//            var select = jsonTestCase.GetObject<string>("Select");
-//            var orderBy = jsonTestCase.GetObject<string>("OrderBy");
-//            var take = jsonTestCase.GetObject<int>("Take");
-
-//            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected")
-//                .OrderByDescending(x => x.Name)
-//                .ToList();
-
-//            var actual = HttpClient.Get<List<dynamic>>($"api/rgb/linq/async?where={where}&select={select}&orderBy={orderBy}&take={take}")
-//                .GetObject<List<dynamic>>()
-//                .ToList();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-
-//        }
-
-
-//        [Theory]
-//        [TestJson_("Get", "", "1")]
-//        [TestJson_("Get", "", "2")]
-//        public void Get(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var id = jsonTestCase.GetObject<int>("Id");
-//            var expected = jsonTestCase.GetObject<Rgb>("Expected");
-
-//            var actual = HttpClient.Get<Rgb>($"api/rgb/{id}")
-//                .GetObject<Rgb>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("GetAsync", "", "1")]
-//        [TestJson_("GetAsync", "", "2")]
-//        public void GetAsync(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var id = jsonTestCase.GetObject<int>("Id");
-//            var expected = jsonTestCase.GetObject<Rgb>("Expected");
-
-//            var actual = HttpClient.Get<Rgb>($"api/rgb/async/{id}")
-//                .GetObject<Rgb>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-
-//        [Theory]
-//        [TestJson_("Delete", "", "1")]
-//        [TestJson_("Delete", "", "2")]
-//        public void Delete(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var id = jsonTestCase.GetObject<int>("Id");
-//            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-//            HttpClient.Delete<Rgb>($"api/rgb/{id}");
-
-//            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-//                .GetObject<List<Rgb>>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("DeleteAsync", "", "1")]
-//        [TestJson_("DeleteAsync", "", "2")]
-//        public void DeleteAsync(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var id = jsonTestCase.GetObject<int>("Id");
-//            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-//            HttpClient.Delete<Rgb>($"api/rgb/async/{id}");
-
-//            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-//                .GetObject<List<Rgb>>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("Put", "", "1")]
-//        [TestJson_("Put", "", "2")]
-//        public void Put(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var id = jsonTestCase.GetObject<int>("Id");
-//            var input = jsonTestCase.GetObject<Rgb>("Input");
-//            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-//            HttpClient.Put($"api/rgb/{id}",input);
-
-//            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-//                .GetObject<List<Rgb>>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("PutAsync", "", "1")]
-//        [TestJson_("PutAsync", "", "2")]
-//        public void PutAsync(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var id = jsonTestCase.GetObject<int>("Id");
-//            var input = jsonTestCase.GetObject<Rgb>("Input");
-//            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-//            HttpClient.Put($"api/rgb/async/{id}", input);
-
-//            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-//                .GetObject<List<Rgb>>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-
-//        [Theory]
-//        [TestJson_("Post", "", "1")]
-//        [TestJson_("Post", "", "2")]
-//        public void Post(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var input = jsonTestCase.GetObject<Rgb>("Input");
-//            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-//            HttpClient.Post($"api/rgb", input);
-
-//            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-//                .GetObject<List<Rgb>>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//        [Theory]
-//        [TestJson_("PostAsync", "", "1")]
-//        [TestJson_("PostAsync", "", "2")]
-//        public void PostAsync(string t, JsonTestCase jsonTestCase) {
-//            Output.WriteLine(t);
-//            Output.WriteLine($"Db instance name: {InstanceName}");
-
-//            var input = jsonTestCase.GetObject<Rgb>("Input");
-//            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-//            HttpClient.Post($"api/rgb/async", input);
-
-//            var actual = HttpClient.Get<List<Rgb>>($"api/rgb/linq")
-//                .GetObject<List<Rgb>>();
-
-//            Assert.True(actual.IsEqualOrWrite(expected, Output));
-//        }
-
-//    }
-//}
+﻿using Colors2.Models;
+using EDennis.AspNetCore.Base.Testing;
+using EDennis.NetCoreTestingUtilities;
+using EDennis.NetCoreTestingUtilities.Extensions;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
+using L = Colors2Api.Lib;
+
+namespace Colors2Api.EndpointTests {
+
+    [Collection("Endpoint Tests")]
+    public class WriteableEndpointTests 
+        : SqlServerWriteableEndpointTests<Hsl, L.Program, Colors2ApiLauncher> {
+
+        public WriteableEndpointTests(ITestOutputHelper output,
+            LauncherFixture<L.Program, Colors2ApiLauncher> launcherFixture)
+            : base(output, launcherFixture) {
+        }
+
+
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
+                : base("Color2Db", "Colors2Api", "RgbController", methodName, testScenario, testCase) {
+            }
+        }
+
+        #region (from readonly)
+
+        [Theory]
+        [TestJson_("GetDevExtreme", "WriteableEndpointTests|FilterSkipTake", "A")]
+        [TestJson_("GetDevExtreme", "WriteableEndpointTests|FilterSortSelectTake", "B")]
+        public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
+            var ea = GetDevExtreme_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereSkipTake", "A")]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereOrderBySelectTake", "B")]
+        public void GetDynamicLinq(string t, JsonTestCase jsonTestCase) {
+            var ea = GetDynamicLinq_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereSkipTake", "A")]
+        [TestJson_("GetDynamicLinq", "WriteableEndpointTests|WhereOrderBySelectTake", "B")]
+        public async Task GetDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetDynamicLinqAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetSingleFromStoredProcedure", "WriteableEndpointTests|RgbByColorName", "A")]
+        [TestJson_("GetSingleFromStoredProcedure", "WriteableEndpointTests|RgbByColorName", "B")]
+        public void GetSingleFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetSingleFromStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetSingleFromStoredProcedure", "WriteableEndpointTests|RgbByColorName", "A")]
+        [TestJson_("GetSingleFromStoredProcedure", "WriteableEndpointTests|RgbByColorName", "B")]
+        public async Task GetSingleFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetSingleFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorName", "A")]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorName", "B")]
+        public void GetSingleFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetSingleFromJsonStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorName", "A")]
+        [TestJson_("GetSingleFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorName", "B")]
+        public async Task GetSingleFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetSingleFromJsonStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromStoredProcedure", "WriteableEndpointTests|RgbByColorNameContains", "A")]
+        [TestJson_("GetListFromStoredProcedure", "WriteableEndpointTests|RgbByColorNameContains", "B")]
+        public void GetListFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetListFromStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromStoredProcedure", "WriteableEndpointTests|RgbByColorNameContains", "A")]
+        [TestJson_("GetListFromStoredProcedure", "WriteableEndpointTests|RgbByColorNameContains", "B")]
+        public async Task GetListFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetListFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorNameContains", "A")]
+        [TestJson_("GetListFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorNameContains", "B")]
+        public void GetListFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetListFromJsonStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("GetListFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorNameContains", "A")]
+        [TestJson_("GetListFromJsonStoredProcedure", "WriteableEndpointTests|RgbJsonByColorNameContains", "B")]
+        public async Task GetListFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetListFromJsonStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        #endregion
+
+
+        [Theory]
+        [TestJson_("Get", "WriteableEndpointTests", "A")]
+        [TestJson_("Get", "WriteableEndpointTests", "B")]
+        public void Get(string t, JsonTestCase jsonTestCase) {
+            var ea = Get_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("GetAsync", "WriteableEndpointTests", "A")]
+        [TestJson_("GetAsync", "WriteableEndpointTests", "B")]
+        public async Task GetAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("Delete", "WriteableEndpointTests", "A")]
+        [TestJson_("Delete", "WriteableEndpointTests", "B")]
+        public void Delete(string t, JsonTestCase jsonTestCase) {
+            var ea = Delete_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("DeleteAsync", "WriteableEndpointTests", "A")]
+        [TestJson_("DeleteAsync", "WriteableEndpointTests", "B")]
+        public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await DeleteAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("Post", "WriteableEndpointTests", "A")]
+        [TestJson_("Post", "WriteableEndpointTests", "B")]
+        public void Post(string t, JsonTestCase jsonTestCase) {
+            var ea = Post_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("PostAsync", "WriteableEndpointTests", "A")]
+        [TestJson_("PostAsync", "WriteableEndpointTests", "B")]
+        public async Task PostAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await PostAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+        [Theory]
+        [TestJson_("Put", "WriteableEndpointTests", "A")]
+        [TestJson_("Put", "WriteableEndpointTests", "B")]
+        public void Put(string t, JsonTestCase jsonTestCase) {
+            var ea = Put_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+        [Theory]
+        [TestJson_("PutAsync", "WriteableEndpointTests", "A")]
+        [TestJson_("PutAsync", "WriteableEndpointTests", "B")]
+        public async Task PutAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await PutAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
+        }
+
+
+    }
+}
