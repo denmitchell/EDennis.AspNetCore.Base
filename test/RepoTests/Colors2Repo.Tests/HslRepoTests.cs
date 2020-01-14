@@ -39,12 +39,8 @@ namespace RepoTests {
             var colorName = jsonTestCase.GetObject<string>("ColorName");
             var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
 
-
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = DynamicConverter.ToPropertyDictionaryList(expectedDynamic);
-
-            var actualDynamic = Repo.Context.GetFromStoredProcedure(spName, parameters);
-            var actual = DynamicConverter.ToPropertyDictionaryList(actualDynamic);
+            var expected = jsonTestCase.GetObject<List<Hsl>>("Expected");
+            var actual = Repo.Context.GetListFromStoredProcedure<Color2DbContext,Hsl>(spName, parameters);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -63,11 +59,9 @@ namespace RepoTests {
             var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
 
 
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = DynamicConverter.ToPropertyDictionaryList(expectedDynamic);
+            var expected = jsonTestCase.GetObject<List<Hsl>>("Expected");
 
-            var actualDynamic = await Repo.Context.GetFromStoredProcedureAsync(spName, parameters);
-            var actual = DynamicConverter.ToPropertyDictionaryList(actualDynamic);
+            var actual = await Repo.Context.GetListFromStoredProcedureAsync<Color2DbContext,Hsl>(spName, parameters);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
