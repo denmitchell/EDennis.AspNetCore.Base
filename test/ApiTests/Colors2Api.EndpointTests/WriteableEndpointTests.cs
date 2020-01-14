@@ -16,6 +16,8 @@ namespace Colors2Api.EndpointTests {
         public WriteableEndpointTests(ITestOutputHelper output,
             LauncherFixture<L.Program, Colors2ApiLauncher> launcherFixture)
             : base(output, launcherFixture) {
+
+            HttpClient.DefaultRequestHeaders.Add("X-User", "tester@example.org");
         }
 
 

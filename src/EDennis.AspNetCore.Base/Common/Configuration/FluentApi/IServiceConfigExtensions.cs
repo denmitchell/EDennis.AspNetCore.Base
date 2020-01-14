@@ -250,7 +250,15 @@ namespace EDennis.AspNetCore.Base {
             where TContext : DbContext {
 
             var settings = serviceConfig.BindAndConfigure<DbContextSettings<TContext>>(path);
+            var interceptorSettings = serviceConfig.Bind<DbContextInterceptorSettings<TContext>>($"{path}:Interceptor");
+            interceptorSettings.ConnectionString = interceptorSettings.ConnectionString ?? settings.ConnectionString;
+            interceptorSettings.DatabaseProvider = (interceptorSettings.DatabaseProvider == DatabaseProvider.Unspecified) ? settings.DatabaseProvider : interceptorSettings.DatabaseProvider;
 
+            serviceConfig.Services.PostConfigure<DbContextSettings<TContext>>(
+                options => {
+                    options.Interceptor = interceptorSettings;
+                }
+            );
             serviceConfig.Services.AddSingleton<DbConnectionCache<TContext>>();
             serviceConfig.Services.AddSingleton(
                 new StoredProcedureDefs<TContext>(settings)

@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
-    public abstract class SqlServerReadonlyEndpointTests<TEntity, TProgram, TLauncher> : LauncherEndpointTests<TProgram, TLauncher>
+    public abstract class SqlServerReadonlyEndpointTests<TEntity, TProgram, TLauncher> 
+        : LauncherEndpointTests<TProgram, TLauncher>
         where TEntity : class, new()
         where TProgram : IProgram, new()
         where TLauncher : ILauncher, new() {
