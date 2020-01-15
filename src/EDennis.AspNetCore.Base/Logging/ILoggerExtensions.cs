@@ -36,15 +36,17 @@ namespace EDennis.AspNetCore.Base.Logging {
             return LogLevel.None;
         }
 
-        public static IEnumerable<KeyValuePair<string, object>> GetScope(this ILogger _, MethodExecutionArgs args) {
+        public static IEnumerable<KeyValuePair<string, object>> GetScope(this ILogger _, MethodExecutionArgs args, int maxLength) {
             List<KeyValuePair<string, object>> logScope = new List<KeyValuePair<string, object>>();
-            var formatted = args.Arguments.Format();
+            var formatted = args.Arguments.Format(maxLength);
             var parms = args.Method.GetParameters();
             for (int i = 0; i < parms.Length; i++) {
                 logScope.Add(KeyValuePair.Create(parms[i].Name, formatted[i] ?? parms[i].DefaultValue));
             }
             if (args.ReturnValue != null) {
                 var returnValue = JsonSerializer.Serialize(args.ReturnValue);
+                if (maxLength > 0)
+                    returnValue = returnValue.Substring(0, Math.Min(returnValue.Length, maxLength) - 1);
                 logScope.Add(KeyValuePair.Create("ReturnValue", (object)returnValue));
             }
             return logScope;
@@ -61,20 +63,23 @@ namespace EDennis.AspNetCore.Base.Logging {
 
     public static class Extensions {
 
-        public static object[] Format(this object[] objs) {
+        public static object[] Format(this object[] objs, int maxLength) {
             var retVal = new object[objs.Length];
             for (int i = 0; i < objs.Length; i++)
-                retVal[i] = objs[i].Format();
+                retVal[i] = objs[i].Format(maxLength);
             return retVal;
         }
 
-        public static object Format(this object obj) {
+        public static object Format(this object obj, int maxLength) {
             object retVal;
             if (obj.GetType().IsPrimitive)
                 retVal = obj;
             else {
                 var str = JsonSerializer.Serialize(obj);
-                retVal = str;
+                if (maxLength == 0)
+                    retVal = str;
+                else
+                    retVal = str.Substring(0, Math.Min(str.Length, maxLength) - 1);
             }
             return retVal;
         }
@@ -97,7 +102,8 @@ namespace EDennis.AspNetCore.Base.Logging {
             if (obj.GetType().IsPrimitive)
                 retVal = obj;
             else {
-                var str = JsonSerializer.Serialize(obj);
+                var str = JsonSerializer.Serialize(obj,
+                    new JsonSerializerOptions { MaxDepth = 3 });
                 if (compact)
                     str = Regex
                         .Replace(str, "\"[A-Za-z0-9_]+\":", "");

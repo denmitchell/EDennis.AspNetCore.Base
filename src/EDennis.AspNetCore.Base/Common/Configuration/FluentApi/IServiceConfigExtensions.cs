@@ -32,7 +32,6 @@ namespace EDennis.AspNetCore.Base {
         public const string DEFAULT_PK_REWRITER_PATH = "PkRewriter";
         public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = "HeadersToClaims";
         public const string DEFAULT_SCOPED_LOGGER_SETTINGS_PATH = "ScopedLogger";
-        public const string DEFAULT_SCOPED_LOGGER_PATH = "Logging:Loggers:ScopedLogger";
 
         public const string DEFAULT_OAUTH_RELATIVE_PATH = "OAuth";
         public const string DEFAULT_OIDC_RELATIVE_PATH = "Oidc";
@@ -41,36 +40,16 @@ namespace EDennis.AspNetCore.Base {
         public const string OIDC_CHALLENGE_SCHEME = "oidc";
 
 
-        public static IServiceConfig AddSerilogFodyScopedLogger(this IServiceConfig serviceConfig) {
-            serviceConfig.AddScopedLogger<FodyScopedLogger, SerilogScopedLoggerAssignments>(
-                    (c, s) => new SerilogScopedLoggerAssignments(c, s));
-            return serviceConfig;
-        }
-        public static IServiceConfig AddNullScopedLogger(this IServiceConfig serviceConfig) {
-            serviceConfig.Services.TryAddScoped<IScopedLogger, NullScopedLogger>();
-            return serviceConfig;
-        }
 
-        public static IServiceConfig AddScopedLogger<TScopedLogger, TScopedLoggerAssignments>(this IServiceConfig serviceConfig,
-            Func<IConfiguration, string, TScopedLoggerAssignments> slaFunc)
-            where TScopedLogger : class, IScopedLogger
-            where TScopedLoggerAssignments : class, IScopedLoggerAssignments =>
-                AddScopedLogger<TScopedLogger, TScopedLoggerAssignments>(serviceConfig, DEFAULT_SCOPED_LOGGER_SETTINGS_PATH, DEFAULT_SCOPED_LOGGER_PATH, slaFunc);
+        public static IServiceConfig AddScopedLogger(this IServiceConfig serviceConfig)
+            =>   AddScopedLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_SETTINGS_PATH);
 
 
-        public static IServiceConfig AddScopedLogger<TScopedLogger, TScopedLoggerAssignments>(this IServiceConfig serviceConfig, 
-            string scopedLoggerSettingsKey,
-            string scopedLoggerKey, Func<IConfiguration, string, TScopedLoggerAssignments> slaFunc)
-            where TScopedLogger : class, IScopedLogger
-            where TScopedLoggerAssignments : class, IScopedLoggerAssignments {
+        public static IServiceConfig AddScopedLogger(this IServiceConfig serviceConfig, 
+            string scopedLoggerSettingsKey){
 
             serviceConfig.Configure<ScopedLoggerSettings>(scopedLoggerSettingsKey);
-
-            serviceConfig.Services.AddSingleton<IScopedLoggerAssignments>(provider=>slaFunc(serviceConfig.Configuration,scopedLoggerKey));
-            serviceConfig.Services.TryAddScoped<IScopedLogger, TScopedLogger>();
-
             return serviceConfig;
-
         }
 
 
