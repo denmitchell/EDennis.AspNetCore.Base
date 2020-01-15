@@ -23,7 +23,7 @@ namespace Colors2Api.Lib.Controllers {
         [HttpGet("RgbHslByColorNameContains")]
         public List<RgbHsl> GetRgbHslByColorNameContains([FromQuery] string colorName) {
             var parameters = new Params().Add("colorNameContains", colorName);
-            var result = Repo.Context.GetSingleFromStoredProcedure<Color2DbContext, List<RgbHsl>>(
+            var result = Repo.Context.GetListFromStoredProcedure<Color2DbContext, RgbHsl>(
                 "RgbHslByColorNameContains", parameters);
             return result;
         }

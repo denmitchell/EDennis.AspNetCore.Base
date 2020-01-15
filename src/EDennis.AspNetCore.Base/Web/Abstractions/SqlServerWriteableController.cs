@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.Web {
         [HttpPost]
         public virtual IActionResult Post([FromBody]TEntity value) {
             var created = Repo.Create(value);
-            return CreatedAtAction("Get", created.Id, created);
+            return Ok(created);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace EDennis.AspNetCore.Base.Web {
         [HttpPost("async")]
         public virtual async Task<IActionResult> PostAsync([FromBody]TEntity value) {
             var created = await Repo.CreateAsync(value);
-            return CreatedAtAction("Get", created.Id, created);
+            return Ok(created);
         }
 
 
@@ -91,7 +91,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             try {
                 var updated = Repo.Update(value, id);
-                return CreatedAtAction("Get", updated.Id, updated);
+                return Ok(updated);// CreatedAtAction("Get", updated.Id, updated);
             } catch (RuntimeBinderException) {
                 return new BadRequestObjectResult($"The provided object cannot be serialized into a {typeof(TEntity).Name}.");
             } catch (Exception ex) {
@@ -137,7 +137,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             try {
                 var updated = await Repo.UpdateAsync(value, id);
-                return CreatedAtAction("Get", updated.Id, updated);
+                return Ok(updated);
             } catch (RuntimeBinderException) {
                 return new BadRequestObjectResult($"The provided object cannot be serialized into a {typeof(TEntity).Name}.");
             } catch (Exception ex) {

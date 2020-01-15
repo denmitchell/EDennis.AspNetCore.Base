@@ -23,6 +23,7 @@ namespace Colors2Api.Lib {
             services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
+                .AddMockHeaders()
                 .AddScopeProperties()
                 .AddDbContext<Color2DbContext>()
                 .AddRepo<RgbRepo>()
@@ -45,7 +46,7 @@ namespace Colors2Api.Lib {
 
             app.UseAuthorization();
 
-
+            app.UseMockHeaders();
             app.UseScopeProperties();
             app.UseDbContextInterceptor<Color2DbContext>();
 
