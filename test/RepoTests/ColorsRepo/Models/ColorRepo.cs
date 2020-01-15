@@ -9,9 +9,8 @@ namespace Colors.Models {
         Color, ColorHistory, ColorDbContext, ColorHistoryDbContext> {
         public ColorRepo(DbContextProvider<ColorDbContext> provider, DbContextProvider<ColorHistoryDbContext> historyContext, 
             IScopeProperties scopeProperties, 
-            ILogger<ColorRepo> logger,
-            IScopedLogger scopedLogger) 
-            : base(provider, historyContext, scopeProperties, logger, scopedLogger) {
+            ILogger<ColorRepo> logger) 
+            : base(provider, historyContext, scopeProperties, logger) {
         }
     }
 }

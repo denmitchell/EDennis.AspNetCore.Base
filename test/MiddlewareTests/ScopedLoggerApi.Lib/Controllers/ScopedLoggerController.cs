@@ -15,7 +15,7 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib.Controllers {
         private IScopeProperties _scopeProperties;
 
         [DisableWeaving]
-        public string GetScopedTraceLoggerKey() => _scopeProperties.ScopedTraceLoggerKey;
+        public string GetScopedTraceLoggerKey() => _scopeProperties?.ScopedTraceLoggerKey;
 
 
 

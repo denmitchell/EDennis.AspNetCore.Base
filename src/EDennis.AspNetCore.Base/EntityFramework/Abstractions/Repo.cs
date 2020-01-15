@@ -23,7 +23,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
-        [DisableWeaving] public string GetScopedTraceLoggerKey() => ScopeProperties?.ScopedTraceLoggerKey;
+        [DisableWeaving] public virtual string GetScopedTraceLoggerKey() => ScopeProperties?.ScopedTraceLoggerKey;
 
         public TContext Context { get; set; }
         public IScopeProperties ScopeProperties { get; set; }

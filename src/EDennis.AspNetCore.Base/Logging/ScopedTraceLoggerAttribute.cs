@@ -166,7 +166,9 @@ namespace EDennis.AspNetCore.Base.Logging {
 
         private string GetScopedTraceLoggerKey(object instance) {
             try {
-                var type = instance.GetType();                
+                var type = instance.GetType();
+                if (type.Name.StartsWith("<"))
+                    return null;
                 var methodInfo = type.GetMethod("GetScopedTraceLoggerKey");
                 var key = (string)methodInfo.Invoke(instance, new object[] { });
                 return key;
