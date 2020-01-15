@@ -7,13 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
-    public interface IRepo<TEntity, TContext> : IHasMethodCallbacks, IRepo
+    public interface IRepo<TEntity, TContext> : IRepo
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
         TContext Context { get; set; }
         ILogger Logger { get; }
         IQueryable<TEntity> Query { get; }
-        IScopedLogger ScopedLogger { get; }
         IScopeProperties ScopeProperties { get; set; }
 
         TEntity Create(TEntity entity);

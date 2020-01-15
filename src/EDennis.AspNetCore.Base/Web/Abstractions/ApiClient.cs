@@ -16,17 +16,14 @@ namespace EDennis.AspNetCore.Base.Web {
         public Api Api { get; }
         public ILogger Logger { get; }
         public IScopeProperties ScopeProperties { get; }
-        public IScopedLogger ScopedLogger { get; }
 
         public ApiClient(
             IHttpClientFactory httpClientFactory,
             IOptionsMonitor<Apis> apis,
             IScopeProperties scopeProperties,
-            ILogger logger,
-            IScopedLogger scopedLogger = null) {
+            ILogger logger) {
 
             Logger = logger;
-            ScopedLogger = scopedLogger;
             ScopeProperties = scopeProperties;
 
             ApiKey = GetType().Name;

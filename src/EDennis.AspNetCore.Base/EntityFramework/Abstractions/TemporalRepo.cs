@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using EDennis.AspNetCore.Base.Logging;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
+
+    [ScopedTraceLogging(logEntry:true)]
     public class TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> : Repo<TEntity, TContext>, ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> 
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity : class, TEntity, new()
@@ -23,8 +25,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="context">Entity Framework DbContext</param>
         public TemporalRepo(DbContextProvider<TContext> provider, DbContextProvider<THistoryContext> historyProvider,
             IScopeProperties scopeProperties,
-            ILogger<Repo<TEntity, TContext>> logger,
-            IScopedLogger scopedLogger) : base(provider, scopeProperties, logger, scopedLogger) {
+            ILogger<Repo<TEntity, TContext>> logger) 
+            : base(provider, scopeProperties, logger) {
 
             HistoryContext = historyProvider.Context;
             ScopeProperties = scopeProperties;

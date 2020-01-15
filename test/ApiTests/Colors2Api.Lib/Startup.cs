@@ -1,23 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Colors2.Models;
 using EDennis.AspNetCore.Base;
-using EDennis.AspNetCore.Base.Serialization;
 using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
 
@@ -37,8 +26,7 @@ namespace Colors2Api.Lib {
                 .AddScopeProperties()
                 .AddDbContext<Color2DbContext>()
                 .AddRepo<RgbRepo>()
-                .AddRepo<HslRepo>()
-                .AddNullScopedLogger();
+                .AddRepo<HslRepo>();
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Colors2Api", Version = "v1" });
@@ -73,12 +61,5 @@ namespace Colors2Api.Lib {
 
         }
 
-        IEdmModel GetEdmModel() {
-            var odataBuilder = new ODataConventionModelBuilder();
-            odataBuilder.EntitySet<Rgb>("Rgb");
-            odataBuilder.EntitySet<Hsl>("Hsl");
-
-            return odataBuilder.GetEdmModel();
-        }
     }
 }

@@ -81,7 +81,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public new virtual TTemporalRepo CreateRepo() => (TTemporalRepo)Activator.CreateInstance(typeof(TTemporalRepo),
-                new object[] { DbContextProvider, HistoryDbContextProvider, ScopeProperties, Logger, ScopedLogger });
+                new object[] { DbContextProvider, HistoryDbContextProvider, ScopeProperties, Logger});
 
 
         public new virtual void ResetRepo() {

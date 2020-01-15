@@ -11,8 +11,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public SecureApiClient(IHttpClientFactory httpClientFactory,
             IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties,
-            ISecureTokenService secureTokenService, ILogger logger, IScopedLogger scopedLogger)
-            : base(httpClientFactory, apis, scopeProperties, logger, scopedLogger) {
+            ISecureTokenService secureTokenService, ILogger logger)
+            : base(httpClientFactory, apis, scopeProperties, logger) {
 
             var tokenResponse = secureTokenService.GetTokenAsync(this).Result;
             HttpClient.SetBearerToken(tokenResponse.AccessToken);

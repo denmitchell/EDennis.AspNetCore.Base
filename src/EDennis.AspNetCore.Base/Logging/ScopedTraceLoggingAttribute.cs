@@ -11,8 +11,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using EDennis.AspNetCore.Base.Web;
 
-namespace EDennis.AspNetCore.Base {
-    public class ScopedTracedLoggingAttribute : OnMethodBoundaryAspect {
+namespace EDennis.AspNetCore.Base.Logging {
+    public class ScopedTraceLoggingAttribute : OnMethodBoundaryAspect {
 
         /// <summary>
         /// A static logger that can be replaced, but which defaults to
@@ -29,7 +29,7 @@ namespace EDennis.AspNetCore.Base {
         /// a registered user (and if entrance and exit logging
         /// is enabled)
         /// </summary>
-        public static ConcurrentDictionary<string, bool> RegisteredUsers { get; set; }
+        public static ConcurrentDictionary<string, bool> RegisteredKeys { get; set; }
 
         /// <summary>
         /// The maximum length of JSON objects and long strings in log messages.
@@ -47,7 +47,7 @@ namespace EDennis.AspNetCore.Base {
         private readonly bool logExit;
         private readonly int maxLengthOfValues = default;
 
-        public ScopedTracedLoggingAttribute(bool logEntry = false, bool logExit = false, int maxLengthOfValues = 0) {
+        public ScopedTraceLoggingAttribute(bool logEntry = false, bool logExit = false, int maxLengthOfValues = 0) {
             this.logExit = logExit;
             this.logEntry = logEntry;
             if (maxLengthOfValues >= 0)
@@ -60,9 +60,9 @@ namespace EDennis.AspNetCore.Base {
         /// <summary>
         /// Setup default static logger
         /// </summary>
-        static ScopedTracedLoggingAttribute() {
+        static ScopedTraceLoggingAttribute() {
 
-            RegisteredUsers = new ConcurrentDictionary<string, bool>();
+            RegisteredKeys = new ConcurrentDictionary<string, bool>();
 
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configuration = new ConfigurationBuilder()
@@ -97,7 +97,7 @@ namespace EDennis.AspNetCore.Base {
                 return;
             var instance = args.Instance;
             var scopeProperties = GetScopeProperties(instance);
-            if (RegisteredUsers.ContainsKey(scopeProperties.User))
+            if (RegisteredKeys.ContainsKey(scopeProperties.User))
                 LogEntry(args, scopeProperties);
         }
 
@@ -111,7 +111,7 @@ namespace EDennis.AspNetCore.Base {
                 return;
             var instance = args.Instance;
             var scopeProperties = GetScopeProperties(instance);
-            if (RegisteredUsers.ContainsKey(scopeProperties.User))
+            if (RegisteredKeys.ContainsKey(scopeProperties.User))
                 LogExit(args, scopeProperties);            
         }
 

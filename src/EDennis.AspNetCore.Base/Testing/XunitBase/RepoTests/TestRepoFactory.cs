@@ -19,7 +19,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         private IConfiguration _configuration;
         private IScopeProperties _scopeProperties;
         private ILogger<TRepo> _logger;
-        private IScopedLogger _scopedLogger;
         private DbContextSettings<TContext> _dbContextSettings;
         private CachedConnection<TContext> _cachedConnection;
         private DbContextProvider<TContext> _dbContextProvider;
@@ -66,17 +65,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             }
             set {
                 _logger = value;
-            }
-        }
-
-        public virtual IScopedLogger ScopedLogger {
-            get {
-                if (_scopedLogger == null)
-                    _scopedLogger = new NullScopedLogger();
-                return _scopedLogger;
-            }
-            set {
-                _scopedLogger = value;
             }
         }
 
@@ -138,7 +126,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public virtual TRepo CreateRepo() => (TRepo)Activator.CreateInstance(typeof(TRepo),
-                new object[] { DbContextProvider, ScopeProperties, Logger, ScopedLogger });
+                new object[] { DbContextProvider, ScopeProperties, Logger });
 
 
         public virtual void ResetRepo() {

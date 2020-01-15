@@ -48,7 +48,7 @@ namespace EDennis.AspNetCore.Base {
         public static IServiceConfig AddScopedLogger(this IServiceConfig serviceConfig, 
             string scopedLoggerSettingsKey){
 
-            serviceConfig.Configure<ScopedLoggerSettings>(scopedLoggerSettingsKey);
+            serviceConfig.Configure<ScopedTraceLoggerSettings>(scopedLoggerSettingsKey);
             return serviceConfig;
         }
 
@@ -230,7 +230,7 @@ namespace EDennis.AspNetCore.Base {
 
             var settings = serviceConfig.BindAndConfigure<DbContextSettings<TContext>>(path);
             var interceptorSettings = serviceConfig.Bind<DbContextInterceptorSettings<TContext>>($"{path}:Interceptor");
-            interceptorSettings.ConnectionString = interceptorSettings.ConnectionString ?? settings.ConnectionString;
+            interceptorSettings.ConnectionString ??= settings.ConnectionString;
             interceptorSettings.DatabaseProvider = (interceptorSettings.DatabaseProvider == DatabaseProvider.Unspecified) ? settings.DatabaseProvider : interceptorSettings.DatabaseProvider;
 
             serviceConfig.Services.PostConfigure<DbContextSettings<TContext>>(

@@ -7,8 +7,7 @@ namespace Colors2.Models {
     public class HslRepo : Repo<Hsl, Color2DbContext> {
         public HslRepo(DbContextProvider<Color2DbContext> provider,
             IScopeProperties scopeProperties,
-            ILogger<HslRepo> logger,
-            IScopedLogger scopedLogger)
-            : base(provider, scopeProperties, logger, scopedLogger) { }
+            ILogger<HslRepo> logger)
+            : base(provider, scopeProperties, logger) { }
     }
 }
