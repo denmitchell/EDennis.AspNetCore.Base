@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EDennis.Samples.DbContextConfigsApi.Lib {
     public class PositionRepo3 : Repo<Position, DbContext3> {
-        public PositionRepo3(DbContextProvider<DbContext3> provider, IScopeProperties scopeProperties, ILogger<Repo<Position, DbContext3>> logger, IScopedLogger scopedLogger) : base(provider, scopeProperties, logger, scopedLogger) {
+        public PositionRepo3(DbContextProvider<DbContext3> provider, IScopeProperties scopeProperties, ILogger<Repo<Position, DbContext3>> logger) : base(provider, scopeProperties, logger) {
         }
     }
 }

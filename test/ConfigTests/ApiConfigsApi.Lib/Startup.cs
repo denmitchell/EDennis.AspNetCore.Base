@@ -19,7 +19,6 @@ namespace EDennis.Samples.ApiConfigsApi.Lib {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
             var _ = new ServiceConfig(services, Configuration)
-                .AddSerilogFodyScopedLogger()
                 .AddApi<Api1>()
                 .AddApi<Api2>();
         }

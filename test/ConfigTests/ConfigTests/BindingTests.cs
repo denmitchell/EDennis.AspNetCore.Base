@@ -177,29 +177,29 @@ namespace EDennis.AspNetCore.ConfigTests {
         }
 
 
-        private static readonly ScopedLoggerSettings[] ul =
-            new ScopedLoggerSettings[] {
-                new ScopedLoggerSettings {
+        private static readonly ScopedTraceLoggerSettings[] ul =
+            new ScopedTraceLoggerSettings[] {
+                new ScopedTraceLoggerSettings {
                     Enabled = true,
                     AssignmentKeyName=null,
                     AssignmentKeySource=AssignmentKeySource.User
                 },
-                new ScopedLoggerSettings {
+                new ScopedTraceLoggerSettings {
                     Enabled = true,
                     AssignmentKeyName=null,
                     AssignmentKeySource=AssignmentKeySource.User
                 },
-                new ScopedLoggerSettings {
+                new ScopedTraceLoggerSettings {
                     Enabled = true,
                     AssignmentKeyName="SomeClaim",
                     AssignmentKeySource=AssignmentKeySource.Claim
                 },
-                new ScopedLoggerSettings {
+                new ScopedTraceLoggerSettings {
                     Enabled = true,
                     AssignmentKeyName="SomeHeader",
                     AssignmentKeySource=AssignmentKeySource.Header
                 },
-                new ScopedLoggerSettings {
+                new ScopedTraceLoggerSettings {
                     Enabled = true,
                     AssignmentKeyName="SomeProperty",
                     AssignmentKeySource=AssignmentKeySource.OtherProperty
@@ -218,7 +218,7 @@ namespace EDennis.AspNetCore.ConfigTests {
             var config = new ConfigurationBuilder()
                 .AddJsonFile(path)
                 .Build();
-            var actual = new ScopedLoggerSettings();
+            var actual = new ScopedTraceLoggerSettings();
             config.Bind("ScopedLogger", actual);
 
             var expected = ul[testCase];

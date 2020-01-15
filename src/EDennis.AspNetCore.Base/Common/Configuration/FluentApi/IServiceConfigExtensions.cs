@@ -46,9 +46,9 @@ namespace EDennis.AspNetCore.Base {
 
 
         public static IServiceConfig AddScopedLogger(this IServiceConfig serviceConfig, 
-            string scopedLoggerSettingsKey){
+            string ScopedTraceLoggerSettingsKey){
 
-            serviceConfig.Configure<ScopedTraceLoggerSettings>(scopedLoggerSettingsKey);
+            serviceConfig.Configure<ScopedTraceLoggerSettings>(ScopedTraceLoggerSettingsKey);
             return serviceConfig;
         }
 

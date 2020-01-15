@@ -34,7 +34,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             designTimeServiceCollection.AddEntityFrameworkDesignTimeServices();
             designTimeServiceCollection.AddDbContextDesignTimeServices(db);
 
+#pragma warning disable EF1001 // Internal EF Core API usage.
             new SqlServerDesignTimeServices().ConfigureDesignTimeServices(designTimeServiceCollection);
+#pragma warning restore EF1001 // Internal EF Core API usage.
             var designTimeServices = designTimeServiceCollection.BuildServiceProvider();
 
             var scaffolder = designTimeServices.GetRequiredService<IMigrationsScaffolder>();

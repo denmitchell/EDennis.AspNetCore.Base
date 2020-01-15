@@ -11,15 +11,9 @@ namespace PkRewriterApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class PkRewriterController : ControllerBase {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
-        private readonly ILogger<PkRewriterController> _logger;
         private readonly PkRewriterSettings _settings;
-        public PkRewriterController(IOptionsMonitor<PkRewriterSettings> settings, ILogger<PkRewriterController> logger) {
-            _logger = logger;
+        public PkRewriterController(IOptionsMonitor<PkRewriterSettings> settings) {
             _settings = settings.CurrentValue;
         }
 

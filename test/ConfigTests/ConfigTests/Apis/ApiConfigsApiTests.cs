@@ -42,7 +42,6 @@ namespace EDennis.AspNetCore.ConfigTests {
             Assert.Null(obj["ScopePropertiesUser"]);
             Assert.Equal("ApiConfigsApi", obj["SecureTokenServiceApplicationName"]);
             Assert.Equal("Information", obj["LoggerLevel"]);
-            Assert.Equal("None", obj["ScopedLoggerLevel"]);
 
         }
     }

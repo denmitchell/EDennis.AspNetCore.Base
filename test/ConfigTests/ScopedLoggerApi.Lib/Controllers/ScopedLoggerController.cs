@@ -7,18 +7,15 @@ namespace EDennis.Samples.ScopedLoggerApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ScopedLoggerController : ControllerBase {
-        private readonly IOptionsMonitor<ScopedLoggerSettings> _uls;
-        private readonly ILogger<ScopedLoggerController> _logger;
+        private readonly IOptionsMonitor<ScopedTraceLoggerSettings> _uls;
 
         public ScopedLoggerController(
-            IOptionsMonitor<ScopedLoggerSettings> uls,
-            ILogger<ScopedLoggerController> logger) {
+            IOptionsMonitor<ScopedTraceLoggerSettings> uls) {
             _uls = uls;
-            _logger = logger;
         }
 
         [HttpGet]
-        public ScopedLoggerSettings Get() {
+        public ScopedTraceLoggerSettings Get() {
             return _uls.CurrentValue;
         }
     }

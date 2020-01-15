@@ -27,8 +27,8 @@ namespace EDennis.AspNetCore.ConfigTests {
         public void TestScopedLogger() {
 
             var client = _factory.CreateClient["ScopedLoggerApi"]();
-            var result = client.Get<ScopedLoggerSettings>($"ScopedLogger");
-            ScopedLoggerSettings obj = (ScopedLoggerSettings)result.Value;
+            var result = client.Get<ScopedTraceLoggerSettings>($"ScopedLogger");
+            ScopedTraceLoggerSettings obj = (ScopedTraceLoggerSettings)result.Value;
 
             var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
             _output.WriteLine(json);
