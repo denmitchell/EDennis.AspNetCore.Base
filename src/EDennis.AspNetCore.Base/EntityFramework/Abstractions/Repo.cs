@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Serialization;
+using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
     [ScopedTraceLogger(logEntry: true)]
+    [AspectSkipProperties(true)]
     public partial class Repo<TEntity, TContext> : IRepo, IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
+        [DisableWeaving] public string GetScopedTraceLoggerKey() => ScopeProperties?.ScopedTraceLoggerKey;
 
         public TContext Context { get; set; }
         public IScopeProperties ScopeProperties { get; set; }

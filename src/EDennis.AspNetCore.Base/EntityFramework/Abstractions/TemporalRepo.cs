@@ -6,10 +6,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base.Logging;
+using MethodBoundaryAspect.Fody.Attributes;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
     [ScopedTraceLogger(logEntry:true)]
+    [AspectSkipProperties(true)]
     public class TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> : Repo<TEntity, TContext>, ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> 
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity : class, TEntity, new()
@@ -17,7 +19,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         where THistoryContext : DbContext {
 
         public THistoryContext HistoryContext { get; set; }
-
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
