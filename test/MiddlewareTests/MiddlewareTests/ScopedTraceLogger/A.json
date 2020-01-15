@@ -2,7 +2,7 @@
   "HeadersToClaims": {
     "X-User": "name"
   },
-  "ScopedLogger": {
+  "ScopedTraceLogger": {
     "Enabled": true,
     "AssignmentKeySource": "User"
   },

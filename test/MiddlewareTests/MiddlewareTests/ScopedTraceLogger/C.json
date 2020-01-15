@@ -1,10 +1,11 @@
 {
-  "ScopedLogger": {
+  "ScopedTraceLogger": {
     "Enabled": true,
     "AssignmentKeySource": "User"
   },
   "ScopeProperties": {
     "Enabled": true,
-    "UserSource": "XUserHeader"
+    "UserSource": "XUserQueryString"
   }
 }
+

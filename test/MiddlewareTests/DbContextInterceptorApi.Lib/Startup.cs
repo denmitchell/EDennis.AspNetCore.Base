@@ -28,7 +28,6 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
             var _ = new ServiceConfig(services, Configuration)
                 .AddScopeProperties()
                 .AddScopedConfiguration()
-                .AddSerilogFodyScopedLogger()
                 .AddPkRewriter()
                 .AddDbContext<AppDbContext>()
                 .AddRepo<PersonRepo>()
@@ -66,7 +65,6 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
             });
 
             app.UseScopeProperties();
-            app.UseScopedLogger();
             app.UsePkRewriter();
             app.UseDbContextInterceptor<AppDbContext>();
 

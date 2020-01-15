@@ -43,13 +43,13 @@ namespace EDennis.AspNetCore.Base.Web {
                 //handle new registrations and un-registrations
                 if (req.ContainsPathHeaderOrQueryKey(
                         Constants.SET_SCOPEDLOGGER_KEY, out string keyToRegister)) {
-                    ScopedTraceLoggingAttribute.RegisteredKeys.AddOrUpdate(keyToRegister.ToString(), true, (key, value) => true);
+                    ScopedTraceLoggerAttribute.RegisteredKeys.AddOrUpdate(keyToRegister.ToString(), true, (key, value) => true);
 
                     _logger.LogInformation("ScopedTraceLogging middleware registering {Key}", keyToRegister);
 
                 } else if (req.ContainsPathHeaderOrQueryKey(
                         Constants.CLEAR_SCOPEDLOGGER_KEY, out string keyToUnregister)) {
-                    ScopedTraceLoggingAttribute.RegisteredKeys.TryRemove(keyToUnregister.ToString(), out bool _);
+                    ScopedTraceLoggerAttribute.RegisteredKeys.TryRemove(keyToUnregister.ToString(), out bool _);
 
                     _logger.LogInformation("ScopedTraceLogging middleware un-registering {Key}", keyToUnregister);
                 }

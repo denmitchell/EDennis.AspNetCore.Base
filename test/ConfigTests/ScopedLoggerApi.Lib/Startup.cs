@@ -18,7 +18,7 @@ namespace EDennis.Samples.ScopedLoggerApi.Lib {
             services.AddControllers();
             var _ = new ServiceConfig(services, Configuration)
                  .AddScopeProperties()
-                 .AddScopedLogger();
+                 .AddScopedTraceLogger();
 
         }
 

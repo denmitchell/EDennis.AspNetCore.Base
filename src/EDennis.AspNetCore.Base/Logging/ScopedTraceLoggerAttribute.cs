@@ -12,7 +12,7 @@ using System.Collections.Concurrent;
 using EDennis.AspNetCore.Base.Web;
 
 namespace EDennis.AspNetCore.Base.Logging {
-    public class ScopedTraceLoggingAttribute : OnMethodBoundaryAspect {
+    public class ScopedTraceLoggerAttribute : OnMethodBoundaryAspect {
 
         /// <summary>
         /// A static logger that can be replaced, but which defaults to
@@ -47,7 +47,8 @@ namespace EDennis.AspNetCore.Base.Logging {
         private readonly bool logExit;
         private readonly int maxLengthOfValues = default;
 
-        public ScopedTraceLoggingAttribute(bool logEntry = false, bool logExit = false, int maxLengthOfValues = 0) {
+
+        public ScopedTraceLoggerAttribute(bool logEntry = false, bool logExit = false, int maxLengthOfValues = 0) {
             this.logExit = logExit;
             this.logEntry = logEntry;
             if (maxLengthOfValues >= 0)
@@ -60,7 +61,7 @@ namespace EDennis.AspNetCore.Base.Logging {
         /// <summary>
         /// Setup default static logger
         /// </summary>
-        static ScopedTraceLoggingAttribute() {
+        static ScopedTraceLoggerAttribute() {
 
             RegisteredKeys = new ConcurrentDictionary<string, bool>();
 
@@ -93,12 +94,12 @@ namespace EDennis.AspNetCore.Base.Logging {
 
 
         public override void OnEntry(MethodExecutionArgs args) {
-            if (!logEntry)
+            if (!logEntry || args.Method.Name.Contains("ScopeProperties"))
                 return;
             var instance = args.Instance;
-            var scopeProperties = GetScopeProperties(instance);
-            if (RegisteredKeys.ContainsKey(scopeProperties.User))
-                LogEntry(args, scopeProperties);
+            var key = GetScopedTraceLoggerKey(instance);
+            if (RegisteredKeys.ContainsKey(key ?? ""))
+                LogEntry(args, key);
         }
 
         /// <summary>
@@ -110,9 +111,9 @@ namespace EDennis.AspNetCore.Base.Logging {
             if (!logExit)
                 return;
             var instance = args.Instance;
-            var scopeProperties = GetScopeProperties(instance);
-            if (RegisteredKeys.ContainsKey(scopeProperties.User))
-                LogExit(args, scopeProperties);            
+            var key = GetScopedTraceLoggerKey(instance);
+            if (RegisteredKeys.ContainsKey(key ?? ""))
+                LogExit(args, key);            
         }
 
         /// <summary>
@@ -121,41 +122,38 @@ namespace EDennis.AspNetCore.Base.Logging {
         /// <param name="args"></param>
         public override void OnException(MethodExecutionArgs args) {
             var instance = args.Instance;
-            var scopeProperties = GetScopeProperties(instance);
-            LogException(args,scopeProperties);
+            var key = GetScopedTraceLoggerKey(instance);
+            LogException(args,key);
         }
 
 
-        public virtual void LogEntry(MethodExecutionArgs args, IScopeProperties scopeProperties) {
+        public virtual void LogEntry(MethodExecutionArgs args, string key) {
             var scope = Logger.GetScope(args,maxLengthOfValues);
             var formatted = args.Arguments.FormatCompact();
             var method = (args.Method as MethodInfo).GetFriendlyName();
-            var user = scopeProperties?.User ?? "Anonymous";
-            var message = "For user {User}, entering {Method} with arguments: {Arguments}";
+            var message = "For {Key}, entering {Method} with arguments: {Arguments}";
             using (Logger.BeginScope(scope)) {
-                LogIt(Logger.LogTrace, message, user, method, formatted);
+                LogIt(Logger.LogTrace, message, key, method, formatted);
             }
         }
 
-        public virtual void LogExit(MethodExecutionArgs args, IScopeProperties scopeProperties) {
+        public virtual void LogExit(MethodExecutionArgs args, string key) {
             var scope = Logger.GetScope(args,maxLengthOfValues);
             var formatted = args.Arguments.FormatCompact();
             var method = (args.Method as MethodInfo).GetFriendlyName();
-            var user = scopeProperties?.User ?? "Anonymous";
-            var message = "For user {User}, exiting {Method} with arguments: {Arguments}";
+            var message = "For {Key}, exiting {Method} with arguments: {Arguments}";
             using (Logger.BeginScope(scope)) {
-                LogIt(Logger.LogTrace, message, user, method, formatted);
+                LogIt(Logger.LogTrace, message, key, method, formatted);
             }
         }
 
 
-        public virtual void LogException(MethodExecutionArgs args, IScopeProperties scopeProperties) {
+        public virtual void LogException(MethodExecutionArgs args, string key) {
             var scope = Logger.GetScope(args,maxLengthOfValues);
             var method = (args.Method as MethodInfo).GetFriendlyName();
-            var user = scopeProperties?.User ?? "Anonymous";
-            var message = "For user {User}, failing {Method} with exception: {Message}";
+            var message = "For {key}, failing {Method} with exception: {Message}";
             using (Logger.BeginScope(scope)) {
-                Logger.LogError(args.Exception, message, user, method, args.Exception.Message);
+                Logger.LogError(args.Exception, message, key, method, args.Exception.Message);
             }
         }
 
@@ -166,13 +164,17 @@ namespace EDennis.AspNetCore.Base.Logging {
 
 
 
-        private IScopeProperties GetScopeProperties(object instance) {
+        private string GetScopedTraceLoggerKey(object instance) {
             try {
-                var propInfo = instance.GetType().GetProperty("ScopeProperties");
-                IScopeProperties value = (ScopeProperties)propInfo.GetValue(instance);
-                return value;
+                var type = instance.GetType();                
+                var methodInfo = type.GetMethod("GetScopedTraceLoggerKey");
+                var key = (string)methodInfo.Invoke(instance, new object[] { });
+                return key;
+                //var propInfo = instance.GetType().GetProperty("ScopeProperties");
+                //scopeProperties = (ScopeProperties)propInfo.GetValue(instance);
+                //return scopeProperties;
             } catch {
-                throw new ApplicationException($"{instance.GetType().FullName} does not have a 'public IScopeProperties ScopeProperties'.  It must have this property if the class or a method in the class uses the attribute [ScopedTraceLogging].");
+                throw new ApplicationException($"{instance.GetType().FullName} does not have method '[DisableWeaving] public string GetScopedTraceLoggerKey()=>...'.  It must have this method and the method must be decorated with [DisableWeaving] if the class or a method in the class uses the attribute [ScopedTraceLogger].");
             }
         }
 

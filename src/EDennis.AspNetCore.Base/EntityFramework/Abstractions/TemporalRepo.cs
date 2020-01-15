@@ -9,7 +9,7 @@ using EDennis.AspNetCore.Base.Logging;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    [ScopedTraceLogging(logEntry:true)]
+    [ScopedTraceLogger(logEntry:true)]
     public class TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> : Repo<TEntity, TContext>, ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> 
         where TEntity : class, IEFCoreTemporalModel, new()
         where THistoryEntity : class, TEntity, new()

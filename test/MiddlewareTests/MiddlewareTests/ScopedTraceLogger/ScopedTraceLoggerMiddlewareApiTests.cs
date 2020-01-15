@@ -19,11 +19,11 @@ namespace EDennis.AspNetCore.MiddlewareTests {
     /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class ScopedLoggerMiddlewareApiTests {
+    public class ScopedTraceLoggerMiddlewareApiTests {
 
         private readonly ITestOutputHelper _output;
 
-        public ScopedLoggerMiddlewareApiTests(
+        public ScopedTraceLoggerMiddlewareApiTests(
             ITestOutputHelper output) {
             _output = output;
         }
@@ -32,7 +32,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
                 : base("ScopedLoggerApi", "ScopedLoggerController",
-                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "ScopedLogger\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "ScopedTraceLogger\\TestJson.xlsx") {
             }
         }
 
@@ -57,7 +57,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         private void TestUrl(JsonTestCase jsonTestCase, HttpClient client, int index) {
 
             //send configuration for test case
-            var jcfg = File.ReadAllText($"ScopedLogger\\{jsonTestCase.TestCase}.json");
+            var jcfg = File.ReadAllText($"ScopedTraceLogger\\{jsonTestCase.TestCase}.json");
             var status = client.Configure("", jcfg);
 
             //make sure that configuration was successful

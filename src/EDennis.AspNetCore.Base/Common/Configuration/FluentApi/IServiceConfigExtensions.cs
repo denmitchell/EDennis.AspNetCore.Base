@@ -31,7 +31,7 @@ namespace EDennis.AspNetCore.Base {
         public const string DEFAULT_MOCK_CLIENT_PATH = "MockClient";
         public const string DEFAULT_PK_REWRITER_PATH = "PkRewriter";
         public const string DEFAULT_HEADERS_TO_CLAIMS_PATH = "HeadersToClaims";
-        public const string DEFAULT_SCOPED_LOGGER_SETTINGS_PATH = "ScopedLogger";
+        public const string DEFAULT_SCOPED_LOGGER_SETTINGS_PATH = "ScopedTraceLogger";
 
         public const string DEFAULT_OAUTH_RELATIVE_PATH = "OAuth";
         public const string DEFAULT_OIDC_RELATIVE_PATH = "Oidc";
@@ -41,11 +41,11 @@ namespace EDennis.AspNetCore.Base {
 
 
 
-        public static IServiceConfig AddScopedLogger(this IServiceConfig serviceConfig)
-            =>   AddScopedLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_SETTINGS_PATH);
+        public static IServiceConfig AddScopedTraceLogger(this IServiceConfig serviceConfig)
+            =>   AddScopedTraceLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_SETTINGS_PATH);
 
 
-        public static IServiceConfig AddScopedLogger(this IServiceConfig serviceConfig, 
+        public static IServiceConfig AddScopedTraceLogger(this IServiceConfig serviceConfig, 
             string ScopedTraceLoggerSettingsKey){
 
             serviceConfig.Configure<ScopedTraceLoggerSettings>(ScopedTraceLoggerSettingsKey);

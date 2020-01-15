@@ -26,9 +26,9 @@
     <None Remove="ScopeProperties\A.json" />
     <None Remove="ScopeProperties\B.json" />
     <None Remove="ScopeProperties\C.json" />
-    <None Remove="ScopedLogger\A.json" />
-    <None Remove="ScopedLogger\B.json" />
-    <None Remove="ScopedLogger\C.json" />
+    <None Remove="ScopedTraceLogger\A.json" />
+    <None Remove="ScopedTraceLogger\B.json" />
+    <None Remove="ScopedTraceLogger\C.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -127,17 +127,17 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="ScopedLogger\A.json">
+    <Content Include="ScopedTraceLogger\A.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="ScopedLogger\B.json">
+    <Content Include="ScopedTraceLogger\B.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="ScopedLogger\C.json">
+    <Content Include="ScopedTraceLogger\C.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -205,7 +205,7 @@
     <None Update="MockHeaders\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ScopedLogger\TestJson.xlsx">
+    <None Update="ScopedTraceLogger\TestJson.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

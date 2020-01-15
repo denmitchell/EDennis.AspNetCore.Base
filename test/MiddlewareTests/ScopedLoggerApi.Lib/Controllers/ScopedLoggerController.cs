@@ -3,44 +3,42 @@ using EDennis.AspNetCore.Base.Logging;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
-    public class ScopedLoggerController : ControllerBase, IHasMethodCallbacks {
+    [ScopedTraceLogger(logEntry:true,logExit:true)]
+    public class ScopedLoggerController : ControllerBase {
 
         private readonly ILogger<ScopedLoggerController> _logger;
-        private readonly IScopedLogger ScopedLogger;
-        private readonly IScopeProperties ScopeProperties;
+        
+        private IScopeProperties _scopeProperties;
 
-        public ScopedLoggerController(IScopeProperties scopeProperties, ILogger<ScopedLoggerController> logger,
-            IScopedLogger scopedLogger) {
-            ScopeProperties = scopeProperties;
+        [DisableWeaving]
+        public string GetScopedTraceLoggerKey() => _scopeProperties.ScopedTraceLoggerKey;
+
+
+
+        public ScopedLoggerController(IScopeProperties scopeProperties, ILogger<ScopedLoggerController> logger) {
+            _scopeProperties = scopeProperties;
             _logger = logger;
-            ScopedLogger = scopedLogger;
 
-            _logger.LogInformation("UserLoggerController constructed.");
-            ScopedLogger.Logger.LogError("UserLoggerController constructed.");
+            _logger.LogInformation("ScopedLoggerController constructed.");
         }
 
         [HttpGet]
         public string Get([FromHeader] string queryString) {
-            var level = GetLevel();
-            return level;
+            var key = GetScopedTraceLoggerKey();
+            if (ScopedTraceLoggerAttribute.RegisteredKeys.ContainsKey(key ?? ""))
+                return GetLevel();
+            else
+                return LogLevel.None.ToString();
         }
 
-        [MethodCallback]
+        
         public string GetLevel() {
-            return ScopedLogger.LogLevel.ToString();
+            return LogLevel.Trace.ToString();
         }
-
-        public void OnEntry(MethodExecutionArgs args) 
-            => ScopedLogger.LogEntry(args, ScopedLogger.LogLevel); //MethodCallbackUtils.OnEntry(args, ScopedLogger);
-        public void OnExit(MethodExecutionArgs args) 
-            => ScopedLogger.LogExit(args, ScopedLogger.LogLevel); //MethodCallbackUtils.OnEntry(args, ScopedLogger);                                                                                                                             //MethodCallbackUtils.OnExit(args, ScopedLogger);
-        public void OnException(MethodExecutionArgs args) 
-            => ScopedLogger.LogException(args); //MethodCallbackUtils.OnException(args, ScopedLogger); 
 
     }
 }

@@ -31,7 +31,7 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
                 .AddScopeProperties()
                 .AddScopedConfiguration()
                 .AddHeadersToClaims()
-                .AddSerilogFodyScopedLogger();
+                .AddScopedTraceLogger();
 
         }
 
@@ -76,9 +76,9 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
 
             app.UseHeadersToClaims();
 
-            app.UseScopedLogger();
-
             app.UseScopeProperties();
+            app.UseScopedTraceLogger();
+
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
