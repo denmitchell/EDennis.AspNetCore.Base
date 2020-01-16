@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "..\te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "..\test\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj", "{A4FD9E0D-3A3F-4794-938E-82E8F8D04550}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.Api", "Hr.Api\Hr.Api.csproj", "{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api", "Hr.Api\Hr.Api.csproj", "{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.Api.Lib", "Hr.Api.Lib\Hr.Api.Lib.csproj", "{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Lib", "Hr.Api.Lib\Hr.Api.Lib.csproj", "{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{EF97D479-79AC-46D0-8CCB-86A2132B335B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -22,12 +22,11 @@ namespace EDennis.AspNetCore.Base.Web {
             where TContext : DbContext, ISqlServerDbContext<TContext> {
 
         public Repo<TEntity, TContext> Repo { get; }
-        public ILogger<SqlServerReadonlyController<TEntity, TContext>> Logger { get; }
+        public ILogger Logger { get; }
 
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public SqlServerReadonlyController(Repo<TEntity, TContext> repo,
-            ILogger<SqlServerReadonlyController<TEntity, TContext>> logger) {
+        public SqlServerReadonlyController(Repo<TEntity, TContext> repo,ILogger logger) {
             Repo = repo;
             Logger = logger;
 
