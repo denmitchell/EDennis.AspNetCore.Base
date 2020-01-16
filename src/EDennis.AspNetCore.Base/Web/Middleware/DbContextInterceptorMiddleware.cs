@@ -28,7 +28,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public async Task InvokeAsync(HttpContext context,
-            DbContextProvider<TContext> dbContextProvider) {
+            DbContextProvider<TContext> dbContextProvider,
+            IScopeProperties scopeProperties) {
 
 
             var req = context.Request;
@@ -46,7 +47,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 if (req.Query.ContainsKey(Constants.TESTING_INSTANCE_KEY))
                     instance = req.Query[Constants.TESTING_INSTANCE_KEY][0];
                 else
-                    instance = MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.Interceptor.InstanceNameSource, "DbContextInterceptor InstanceName");
+                    instance = scopeProperties.User;
+                    //instance = MiddlewareUtils.ResolveUser(context, _settings.CurrentValue.Interceptor.InstanceNameSource, "DbContextInterceptor InstanceName");
 
 
                 _logger.LogInformation("DbContextInterceptor handling request: {RequestPath}", context.Request.Path);

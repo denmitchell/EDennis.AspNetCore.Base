@@ -75,6 +75,16 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
+        public static string ResolveUser(HttpContext context, UserSources userSources, string purpose) {
+            UserSource userSource = userSources.UnauthenticatedUserSource;
+            if (context.User.Identity.IsAuthenticated)
+                userSource = userSources.AuthenticatedUserSource;
+
+            var user = ResolveUser(context, userSource);
+            if (!string.IsNullOrEmpty(user))
+                return user;
+            throw new ApplicationException($"Cannot resolve user setting for {purpose} with source(s) = '{string.Join(',', userSource)}'.");
+        }
 
 
         public static string ResolveUser(HttpContext context, UserSource userSource, string purpose) {

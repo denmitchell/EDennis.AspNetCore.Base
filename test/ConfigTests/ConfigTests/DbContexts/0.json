@@ -5,7 +5,6 @@
       "ConnectionString": "Some connection string 1",
       "Interceptor": {
         "Enabled": true,
-        "InstanceNameSource": "JwtNameClaim",
         "IsInMemory": false,
         "IsolationLevel": "ReadCommitted",
         "ResetSqlServerIdentities": false,

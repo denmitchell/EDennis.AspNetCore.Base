@@ -1,7 +1,10 @@
 {
   "ScopeProperties": {
     "Enabled": true,
-    "UserSource": "JwtNameClaim",
+    "UserSources": {
+      "AuthenticatedUserSource": "OasisNameClaim",
+      "UnauthenticatedUserSource": "WindowsUserName"
+    },
     "CopyHeaders": true,
     "CopyClaims": true,
     "AppendHostPath": true

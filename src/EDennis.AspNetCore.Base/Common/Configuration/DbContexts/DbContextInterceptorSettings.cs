@@ -10,9 +10,9 @@ namespace EDennis.AspNetCore.Base {
 
         public bool Enabled { get; set; } = false;
 
-        public readonly static UserSource DEFAULT_USER_SOURCE = UserSource.JwtNameClaim;
+        //public readonly static UserSource DEFAULT_USER_SOURCE = UserSource.JwtNameClaim;
 
-        public UserSource InstanceNameSource { get; set; } = DEFAULT_USER_SOURCE;
+        //public UserSource InstanceNameSource { get; set; } = DEFAULT_USER_SOURCE;
 
         public bool IsInMemory { get; set; }
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadUncommitted;

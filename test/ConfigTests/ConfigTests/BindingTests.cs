@@ -19,35 +19,55 @@ namespace EDennis.AspNetCore.ConfigTests {
             new ScopePropertiesSettings[] {
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSources = 
+                        new UserSources {
+                            AuthenticatedUserSource = UserSource.JwtNameClaim,
+                            UnauthenticatedUserSource = UserSource.XUserHeader
+                        },
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.XUserHeader,
+                    UserSources =
+                        new UserSources {
+                            AuthenticatedUserSource = UserSource.JwtEmailClaim,
+                            UnauthenticatedUserSource = UserSource.XUserQueryString
+                        },
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSources =
+                        new UserSources {
+                            AuthenticatedUserSource = UserSource.OasisNameClaim,
+                            UnauthenticatedUserSource = UserSource.WindowsUserName
+                        },
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtSubjectClaim,
+                    UserSources =
+                        new UserSources {
+                            AuthenticatedUserSource = UserSource.JwtClientIdClaim,
+                            UnauthenticatedUserSource = UserSource.WindowsUserName
+                        },
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSources =
+                        new UserSources {
+                            AuthenticatedUserSource = UserSource.JwtPhoneClaim,
+                            UnauthenticatedUserSource = UserSource.WindowsUserName
+                        },
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true
@@ -71,7 +91,8 @@ namespace EDennis.AspNetCore.ConfigTests {
 
             var expected = sps[testCase];
 
-            Assert.Equal(expected.UserSource, actual.UserSource);
+            Assert.Equal(expected.UserSources.AuthenticatedUserSource, actual.UserSources.AuthenticatedUserSource);
+            Assert.Equal(expected.UserSources.UnauthenticatedUserSource, actual.UserSources.UnauthenticatedUserSource);
             Assert.Equal(expected.CopyHeaders, actual.CopyHeaders);
             Assert.Equal(expected.CopyClaims, actual.CopyClaims);
             Assert.Equal(expected.AppendHostPath, actual.AppendHostPath);
@@ -330,7 +351,6 @@ namespace EDennis.AspNetCore.ConfigTests {
                     ConnectionString = "Some connection string 1",
                     Interceptor = new DbContextInterceptorSettings<MyDbContext1> {
                         Enabled = true,
-                        InstanceNameSource = UserSource.JwtNameClaim,
                         IsInMemory = false,
                         IsolationLevel = IsolationLevel.ReadCommitted,
                         ResetSqlServerIdentities =false,
@@ -342,7 +362,6 @@ namespace EDennis.AspNetCore.ConfigTests {
                     ConnectionString = "Some connection string 2",
                     Interceptor = new DbContextInterceptorSettings<MyDbContext2> {
                         Enabled = true,
-                        InstanceNameSource = UserSource.JwtNameClaim,
                         IsInMemory = false,
                         IsolationLevel = IsolationLevel.ReadUncommitted,
                         ResetSqlServerIdentities =false,
@@ -354,7 +373,6 @@ namespace EDennis.AspNetCore.ConfigTests {
                     ConnectionString = "Some connection string 3",
                     Interceptor = new DbContextInterceptorSettings<MyDbContext3> {
                         Enabled = true,
-                        InstanceNameSource = UserSource.SessionId,
                         IsInMemory = true,
                         IsolationLevel = IsolationLevel.Unspecified,
                         ResetSqlServerIdentities =false,

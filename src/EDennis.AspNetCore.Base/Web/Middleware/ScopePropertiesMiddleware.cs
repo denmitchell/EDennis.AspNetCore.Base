@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 var settings = _settings.CurrentValue;
 
                 //update the Scope Properties User with identity, claim or header data
-                scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.UserSource, "ScopeProperties.User");
+                scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.UserSources, "ScopeProperties.User");
 
 
                 //copy all headers to ScopeProperties headers

@@ -1,7 +1,10 @@
 {
   "Enabled": true,
   "ScopeProperties": {
-    "UserSource": "JwtSubjectClaim",
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtClientIdClaim",
+      "UnauthenticatedUserSource": "WindowsUserName"
+    },
     "CopyHeaders": false,
     "CopyClaims": false,
     "AppendHostPath": false

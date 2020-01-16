@@ -1,5 +1,9 @@
 {
   "ScopeProperties": {
-    "Enabled": true
+    "Enabled": true,
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtNameClaim",
+      "UnauthenticatedUserSource": "XUserHeader"
+    }
   }
 }
