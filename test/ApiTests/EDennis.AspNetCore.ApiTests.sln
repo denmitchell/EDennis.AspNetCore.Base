@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo", "..\RepoTests\Colors2Repo\Colors2Repo.csproj", "{C5EC22DD-9610-4A12-9CD7-727B2B2FDAED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo.Migrator", "..\RepoTests\Colors2Repo.Migrator\Colors2Repo.Migrator.csproj", "{8A74F555-477D-42DE-A322-FECE634C33CF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{C5EC22DD-9610-4A12-9CD7-727B2B2FDAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5EC22DD-9610-4A12-9CD7-727B2B2FDAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5EC22DD-9610-4A12-9CD7-727B2B2FDAED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A74F555-477D-42DE-A322-FECE634C33CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A74F555-477D-42DE-A322-FECE634C33CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A74F555-477D-42DE-A322-FECE634C33CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A74F555-477D-42DE-A322-FECE634C33CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
