@@ -1,6 +1,10 @@
 {
-  "ScopedLogger": {
-    "Enabled": true,
-    "AssignmentKeySource": "User"
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeySource": "User"
+      }
+    }
   }
 }

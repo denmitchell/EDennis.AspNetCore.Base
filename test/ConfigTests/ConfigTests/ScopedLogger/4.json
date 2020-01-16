@@ -1,7 +1,11 @@
 {
-  "ScopedLogger": {
-    "Enabled": true,
-    "AssignmentKeyName": "SomeProperty",
-    "AssignmentKeySource": "OtherProperty"
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeyName": "SomeProperty",
+        "AssignmentKeySource": "OtherProperty"
+      }
+    }
   }
 }

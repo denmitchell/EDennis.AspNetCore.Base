@@ -1,7 +1,11 @@
 {
-  "ScopedLogger": {
-    "Enabled": true,
-    "AssignmentKeyName": "SomeClaim",
-    "AssignmentKeySource": "Claim"
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeyName": "SomeClaim",
+        "AssignmentKeySource": "Claim"
+      }
+    }
   }
 }

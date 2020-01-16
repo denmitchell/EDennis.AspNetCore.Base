@@ -1,5 +1,9 @@
 {
-  "ScopedLogger": {
-    "Enabled": true
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true
+      }
+    }
   }
 }

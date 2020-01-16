@@ -1,7 +1,11 @@
 {
-  "ScopedLogger": {
-    "Enabled": true,
-    "AssignmentKeyName": "SomeHeader",
-    "AssignmentKeySource": "Header"
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeyName": "SomeHeader",
+        "AssignmentKeySource": "Header"
+      }
+    }
   }
 }

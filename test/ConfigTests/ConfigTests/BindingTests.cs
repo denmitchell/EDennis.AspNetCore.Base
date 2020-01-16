@@ -240,7 +240,7 @@ namespace EDennis.AspNetCore.ConfigTests {
                 .AddJsonFile(path)
                 .Build();
             var actual = new ScopedTraceLoggerSettings();
-            config.Bind("ScopedLogger", actual);
+            config.Bind("Logging:Loggers:ScopedTraceLogger", actual);
 
             var expected = ul[testCase];
 
