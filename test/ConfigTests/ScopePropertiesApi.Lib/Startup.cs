@@ -23,6 +23,8 @@ namespace EDennis.Samples.ScopePropertiesConfigsApi.Lib {
                 //});
 
             var _ = new ServiceConfig(services, Configuration)
+                .AddApplicationProperties()
+                .AddSession()
                 .AddScopeProperties();
         }
 
@@ -33,6 +35,9 @@ namespace EDennis.Samples.ScopePropertiesConfigsApi.Lib {
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSession();
+            app.UseApplicationProperties();
 
             app.UseRouting();
 

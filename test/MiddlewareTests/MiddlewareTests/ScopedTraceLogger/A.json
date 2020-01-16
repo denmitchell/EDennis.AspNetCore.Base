@@ -4,10 +4,7 @@
   },
   "ScopeProperties": {
     "Enabled":  true,
-    "UserSources": {
-      "AuthenticatedUserSource": "JwtNameClaim",
-      "UnauthenticatedUserSource": "JwtNameClaim"
-    }
+    "UserSource": "JwtNameClaim"
   },
   "Logging": {
     "Loggers": {

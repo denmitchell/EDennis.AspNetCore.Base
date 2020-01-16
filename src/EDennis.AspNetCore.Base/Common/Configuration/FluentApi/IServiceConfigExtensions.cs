@@ -40,6 +40,12 @@ namespace EDennis.AspNetCore.Base {
         public const string OIDC_CHALLENGE_SCHEME = "oidc";
 
 
+        public static IServiceConfig AddApplicationProperties(this IServiceConfig serviceConfig) {
+            serviceConfig.Services.AddSingleton<ApplicationProperties>();
+            return serviceConfig;
+        }
+
+
 
         public static IServiceConfig AddScopedTraceLogger(this IServiceConfig serviceConfig)
             =>   AddScopedTraceLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_SETTINGS_PATH);
@@ -310,6 +316,17 @@ namespace EDennis.AspNetCore.Base {
 
         public static IServiceConfig AddScopedConfiguration(this IServiceConfig serviceConfig) =>
             AddScopedConfiguration(serviceConfig, DEFAULT_SCOPED_CONFIGURATION_PATH);
+
+
+        public static IServiceConfig AddSession(this IServiceConfig serviceConfig) {
+            serviceConfig.Services.AddDistributedMemoryCache();
+
+            serviceConfig.Services.AddSession(options => {
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+            return serviceConfig;
+        }
 
 
         public static IServiceConfig AddScopeProperties(this IServiceConfig serviceConfig, string path) {

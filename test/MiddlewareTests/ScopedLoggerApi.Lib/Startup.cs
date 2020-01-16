@@ -28,6 +28,8 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
             services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
+                .AddApplicationProperties()
+                .AddSession()
                 .AddScopeProperties()
                 .AddScopedConfiguration()
                 .AddHeadersToClaims()
@@ -40,6 +42,9 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSession();
+            app.UseApplicationProperties();
 
             app.UseHttpsRedirection();
 

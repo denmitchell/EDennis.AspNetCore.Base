@@ -26,6 +26,8 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
             services.AddControllers();
 
             var _ = new ServiceConfig(services, Configuration)
+                .AddApplicationProperties()
+                .AddSession()
                 .AddScopeProperties()
                 .AddScopedConfiguration()
                 .AddPkRewriter()
@@ -41,6 +43,8 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSession();
+            app.UseApplicationProperties();
 
             //get developer name from query/header
             app.Use(async (context, next) => {

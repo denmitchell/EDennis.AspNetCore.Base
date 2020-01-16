@@ -33,8 +33,7 @@ namespace EDennis.AspNetCore.ConfigTests {
             _output.WriteLine(json);
 
 
-            Assert.Equal(UserSource.JwtSubjectClaim, obj.UserSources.AuthenticatedUserSource);
-            Assert.Equal(UserSource.XUserHeader, obj.UserSources.UnauthenticatedUserSource);
+            Assert.Equal(UserSource.JwtSubjectClaim, obj.UserSource);
 
             Assert.True(obj.AppendHostPath);
             Assert.True(obj.CopyClaims);

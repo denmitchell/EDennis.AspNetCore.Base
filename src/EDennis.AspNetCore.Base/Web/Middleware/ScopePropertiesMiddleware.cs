@@ -22,11 +22,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private readonly RequestDelegate _next;
         private readonly IOptionsMonitor<ScopePropertiesSettings> _settings;
-
+        private readonly ApplicationProperties _applicationProperties;
         public ScopePropertiesMiddleware(RequestDelegate next, 
-            IOptionsMonitor<ScopePropertiesSettings> settings) {
+            IOptionsMonitor<ScopePropertiesSettings> settings,
+            ApplicationProperties applicationProperties) {
             _next = next;
             _settings = settings;
+            _applicationProperties = applicationProperties;
         }
 
         public async Task InvokeAsync(HttpContext context, IScopeProperties scopeProperties) {
@@ -44,7 +46,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 var settings = _settings.CurrentValue;
 
                 //update the Scope Properties User with identity, claim or header data
-                scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.UserSources, "ScopeProperties.User");
+                scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.UserSource, _applicationProperties, "ScopeProperties.User");
 
 
                 //copy all headers to ScopeProperties headers

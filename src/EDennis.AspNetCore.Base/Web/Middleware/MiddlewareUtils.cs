@@ -15,7 +15,6 @@ namespace EDennis.AspNetCore.Base.Web {
     public static class MiddlewareUtils {
 
 
-
         public static Stream StringToStream(string str) {
             var memStream = new MemoryStream();
             var textWriter = new StreamWriter(memStream);
@@ -75,27 +74,36 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static string ResolveUser(HttpContext context, UserSources userSources, string purpose) {
-            UserSource userSource = userSources.UnauthenticatedUserSource;
-            if (context.User.Identity.IsAuthenticated)
-                userSource = userSources.AuthenticatedUserSource;
+        public static string ResolveUser(HttpContext context, UserSource userSource, ApplicationProperties applicationProperties, string purpose ) {
+            if (applicationProperties.IsChild)
+                return GetHeaderValue(context, Constants.USER_KEY);
+            else {
+                if (applicationProperties.EntryPoint == EntryPoint.TestProject)
+                    return GetHeaderValue(context, Constants.USER_KEY);
+                else if (applicationProperties.EntryPoint == EntryPoint.Swagger
+                    || applicationProperties.EntryPoint == EntryPoint.Undefined)
+                    if (context.User.Identity.IsAuthenticated)
+                        return ResolveClaim(context, userSource);
+                    else
+                        return context.Session.Id;
+                else if (applicationProperties.EntryPoint == EntryPoint.Postman)
+                    if (context.Request.Headers.ContainsKey("X-User"))
+                        return GetHeaderValue(context, Constants.USER_KEY);
+                    else if (context.User.Identity.IsAuthenticated)
+                        return ResolveClaim(context, userSource);
+                    else
+                        return context.Session.Id;
+            }
 
-            var user = ResolveUser(context, userSource);
-            if (!string.IsNullOrEmpty(user))
-                return user;
-            throw new ApplicationException($"Cannot resolve user setting for {purpose} with source(s) = '{string.Join(',', userSource)}'.");
-        }
 
-
-        public static string ResolveUser(HttpContext context, UserSource userSource, string purpose) {
-            var user = ResolveUser(context, userSource);
+            var user = ResolveClaim(context, userSource);
             if (!string.IsNullOrEmpty(user))
                 return user;
             throw new ApplicationException($"Cannot resolve user setting for {purpose} with source(s) = '{string.Join(',',userSource)}'.");
         }
 
 
-        public static string ResolveUser(HttpContext context, UserSource userSource) => userSource switch
+        public static string ResolveClaim(HttpContext context, UserSource userSource) => userSource switch
         {
             UserSource.JwtNameClaim => GetClaimValue(context, JwtClaimTypes.Name),
             UserSource.OasisNameClaim => GetClaimValue(context, ClaimTypes.Name),
@@ -105,10 +113,6 @@ namespace EDennis.AspNetCore.Base.Web {
             UserSource.JwtEmailClaim => GetClaimValue(context, JwtClaimTypes.Email),
             UserSource.JwtPhoneClaim => GetClaimValue(context, JwtClaimTypes.PhoneNumber),
             UserSource.JwtClientIdClaim => GetClaimValue(context, JwtClaimTypes.ClientId),
-            UserSource.SessionId => context.Session?.Id,
-            UserSource.XUserHeader => GetHeaderValue(context, Constants.USER_KEY),
-            UserSource.XUserQueryString => context.Request.Query[Constants.USER_KEY].ToString(),
-            UserSource.WindowsUserName => Environment.GetEnvironmentVariable("USERNAME").ToString(),
             _ => null
         };
 

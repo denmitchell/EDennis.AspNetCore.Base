@@ -1,10 +1,7 @@
 {
   "ScopeProperties": {
     "Enabled": true,
-    "UserSources": {
-      "AuthenticatedUserSource": "JwtEmailClaim",
-      "UnauthenticatedUserSource": "XUserQueryString"
-    },
+    "UserSource": "JwtEmailClaim",
     "CopyHeaders": false,
     "CopyClaims": false,
     "AppendHostPath": true

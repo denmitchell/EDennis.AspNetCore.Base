@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -16,15 +17,18 @@ namespace EDennis.AspNetCore.Base.Web {
         public Api Api { get; }
         public ILogger Logger { get; }
         public IScopeProperties ScopeProperties { get; }
+        IWebHostEnvironment HostEnvironment { get; }
 
         public ApiClient(
             IHttpClientFactory httpClientFactory,
             IOptionsMonitor<Apis> apis,
             IScopeProperties scopeProperties,
+            IWebHostEnvironment env,
             ILogger logger) {
 
             Logger = logger;
             ScopeProperties = scopeProperties;
+            HostEnvironment = env;
 
             ApiKey = GetType().Name;
             HttpClient = httpClientFactory.CreateClient(ApiKey);
@@ -53,6 +57,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var headersToTransfer = Api.Mappings.HeadersToHeaders;
             var claimsToTransfer = Api.Mappings.ClaimsToHeaders;
+
+            //add X-RequestFrom header to allow child API to know that it is a child
+            //(important for ApplicationPropertiesMiddleware)
+            HttpClient.DefaultRequestHeaders.Add("X-RequestFrom",HostEnvironment.ApplicationName);
+
 
             //add claims as headers
             if (ScopeProperties.Claims != null) {

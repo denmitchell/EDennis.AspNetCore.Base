@@ -24,6 +24,8 @@ namespace Colors2Api.Lib {
 
             var _ = new ServiceConfig(services, Configuration)
                 .AddMockHeaders()
+                .AddApplicationProperties()
+                .AddSession()
                 .AddScopeProperties()
                 .AddDbContext<Color2DbContext>()
                 .AddRepo<RgbRepo>()
@@ -39,6 +41,9 @@ namespace Colors2Api.Lib {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSession();
+            app.UseApplicationProperties();
 
             app.UseHttpsRedirection();
 

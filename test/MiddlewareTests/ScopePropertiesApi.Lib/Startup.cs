@@ -23,6 +23,8 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
 
             //configure ScopePropertiesMiddleware
             var _ = new ServiceConfig(services, Configuration)
+                .AddApplicationProperties()
+                .AddSession()
                 .AddScopedConfiguration()
                 .AddScopeProperties();
         }
@@ -32,6 +34,9 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSession();
+            app.UseApplicationProperties();
 
             app.UseHttpsRedirection();
 

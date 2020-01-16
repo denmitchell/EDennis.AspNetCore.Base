@@ -17,6 +17,8 @@ namespace EDennis.Samples.ScopedLoggerApi.Lib {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
             var _ = new ServiceConfig(services, Configuration)
+                 .AddApplicationProperties()
+                 .AddSession()
                  .AddScopeProperties()
                  .AddScopedTraceLogger();
 
@@ -27,6 +29,9 @@ namespace EDennis.Samples.ScopedLoggerApi.Lib {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSession();
+            app.UseApplicationProperties();
 
             app.UseHttpsRedirection();
 

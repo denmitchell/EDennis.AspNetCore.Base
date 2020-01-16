@@ -7,10 +7,6 @@
         JwtSubjectClaim,
         JwtEmailClaim,
         JwtPhoneClaim,
-        JwtClientIdClaim,
-        SessionId,
-        XUserHeader,
-        XUserQueryString,
-        WindowsUserName
+        JwtClientIdClaim
     }
 }

@@ -1,10 +1,7 @@
 {
   "ScopeProperties": {
     "Enabled": true,
-    "UserSources": {
-      "AuthenticatedUserSource": "JwtPhoneClaim",
-      "UnauthenticatedUserSource": "WindowsUserName"
-    },
+    "UserSource":"JwtPhoneClaim",
     "CopyHeaders": false,
     "CopyClaims": false,
     "AppendHostPath": true
