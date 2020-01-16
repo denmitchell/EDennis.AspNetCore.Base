@@ -2,12 +2,19 @@
   "HeadersToClaims": {
     "X-User": "name"
   },
-  "ScopedTraceLogger": {
-    "Enabled": true,
-    "AssignmentKeySource": "User"
-  },
   "ScopeProperties": {
-    "Enabled": true,
-    "UserSource": "JwtNameClaim"
+    "Enabled":  true,
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtNameClaim",
+      "UnauthenticatedUserSource": "JwtNameClaim"
+    }
+  },
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeySource": "User"
+      }
+    }
   }
 }

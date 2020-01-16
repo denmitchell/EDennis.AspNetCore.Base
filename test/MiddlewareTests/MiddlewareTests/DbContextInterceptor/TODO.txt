@@ -1,4 +1,0 @@
-﻿1. Explore use of global query filter
-	where e=>e.UserId == $"__DEV:{UserName}" 
-		|| !e.UserId.StartsWith("__DEV")
-2. Explore use of DEV_USERNAME source for UserID

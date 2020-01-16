@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
+using Microsoft.EntityFrameworkCore.Migrations.Internal;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,42 +25,42 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public static void AddMigrations<TContext>(string migrationName, string projectNamespace, string destinationDir)
-            where TContext : DbContext {
+//        public static void AddMigrations<TContext>(string migrationName, string projectNamespace, string destinationDir)
+//            where TContext : DbContext {
 
-            Console.WriteLine($"Adding migration {migrationName} for {projectNamespace} ...");
+//            Console.WriteLine($"Adding migration {migrationName} for {projectNamespace} ...");
 
-            using var db = GetDbContext<TContext>();
-            IServiceCollection designTimeServiceCollection = new ServiceCollection();
-            designTimeServiceCollection.AddEntityFrameworkDesignTimeServices();
-            designTimeServiceCollection.AddDbContextDesignTimeServices(db);
+//            using var db = GetDbContext<TContext>();
+//            IServiceCollection designTimeServiceCollection = new ServiceCollection();
+//            designTimeServiceCollection.AddEntityFrameworkDesignTimeServices();
+//            designTimeServiceCollection.AddDbContextDesignTimeServices(db);
 
-#pragma warning disable EF1001 // Internal EF Core API usage.
-            new SqlServerDesignTimeServices().ConfigureDesignTimeServices(designTimeServiceCollection);
-#pragma warning restore EF1001 // Internal EF Core API usage.
-            var designTimeServices = designTimeServiceCollection.BuildServiceProvider();
+//#pragma warning disable EF1001 // Internal EF Core API usage.
+//            new SqlServerDesignTimeServices().ConfigureDesignTimeServices(designTimeServiceCollection);
+//#pragma warning restore EF1001 // Internal EF Core API usage.
+//            var designTimeServices = designTimeServiceCollection.BuildServiceProvider();
 
-            var scaffolder = designTimeServices.GetRequiredService<IMigrationsScaffolder>();
-            var migration = scaffolder.ScaffoldMigration(migrationName, projectNamespace);
+//            var scaffolder = designTimeServices.GetRequiredService<IMigrationsScaffolder>();
+//            var migration = scaffolder.ScaffoldMigration(migrationName, projectNamespace);
 
-            if (!Directory.Exists(destinationDir))
-                Directory.CreateDirectory(destinationDir);
+//            if (!Directory.Exists(destinationDir))
+//                Directory.CreateDirectory(destinationDir);
 
-            destinationDir += typeof(TContext).Name + "/";
+//            destinationDir += typeof(TContext).Name + "/";
 
-            if (!Directory.Exists(destinationDir))
-                Directory.CreateDirectory(destinationDir);
+//            if (!Directory.Exists(destinationDir))
+//                Directory.CreateDirectory(destinationDir);
 
-            File.WriteAllText(
-                destinationDir + migration.MigrationId + migration.FileExtension,
-                migration.MigrationCode);
-            File.WriteAllText(
-                destinationDir + migration.MigrationId + ".Designer" + migration.FileExtension,
-                migration.MetadataCode);
-            File.WriteAllText(
-                destinationDir + migration.SnapshotName + migration.FileExtension,
-                migration.SnapshotCode);
-        }
+//            File.WriteAllText(
+//                destinationDir + migration.MigrationId + migration.FileExtension,
+//                migration.MigrationCode);
+//            File.WriteAllText(
+//                destinationDir + migration.MigrationId + ".Designer" + migration.FileExtension,
+//                migration.MetadataCode);
+//            File.WriteAllText(
+//                destinationDir + migration.SnapshotName + migration.FileExtension,
+//                migration.SnapshotCode);
+//        }
 
         public static TContext GetDbContext<TContext>()
             where TContext : DbContext {

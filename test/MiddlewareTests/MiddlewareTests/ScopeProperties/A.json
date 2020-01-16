@@ -1,7 +1,10 @@
 {
   "ScopeProperties": {
     "Enabled": true,
-    "UserSource": "JwtNameClaim",
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtNameClaim",
+      "UnauthenticatedUserSource": "JwtNameClaim"
+    },
     "CopyHeaders": true,
     "CopyClaims": true,
     "AppendHostPath": true

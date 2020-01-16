@@ -1,11 +1,20 @@
 {
+  "ScopeProperties": {
+    "Enabled": true,
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtNameClaim",
+      "UnauthenticatedUserSource": "XUserQueryString"
+    },
+    "CopyHeaders": false,
+    "CopyClaims": false,
+    "AppendHostPath": false
+  },
   "DbContexts": {
     "AppDbContext": {
       "DatabaseProvider": "SqlServer",
       "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=DbContextInterceptorDb2;Trusted_Connection=True;MultipleActiveResultSets=True;",
       "Interceptor": {
         "Enabled": true,
-        "InstanceNameSource": "XUserQueryString",
         "IsInMemory": false,
         "IsolationLevel": "ReadCommitted",
         "ResetSqlServerIdentities": false,

@@ -1,11 +1,17 @@
 {
-  "ScopedTraceLogger": {
-    "Enabled": true,
-    "AssignmentKeySource": "User"
-  },
   "ScopeProperties": {
     "Enabled": true,
-    "UserSource": "XUserQueryString"
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtNameClaim",
+      "UnauthenticatedUserSource": "XUserQueryString"
+    }
+  },
+  "Logging": {
+    "Loggers": {
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeySource": "User"
+      }
+    }
   }
 }
-

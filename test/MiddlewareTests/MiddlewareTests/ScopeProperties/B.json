@@ -1,7 +1,10 @@
 {
   "ScopeProperties": {
     "Enabled": true,
-    "UserSource": "XUserHeader",
+    "UserSources": {
+      "AuthenticatedUserSource": "JwtNameClaim",
+      "UnauthenticatedUserSource": "XUserHeader"
+    },
     "CopyHeaders": true,
     "CopyClaims": true,
     "AppendHostPath": false
