@@ -44,10 +44,10 @@ namespace IdentityServer {
                 .AddProfileService<StaticClaimsProfileService>();
 
             if (Environment.IsDevelopment()) {
-                //var dir = Environment.ContentRootPath;
+                var dir = Environment.ContentRootPath;
                 //var cert = new X509Certificate2($"{dir}/is4.pfx","is4",keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet);
                 //builder.AddSigningCredential(cert);
-                builder.AddDeveloperSigningCredential(true,"temp.rsa");
+                builder.AddDeveloperSigningCredential(true, $"{dir}/temp.rsa");
             } else {
                 throw new Exception("need to configure key material");
             }
