@@ -1,27 +1,40 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
+using Hr.Api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Hr.Api.Lib {
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;
+            HostEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment HostEnvironment { get; }
+        public string AppName => HostEnvironment.ApplicationName;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers();
+            //services.AddControllers();
+
+            var _ = new ServiceConfig(services, Configuration)
+                .AddControllersWithDefaultPolicies(AppName)  //to auto-generate [Authorize] and associated security policies
+                .AddApi<IdentityServerApi>()//to setup DI dependency for SecureApiClient's
+                .AddApplicationProperties() //to hold EntryPoint type for app (for user resolution)
+                .AddSession()               //to setup Session.Id as fallback surrogate Id for user
+                .AddScopeProperties()       //to resolve and hold User and other data
+                .AddDbContext<HrContext>()  //to setup DI for DbContext subclass
+                    .AddRepo<PersonRepo>()  //to setup DI for repo class
+                    .AddRepo<AddressRepo>() //to setup DI for repo class
+                .AddHeadersToClaims()       //to get user from razor app via X-User header
+                .AddMockClient()            //to bypass oauth (not in production)
+                //.AddPkRewriter()          //only needed when two apis access the same database
+                .AddScopedTraceLogger();    //to setup user-specific trace logging that can be turned on and off via request query strings                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -31,13 +44,22 @@ namespace Hr.Api.Lib {
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseMockClient();            //to mock OAuth authorization (not in production)
+            app.UseAuthorization(); 
+
+            app.UseHeadersToClaims();       //to get user from razor app via X-User header
+            app.UseApplicationProperties(); //to hold EntryPoint type for app (for user resolution)
+            app.UseSession();               //to setup Session.Id as fallback surrogate Id for user
+
+            app.UseScopeProperties();       //to resolve and hold User and other data
+            app.UseDbContextInterceptor<HrContext>();  //to replace injected DbContext with one that can be rolled back
+            app.UseScopedTraceLogger();     //to turn on/off trace logging for specific users while the app is running
+
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
+                endpoints.MapControllers(); 
             });
         }
     }

@@ -60,14 +60,28 @@ namespace EDennis.AspNetCore.Base {
 
 
         public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig,
-            string appName, string identityServerConfigKey) {
+            string appName, string identityServerConfigKey = "IdentityServerApi") {
 
             serviceConfig.Services.AddControllers(options => {
                 options.Conventions.Add(new DefaultAuthorizationPolicyConvention(appName, serviceConfig.Configuration));
             });
 
             var api = new Api();
-            serviceConfig.Configuration.GetSection(identityServerConfigKey).Bind(api);
+            string configKey = null;
+            if (serviceConfig.Configuration.ContainsKey(identityServerConfigKey))
+                configKey = identityServerConfigKey;
+            else if (serviceConfig.Configuration.ContainsKey($"Apis:{identityServerConfigKey}"))
+                configKey = $"Apis:{identityServerConfigKey}";
+            else if (serviceConfig.Configuration.ContainsKey($"Apis:IdentityServer"))
+                configKey = $"Apis:IdentityServer";
+            else
+                throw new ApplicationException($"Could not find {identityServerConfigKey} or Apis:{identityServerConfigKey} or Apis:IdentityServer in Configuration");
+
+            try {
+                serviceConfig.Configuration.GetSection(identityServerConfigKey).Bind(api);
+            } catch {
+                throw new ApplicationException($"Could not bind {configKey} to the EDennis.AspNetCore.Api class");
+            }
 
             serviceConfig.Services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
                 var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();

@@ -6,6 +6,10 @@
     <OutputType>library</OutputType>
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>IdentityServer.Lib</PackageId>
+    <Authors>IdentityServer.Lib</Authors>
+    <Product>IdentityServer.Lib</Product>
+    <Company>IdentityServer.Lib</Company>
   </PropertyGroup>
 
   <ItemGroup>

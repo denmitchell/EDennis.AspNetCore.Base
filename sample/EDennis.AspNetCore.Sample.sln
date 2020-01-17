@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Lib", "Hr.Api.Lib\Hr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{EF97D479-79AC-46D0-8CCB-86A2132B335B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.Api.Tests", "Hr.Api.Tests\Hr.Api.Tests.csproj", "{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF97D479-79AC-46D0-8CCB-86A2132B335B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
