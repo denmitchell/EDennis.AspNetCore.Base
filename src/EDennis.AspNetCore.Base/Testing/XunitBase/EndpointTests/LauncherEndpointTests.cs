@@ -20,6 +20,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual IProgram Program { get; set; }
         protected Apis Apis { get; }
         public virtual string InstanceName { get; } = Guid.NewGuid().ToString();
+        public const string DEFAULT_USER = "tester@example.org";
 
         public HttpClient HttpClient { get; }
 
@@ -28,6 +29,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output = output;
             LauncherFixture = launcherFixture;
             HttpClient = launcherFixture.HttpClient;
+
+            HttpClient.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, EntryPoint.TestProject.ToString());
+            HttpClient.DefaultRequestHeaders.Add(Constants.USER_KEY, DEFAULT_USER);
+
             Program = launcherFixture.Program;
             Apis = launcherFixture.Program.Apis;
         }
