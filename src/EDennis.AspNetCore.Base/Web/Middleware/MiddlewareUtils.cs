@@ -74,12 +74,15 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static string ResolveUser(HttpContext context, UserSource userSource, ApplicationProperties applicationProperties, string purpose ) {
+        public static string ResolveUser(HttpContext context, UserSource userSource, ApplicationProperties applicationProperties, string purpose) {
             if (applicationProperties.IsChild)
                 return GetHeaderValue(context, Constants.USER_KEY);
             else {
                 if (applicationProperties.EntryPoint == EntryPoint.TestProject)
-                    return GetHeaderValue(context, Constants.USER_KEY);
+                    if (context.Request.Query.ContainsKey(Constants.USER_KEY))
+                        return GetQueryStringValue(context, Constants.USER_KEY);
+                    else
+                        return GetHeaderValue(context, Constants.USER_KEY);
                 else if (applicationProperties.EntryPoint == EntryPoint.Swagger
                     || applicationProperties.EntryPoint == EntryPoint.Undefined)
                     if (context.User.Identity.IsAuthenticated)
@@ -99,7 +102,7 @@ namespace EDennis.AspNetCore.Base.Web {
             var user = ResolveClaim(context, userSource);
             if (!string.IsNullOrEmpty(user))
                 return user;
-            throw new ApplicationException($"Cannot resolve user setting for {purpose} with source(s) = '{string.Join(',',userSource)}'.");
+            throw new ApplicationException($"Cannot resolve user setting for {purpose} with source(s) = '{string.Join(',', userSource)}'.");
         }
 
 
@@ -127,6 +130,9 @@ namespace EDennis.AspNetCore.Base.Web {
                 => x.Key.Equals(headerKey, StringComparison.OrdinalIgnoreCase)).Value.ToString();
 
 
+        private static string GetQueryStringValue(HttpContext context, string queryKey)
+            => context.Request?.Query.FirstOrDefault(x
+                => x.Key.Equals(queryKey, StringComparison.OrdinalIgnoreCase)).Value.ToString();
 
     }
 

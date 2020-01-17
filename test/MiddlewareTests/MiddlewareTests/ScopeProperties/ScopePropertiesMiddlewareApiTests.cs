@@ -1,9 +1,11 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.ScopePropertiesMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
@@ -44,6 +46,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             using var factory = new TestApis();
             var client = factory.CreateClient["ScopePropertiesApi"]();
+
+            client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, "TestProject");
+
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case
@@ -56,6 +61,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var claimsQueryString = jsonTestCase.GetObject<string>("Claims");
             var headersQueryString = jsonTestCase.GetObject<string>("Headers");
             var expected = jsonTestCase.GetObject<Dictionary<string, string>>("Expected");
+            expected = expected.OrderBy(x => x.Key).ToDictionary(k => k.Key, v => v.Value);
+
 
             var url = $"ScopeProperties?{claimsQueryString}&{headersQueryString}";
 
@@ -64,6 +71,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             _output.WriteLine(content);
 
             var actual = JsonSerializer.Deserialize<Dictionary<string, string>>(content);
+            actual = actual.OrderBy(x => x.Key).ToDictionary(k => k.Key, v => v.Value);
 
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
         }

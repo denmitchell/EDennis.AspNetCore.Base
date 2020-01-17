@@ -8,6 +8,7 @@ namespace EDennis.AspNetCore.Base {
         public const string SET_SCOPEDLOGGER_KEY = "X-Set-ScopedLogger";
         public const string CLEAR_SCOPEDLOGGER_KEY = "X-Clear-ScopedLogger";
         public const string HOSTPATH_KEY = "X-HostPath";
+        public const string ENTRYPOINT_KEY = "X-EntryPoint";
         public const string RESET_METHOD = "Reset";
         public const string CONFIG_METHOD = "Config";
         public const string CONFIG_QUERY_KEY = "config-03a4e06687f64c9a9716b90831ee7034";

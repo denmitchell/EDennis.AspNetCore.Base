@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -20,7 +21,7 @@ namespace EDennis.AspNetCore.Base.Web {
     public class ApplicationPropertiesMiddleware {
         private readonly RequestDelegate _next;
         private readonly ApplicationProperties _applicationProperties;
-        private static bool _propertiesSet = false;
+        private bool _propertiesSet = false;
          
         public ApplicationPropertiesMiddleware(RequestDelegate next,
             ApplicationProperties applicationProperties) {
@@ -32,13 +33,16 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var req = context.Request;
 
-            if(_propertiesSet)
+            Debug.WriteLine($"_propertiesSet: {_propertiesSet}");
+            Debug.WriteLine($"Request.Headers['X-EntryPoint']: {req.Headers["X-EntryPoint"]}");
+
+            if (_propertiesSet)
                 await _next(context);
             else if (req.Path.StartsWithSegments(new PathString("/swagger"))) {
                 _applicationProperties.EntryPoint = EntryPoint.Swagger;       
                 await _next(context);
             } else {
-                if (req.Headers.TryGetValue("X-EntryPoint", out StringValues strEntryPoint))
+                if (req.Headers.TryGetValue(Constants.ENTRYPOINT_KEY, out StringValues strEntryPoint))
                     _applicationProperties.EntryPoint = Enum.Parse<EntryPoint>(strEntryPoint[0]);
 
                 _applicationProperties.IsChild = req.Headers.ContainsKey("X-RequestFrom");

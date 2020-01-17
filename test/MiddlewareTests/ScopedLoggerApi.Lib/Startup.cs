@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -43,16 +44,9 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSession();
-            app.UseApplicationProperties();
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
             app.UseScopedConfiguration(); //for test configurations
+
+
 
 
             //note: don't use MockHeadersMiddleware here because
@@ -65,6 +59,8 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
             //   not be enabled.)
             app.Use(async (context, next) => {
 
+                Debug.WriteLine(context.Request.QueryString.ToString());
+
                 //add or replace headers from query string
                 foreach (var query in context.Request.Query.Where(q => q.Key.StartsWith("header*"))) {
                     var headerKey = query.Key.Substring("header*".Length);
@@ -73,11 +69,24 @@ namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib {
                     context.Request.Headers.Add(query.Key.Substring("header*".Length), query.Value);
                 }
 
-                context.Request.Headers.Add("queryString", WebUtility.UrlDecode(context.Request.QueryString.ToString()).Replace('\u0026','&'));
+                context.Request.Headers.Add("queryString", WebUtility.UrlDecode(context.Request.QueryString.ToString()).Replace('\u0026', '&'));
 
                 await next();
 
             });
+
+
+
+            app.UseSession();
+            app.UseApplicationProperties();
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+
 
             app.UseHeadersToClaims();
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -45,6 +46,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
                 var settings = _settings.CurrentValue;
 
+                Debug.WriteLine($"EntryPoint: {_applicationProperties.EntryPoint}");
                 //update the Scope Properties User with identity, claim or header data
                 scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.UserSource, _applicationProperties, "ScopeProperties.User");
 

@@ -1,11 +1,15 @@
-﻿using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.ScopedLoggerMiddlewareApi.Tests;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -45,6 +49,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
             using var factory = new TestApis();
             var client = factory.CreateClient["ScopedLoggerApi"]();
+
+            client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, EntryPoint.TestProject.ToString());
+
             _output.WriteLine($"Test case: {t}");
 
             TestUrl(jsonTestCase, client, 1);

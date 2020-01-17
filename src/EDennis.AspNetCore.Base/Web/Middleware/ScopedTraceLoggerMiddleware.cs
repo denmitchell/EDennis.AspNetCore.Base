@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,16 +41,26 @@ namespace EDennis.AspNetCore.Base.Web {
                 var query = req.Query;
                 var headers = req.Headers;
 
+                Debug.WriteLine($"ScopedTraceLoggerKey: {scopeProperties.ScopedTraceLoggerKey}");
+
+
                 //handle new registrations and un-registrations
                 if (req.ContainsPathHeaderOrQueryKey(
                         Constants.SET_SCOPEDLOGGER_KEY, out string keyToRegister)) {
+
+                    Debug.WriteLine($"Attemping to register: {keyToRegister}");
+
                     ScopedTraceLoggerAttribute.RegisteredKeys.AddOrUpdate(keyToRegister.ToString(), true, (key, value) => true);
+
+                    Debug.WriteLine($"Registered Keys: {string.Join(',',ScopedTraceLoggerAttribute.RegisteredKeys.Select(x=>x.Key))}");
 
                     _logger.LogInformation("ScopedTraceLogging middleware registering {Key}", keyToRegister);
 
                 } else if (req.ContainsPathHeaderOrQueryKey(
                         Constants.CLEAR_SCOPEDLOGGER_KEY, out string keyToUnregister)) {
+                    Debug.WriteLine($"Attemping to unregister: {keyToUnregister}");
                     ScopedTraceLoggerAttribute.RegisteredKeys.TryRemove(keyToUnregister.ToString(), out bool _);
+                    Debug.WriteLine($"Registered Keys: {string.Join(',', ScopedTraceLoggerAttribute.RegisteredKeys.Select(x => x.Key))}");
 
                     _logger.LogInformation("ScopedTraceLogging middleware un-registering {Key}", keyToUnregister);
                 }

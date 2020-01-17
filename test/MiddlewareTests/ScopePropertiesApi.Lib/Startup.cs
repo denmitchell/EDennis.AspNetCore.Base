@@ -35,17 +35,6 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSession();
-            app.UseApplicationProperties();
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseScopedConfiguration(); //for test configurations
-
             //for testing purposes:
             //intercept request to add claims and headers 
             //(for ScopePropertiesMiddleware to process)
@@ -53,7 +42,7 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
 
                 //add claims from query string
                 var claims = new List<Claim>();
-                foreach (var query in context.Request.Query.Where(q=>q.Key.StartsWith("claim*")))
+                foreach (var query in context.Request.Query.Where(q => q.Key.StartsWith("claim*")))
                     claims.Add(new Claim(query.Key.Substring("claim*".Length), query.Value));
 
                 if (claims.Count > 0) {
@@ -68,6 +57,18 @@ namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
                 await next();
 
             });
+
+
+            app.UseSession();
+            app.UseApplicationProperties();
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseScopedConfiguration(); //for test configurations
 
             //Use ScopePropertiesMiddleware
             app.UseScopeProperties();

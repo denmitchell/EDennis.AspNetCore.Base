@@ -1,4 +1,5 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
@@ -29,7 +30,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         private readonly ITestOutputHelper _output;
         private readonly static BlockingCollection<bool> bc = new BlockingCollection<bool>();
 
-        static DbContextInterceptorMiddlewareApiTests(){
+        static DbContextInterceptorMiddlewareApiTests() {
             bc.Add(true);
         }
 
@@ -42,14 +43,14 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         internal class TestJsonPerson : TestJsonAttribute {
             public TestJsonPerson(string methodName, string testScenario, string testCase)
                 : base("DbContextInterceptorApi", "PersonController",
-                      methodName, testScenario, testCase, DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
             }
         }
 
         internal class TestJsonPosition : TestJsonAttribute {
             public TestJsonPosition(string methodName, string testScenario, string testCase)
                 : base("DbContextInterceptorApi", "PositionController",
-                      methodName, testScenario, testCase, DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
             }
         }
 
@@ -58,26 +59,31 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonPerson("CUD", "", "B")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
-                using var factory = new TestApis();
-                var client = factory.CreateClient["DbContextInterceptorApi"]();
+            using var factory = new TestApis();
+            var client = factory.CreateClient["DbContextInterceptorApi"]();
 
-                _output.WriteLine($"Test case: {t}");
+            client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, "TestProject");
+            
+            //ordinarily, include this line; however, we are testing isolation of updates by different users
+            //client.DefaultRequestHeaders.Add(Constants.USER_KEY, "tester@example.org");
 
-                Configure<Person>(client, jsonTestCase.TestCase);
+            _output.WriteLine($"Test case: {t}");
 
-                var testCases = new CrudTestCases<Person>(jsonTestCase);
+            Configure<Person>(client, jsonTestCase.TestCase);
 
-                TestCreate(client, testCases, 0);
-                TestCreate(client, testCases, 1);
+            var testCases = new CrudTestCases<Person>(jsonTestCase);
 
-                TestUpdate(client, testCases, 0);
-                TestUpdate(client, testCases, 1);
+            TestCreate(client, testCases, 0);
+            TestCreate(client, testCases, 1);
 
-                TestDelete(client, testCases, 0);
-                TestDelete(client, testCases, 1);
+            TestUpdate(client, testCases, 0);
+            TestUpdate(client, testCases, 1);
 
-                TestReset(client, testCases, 0);
-                TestReset(client, testCases, 1);
+            TestDelete(client, testCases, 0);
+            TestDelete(client, testCases, 1);
+
+            TestReset(client, testCases, 0);
+            TestReset(client, testCases, 1);
 
 
         }
