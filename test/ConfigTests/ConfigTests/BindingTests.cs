@@ -26,28 +26,28 @@ namespace EDennis.AspNetCore.ConfigTests {
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSource = UserSource.JwtEmailClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSource = UserSource.OasisNameClaim,
                     CopyHeaders = true,
                     CopyClaims = true,
                     AppendHostPath = true
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSource = UserSource.JwtClientIdClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = false
                 },
                 new ScopePropertiesSettings {
                     Enabled = true,
-                    UserSource = UserSource.JwtNameClaim,
+                    UserSource = UserSource.JwtPhoneClaim,
                     CopyHeaders = false,
                     CopyClaims = false,
                     AppendHostPath = true

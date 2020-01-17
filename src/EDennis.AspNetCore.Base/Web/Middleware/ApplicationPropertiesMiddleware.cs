@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Primitives;
+using System;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
