@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api", "Hr.Api\Hr.Api.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Lib", "Hr.Api.Lib\Hr.Api.Lib.csproj", "{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{EF97D479-79AC-46D0-8CCB-86A2132B335B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{EF97D479-79AC-46D0-8CCB-86A2132B335B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

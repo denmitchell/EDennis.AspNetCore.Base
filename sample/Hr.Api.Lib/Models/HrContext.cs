@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.SqlServer;
@@ -8,17 +9,17 @@ using System.Data.Common;
 namespace Hr.Api.Models {
 
     /// <summary>
-    /// To Add Migration :
-    /// with DefaultProject = EDennis.Samples.DbContextConfigsApi ...
-    ///     PM > Add-Migration Initial -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
+    /// To Add First Migration :
+    ///     PM > Add-Migration Initial -Context HrContext -Project Hr.Api.Lib -StartupProject Hr.Api
     /// To Update Database:
-    ///     PM > Update-Database -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
+    ///     PM > Update-Database -Context HrContext -Project Hr.Api.Lib -StartupProject Hr.Api
     /// </summary>
-    public class DbContextDesignTimeFactory1 : DbContextDesignTimeFactory<HrContext> { }
-    
+    public class HrContextDesignTimeFactory :
+        MigrationsExtensionsDbContextDesignTimeFactory<HrContext> { }
+
     public class HrContext : DbContext, ISqlServerDbContext<HrContext> {
-        public DbSet<Person> Person { get; set; }
-        public DbSet<Address> Position { get; set; }
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public StoredProcedureDefs<HrContext> StoredProcedureDefs { get; set; }
 
         public HrContext(DbContextOptions<HrContext> options) :
@@ -27,7 +28,7 @@ namespace Hr.Api.Models {
         protected override void OnModelCreating(ModelBuilder builder) {
 
             builder.HasSequence<int>("seqPerson");
-            builder.HasSequence<int>("seqPosition");
+            builder.HasSequence<int>("seqAddress");
 
             builder.HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
@@ -37,6 +38,14 @@ namespace Hr.Api.Models {
                 e.Property(e => e.Id)
                     .HasDefaultValueSql("NEXT VALUE FOR seqPerson")
                     .ValueGeneratedOnAdd();
+
+                e.Property(e => e.SysStart)
+                    .HasDefaultValueSql("(getdate())")
+                    .ValueGeneratedOnAddOrUpdate();
+                e.Property(e => e.SysEnd)
+                    .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
+                    .ValueGeneratedOnAddOrUpdate();
+
                 e.HasData(
                         new Person { Id = -999001, FirstName = "Justino", LastName = "Castille", SysUser = "Castille", DateOfBirth = new DateTime(1964, 2, 23) },
                         new Person { Id = -999002, FirstName = "Ruperto", LastName = "Gathwaite", SysUser = "Gathwaite", DateOfBirth = new DateTime(1967, 8, 7) },
@@ -142,11 +151,24 @@ namespace Hr.Api.Models {
             });
 
             builder.Entity<Address>(e => {
-                e.ToTable("Position");
+                e.ToTable("Address");
                 e.HasKey(e => e.Id);
                 e.Property(e => e.Id)
-                    .HasDefaultValueSql("NEXT VALUE FOR seqPosition")
+                    .HasDefaultValueSql("NEXT VALUE FOR seqAddress")
                     .ValueGeneratedOnAdd();
+
+                e.Property(e => e.SysStart)
+                    .HasDefaultValueSql("(getdate())")
+                    .ValueGeneratedOnAddOrUpdate();
+                e.Property(e => e.SysEnd)
+                    .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                if (Database.IsInMemory()) {
+                    e.Property(e => e.Id)
+                        .HasValueGenerator<MaxPlusOneValueGenerator<Address>>();
+                }
+
                 e.HasData(
                         new Address { Id = -999001, StreetAddress = "1232 Bobwhite Junction", City = "San Francisco", State = "CA", PostalCode = "94177", SysUser = "jill@hill.org" },
                         new Address { Id = -999002, StreetAddress = "64 Sunbrook Drive", City = "San Francisco", State = "CA", PostalCode = "94116", SysUser = "jill@hill.org" },

@@ -9,5 +9,7 @@ namespace Hr.Api.Models {
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string SysUser { get; set; }
+        public DateTime SysStart { get; set; }
+        public DateTime SysEnd { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hr.Api.Models {
@@ -9,6 +10,7 @@ namespace Hr.Api.Models {
         public string State { get; set; }
         public string PostalCode { get; set; }
         public string SysUser { get; set; }
-
+        public DateTime SysStart { get; set; }
+        public DateTime SysEnd { get; set; }
     }
 }
