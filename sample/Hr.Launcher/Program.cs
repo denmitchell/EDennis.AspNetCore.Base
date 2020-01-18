@@ -4,6 +4,9 @@ using A = Hr.Api.Lib;
 using R = Hr.RazorApp;
 using EDennis.AspNetCore.Base.Web;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Hr.Launcher {
     public class Launcher : ILauncher {
@@ -16,11 +19,12 @@ namespace Hr.Launcher {
         public void Launch(string[] args) {
             var is4 = new I.Program().Run(args);
             var api = new A.Program().Run(args);
-            if(args[0].Contains("razor", StringComparison.OrdinalIgnoreCase))
+            if (args[0].Contains("=razor", StringComparison.OrdinalIgnoreCase))
                 Task.Run(() => R.Program.Main(args));
             ProgramBase.CanPingAsync(is4, api);
         }
 
-
     }
+
 }
+
