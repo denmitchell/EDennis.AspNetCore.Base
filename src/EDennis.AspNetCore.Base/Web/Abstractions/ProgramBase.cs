@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using EDennis.AspNetCore.Base.EntityFramework;
+using System.IO;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -94,6 +95,16 @@ namespace EDennis.AspNetCore.Base.Web {
             var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
                     var urls = Api.Urls;
+
+                    //var arguments = args.ToCommandLineArgs();
+                    //if (arguments.TryGetValue("contentRoot", out string contentRoot)) {
+                    //    var currentDirectory = Directory.GetCurrentDirectory();
+                    //    var dir = Path.GetFullPath(contentRoot);
+                    //    //var dir = GetRelativePath(currentDirectory, contentRoot);
+                    //    webBuilder.UseContentRoot(dir);
+                    //    webBuilder.UseWebRoot($"{dir}/wwwroot");
+                    //}
+
                     webBuilder
                     .UseConfiguration(Configuration)
                     .UseUrls(urls)
@@ -102,6 +113,17 @@ namespace EDennis.AspNetCore.Base.Web {
             return builder;
         }
 
+
+        private string GetRelativePath(string filespec, string folder) {
+            Uri pathUri = new Uri(filespec);
+            // Folders must end in a slash
+            folder = folder.Replace('/', Path.DirectorySeparatorChar);
+            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+                folder += Path.DirectorySeparatorChar;
+            }
+            Uri folderUri = new Uri(folder,UriKind.Relative);
+            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString());
+        }
 
         #region CanPingAsync
         public static bool CanPingAsync<TProgram1>(TProgram1 program1)

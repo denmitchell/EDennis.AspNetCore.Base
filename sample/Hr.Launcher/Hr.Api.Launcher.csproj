@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
    <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -10,5 +10,14 @@
     <ProjectReference Include="..\Hr.RazorApp\Hr.RazorApp.csproj" />
     <ProjectReference Include="..\IdentityServer.Lib\IdentityServer.Lib.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../Hr.RazorApp/wwwroot/**/*" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"  />
+    <!--<ContentWithTargetPath
+      Include="$(MSBuildThisFileDirectory)..\Hr.RazorApp\wwwroot\**"
+      DestinationFolder ="wwwroot"
+      CopyToOutputDirectory="Always"/>-->
+  </ItemGroup>  
+  
 
 </Project>
