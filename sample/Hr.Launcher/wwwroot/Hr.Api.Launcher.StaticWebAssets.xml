@@ -1,0 +1,4 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="_content/Hr.RazorApp" Path="C:\Users\denmi\source\repos\EDennis.AspNetCore.Base\sample\Hr.RazorApp\wwwroot\" />
+  <ContentRoot BasePath="_content/IdentityServer.Lib" Path="C:\Users\denmi\source\repos\EDennis.AspNetCore.Base\sample\IdentityServer.Lib\wwwroot\" />
+</StaticWebAssets>

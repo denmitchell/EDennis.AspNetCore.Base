@@ -12,12 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../Hr.RazorApp/wwwroot/**/*" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"  />
-    <!--<ContentWithTargetPath
-      Include="$(MSBuildThisFileDirectory)..\Hr.RazorApp\wwwroot\**"
-      DestinationFolder ="wwwroot"
-      CopyToOutputDirectory="Always"/>-->
-  </ItemGroup>  
-  
-
+    <!--<None Include="../Hr.RazorApp/wwwroot/**/*" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"  />-->
+    <Content Include="../Hr.RazorApp/wwwroot/**/*" 
+             Link="wwwroot-link\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <!-- %(Content.Identity)-->
+  <Target Name="CopyLinkedContentFiles" BeforeTargets="Build">
+    <Copy SourceFiles="%(Content.Identity)"
+        DestinationFolder="wwwroot\%(RecursiveDir)"
+        SkipUnchangedFiles="true"
+           ContinueOnError="false"
+        OverwriteReadOnlyFiles="true" />
+  </Target>
 </Project>

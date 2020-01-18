@@ -95,14 +95,28 @@ namespace EDennis.AspNetCore.Base.Web {
             var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
                     var urls = Api.Urls;
+                    var dir = Directory.GetCurrentDirectory();
 
+                    //if (dir.Contains("bin")) {
+                    //    var d = dir.Substring(0, dir.IndexOf("\\bin")) + "wwwroot";
+                    //    webBuilder.UseWebRoot(d);
+                    //}
+                    //string croot = "";
+                    //string wroot = "";
+                    var contentRoot2 = webBuilder.ConfigureAppConfiguration((ctx, config) => {
+                        ctx.HostingEnvironment.ContentRootPath = dir;
+                        ctx.HostingEnvironment.WebRootPath = $"{dir}\\wwwroot";
+                        ctx.HostingEnvironment.WebRootFileProvider = new PhysicalFileProvider($"{dir}\\wwwroot");
+                    });
+                    //if(wroot == null)
+                    //    webBuilder.UseWebRoot($"{croot}/wwwroot");
                     //var arguments = args.ToCommandLineArgs();
                     //if (arguments.TryGetValue("contentRoot", out string contentRoot)) {
                     //    var currentDirectory = Directory.GetCurrentDirectory();
-                    //    var dir = Path.GetFullPath(contentRoot);
-                    //    //var dir = GetRelativePath(currentDirectory, contentRoot);
-                    //    webBuilder.UseContentRoot(dir);
-                    //    webBuilder.UseWebRoot($"{dir}/wwwroot");
+                    //    var dir = Path.GetFullPath(croot);
+                    //var dir = GetRelativePath(currentDirectory, contentRoot);
+                    //webBuilder.UseContentRoot(croot);
+                    //    webBuilder.UseWebRoot($"{croot}/wwwroot");
                     //}
 
                     webBuilder

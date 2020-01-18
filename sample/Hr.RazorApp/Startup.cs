@@ -32,6 +32,10 @@ namespace Hr.RazorApp {
                 app.UseHsts();
             }
 
+            System.Diagnostics.Debug.WriteLine(env.ContentRootPath);
+            System.Diagnostics.Debug.WriteLine(env.WebRootPath);
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
