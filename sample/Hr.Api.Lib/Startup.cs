@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace Hr.Api.Lib {
     public class Startup {
@@ -35,6 +36,11 @@ namespace Hr.Api.Lib {
                 .AddMockClient()            //to bypass oauth (not in production)
                 //.AddPkRewriter()          //only needed when two apis access the same database
                 .AddScopedTraceLogger();    //to setup user-specific trace logging that can be turned on and off via request query strings                
+
+
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hr.Api", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +67,14 @@ namespace Hr.Api.Lib {
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers(); 
             });
+
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR API V1");
+            });
+
+
         }
     }
 }
