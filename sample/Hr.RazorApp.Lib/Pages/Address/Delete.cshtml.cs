@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Hr.Api.Models;
 
-namespace Hr.RazorApp.Address
+namespace Hr.RazorApp.AddressPages
 {
     public class DeleteModel : PageModel
     {

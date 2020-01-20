@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Hr.Api.Models;
 
-namespace Hr.RazorApp.Address
+namespace Hr.RazorApp.AddressPages
 {
     public class CreateModel : PageModel
     {

@@ -23,8 +23,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         Task<bool> ExistsAsync(params object[] keyValues);
         TEntity GetById(params object[] keyValues);
         Task<TEntity> GetByIdAsync(params object[] keyValues);
-        System.Collections.Generic.List<dynamic> GetFromDynamicLinq(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null);
-        Task<System.Collections.Generic.List<dynamic>> GetFromDynamicLinqAsync(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null);
+        System.Collections.Generic.List<dynamic> GetFromDynamicLinq(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null, PagingData pagingData = null);
+        Task<System.Collections.Generic.List<dynamic>> GetFromDynamicLinqAsync(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null, PagingData pagingData = null);
         TEntity Update(dynamic partialEntity, params object[] keyValues);
         TEntity Update(TEntity entity, params object[] keyValues);
         Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues);

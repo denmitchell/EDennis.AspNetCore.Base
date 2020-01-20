@@ -7,22 +7,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Hr.Api.Models;
 
-namespace Hr.RazorApp.Address
+namespace Hr.RazorApp.AddressPages
 {
     public class IndexModel : PageModel
     {
-        private readonly Hr.Api.Models.HrContext _context;
+        private readonly AddressRepo _repo;
 
-        public IndexModel(Hr.Api.Models.HrContext context)
+        public IndexModel(AddressRepo repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         public IList<Address> Address { get;set; }
 
         public async Task OnGetAsync()
         {
-            Address = await _context.Addresses.ToListAsync();
+            Address = await _repo.Query.ToListAsync();
         }
     }
 }

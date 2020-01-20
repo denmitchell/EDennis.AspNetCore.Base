@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hr.Api.Models;
 
-namespace Hr.RazorApp.Address
+namespace Hr.RazorApp.AddressPages
 {
     public class EditModel : PageModel
     {

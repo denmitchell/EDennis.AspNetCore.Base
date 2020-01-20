@@ -1,8 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.Logging;
 using EDennis.AspNetCore.Base.Serialization;
+using EDennis.AspNetCore.Base.Web;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -91,21 +93,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 string orderBy = null,
                 string select = null,
                 int? skip = null,
-                int? take = null) {
+                int? take = null,
+                PagingData pagingData = null) {
 
-            IQueryable qry = Query;
-
-            if (where != null)
-                qry = qry.Where(where);
-            if (orderBy != null)
-                qry = qry.OrderBy(orderBy);
-            if (select != null)
-                qry = qry.Select(select);
-            if (skip != null)
-                qry = qry.Skip(skip.Value);
-            if (take != null)
-                qry = qry.Take(take.Value);
-
+            IQueryable qry = BuildLinqQuery(where, orderBy, select, skip, take, pagingData);
             return qry.ToDynamicList();
 
         }
@@ -131,7 +122,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 string orderBy = null,
                 string select = null,
                 int? skip = null,
-                int? take = null) {
+                int? take = null,
+                PagingData pagingData = null) {
+
+            IQueryable qry = BuildLinqQuery(where, orderBy, select, skip, take, pagingData);
+            return await qry.ToDynamicListAsync();
+
+        }
+
+
+        private IQueryable BuildLinqQuery(string where, string orderBy, string select, int? skip, int? take, PagingData pagingData) {
 
             IQueryable qry = Query;
 
@@ -141,15 +141,27 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 qry = qry.OrderBy(orderBy);
             if (select != null)
                 qry = qry.Select(select);
-            if (skip != null)
-                qry = qry.Skip(skip.Value);
-            if (take != null)
-                qry = qry.Take(take.Value);
 
-            return await qry.ToDynamicListAsync();
+            if (take != null) {
+
+                //conditionally build PagingData;
+                if (pagingData == null)
+                    pagingData = new PagingData();
+
+                if (pagingData.RecordCount == -1)
+                    pagingData.RecordCount = qry.Count();
+
+                pagingData.PageSize = take.Value;
+                var skipValue = skip == null ? 0 : skip.Value;
+                pagingData.PageNumber = (skipValue + 1) * take.Value;
+                pagingData.PageCount = (int)Math.Ceiling(pagingData.RecordCount / (double)pagingData.PageSize);
+
+                qry.Skip(skipValue);
+            }
+
+            return qry;
 
         }
-
 
 
         /// <summary>

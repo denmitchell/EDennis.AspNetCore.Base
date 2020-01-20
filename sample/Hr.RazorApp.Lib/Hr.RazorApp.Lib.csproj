@@ -11,11 +11,6 @@
     <EmbeddedResource Include="appsettings.Development.json" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="ApiClients\" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System;
 using System.Reflection;
+using Microsoft.Extensions.Primitives;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -104,10 +105,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? skip = null,
                 [FromQuery]int? take = null
                 ) {
+            var pagingData = GetPagingData();
             var dList = Repo.GetFromDynamicLinq(
-                where, orderBy, select, skip, take);
+                where, orderBy, select, skip, take, pagingData);
             var pe = PartialEntity<TEntity>.CreateList(dList);
             var json = JsonSerializer.Serialize(pe, _jsonSerializerOptions);
+            BuildPagingHeaders(pagingData);
             return new ContentResult { Content = json, ContentType = "application/json" };
         }
 
@@ -131,11 +134,27 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? skip = null,
                 [FromQuery]int? take = null
                 ) {
+            var pagingData = GetPagingData();
             var dList = await Repo.GetFromDynamicLinqAsync(
-                where, orderBy, select, skip, take);
+                where, orderBy, select, skip, take, pagingData);
             var pe = PartialEntity<TEntity>.CreateList(dList);
             var json = JsonSerializer.Serialize(pe, _jsonSerializerOptions);
+            BuildPagingHeaders(pagingData);
             return new ContentResult { Content = json, ContentType = "application/json" };
+        }
+
+        private PagingData GetPagingData() {
+            if (HttpContext.Request.Headers.TryGetValue("X-TotalRecords", out StringValues totalRecs))
+                return new PagingData { RecordCount = int.Parse(totalRecs) };
+            else
+                return null;
+        }
+
+        private void BuildPagingHeaders(PagingData pagingData) {
+            HttpContext.Response.Headers.Add("X-TotalRecords", pagingData.RecordCount.ToString());
+            HttpContext.Response.Headers.Add("X-PageCount", pagingData.PageCount.ToString());
+            HttpContext.Response.Headers.Add("X-PageSize", pagingData.PageSize.ToString());
+            HttpContext.Response.Headers.Add("X-PageNumber", pagingData.PageNumber.ToString());
         }
 
 
