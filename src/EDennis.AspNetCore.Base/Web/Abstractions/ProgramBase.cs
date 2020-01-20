@@ -37,7 +37,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public ProgramBase() {
 
             if (AppConfigurationBuilderFunc == null)
-                AppConfigurationBuilderFunc = (args)=>
+                AppConfigurationBuilderFunc = (args) =>
                     CreateDefaultConfigurationBuilder(args);
 
             Apis = new Apis();
@@ -83,17 +83,24 @@ namespace EDennis.AspNetCore.Base.Web {
             var appConfigBuilder = AppConfigurationBuilderFunc(args);
 
             builder.ConfigureWebHostDefaults(webBuilder => {
-                    var urls = Api.Urls;
+                var urls = Api.Urls;
+                var urlEnvVars = new Dictionary<string, string>
+                    {
+                        {"URLS", $"{urls[0]};{urls[1]}"},
+                        {"HTTPS_PORT", Api.HttpsPort.ToString()}
+                    };
 
-                    webBuilder
+
+                webBuilder
                     .ConfigureAppConfiguration((config) => {
                         config.Sources.Clear();
                         foreach (var source in appConfigBuilder.Sources)
                             config.Add(source);
+                        config.AddInMemoryCollection(urlEnvVars);
                     })
                     .UseUrls(urls)
                     .UseStartup(Startup);
-                });
+            });
             return builder;
         }
 
@@ -121,8 +128,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 configBuilder.AddJsonFile(provider, $"appsettings.json", true, true);
                 configBuilder.AddJsonFile(provider, $"appsettings.{env}.json", true, true);
             } else {
-            configBuilder.AddJsonFile($"appsettings.json", true, true);
-            configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
+                configBuilder.AddJsonFile($"appsettings.json", true, true);
+                configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
             }
             if (UsesLauncherConfigurationFile)
                 configBuilder.AddJsonFile($"appsettings.Launcher.json", true, true);
