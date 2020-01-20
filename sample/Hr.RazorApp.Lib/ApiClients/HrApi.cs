@@ -12,7 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Hr.RazorApp.Lib.ApiClients {
+namespace Hr.RazorApp {
     public class HrApi : SecureApiClient {
 
         private const string PERSON_URL = "api/Person";

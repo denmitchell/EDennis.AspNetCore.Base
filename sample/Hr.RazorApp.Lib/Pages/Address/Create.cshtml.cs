@@ -11,11 +11,11 @@ namespace Hr.RazorApp.AddressPages
 {
     public class CreateModel : PageModel
     {
-        private readonly Hr.Api.Models.HrContext _context;
+        private readonly HrApi _api;
 
-        public CreateModel(Hr.Api.Models.HrContext context)
+        public CreateModel(HrApi api)
         {
-            _context = context;
+            _api = api;
         }
 
         public IActionResult OnGet()
