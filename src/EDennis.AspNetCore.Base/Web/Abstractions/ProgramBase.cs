@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
-using EDennis.AspNetCore.Base.EntityFramework;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
     public abstract class ProgramBase<TStartup> : ProgramBase, IProgram
-        where TStartup : class
-        {
+        where TStartup : class {
         public override Type Startup {
             get {
                 return typeof(TStartup);
@@ -26,33 +24,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
     public abstract class ProgramBase : IProgram {
-
-
-        public virtual IConfiguration Configuration {
-            get {
-                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-
-                var config = new ConfigurationBuilder();
-
-                if (UsesEmbeddedConfigurationFiles) {
-                    var assembly = Startup.Assembly;
-                    var provider = new ManifestEmbeddedFileProvider(assembly);
-                    config.AddJsonFile(provider, $"appsettings.json", true, true);
-                    config.AddJsonFile(provider, $"appsettings.{env}.json", true, true);
-
-                } else {
-                    config.AddJsonFile($"appsettings.json", true, true);
-                    config.AddJsonFile($"appsettings.{env}.json", true, true);
-                }
-                if (UsesLauncherConfigurationFile)
-                    config.AddJsonFile($"appsettings.Launcher.json", true, true);
-
-                config.AddEnvironmentVariables()
-                    .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
-
-                return config.Build();
-            }
-        }
+        public virtual Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
+        public virtual Func<string[], IConfigurationBuilder> HostConfigurationBuilderFunc { get; set; }
         public virtual bool UsesEmbeddedConfigurationFiles { get; } = true;
         public virtual bool UsesLauncherConfigurationFile { get; } = true;
         public virtual string ApisConfigurationSection { get; } = "Apis";
@@ -63,9 +36,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public ProgramBase() {
 
+            if (AppConfigurationBuilderFunc == null)
+                AppConfigurationBuilderFunc = (args)=>
+                    CreateDefaultConfigurationBuilder(args);
+
             Apis = new Apis();
-            var config = Configuration;
-            var projectName = GetType().Assembly.GetName().Name.Replace(".Lib","");
+            var config = AppConfigurationBuilderFunc(new string[] { }).Build();
+            var projectName = GetType().Assembly.GetName().Name.Replace(".Lib", "");
             try {
                 config.GetSection(ApisConfigurationSection).Bind(Apis);
             } catch (Exception) {
@@ -92,56 +69,78 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         public IHostBuilder CreateHostBuilder(string[] args) {
-            var builder = Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => {
-                    var urls = Api.Urls;
-                    var dir = Directory.GetCurrentDirectory();
 
-                    //if (dir.Contains("bin")) {
-                    //    var d = dir.Substring(0, dir.IndexOf("\\bin")) + "wwwroot";
-                    //    webBuilder.UseWebRoot(d);
-                    //}
-                    //string croot = "";
-                    //string wroot = "";
-                    var contentRoot2 = webBuilder.ConfigureAppConfiguration((ctx, config) => {
-                        ctx.HostingEnvironment.ContentRootPath = dir;
-                        ctx.HostingEnvironment.WebRootPath = $"{dir}\\wwwroot";
-                        ctx.HostingEnvironment.WebRootFileProvider = new PhysicalFileProvider($"{dir}\\wwwroot");
-                    });
-                    //if(wroot == null)
-                    //    webBuilder.UseWebRoot($"{croot}/wwwroot");
-                    //var arguments = args.ToCommandLineArgs();
-                    //if (arguments.TryGetValue("contentRoot", out string contentRoot)) {
-                    //    var currentDirectory = Directory.GetCurrentDirectory();
-                    //    var dir = Path.GetFullPath(croot);
-                    //var dir = GetRelativePath(currentDirectory, contentRoot);
-                    //webBuilder.UseContentRoot(croot);
-                    //    webBuilder.UseWebRoot($"{croot}/wwwroot");
-                    //}
+            var builder = Host.CreateDefaultBuilder(args);
+
+            if (HostConfigurationBuilderFunc != null) {
+                var hostConfigBuilder = HostConfigurationBuilderFunc(args);
+                builder.ConfigureHostConfiguration(config => {
+                    foreach (var source in hostConfigBuilder.Sources)
+                        config.Add(source);
+                });
+            }
+
+            var appConfigBuilder = AppConfigurationBuilderFunc(args);
+
+            builder.ConfigureWebHostDefaults(webBuilder => {
+                    var urls = Api.Urls;
 
                     webBuilder
-                    .UseConfiguration(Configuration)
+                    .ConfigureAppConfiguration((config) => {
+                        config.Sources.Clear();
+                        foreach (var source in appConfigBuilder.Sources)
+                            config.Add(source);
+                    })
                     .UseUrls(urls)
                     .UseStartup(Startup);
                 });
             return builder;
         }
 
-
-        private string GetRelativePath(string filespec, string folder) {
-            Uri pathUri = new Uri(filespec);
-            // Folders must end in a slash
-            folder = folder.Replace('/', Path.DirectorySeparatorChar);
-            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString())) {
-                folder += Path.DirectorySeparatorChar;
+        public static void OpenBrowser(string url) {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); // Works ok on windows
+            } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                Process.Start("xdg-open", url);  // Works ok on linux
+            } else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+                Process.Start("open", url); // Not tested
+            } else {
+                throw new Exception("Cannot open browser");
             }
-            Uri folderUri = new Uri(folder,UriKind.Relative);
-            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString());
         }
+
+
+        private IConfigurationBuilder CreateDefaultConfigurationBuilder(string[] args) {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
+            var configBuilder = new ConfigurationBuilder();
+
+            if (UsesEmbeddedConfigurationFiles) {
+                var assembly = Startup.Assembly;
+                var provider = new ManifestEmbeddedFileProvider(assembly);
+                configBuilder.AddJsonFile(provider, $"appsettings.json", true, true);
+                configBuilder.AddJsonFile(provider, $"appsettings.{env}.json", true, true);
+            } else {
+            configBuilder.AddJsonFile($"appsettings.json", true, true);
+            configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
+            }
+            if (UsesLauncherConfigurationFile)
+                configBuilder.AddJsonFile($"appsettings.Launcher.json", true, true);
+
+            configBuilder
+                .AddEnvironmentVariables()
+                .AddCommandLine(args)
+                .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
+
+            return configBuilder;
+
+
+        }
+
 
         #region CanPingAsync
         public static bool CanPingAsync<TProgram1>(TProgram1 program1)
-            where TProgram1 : IProgram{
+            where TProgram1 : IProgram {
             var tasks = new Task[] {
                 Task.Run(async ()=> { return await CanPingAsync(program1.Api.Host, program1.Api.MainPort.Value); })
             };
@@ -199,10 +198,9 @@ namespace EDennis.AspNetCore.Base.Web {
             TProgram1 program1, TProgram2 program2, TProgram3 program3, TProgram4 program4, TProgram5 program5)
             where TProgram1 : IProgram
             where TProgram2 : IProgram
-            where TProgram3 : IProgram 
+            where TProgram3 : IProgram
             where TProgram4 : IProgram
-            where TProgram5 : IProgram
-            {
+            where TProgram5 : IProgram {
             var tasks = new Task[] {
                 Task.Run(async ()=> { return await CanPingAsync(program1.Api.Host, program1.Api.MainPort.Value); }),
                 Task.Run(async ()=> { return await CanPingAsync(program2.Api.Host, program2.Api.MainPort.Value); }),
@@ -334,8 +332,8 @@ namespace EDennis.AspNetCore.Base.Web {
             where TProgram4 : IProgram
             where TProgram5 : IProgram
             where TProgram6 : IProgram
-            where TProgram7 : IProgram 
-            where TProgram8 : IProgram 
+            where TProgram7 : IProgram
+            where TProgram8 : IProgram
             where TProgram9 : IProgram
             where TProgram10 : IProgram {
             var tasks = new Task[] {

@@ -5,9 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ApiClients\" />
+    <ProjectReference Include="..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\Hr.RazorApp.Lib\Hr.RazorApp.Lib.csproj" />
   </ItemGroup>
 
+
+  <!-- NEEDED FOR DEPLOYMENT ??? -->
+  <!--<ItemGroup>
+    <Content Include="../Hr.RazorApp/wwwroot/**/*" Link="wwwroot-link\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <Target Name="CopyLinkedContentFiles" BeforeTargets="Build">
+    <Copy SourceFiles="%(Content.Identity)" DestinationFolder="wwwroot\%(RecursiveDir)" SkipUnchangedFiles="true" ContinueOnError="false" OverwriteReadOnlyFiles="true" />
+  </Target>-->
 
 
 </Project>

@@ -53,6 +53,7 @@ namespace Hr.Api.Lib {
             app.UseRouting();
 
             app.UseMockClient();            //to mock OAuth authorization (not in production)
+            app.UseAuthentication();
             app.UseAuthorization(); 
 
             app.UseHeadersToClaims();       //to get user from razor app via X-User header

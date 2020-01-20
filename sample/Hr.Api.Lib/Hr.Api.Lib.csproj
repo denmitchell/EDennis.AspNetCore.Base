@@ -12,9 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="appsettings.Development.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>    
+    <EmbeddedResource Include="appsettings.json"/>
+    <EmbeddedResource Include="appsettings.Development.json"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -4,8 +4,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:64126",
-      "sslPort": 44319
+      "applicationUrl": "http://localhost:44390",
+      "sslPort": 53589
     }
   },
   "profiles": {
@@ -13,8 +13,8 @@
       "commandName": "Project",
       "launchBrowser": true,
       "commandLineArgs": "entryPoint=Swagger MockClient:ActiveMockClient=Hr.Api.Client1",
-      "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:44319;http://localhost:64126",
+      "launchUrl": "https://localhost:44319/swagger",
+      "applicationUrl": "https://localhost:53589;http://localhost:44390",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -24,7 +24,7 @@
       "launchBrowser": true,
       "commandLineArgs": "entryPoint=Swagger MockClient:ActiveMockClient=Hr.Api.Client2",
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:44319;http://localhost:64126",
+      "applicationUrl": "https://localhost:53589;http://localhost:44390",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -33,7 +33,8 @@
       "commandName": "Project",
       "commandLineArgs": "entryPoint=Razor",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:44319;http://localhost:64126",
+      "launchUrl": "https://localhost:44307",
+      "applicationUrl": "https://localhost:53589;http://localhost:44390",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
