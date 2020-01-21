@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
 using Hr.Api.Models;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,51 +20,85 @@ namespace Hr.RazorApp {
         private const string PERSON_URL = "api/Person";
         private const string ADDRESS_URL = "api/Address";
 
-        public HrApi(IHttpClientFactory httpClientFactory, IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties, ISecureTokenService secureTokenService, IWebHostEnvironment env, ILogger logger) 
+        public HrApi(IHttpClientFactory httpClientFactory, IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties, ISecureTokenService secureTokenService, IWebHostEnvironment env, ILogger logger)
             : base(httpClientFactory, apis, scopeProperties, secureTokenService, env, logger) {
         }
 
-        public ObjectResult GetPersons() {
-            return HttpClient.Get<List<Person>>(PERSON_URL);
+
+        public async Task<ObjectResult> GetPersonsAsync(string where = null,
+            string orderBy = null, string select = null, int? skip = null,
+            int? take = null, PagingData pagingData = null
+            ) {
+    
+            var url = $"{PERSON_URL}{GetQueryString(where, orderBy, select, skip, take)}";           
+            return await HttpClient.GetAsync<List<Person>>(url, pagingData);
         }
 
-        public ObjectResult GetPersonDetails(int? id) {
-            return HttpClient.Get<Person>($"{PERSON_URL}/{id}");
+        public async Task<ObjectResult> GetPersonDetailsAsync(int? id) {
+            return await HttpClient.GetAsync<Person>($"{PERSON_URL}/{id}");
         }
 
-        public ObjectResult CreatePerson(Person person) {
-            return HttpClient.Post($"{PERSON_URL}", person);
+        public async Task<ObjectResult> CreatePersonAsync(Person person) {
+            return await HttpClient.PostAsync($"{PERSON_URL}", person);
         }
 
-        public ObjectResult EditPerson(int id, Person person) {
-            return HttpClient.Put($"{PERSON_URL}/{id}", person);
+        public async Task<ObjectResult> EditPersonAsync(Person person, int id) {
+            return await HttpClient.PutAsync($"{PERSON_URL}/{id}", person);
         }
 
-        public StatusCodeResult DeletePerson(int id) {
-            return HttpClient.Delete<Person>($"{PERSON_URL}/{id}");
+        public async Task<StatusCodeResult> DeletePersonAsync(int id) {
+            return await HttpClient.DeleteAsync<Person>($"{PERSON_URL}/{id}");
         }
 
 
-        public ObjectResult GetAddresses() {
-            return HttpClient.Get<List<Address>>(ADDRESS_URL);
+        public async Task<ObjectResult> GetAddressesAsync(string where = null,
+            string orderBy = null, string select = null, int? skip = null,
+            int? take = null, PagingData pagingData = null
+            ) {
+
+            var url = $"{ADDRESS_URL}{GetQueryString(where, orderBy, select, skip, take)}";
+            return await HttpClient.GetAsync<List<Address>>(url, pagingData);
         }
 
-        public ObjectResult GetAddressDetails(int? id) {
-            return HttpClient.Get<Address>($"{ADDRESS_URL}/{id}");
+
+        public async Task<ObjectResult> GetAddressDetailsAsync(int? id) {
+            return await HttpClient.GetAsync<Address>($"{ADDRESS_URL}/{id}");
         }
 
-        public ObjectResult CreateAddress(Address person) {
-            return HttpClient.Post($"{ADDRESS_URL}", person);
+        public async Task<ObjectResult> CreateAddressAsync(Address address) {
+            return await HttpClient.PostAsync($"{ADDRESS_URL}", address);
         }
 
-        public ObjectResult EditAddress(int id, Address person) {
-            return HttpClient.Put($"{ADDRESS_URL}/{id}", person);
+        public async Task<ObjectResult> EditAddressAsync(Address address, int id) {
+            return await HttpClient.PutAsync($"{ADDRESS_URL}/{id}", address);
         }
 
-        public StatusCodeResult DeleteAddress(int id) {
-            return HttpClient.Delete<Address>($"{ADDRESS_URL}/{id}");
+        public async Task<StatusCodeResult> DeleteAddressAsync(int id) {
+            return await HttpClient.DeleteAsync<Address>($"{ADDRESS_URL}/{id}");
         }
 
+
+
+        private string GetQueryString(string where = null,
+            string orderBy = null, string select = null, int? skip = null,
+            int? take = null) {
+
+            var q = new List<string>();
+            if (where != null)
+                q.Add($"where={where}");
+            if (orderBy != null)
+                q.Add($"orderBy={orderBy}");
+            if (select != null)
+                q.Add($"select={select}");
+            if (skip != null)
+                q.Add($"skip={skip.Value}");
+            if (take != null)
+                q.Add($"take={take}");
+
+            var qString = "?" + string.Join('&', q);
+
+            return qString;
+        }
 
 
     }

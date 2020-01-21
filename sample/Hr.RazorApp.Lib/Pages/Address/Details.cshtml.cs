@@ -1,38 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hr.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Hr.Api.Models;
+using System.Threading.Tasks;
 
-namespace Hr.RazorApp.AddressPages
-{
-    public class DetailsModel : PageModel
-    {
-        private readonly Hr.Api.Models.HrContext _context;
+namespace Hr.RazorApp.AddressPages {
+    public class DetailsModel : PageModel {
+        private readonly HrApi _api;
 
-        public DetailsModel(Hr.Api.Models.HrContext context)
-        {
-            _context = context;
+        public DetailsModel(HrApi api) {
+            _api = api;
         }
 
         public Address Address { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> OnGetAsync(int? id) {
+
+            if (id == null) {
                 return NotFound();
             }
 
-            Address = await _context.Addresses.FirstOrDefaultAsync(m => m.Id == id);
+            var result = await _api.GetAddressDetailsAsync(id.Value);
 
-            if (Address == null)
-            {
+            if (result.StatusCode == 404)
                 return NotFound();
-            }
+            else
+                Address = (Address)result.Value;
+
             return Page();
         }
     }

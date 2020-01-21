@@ -7,50 +7,38 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Hr.Api.Models;
 
-namespace Hr.RazorApp.AddressPages
-{
-    public class DeleteModel : PageModel
-    {
-        private readonly Hr.Api.Models.HrContext _context;
+namespace Hr.RazorApp.AddressPages {
+    public class DeleteModel : PageModel {
+        private readonly HrApi _api;
 
-        public DeleteModel(Hr.Api.Models.HrContext context)
-        {
-            _context = context;
+        public DeleteModel(HrApi api) {
+            _api = api;
         }
 
         [BindProperty]
         public Address Address { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> OnGetAsync(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
-            Address = await _context.Addresses.FirstOrDefaultAsync(m => m.Id == id);
+            var result = await _api.GetAddressDetailsAsync(id.Value);
 
-            if (Address == null)
-            {
+            if (result.StatusCode == 404)
                 return NotFound();
-            }
+            else
+                Address = (Address)result.Value;
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> OnPostAsync(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
-            Address = await _context.Addresses.FindAsync(id);
-
-            if (Address != null)
-            {
-                _context.Addresses.Remove(Address);
-                await _context.SaveChangesAsync();
-            }
+            await _api.DeleteAddressAsync(id.Value);
 
             return RedirectToPage("./Index");
         }

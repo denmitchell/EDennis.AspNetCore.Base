@@ -1,8 +1,10 @@
 ﻿using Castle.Core.Configuration;
 using DevExpress.Utils.Serializing.Helpers;
+using EDennis.AspNetCore.Base.EntityFramework;
 using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -22,33 +24,46 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static partial class HttpClientExtensions {
 
-        public static ObjectResult Get<TResponseObject>(this HttpClient client, string relativeUrlFromBase,
-            JsonSerializerOptions jsonSerializerOptions = null) {
-            return client.GetAsync<TResponseObject>(relativeUrlFromBase, jsonSerializerOptions).Result;
+        public static ObjectResult Get<TResponseObject>(this HttpClient client,
+            string relativeUrlFromBase,
+            PagingData pagingData = null,
+            JsonSerializerOptions jsonSerializerOptions = null
+            ) {
+            return client.GetAsync<TResponseObject>(relativeUrlFromBase, pagingData, jsonSerializerOptions).Result;
         }
+
 
         public static async Task<ObjectResult> GetAsync<TResponseObject>(
                 this HttpClient client, string relativeUrlFromBase,
+                PagingData pagingData = null,
                     JsonSerializerOptions jsonSerializerOptions = null
                 ) {
 
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
-            var response = await client.GetAsync(url);
-            var objResult = await GenerateObjectResult<TResponseObject>(response, jsonSerializerOptions);
+
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url)
+            };
+
+            AddOrUpdatePagingData(client, msg, pagingData);
+
+            var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<TResponseObject>(response, pagingData, jsonSerializerOptions);
 
             return objResult;
 
         }
 
-        public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
-            return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj).Result;
+        public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj, PagingData pagingData = null) {
+            return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj, headers).Result;
         }
 
 
 
         public static async Task<ObjectResult> GetAsync<TRequestObject, TResponseObject>(
-                this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
+                this HttpClient client, string relativeUrlFromBase, TRequestObject obj, PagingData pagingData = null) {
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
 
@@ -59,8 +74,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 Content = new BodyContent<TRequestObject>(obj)
             };
 
+            AddOrUpdatePagingData(client, msg, pagingData);
+
             var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TResponseObject>(response);
+            var objResult = await GenerateObjectResult<TResponseObject>(response, headers);
 
             return objResult;
 
@@ -263,40 +280,71 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
+        public static void AddOrUpdatePagingData(this HttpClient client,
+                HttpRequestMessage msg, PagingData pagingData = null) {
+
+            if (pagingData == null || pagingData.RecordCount < 0)
+                return;
+
+            if (client.DefaultRequestHeaders.Contains("X-RecordCount"))
+                client.DefaultRequestHeaders.Remove("X-RecordCount");
+            if (msg.Headers.Contains("X-RecordCount"))
+                msg.Headers.Remove("X-RecordCount");
+            msg.Headers.Add("X-RecordCount", pagingData.RecordCount.ToString());
+
+        }
+
+
+        public static void AddOrUpdateHeaders(this HttpClient client,
+                HttpRequestMessage msg, Dictionary<string, StringValues> headers) {
+
+            foreach (var key in headers.Keys) {
+                if (client.DefaultRequestHeaders.Contains(key))
+                    client.DefaultRequestHeaders.Remove(key);
+                if (msg.Headers.Contains(key))
+                    msg.Headers.Remove(key);
+                msg.Headers.Add(key, headers[key].ToArray());
+            }
+        }
+
+
+
+
+
 
         //public static void SendReset(this HttpClient client, string instance) {
         //    client.SendResetAsync(instance).Wait();
         //}
 
         //public static async Task SendResetAsync(this HttpClient client, string instance) {
-            //try {
-            //var msg = new HttpRequestMessage {
-            //    Method = HttpMethod.Delete,
-            //    RequestUri = new Uri($"{client.BaseAddress.ToString()}?{Constants.TESTING_RESET_KEY}={instance}")
-            //};
-            //await client.SendAsync(msg);
-            //return;
-            //} catch {
-            //    //ignore; client is already disposed.
-            //}
-            //try {
-            //    using var tcp = new TcpClient(client.BaseAddress.Host, client.BaseAddress.Port) {
-            //        SendTimeout = 500,
-            //        ReceiveTimeout = 1000
-            //    };
-            //    var builder = new StringBuilder()
-            //        .AppendLine($"{Constants.RESET_METHOD} /?{Constants.TESTING_RESET_KEY}={instance} HTTP/1.1")
-            //        .AppendLine($"Host: {client.BaseAddress.Host}")
-            //        .AppendLine("Connection: close")
-            //        .AppendLine();
-            //    var header = Encoding.ASCII.GetBytes(builder.ToString());
-            //    using var stream = tcp.GetStream();
-            //    await stream.WriteAsync(header, 0, header.Length);
-            //}
-            //catch (Exception)
-            //{
-            //    //ignore this exception, object is disposed.
-            //}
+        //try {
+        //var msg = new HttpRequestMessage {
+        //    Method = HttpMethod.Delete,
+        //    RequestUri = new Uri($"{client.BaseAddress.ToString()}?{Constants.TESTING_RESET_KEY}={instance}")
+        //};
+        //await client.SendAsync(msg);
+        //return;
+        //} catch {
+        //    //ignore; client is already disposed.
+        //}
+        //try {
+        //    using var tcp = new TcpClient(client.BaseAddress.Host, client.BaseAddress.Port) {
+        //        SendTimeout = 500,
+        //        ReceiveTimeout = 1000
+        //    };
+        //    var builder = new StringBuilder()
+        //        .AppendLine($"{Constants.RESET_METHOD} /?{Constants.TESTING_RESET_KEY}={instance} HTTP/1.1")
+        //        .AppendLine($"Host: {client.BaseAddress.Host}")
+        //        .AppendLine("Connection: close")
+        //        .AppendLine();
+        //    var header = Encoding.ASCII.GetBytes(builder.ToString());
+        //    using var stream = tcp.GetStream();
+        //    await stream.WriteAsync(header, 0, header.Length);
+        //}
+        //catch (Exception)
+        //{
+        //    //ignore this exception, object is disposed.
+        //}
         //}
 
         public static bool Ping(this HttpClient client, int timeoutSeconds = 5) {
@@ -438,14 +486,26 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response,
+            PagingData pagingData = null,
             JsonSerializerOptions jsonSerializerOptions = null) {
 
             object value = null;
 
             int statusCode = (int)response.StatusCode;
 
+            if (response.Headers.Contains("X-RecordCount"))
+                pagingData.RecordCount = int.Parse(response.Headers.GetValues("X-RecordCount").First());
+            if (response.Headers.Contains("X-PageCount"))
+                pagingData.PageCount = int.Parse(response.Headers.GetValues("X-PageCount").First());
+            if (response.Headers.Contains("X-PageNumber"))
+                pagingData.PageCount = int.Parse(response.Headers.GetValues("X-PageNumber").First());
+            if (response.Headers.Contains("X-PageSize"))
+                pagingData.PageCount = int.Parse(response.Headers.GetValues("X-PageSize").First());
+
+
             if (response.Content.Headers.ContentLength > 0) {
                 var json = await response.Content.ReadAsStringAsync();
+
 
                 if (statusCode < 299 && typeof(T) != typeof(string)) {
                     if (jsonSerializerOptions != null)
@@ -466,6 +526,9 @@ namespace EDennis.AspNetCore.Base.Web {
             };
 
         }
+
+
+
 
     }
 }

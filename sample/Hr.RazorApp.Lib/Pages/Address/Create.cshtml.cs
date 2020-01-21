@@ -7,37 +7,29 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Hr.Api.Models;
 
-namespace Hr.RazorApp.AddressPages
-{
-    public class CreateModel : PageModel
-    {
+namespace Hr.RazorApp.AddressPages {
+    public class CreateModel : PageModel {
         private readonly HrApi _api;
 
-        public CreateModel(HrApi api)
-        {
+        public CreateModel(HrApi api) {
             _api = api;
         }
 
-        public IActionResult OnGet()
-        {
+        public IActionResult OnGet() {
             return Page();
         }
+
 
         [BindProperty]
         public Address Address { get; set; }
 
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
+        public async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid)
-            {
                 return Page();
-            }
 
-            _context.Addresses.Add(Address);
-            await _context.SaveChangesAsync();
-
+            await _api.CreateAddressAsync(Address);
             return RedirectToPage("./Index");
         }
     }

@@ -11,28 +11,23 @@ namespace Hr.RazorApp.PersonPages
 {
     public class DetailsModel : PageModel
     {
-        private readonly Hr.Api.Models.HrContext _context;
+        private readonly HrApi _api;
 
-        public DetailsModel(Hr.Api.Models.HrContext context)
+        public DetailsModel(HrApi api)
         {
-            _context = context;
+            _api = api;
         }
 
         public Person Person { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var result = await _api.GetAddressDetailsAsync(id.Value);
 
-            Person = await _context.Persons.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (Person == null)
-            {
+            if (result.StatusCode == 404)
                 return NotFound();
-            }
+            else
+                Person = (Person)result.Value;
             return Page();
         }
     }
