@@ -98,6 +98,10 @@ namespace EDennis.AspNetCore.Base.Serialization {
         }
 
 
+        public static object DeserializeObject(string json) {
+            Type anonType = null;
+            return DeserializeObject(json, ref anonType);
+        }
 
 
 

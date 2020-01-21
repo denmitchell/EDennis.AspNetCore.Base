@@ -5,7 +5,7 @@ declare @MethodName varchar(255) = 'GetFromDynamicLinq'
 declare @TestScenario varchar(255) = 'WhereOrderBySkipTake'
 declare @TestCase varchar(255) = 'B'
 
-declare @Select varchar(255) = '' -- don't use
+declare @Select varchar(255) = null -- don't use
 declare @OrderBy varchar(255) = 'Id asc'
 declare @Where varchar(255) = 'Red gt 200'
 declare @Skip int = 2
@@ -33,7 +33,7 @@ declare
 				where Red > 200
 				order by Name desc
 				offset @Skip rows fetch next @Take rows only
-				for json path
+				for json path, include_null_values
 		) Data
 		
 		from (

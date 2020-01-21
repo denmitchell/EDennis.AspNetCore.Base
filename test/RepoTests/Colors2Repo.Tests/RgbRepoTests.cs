@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Dynamic;
 using System.Text.Json;
 using EDennis.AspNetCore.Base.Serialization;
+using System;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -80,7 +81,7 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            var input = jsonTestCase.GetObject<dynamic>("Input");
+            var input = jsonTestCase.GetDynamicObject<Rgb>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
@@ -99,7 +100,7 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            var input = jsonTestCase.GetObject<dynamic>("Input");
+            var input = jsonTestCase.GetDynamicObject<Rgb>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
@@ -188,17 +189,13 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            string where = jsonTestCase.TestScenario.Contains("Where") ? jsonTestCase.GetObject<string>("Where") : null;
-            string orderBy = jsonTestCase.TestScenario.Contains("OrderBy") ? jsonTestCase.GetObject<string>("OrderBy") : null;
-            string select = jsonTestCase.TestScenario.Contains("Select") ? jsonTestCase.GetObject<string>("Select") : null;
-            int? skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int?>("Skip") : null;
-            int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
+            string where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
+            string orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
+            string select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
+            int? skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
+            int? take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new PartialEntityConverter());
-
-            var expJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = AnonymousTypes<Rgb>.DeserializePagedResult(expJson);
+            var expected = jsonTestCase.GetDynamicPagedResult<Rgb>("Expected");
 
             var actual = Repo.GetFromDynamicLinq(where, orderBy, select, skip, take);
 
@@ -214,15 +211,13 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            string where = jsonTestCase.TestScenario.Contains("Where") ? jsonTestCase.GetObject<string>("Where") : null;
-            string orderBy = jsonTestCase.TestScenario.Contains("OrderBy") ? jsonTestCase.GetObject<string>("OrderBy") : null;
-            string select = jsonTestCase.TestScenario.Contains("Select") ? jsonTestCase.GetObject<string>("Select") : null;
-            int? skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int?>("Skip") : null;
-            int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
+            string where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
+            string orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
+            string select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
+            int? skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
+            int? take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-
-            var expJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = AnonymousTypes<Rgb>.DeserializePagedResult(expJson);
+            var expected = jsonTestCase.GetDynamicPagedResult<Rgb>("Expected");
 
             var actual = await Repo.GetFromDynamicLinqAsync(where, orderBy, select, skip, take);
 

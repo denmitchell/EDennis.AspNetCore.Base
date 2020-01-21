@@ -146,11 +146,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             IQueryable qry = Query;
 
-            if (where != null)
+            if (!string.IsNullOrWhiteSpace(where))
                 qry = qry.Where(where);
-            if (orderBy != null)
+            if (!string.IsNullOrWhiteSpace(orderBy))
                 qry = qry.OrderBy(orderBy);
-            if (select != null)
+            if (!string.IsNullOrWhiteSpace(select))
                 qry = qry.Select(select);
 
             if (totalRecords == null || totalRecords.Value < 0)
@@ -318,10 +318,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
 
-            SetSysUser(partialEntity);
-
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+
+            existing.SysUser = ScopeProperties.User;
+
             Context.Entry(existing).State = EntityState.Detached;
 
 
@@ -339,13 +340,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-            SetSysUser(partialEntity);
-
             //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
 
             //copy property values from entity to existing
             DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+
+            existing.SysUser = ScopeProperties.User;
             Context.Entry(existing).State = EntityState.Detached;
 
             Context.Update(existing);
@@ -369,10 +370,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
 
-            partialEntity.Entity.SysUser = ScopeProperties.User;
-
             //copy property values from entity to existing
             partialEntity.MergeInto(existing);
+
+            existing.SysUser = ScopeProperties.User;
+
             Context.Entry(existing).State = EntityState.Detached;
 
             Context.Update(existing);
@@ -389,16 +391,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
-            partialEntity.Entity.SysUser = ScopeProperties.User;
-
             //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
-
-            partialEntity.Entity.SysUser = ScopeProperties.User;
 
             //copy property values from entity to existing
             partialEntity.MergeInto(existing);
             Context.Entry(existing).State = EntityState.Detached;
+
+            existing.SysUser = ScopeProperties.User;
 
             Context.Update(existing);
             await Context.SaveChangesAsync();

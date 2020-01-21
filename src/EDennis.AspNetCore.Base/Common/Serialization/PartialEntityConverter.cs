@@ -56,8 +56,9 @@ namespace EDennis.AspNetCore.Base.Serialization {
             /// <returns></returns>
             public override PartialEntity<TEntity> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
 
-                var partialEntity = new PartialEntity<TEntity>();
-                partialEntity.Entity = new TEntity();
+                var partialEntity = new PartialEntity<TEntity> {
+                    Entity = new TEntity()
+                };
 
                 PropertyInfo propertyInfo = null;
                 bool justReadPropName = false;
