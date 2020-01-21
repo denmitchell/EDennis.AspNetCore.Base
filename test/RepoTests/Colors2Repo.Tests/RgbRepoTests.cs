@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Dynamic;
 using System.Text.Json;
+using EDennis.AspNetCore.Base.Serialization;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -193,12 +194,15 @@ namespace RepoTests {
             int? skip = jsonTestCase.TestScenario.Contains("Skip") ? jsonTestCase.GetObject<int?>("Skip") : null;
             int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
 
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new PartialEntityConverter());
 
-            var expected  = DynamicConverter.ToPropertyDictionaryList(jsonTestCase.GetObject<List<dynamic>>("Expected"));
+            var expJson = jsonTestCase.GetObject<string>("Expected");
+            var expected = AnonymousTypes<Rgb>.DeserializePagedResult(expJson);
 
-            var actual = DynamicConverter.ToPropertyDictionaryList(Repo.GetFromDynamicLinq(where, orderBy, select, skip, take));
+            var actual = Repo.GetFromDynamicLinq(where, orderBy, select, skip, take);
 
-            Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected, 3, PropertiesToIgnore, Output, true));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected, 3, PropertiesToIgnore, Output, false));
 
         }
 
@@ -217,9 +221,10 @@ namespace RepoTests {
             int? take = jsonTestCase.TestScenario.Contains("Take") ? jsonTestCase.GetObject<int?>("Take") : null;
 
 
-            var expected = DynamicConverter.ToPropertyDictionaryList(jsonTestCase.GetObject<List<dynamic>>("Expected"));
+            var expJson = jsonTestCase.GetObject<string>("Expected");
+            var expected = AnonymousTypes<Rgb>.DeserializePagedResult(expJson);
 
-            var actual = DynamicConverter.ToPropertyDictionaryList(await Repo.GetFromDynamicLinqAsync(where, orderBy, select, skip, take));
+            var actual = await Repo.GetFromDynamicLinqAsync(where, orderBy, select, skip, take);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, true));
 

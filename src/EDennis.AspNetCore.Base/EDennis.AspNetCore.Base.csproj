@@ -90,6 +90,10 @@
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.1" />
   </ItemGroup>  
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities\EDennis.NetCoreTestingUtilities.csproj" />
+  </ItemGroup>  
     
 
 </Project>

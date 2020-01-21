@@ -88,16 +88,22 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual List<dynamic> GetFromDynamicLinq(
+        public virtual PagedResult<dynamic> GetFromDynamicLinq(
                 string where = null,
                 string orderBy = null,
                 string select = null,
                 int? skip = null,
                 int? take = null,
-                PagingData pagingData = null) {
+                int? totalRecords = null) {
 
-            IQueryable qry = BuildLinqQuery(where, orderBy, select, skip, take, pagingData);
-            return qry.ToDynamicList();
+            IQueryable qry = BuildLinqQuery(where, orderBy, select, skip, take, totalRecords, 
+                out PagingData pagingData);
+
+            var result = qry.ToDynamicList();
+            return new PagedResult<dynamic> {
+                Data = result,
+                PagingData = pagingData
+            };
 
         }
 
@@ -117,21 +123,26 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual async Task<List<dynamic>> GetFromDynamicLinqAsync(
+        public virtual async Task<PagedResult<dynamic>> GetFromDynamicLinqAsync(
                 string where = null,
                 string orderBy = null,
                 string select = null,
                 int? skip = null,
                 int? take = null,
-                PagingData pagingData = null) {
+                int? totalRecords = null) {
 
-            IQueryable qry = BuildLinqQuery(where, orderBy, select, skip, take, pagingData);
-            return await qry.ToDynamicListAsync();
+            IQueryable qry = BuildLinqQuery(where, orderBy, select, skip, take, totalRecords, out PagingData pagingData);
+            var result = await qry.ToDynamicListAsync();
+
+            return new PagedResult<dynamic> {
+                Data = result,
+                PagingData = pagingData
+            };
 
         }
 
 
-        private IQueryable BuildLinqQuery(string where, string orderBy, string select, int? skip, int? take, PagingData pagingData) {
+        private IQueryable BuildLinqQuery(string where, string orderBy, string select, int? skip, int? take, int? totalRecords, out PagingData pagingData) {
 
             IQueryable qry = Query;
 
@@ -142,25 +153,25 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             if (select != null)
                 qry = qry.Select(select);
 
-            if (take != null) {
+            if (totalRecords == null || totalRecords.Value < 0)
+                totalRecords = qry.Count();
 
-                //conditionally build PagingData;
-                if (pagingData == null)
-                    pagingData = new PagingData();
+            var skipValue = skip == null ? 0 : skip.Value;
+            var takeValue = take == null ? totalRecords.Value - skipValue : take.Value;
+            var pageCount = (int)Math.Ceiling(totalRecords.Value / (double)takeValue);
 
-                if (pagingData.RecordCount == -1)
-                    pagingData.RecordCount = qry.Count();
-
-                pagingData.PageSize = take.Value;
-                var skipValue = skip == null ? 0 : skip.Value;
-                pagingData.PageNumber = (skipValue + 1) * take.Value;
-                pagingData.PageCount = (int)Math.Ceiling(pagingData.RecordCount / (double)pagingData.PageSize);
-
-                qry.Skip(skipValue);
-            }
+            pagingData = new PagingData {
+                RecordCount = totalRecords.Value,
+                PageSize = takeValue,
+                PageNumber = 1+ (int)Math.Ceiling((skipValue) /(double)takeValue),
+                PageCount = pageCount
+            };
+            if (skipValue != 0)
+                qry = qry.Skip(skipValue);
+            if (take != null && take.Value > 0)
+                qry = qry.Take(takeValue);
 
             return qry;
-
         }
 
 

@@ -103,14 +103,14 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]string orderBy = null,
                 [FromQuery]string select = null,
                 [FromQuery]int? skip = null,
-                [FromQuery]int? take = null
+                [FromQuery]int? take = null,
+                [FromQuery]int? totalRecords = null
                 ) {
-            var pagingData = GetPagingData();
-            var dList = Repo.GetFromDynamicLinq(
-                where, orderBy, select, skip, take, pagingData);
-            var pe = PartialEntity<TEntity>.CreateList(dList);
-            var json = JsonSerializer.Serialize(pe, _jsonSerializerOptions);
-            BuildPagingHeaders(pagingData);
+            var pagedList = Repo.GetFromDynamicLinq(
+                where, orderBy, select, skip, take, totalRecords);
+            var json = Newtonsoft.Json.Linq.JToken.FromObject(pagedList).ToString();
+            //var pePagedList = PartialEntity<TEntity>.CreatePagedResult(pagedList);
+            //var json = JsonSerializer.Serialize(pePagedList, _jsonSerializerOptions);
             return new ContentResult { Content = json, ContentType = "application/json" };
         }
 
@@ -132,29 +132,15 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]string orderBy = null,
                 [FromQuery]string select = null,
                 [FromQuery]int? skip = null,
-                [FromQuery]int? take = null
+                [FromQuery]int? take = null,
+                [FromQuery]int? totalRecords = null
                 ) {
-            var pagingData = GetPagingData();
-            var dList = await Repo.GetFromDynamicLinqAsync(
-                where, orderBy, select, skip, take, pagingData);
-            var pe = PartialEntity<TEntity>.CreateList(dList);
-            var json = JsonSerializer.Serialize(pe, _jsonSerializerOptions);
-            BuildPagingHeaders(pagingData);
+            var pagedList = await Repo.GetFromDynamicLinqAsync(
+                where, orderBy, select, skip, take, totalRecords);
+            var json = Newtonsoft.Json.Linq.JToken.FromObject(pagedList).ToString();
+            //var pePagedList = PartialEntity<TEntity>.CreatePagedResult(pagedList);
+            //var json = JsonSerializer.Serialize(pePagedList, _jsonSerializerOptions);
             return new ContentResult { Content = json, ContentType = "application/json" };
-        }
-
-        private PagingData GetPagingData() {
-            if (HttpContext.Request.Headers.TryGetValue("X-TotalRecords", out StringValues totalRecs))
-                return new PagingData { RecordCount = int.Parse(totalRecs) };
-            else
-                return null;
-        }
-
-        private void BuildPagingHeaders(PagingData pagingData) {
-            HttpContext.Response.Headers.Add("X-TotalRecords", pagingData.RecordCount.ToString());
-            HttpContext.Response.Headers.Add("X-PageCount", pagingData.PageCount.ToString());
-            HttpContext.Response.Headers.Add("X-PageSize", pagingData.PageSize.ToString());
-            HttpContext.Response.Headers.Add("X-PageNumber", pagingData.PageNumber.ToString());
         }
 
 

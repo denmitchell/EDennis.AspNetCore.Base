@@ -26,16 +26,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public static ObjectResult Get<TResponseObject>(this HttpClient client,
             string relativeUrlFromBase,
-            PagingData pagingData = null,
             JsonSerializerOptions jsonSerializerOptions = null
             ) {
-            return client.GetAsync<TResponseObject>(relativeUrlFromBase, pagingData, jsonSerializerOptions).Result;
+            return client.GetAsync<TResponseObject>(relativeUrlFromBase, jsonSerializerOptions).Result;
         }
 
 
         public static async Task<ObjectResult> GetAsync<TResponseObject>(
                 this HttpClient client, string relativeUrlFromBase,
-                PagingData pagingData = null,
                     JsonSerializerOptions jsonSerializerOptions = null
                 ) {
 
@@ -47,23 +45,23 @@ namespace EDennis.AspNetCore.Base.Web {
                 RequestUri = new Uri(url)
             };
 
-            AddOrUpdatePagingData(client, msg, pagingData);
+            AddOrUpdatePagingData(client, msg);
 
             var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TResponseObject>(response, pagingData, jsonSerializerOptions);
+            var objResult = await GenerateObjectResult<TResponseObject>(response, jsonSerializerOptions);
 
             return objResult;
 
         }
 
-        public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj, PagingData pagingData = null) {
-            return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj, headers).Result;
+        public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
+            return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj).Result;
         }
 
 
 
         public static async Task<ObjectResult> GetAsync<TRequestObject, TResponseObject>(
-                this HttpClient client, string relativeUrlFromBase, TRequestObject obj, PagingData pagingData = null) {
+                this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
 
             var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
 
@@ -74,10 +72,10 @@ namespace EDennis.AspNetCore.Base.Web {
                 Content = new BodyContent<TRequestObject>(obj)
             };
 
-            AddOrUpdatePagingData(client, msg, pagingData);
+            AddOrUpdatePagingData(client, msg);
 
             var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TResponseObject>(response, headers);
+            var objResult = await GenerateObjectResult<TResponseObject>(response);
 
             return objResult;
 
@@ -486,22 +484,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response,
-            PagingData pagingData = null,
             JsonSerializerOptions jsonSerializerOptions = null) {
 
             object value = null;
 
             int statusCode = (int)response.StatusCode;
-
-            if (response.Headers.Contains("X-RecordCount"))
-                pagingData.RecordCount = int.Parse(response.Headers.GetValues("X-RecordCount").First());
-            if (response.Headers.Contains("X-PageCount"))
-                pagingData.PageCount = int.Parse(response.Headers.GetValues("X-PageCount").First());
-            if (response.Headers.Contains("X-PageNumber"))
-                pagingData.PageCount = int.Parse(response.Headers.GetValues("X-PageNumber").First());
-            if (response.Headers.Contains("X-PageSize"))
-                pagingData.PageCount = int.Parse(response.Headers.GetValues("X-PageSize").First());
-
 
             if (response.Content.Headers.ContentLength > 0) {
                 var json = await response.Content.ReadAsStringAsync();

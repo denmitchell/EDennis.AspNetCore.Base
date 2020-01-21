@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -31,7 +32,7 @@ namespace EDennis.AspNetCore.Base.Serialization {
 
         public static Dictionary<string, PropertyInfo> ClassPropertiesLowerCase { get; }
 
-        private static JsonSerializerOptions jsonSerializerOptions;
+        private static readonly  JsonSerializerOptions jsonSerializerOptions;
 
         /// <summary>
         /// Active properties of the current object
@@ -111,6 +112,26 @@ namespace EDennis.AspNetCore.Base.Serialization {
         }
 
         /// <summary>
+        /// Factory method that creates a list of PartialEntities
+        /// from a list of dynamic objects
+        /// </summary>
+        /// <param name="dynamicEntityList">list of objects, each holding
+        /// one or more properties for an Entity</param>
+        /// <returns></returns>
+        public static PagedResult<PartialEntity<TEntity>> CreatePagedResult(PagedResult<dynamic> pagedResult) {
+            var list = new List<PartialEntity<TEntity>>();
+            foreach (var item in pagedResult.Data) {
+                list.Add(PartialEntity<TEntity>.Create(item));
+            }
+            return new PagedResult<PartialEntity<TEntity>> {
+                Data = list,
+                PagingData = pagedResult.PagingData
+            };
+        }
+
+
+
+        /// <summary>
         /// Converts a PartialEntity list to an Entity list
         /// </summary>
         /// <param name="partialEntityList">the list to convert</param>
@@ -133,8 +154,6 @@ namespace EDennis.AspNetCore.Base.Serialization {
 
 
         public void Deserialize(string json) {
-            var partialEntity = new PartialEntity<TEntity>();
-            partialEntity.Entity = new TEntity();
             byte[] data = Encoding.UTF8.GetBytes(json);
             Utf8JsonReader reader = new Utf8JsonReader(data);
             while (reader.Read()) {

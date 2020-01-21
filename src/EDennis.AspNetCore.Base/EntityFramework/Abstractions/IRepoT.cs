@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using EDennis.AspNetCore.Base.Logging;
+using EDennis.AspNetCore.Base.Serialization;
 using EDennis.AspNetCore.Base.Web;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +24,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         Task<bool> ExistsAsync(params object[] keyValues);
         TEntity GetById(params object[] keyValues);
         Task<TEntity> GetByIdAsync(params object[] keyValues);
-        System.Collections.Generic.List<dynamic> GetFromDynamicLinq(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null, PagingData pagingData = null);
-        Task<System.Collections.Generic.List<dynamic>> GetFromDynamicLinqAsync(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null, PagingData pagingData = null);
+        PagedResult<dynamic> GetFromDynamicLinq(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null, int? totalRecords = null);
+        Task<PagedResult<dynamic>> GetFromDynamicLinqAsync(string where = null, string orderBy = null, string select = null, int? skip = null, int? take = null, int? totalRecords = null);
         TEntity Update(dynamic partialEntity, params object[] keyValues);
         TEntity Update(TEntity entity, params object[] keyValues);
         Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues);
