@@ -10,7 +10,7 @@ namespace EDennis.Samples.MockClientMiddlewareApi.Launcher {
     /// </summary>
     public class Program : ILauncher {
 
-        public void Launch(string[] args) {
+        public void Launch(string[] args, bool _) {
             var m = new M.Program().Run(args);
             var i = new I.Program().Run(args);
             ProgramBase.CanPingAsync(m, i);

@@ -1,7 +1,6 @@
 ﻿using DevExtreme.AspNet.Data;
 using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Serialization;
-using EDennis.NetCoreTestingUtilities.Extensions;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +24,14 @@ namespace EDennis.AspNetCore.Base.Web {
         public Repo<TEntity, TContext> Repo { get; }
         public ILogger Logger { get; }
 
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        public JsonSerializerOptions JsonSerializationOptions { get; set; }
 
         public SqlServerReadonlyController(Repo<TEntity, TContext> repo,ILogger logger) {
             Repo = repo;
             Logger = logger;
 
-            _jsonSerializerOptions = new JsonSerializerOptions();
-            _jsonSerializerOptions.Converters.Add(new PartialEntityConverter());
+            JsonSerializationOptions = new JsonSerializerOptions();
+            JsonSerializationOptions.Converters.Add(new DynamicJsonConverter<TEntity>());
         }
 
         /*
@@ -108,7 +107,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 ) {
             var pagedList = Repo.GetFromDynamicLinq(
                 where, orderBy, select, skip, take, totalRecords);
-            var json = Newtonsoft.Json.Linq.JToken.FromObject(pagedList).ToString();
+            var json = JsonSerializer.Serialize(pagedList);
             //var pePagedList = PartialEntity<TEntity>.CreatePagedResult(pagedList);
             //var json = JsonSerializer.Serialize(pePagedList, _jsonSerializerOptions);
             return new ContentResult { Content = json, ContentType = "application/json" };
@@ -137,7 +136,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 ) {
             var pagedList = await Repo.GetFromDynamicLinqAsync(
                 where, orderBy, select, skip, take, totalRecords);
-            var json = Newtonsoft.Json.Linq.JToken.FromObject(pagedList).ToString();
+            var json = JsonSerializer.Serialize(pagedList);
+            //var json = Newtonsoft.Json.Linq.JToken.FromObject(pagedList).ToString();
             //var pePagedList = PartialEntity<TEntity>.CreatePagedResult(pagedList);
             //var json = JsonSerializer.Serialize(pePagedList, _jsonSerializerOptions);
             return new ContentResult { Content = json, ContentType = "application/json" };

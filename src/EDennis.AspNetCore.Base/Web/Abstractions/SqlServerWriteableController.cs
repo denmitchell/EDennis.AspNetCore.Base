@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
@@ -111,9 +112,8 @@ namespace EDennis.AspNetCore.Base.Web {
             string json;
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
                 json = reader.ReadToEndAsync().Result;
-            }
-            var partialEntity = new PartialEntity<TEntity>();
-            partialEntity.Deserialize(json);
+            }            
+            var partialEntity = JsonSerializer.Deserialize<dynamic>(json, JsonSerializationOptions);
             var updated = Repo.Update(partialEntity, id);
             return Ok(updated);
         }
@@ -158,8 +158,7 @@ namespace EDennis.AspNetCore.Base.Web {
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
                 json = await reader.ReadToEndAsync();
             }
-            var partialEntity = new PartialEntity<TEntity>();
-            partialEntity.Deserialize(json);
+            var partialEntity = JsonSerializer.Deserialize<dynamic>(json, JsonSerializationOptions);
             var updated = await Repo.UpdateAsync(partialEntity, id);
             return Ok(updated);
         }

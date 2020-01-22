@@ -81,7 +81,7 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            var input = jsonTestCase.GetDynamicObject<Rgb>("Input");
+            var input = jsonTestCase.GetObject<dynamic,Rgb>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
@@ -100,7 +100,7 @@ namespace RepoTests {
 
             Output.WriteLine($"Test case: {t}");
 
-            var input = jsonTestCase.GetDynamicObject<Rgb>("Input");
+            var input = jsonTestCase.GetObject<dynamic,Rgb>("Input");
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
@@ -195,7 +195,7 @@ namespace RepoTests {
             int? skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             int? take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var expected = jsonTestCase.GetDynamicPagedResult<Rgb>("Expected");
+            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,Rgb>("Expected");
 
             var actual = Repo.GetFromDynamicLinq(where, orderBy, select, skip, take);
 
@@ -217,7 +217,7 @@ namespace RepoTests {
             int? skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             int? take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var expected = jsonTestCase.GetDynamicPagedResult<Rgb>("Expected");
+            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,Rgb>("Expected");
 
             var actual = await Repo.GetFromDynamicLinqAsync(where, orderBy, select, skip, take);
 
