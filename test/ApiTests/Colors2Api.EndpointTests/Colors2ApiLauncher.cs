@@ -3,7 +3,7 @@ using M = Colors2Api.Lib;
 
 namespace Colors2Api.EndpointTests {
     public class Colors2ApiLauncher : ILauncher {
-        public void Launch(string[] args) {
+        public void Launch(string[] args, bool openBrowser = false) {
             var m = new M.Program().Run(args);
             ProgramBase.CanPingAsync(m);
         }
