@@ -1,6 +1,7 @@
 ﻿using Castle.Core.Configuration;
 using DevExpress.Utils.Serializing.Helpers;
 using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Serialization;
 using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,16 +26,14 @@ namespace EDennis.AspNetCore.Base.Web {
     public static partial class HttpClientExtensions {
 
         public static ObjectResult Get<TResponseObject>(this HttpClient client,
-            string relativeUrlFromBase,
-            JsonSerializerOptions jsonSerializerOptions = null
+            string relativeUrlFromBase
             ) {
-            return client.GetAsync<TResponseObject>(relativeUrlFromBase, jsonSerializerOptions).Result;
+            return client.GetAsync<TResponseObject>(relativeUrlFromBase).Result;
         }
 
 
         public static async Task<ObjectResult> GetAsync<TResponseObject>(
-                this HttpClient client, string relativeUrlFromBase,
-                    JsonSerializerOptions jsonSerializerOptions = null
+                this HttpClient client, string relativeUrlFromBase
                 ) {
 
 
@@ -48,11 +47,43 @@ namespace EDennis.AspNetCore.Base.Web {
             AddOrUpdatePagingData(client, msg);
 
             var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TResponseObject>(response, jsonSerializerOptions);
+            var objResult = await GenerateObjectResult<TResponseObject>(response);
 
             return objResult;
 
         }
+
+
+
+        public static ObjectResult Get<TDynamicResponseObject,TEntity>(this HttpClient client,
+            string relativeUrlFromBase
+            ) {
+            return client.GetAsync<TDynamicResponseObject,TEntity>(relativeUrlFromBase).Result;
+        }
+
+
+        public static async Task<ObjectResult> GetAsync<TDynamicResponseObject,TEntity>(
+                this HttpClient client, string relativeUrlFromBase
+                ) {
+
+
+            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
+
+            var msg = new HttpRequestMessage {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url)
+            };
+
+            AddOrUpdatePagingData(client, msg);
+
+            var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<TDynamicResponseObject, TEntity>(response);
+
+            return objResult;
+
+        }
+
+
 
         public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
             return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj).Result;
@@ -483,8 +514,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response,
-            JsonSerializerOptions jsonSerializerOptions = null) {
+        private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response) {
 
             object value = null;
 
@@ -493,16 +523,11 @@ namespace EDennis.AspNetCore.Base.Web {
             if (response.Content.Headers.ContentLength > 0) {
                 var json = await response.Content.ReadAsStringAsync();
 
-
                 if (statusCode < 299 && typeof(T) != typeof(string)) {
-                    if (jsonSerializerOptions != null)
-                        value = JsonSerializer.Deserialize<T>(json, jsonSerializerOptions);
-                    else {
-                        var options = new JsonSerializerOptions {
-                            PropertyNameCaseInsensitive = true
-                        };
-                        value = JsonSerializer.Deserialize<T>(json, options);
-                    }
+                    var options = new JsonSerializerOptions {
+                        PropertyNameCaseInsensitive = true
+                    };
+                    value = JsonSerializer.Deserialize<T>(json, options);
                 } else {
                     value = json;
                 }
@@ -515,6 +540,32 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+
+        private async static Task<ObjectResult> GenerateObjectResult<TDynamicResponseObject, TEntity>(HttpResponseMessage response) {
+
+            object value = null;
+
+            int statusCode = (int)response.StatusCode;
+
+            if (response.Content.Headers.ContentLength > 0) {
+                var json = await response.Content.ReadAsStringAsync();
+
+                if (statusCode < 299) {
+                    var options = new JsonSerializerOptions {
+                        PropertyNameCaseInsensitive = true
+                    };
+                    options.Converters.Add(new DynamicJsonConverter<TEntity>());
+                    value = JsonSerializer.Deserialize<TDynamicResponseObject>(json, options);
+                } else {
+                    value = json;
+                }
+            }
+
+            return new ObjectResult(value) {
+                StatusCode = statusCode
+            };
+
+        }
 
 
     }

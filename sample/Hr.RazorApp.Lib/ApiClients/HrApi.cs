@@ -27,11 +27,11 @@ namespace Hr.RazorApp {
 
         public async Task<ObjectResult> GetPersonsAsync(string where = null,
             string orderBy = null, string select = null, int? skip = null,
-            int? take = null, PagingData pagingData = null
+            int? take = null, int? totalRecords = null
             ) {
     
-            var url = $"{PERSON_URL}{GetQueryString(where, orderBy, select, skip, take)}";           
-            return await HttpClient.GetAsync<List<Person>>(url, pagingData);
+            var url = $"{PERSON_URL}{GetQueryString(where, orderBy, select, skip, take, totalRecords)}";           
+            return await HttpClient.GetAsync<PagedResult<dynamic>,Person>(url);
         }
 
         public async Task<ObjectResult> GetPersonDetailsAsync(int? id) {
@@ -53,11 +53,11 @@ namespace Hr.RazorApp {
 
         public async Task<ObjectResult> GetAddressesAsync(string where = null,
             string orderBy = null, string select = null, int? skip = null,
-            int? take = null, PagingData pagingData = null
+            int? take = null, int? totalRecords = null
             ) {
 
-            var url = $"{ADDRESS_URL}{GetQueryString(where, orderBy, select, skip, take)}";
-            return await HttpClient.GetAsync<List<Address>>(url, pagingData);
+            var url = $"{ADDRESS_URL}{GetQueryString(where, orderBy, select, skip, take, totalRecords)}";
+            return await HttpClient.GetAsync<PagedResult<dynamic>, Address>(url);
         }
 
 
@@ -81,19 +81,21 @@ namespace Hr.RazorApp {
 
         private string GetQueryString(string where = null,
             string orderBy = null, string select = null, int? skip = null,
-            int? take = null) {
+            int? take = null, int? totalRecords = null) {
 
             var q = new List<string>();
-            if (where != null)
+            if (!string.IsNullOrWhiteSpace(where))
                 q.Add($"where={where}");
-            if (orderBy != null)
+            if (!string.IsNullOrWhiteSpace(orderBy))
                 q.Add($"orderBy={orderBy}");
-            if (select != null)
+            if (!string.IsNullOrWhiteSpace(select))
                 q.Add($"select={select}");
             if (skip != null)
                 q.Add($"skip={skip.Value}");
             if (take != null)
                 q.Add($"take={take}");
+            if (totalRecords != null)
+                q.Add($"totalRecords={totalRecords}");
 
             var qString = "?" + string.Join('&', q);
 

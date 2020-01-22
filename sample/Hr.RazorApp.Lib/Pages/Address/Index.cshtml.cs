@@ -41,8 +41,7 @@ namespace Hr.RazorApp.AddressPages
 
             var result = await _api.GetAddressesAsync(
                 skip:(PagingData.PageNumber - 1)*PagingData.PageCount,
-                take:PagingData.PageSize, 
-                pagingData: PagingData
+                take:PagingData.PageSize
                 );
 
             Addresses = (List<Address>)result.Value;

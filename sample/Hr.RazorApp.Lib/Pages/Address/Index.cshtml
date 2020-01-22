@@ -79,22 +79,22 @@
                     <a class="page-link" href="/">First</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="/?p=@(Model.PagingData.PageNumber - 1)">Previous</a>
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageNumber - 1))&take=@(Model.PagingData.PageSize)">Previous</a>
                 </li>
             }
 
-            @foreach (var p in Model.Pager.Pages) {
-                <li class="page-item @(p == Model.Pager.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="/?p=@p">@p</a>
+            @for(int i=1; i <= Model.PagingData.PageCount; i++) {
+                <li class="page-item @(i == Model.PagingData.PageNumber ? "active" : "")">
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageNumber + i))&take=@(Model.PagingData.PageSize)">@i</a>
                 </li>
             }
 
-            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages) {
+            @if (Model.PagingData.PageNumber < Model.PagingData.PageCount) {
                 <li class="page-item">
-                    <a class="page-link" href="/?p=@(Model.Pager.CurrentPage + 1)">Next</a>
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageNumber + 1))&take=@(Model.PagingData.PageSize)">Next</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="/?p=@(Model.Pager.TotalPages)">Last</a>
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageCount - 1))&take=@(Model.PagingData.PageSize)">Last</a>
                 </li>
             }
         </ul>
