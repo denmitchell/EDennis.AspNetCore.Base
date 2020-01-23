@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using EDennis.AspNetCore.Base.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -32,15 +33,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            string result;
+            string json;
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
+                json = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
             } else {
-                result = cxn.ExecuteScalar<string>(sql);
+                json = cxn.ExecuteScalar<string>(sql);
             }
-            return JsonSerializer.Deserialize<List<TEntity>>(result);
-
+            var result = JsonSerializer.Deserialize<List<TEntity>>(json);
+            return result;
         }
 
 
@@ -57,17 +58,72 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            string result;
+            string json;
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
+                json = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
             } else {
-                result = await cxn.ExecuteScalarAsync<string>(sql);
+                json = await cxn.ExecuteScalarAsync<string>(sql);
             }
-            return JsonSerializer.Deserialize<List<TEntity>>(result);
-
+            var result = JsonSerializer.Deserialize<List<TEntity>>(json);
+            return result;
         }
 
+
+        /// <summary>
+        /// Retrieves raw JSON from SQL Server using the
+        /// provided FOR JSON SQL SELECT statement
+        /// </summary>
+        /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
+        /// <returns></returns>
+        public static PagedResult<dynamic> GetPagedResultFromJsonSql<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+            where TContext : DbContext {
+
+            var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
+            var cxn = context.Database.GetDbConnection();
+
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                json = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
+            } else {
+                json = cxn.ExecuteScalar<string>(sql);
+            }
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new DynamicJsonConverter<TEntity>());
+            var result = JsonSerializer.Deserialize<PagedResult<dynamic>>(json, options);
+            return result;
+        }
+
+
+        /// <summary>
+        /// Asynchronously retrieves raw JSON from SQL Server 
+        /// using the provided FOR JSON SQL SELECT statement
+        /// </summary>
+        /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
+        /// <returns></returns>
+        public static async Task<PagedResult<dynamic>> GetPagedResultFromJsonSqlAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+            where TContext : DbContext {
+
+            var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                json = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
+            } else {
+                json = await cxn.ExecuteScalarAsync<string>(sql);
+            }
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new DynamicJsonConverter<TEntity>());
+            var result = JsonSerializer.Deserialize<PagedResult<dynamic>>(json, options);
+            return result;
+
+        }
 
 
         /// <summary>
@@ -84,14 +140,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            string result;
+            string json;
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
+                json = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
             } else {
-                result = cxn.ExecuteScalar<string>(sql);
+                json = cxn.ExecuteScalar<string>(sql);
             }
-            return JsonSerializer.Deserialize<TEntity>(result);
+            return JsonSerializer.Deserialize<TEntity>(json);
 
         }
 
@@ -109,15 +165,65 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var cxn = context.Database.GetDbConnection();
             if (cxn.State == ConnectionState.Closed)
                 cxn.Open();
-            string result;
+            string json;
             if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
                 var dbTrans = trans.GetDbTransaction();
-                result = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
+                json = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
             } else {
-                result = await cxn.ExecuteScalarAsync<string>(sql);
+                json = await cxn.ExecuteScalarAsync<string>(sql);
             }
-            return JsonSerializer.Deserialize<TEntity>(result);
+            return JsonSerializer.Deserialize<TEntity>(json);
 
+        }
+
+
+
+        /// <summary>
+        /// Retrieves raw JSON from SQL Server using the
+        /// provided FOR JSON SQL SELECT statement
+        /// </summary>
+        /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
+        /// <returns></returns>
+        public static string GetJsonFromJsonSql<TContext>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+            where TContext : DbContext {
+
+            var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
+            var cxn = context.Database.GetDbConnection();
+
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                json = cxn.ExecuteScalar<string>(sql, transaction: dbTrans);
+            } else {
+                json = cxn.ExecuteScalar<string>(sql);
+            }
+            return json;
+        }
+
+
+        /// <summary>
+        /// Asynchronously retrieves raw JSON from SQL Server 
+        /// using the provided FOR JSON SQL SELECT statement
+        /// </summary>
+        /// <param name="fromJsonSql">Valid SQL SELECT statement with FOR JSON clause</param>
+        /// <returns></returns>
+        public static async Task<string> GetJsonFromJsonSqlAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string fromJsonSql)
+            where TContext : DbContext {
+
+            var sql = $"declare @j varchar(max) = ({fromJsonSql}); select @j json;";
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+                json = await cxn.ExecuteScalarAsync<string>(sql, transaction: dbTrans);
+            } else {
+                json = await cxn.ExecuteScalarAsync<string>(sql);
+            }
+            return json;
         }
 
 
@@ -296,6 +402,185 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public static PagedResult<dynamic> GetPagedResultFromJsonStoredProcedure<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+            IEnumerable<KeyValuePair<string, string>> parms)
+            where TContext : DbContext {
+
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
+
+
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                JsonColumnResult jsonColumnResult = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
+                   param: dynamicParameters,
+                   transaction: dbTrans,
+                   commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+
+            } else {
+                JsonColumnResult jsonColumnResult = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+            }
+
+
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new DynamicJsonConverter<TEntity>());
+            var result = JsonSerializer.Deserialize<PagedResult<dynamic>>(json, options);
+            return result;
+
+        }
+
+
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public static async Task<PagedResult<dynamic>> GetPagedResultFromJsonStoredProcedureAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+            IEnumerable<KeyValuePair<string, string>> parms)
+            where TContext : DbContext {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
+
+
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                JsonColumnResult jsonColumnResult = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+
+            } else {
+                JsonColumnResult jsonColumnResult = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+            }
+
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new DynamicJsonConverter<TEntity>());
+            var result = JsonSerializer.Deserialize<PagedResult<dynamic>>(json, options);
+            return result;
+
+        }
+
+
+
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public static string GetJsonFromJsonStoredProcedure<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+            IEnumerable<KeyValuePair<string, string>> parms)
+            where TContext : DbContext {
+
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
+
+
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                JsonColumnResult jsonColumnResult = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
+                   param: dynamicParameters,
+                   transaction: dbTrans,
+                   commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+
+            } else {
+                JsonColumnResult jsonColumnResult = cxn.QuerySingle<JsonColumnResult>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+            }
+
+            return json;
+
+        }
+
+
+
+        /// <summary>
+        /// Retrieves a string-typed column named "Json" from a database.
+        /// This can be used to return a flat or hierarchical JSON-structured
+        /// result (e.g., using FOR JSON with SQL Server)
+        /// </summary>
+        public static async Task<string> GetJsonFromJsonStoredProcedureAsync<TContext, TEntity>(this ISqlServerDbContext<TContext> context, string spName,
+            IEnumerable<KeyValuePair<string, string>> parms)
+            where TContext : DbContext {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.AddRange(spName, parms, context.StoredProcedureDefs);
+
+
+            var cxn = context.Database.GetDbConnection();
+            if (cxn.State == ConnectionState.Closed)
+                cxn.Open();
+            string json;
+
+            if (context.Database.CurrentTransaction is IDbContextTransaction trans) {
+                var dbTrans = trans.GetDbTransaction();
+
+                JsonColumnResult jsonColumnResult = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    transaction: dbTrans,
+                    commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+
+            } else {
+                JsonColumnResult jsonColumnResult = await cxn.QuerySingleAsync<JsonColumnResult>(sql: $"{spName}",
+                    param: dynamicParameters,
+                    commandType: CommandType.StoredProcedure);
+
+                json = jsonColumnResult.Json;
+            }
+
+            return json;
+
+        }
+
+
+
         /// <summary>
         /// Retrieves a result via a parameterized stored procedure.
         /// </summary>
@@ -327,6 +612,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     param: dynamicParameters,
                     commandType: CommandType.StoredProcedure);
             }
+
+            //TODO: populate output parameters
 
             return result.ToList();
 
@@ -366,9 +653,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     commandType: CommandType.StoredProcedure);
             }
 
+            //TODO: populate output parameters
+
             return result.ToList();
 
         }
+
 
 
 

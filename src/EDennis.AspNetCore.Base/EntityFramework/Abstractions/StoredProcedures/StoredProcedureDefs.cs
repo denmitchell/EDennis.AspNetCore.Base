@@ -56,6 +56,7 @@ select
    p2.name [ParameterName],  
    parameter_id [Order],  
    type_name(user_type_id) [Type],  
+   is_output [IsOutput],
    max_length [Length],  
    case when type_name(system_type_id) = 'uniqueidentifier' 
               then precision  

@@ -10,12 +10,38 @@ declare @ControllerPath varchar(255) = 'api/Rgb'
 
 declare @Id int = -999146
 
+declare @recordCount int;
+declare @pageCount int;
+declare @pageNumber int;
+declare @pageSize int;
+
+select @recordCount = count(*) from Rgb where Id between @WindowStart and @WindowEnd and Id <> @Id
+select @pageSize = @recordCount
+select @pageCount = 1
+select @pageNumber = 1 
+
 declare 
 	@Expected varchar(max) = 
 (
-	select * from Rgb
-	where Id between @WindowStart and @WindowEnd and Id <> @Id
-	for json path
+	select
+		RecordCount [PagingData.RecordCount], 
+		PageSize [PagingData.PageSize], 
+		PageNumber [PagingData.PageNumber], 
+		PageCount [PagingData.PageCount],
+		(
+			select * from Rgb
+			where Id between @WindowStart and @WindowEnd and Id <> @Id
+			for json path
+		) Data
+		
+		from (
+			select
+				@recordCount RecordCount,
+				@pageSize PageSize,
+				@pageNumber PageNumber,
+				@pageCount PageCount
+		) PagingData
+		for json path, without_array_wrapper
 );
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Id', @Id

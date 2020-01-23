@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
@@ -79,7 +80,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public ExpectedActualList<TEntity> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActual<PagedResult<dynamic>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return GetDynamicLinq_ExpectedActual_Base(t, jsonTestCase, false);
         }
 
@@ -94,7 +95,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public async Task<ExpectedActualList<TEntity>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<PagedResult<dynamic>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
                 GetDynamicLinq_ExpectedActual_Base(t, jsonTestCase, true));
         }
@@ -109,7 +110,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="jsonTestCase"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        private ExpectedActualList<TEntity> GetDynamicLinq_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        private ExpectedActual<PagedResult<dynamic>> GetDynamicLinq_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
@@ -118,7 +119,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
 
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,TEntity>("Expected");
 
             var queryStrings = new List<string>();
 
@@ -139,18 +140,18 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             IActionResult actualResult;
             if (isAsync)
-                actualResult = HttpClient.GetAsync<List<TEntity>>(url).Result;
+                actualResult = HttpClient.GetAsync<PagedResult<dynamic>,TEntity>(url).Result;
             else
-                actualResult = HttpClient.Get<List<TEntity>>(url);
+                actualResult = HttpClient.Get<PagedResult<dynamic>, TEntity>(url);
 
 
             var statusCode = actualResult.GetStatusCode();
             if (statusCode > 299)
                 throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
 
-            var actual = actualResult.GetObject<List<TEntity>>();
+            var actual = actualResult.GetObject<PagedResult<dynamic>>();
 
-            return new ExpectedActualList<TEntity> { Expected = expected, Actual = actual };
+            return new ExpectedActual<PagedResult<dynamic>> { Expected = expected, Actual = actual };
         }
 
 

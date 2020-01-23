@@ -13,6 +13,16 @@ declare @Red int = 146
 declare @Green int = 146
 declare @Blue int = 146
 
+declare @recordCount int;
+declare @pageCount int;
+declare @pageNumber int;
+declare @pageSize int;
+
+select @recordCount = count(*) from Rgb where Id between @WindowStart and @WindowEnd
+select @pageSize = @recordCount
+select @pageCount = 1
+select @pageNumber = 1 
+
 declare 
 	@Input varchar(max) = 
 (
@@ -23,12 +33,29 @@ declare
 begin transaction
 update Rgb set Name = @TestCase, Red = @Red, Green = @Green, Blue = @Blue, SysUser = 'tester@example.org', DateAdded = '2020-01-01' where Id = @Id
 
+
 declare 
 	@Expected varchar(max) = 
 (
-	select * from Rgb
-	where Id between @WindowStart and @WindowEnd
-	for json path
+	select
+		RecordCount [PagingData.RecordCount], 
+		PageSize [PagingData.PageSize], 
+		PageNumber [PagingData.PageNumber], 
+		PageCount [PagingData.PageCount],
+		(
+			select * from Rgb
+				where Id between @WindowStart and @WindowEnd
+				for json path
+		) Data
+		
+		from (
+			select
+				@recordCount RecordCount,
+				@pageSize PageSize,
+				@pageNumber PageNumber,
+				@pageCount PageCount
+		) PagingData
+		for json path, without_array_wrapper
 );
 
 rollback transaction

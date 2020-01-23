@@ -10,14 +10,41 @@ declare @Where varchar(255) = 'Red gt 200'
 declare @Skip int = 2
 declare @Take int = 5
 
+
+declare @recordCount int;
+declare @pageCount int;
+declare @pageNumber int;
+declare @pageSize int;
+
+select @recordCount = count(*) from Rgb where Red > 200
+select @pageCount = ceiling(convert(decimal(10,2),@recordCount)/@Take)
+select @pageNumber = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
+select @pageSize = @Take
+
 declare 
 	@Expected varchar(max) = 
 (
-	select * from Rgb
-	where Red > 200 
-	order by Id
-	offset @Skip ROWS FETCH NEXT @Take ROWS ONLY
-	for json path, include_null_values
+	select
+		RecordCount [PagingData.RecordCount], 
+		PageSize [PagingData.PageSize], 
+		PageNumber [PagingData.PageNumber], 
+		PageCount [PagingData.PageCount],
+		(
+			select * from Rgb
+				where Red > 200 
+				order by Id
+				offset @Skip rows fetch next @Take rows only
+				for json path
+		) Data
+		
+		from (
+			select
+				@recordCount RecordCount,
+				@pageSize PageSize,
+				@pageNumber PageNumber,
+				@pageCount PageCount
+		) PagingData
+		for json path, without_array_wrapper
 );
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Where', @Where

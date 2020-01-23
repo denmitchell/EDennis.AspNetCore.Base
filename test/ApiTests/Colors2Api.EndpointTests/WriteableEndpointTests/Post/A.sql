@@ -13,6 +13,16 @@ declare @Red int = 201
 declare @Green int = 201
 declare @Blue int = 201
 
+declare @recordCount int;
+declare @pageCount int;
+declare @pageNumber int;
+declare @pageSize int;
+
+select @recordCount = count(*) from Rgb where Id between @WindowStart and @WindowEnd or Id = @Id
+select @pageSize = @recordCount
+select @pageCount = 1
+select @pageNumber = 1 
+
 declare 
 	@Input varchar(max) = 
 (
@@ -27,10 +37,27 @@ insert into Rgb(Id,Name,Red,Green,Blue,SysUser,DateAdded)
 declare 
 	@Expected varchar(max) = 
 (
-	select * from Rgb
-	where Id between @WindowStart and @WindowEnd or Id = @Id
-	for json path
+	select
+		RecordCount [PagingData.RecordCount], 
+		PageSize [PagingData.PageSize], 
+		PageNumber [PagingData.PageNumber], 
+		PageCount [PagingData.PageCount],
+		(
+			select * from Rgb
+				where Id between @WindowStart and @WindowEnd or Id = @Id
+				for json path
+		) Data
+		
+		from (
+			select
+				@recordCount RecordCount,
+				@pageSize PageSize,
+				@pageNumber PageNumber,
+				@pageCount PageCount
+		) PagingData
+		for json path, without_array_wrapper
 );
+
 
 rollback transaction
 exec _.ResetIdentities

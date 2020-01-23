@@ -63,9 +63,21 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 var parmDef = spDef
                     .FirstOrDefault(d => d.ParameterName.ToLower().Replace("@", "") 
                     == parm.Key.ToLower().Replace("@", ""));
-                dynamic value = Convert.ChangeType(parm.Value,TypeMap[parmDef.Type]);
-                destination.Add(parmDef.ParameterName, value);
-
+                ParameterDirection direction;
+                if (parmDef.IsOutput) {
+                    if (parm.Value == "")
+                        direction = ParameterDirection.Output;
+                    else
+                        direction = ParameterDirection.InputOutput;
+                } else {
+                    direction = ParameterDirection.Input;
+                }
+                if (direction == ParameterDirection.Output)
+                    destination.Add(parmDef.ParameterName, null, direction: direction);
+                else {
+                    dynamic value = Convert.ChangeType(parm.Value, TypeMap[parmDef.Type]);
+                    destination.Add(parmDef.ParameterName, value, direction: direction);
+                }
             }
         }
 
