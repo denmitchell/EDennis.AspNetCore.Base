@@ -12,6 +12,7 @@ using System.Text.Json;
 using System;
 using System.Reflection;
 using Microsoft.Extensions.Primitives;
+using System.Data;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -105,12 +106,19 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? take = null,
                 [FromQuery]int? totalRecords = null
                 ) {
-            var pagedList = Repo.GetFromDynamicLinq(
-                where, orderBy, select, skip, take, totalRecords);
-            var json = JsonSerializer.Serialize(pagedList);
-            //var pePagedList = PartialEntity<TEntity>.CreatePagedResult(pagedList);
-            //var json = JsonSerializer.Serialize(pePagedList, _jsonSerializerOptions);
-            return new ContentResult { Content = json, ContentType = "application/json" };
+
+            if(select != null) {
+                var pagedResult = Repo.GetFromDynamicLinq(
+                    select, where, orderBy, skip, take, totalRecords);
+                var json = JsonSerializer.Serialize(pagedResult);
+                return new ContentResult { Content = json, ContentType = "application/json" };
+            } else {
+                var pagedResult = Repo.GetFromDynamicLinq(
+                    where, orderBy, skip, take, totalRecords);
+                var json = JsonSerializer.Serialize(pagedResult);
+                return new ContentResult { Content = json, ContentType = "application/json" };
+            }
+
         }
 
 
@@ -134,54 +142,50 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? take = null,
                 [FromQuery]int? totalRecords = null
                 ) {
-            var pagedList = await Repo.GetFromDynamicLinqAsync(
-                where, orderBy, select, skip, take, totalRecords);
-            var json = JsonSerializer.Serialize(pagedList);
-            //var json = Newtonsoft.Json.Linq.JToken.FromObject(pagedList).ToString();
-            //var pePagedList = PartialEntity<TEntity>.CreatePagedResult(pagedList);
-            //var json = JsonSerializer.Serialize(pePagedList, _jsonSerializerOptions);
-            return new ContentResult { Content = json, ContentType = "application/json" };
+            if (select != null) {
+                var pagedResult = await Repo.GetFromDynamicLinqAsync(
+                    select, where, orderBy, skip, take, totalRecords);
+                var json = JsonSerializer.Serialize(pagedResult);
+                return new ContentResult { Content = json, ContentType = "application/json" };
+            } else {
+                var pagedResult = await Repo.GetFromDynamicLinqAsync(
+                    where, orderBy, skip, take, totalRecords);
+                var json = JsonSerializer.Serialize(pagedResult);
+                return new ContentResult { Content = json, ContentType = "application/json" };
+            }
         }
 
 
+
+
+
+
+
         /// <summary>
-        /// Executes a stored procedure and returns the result.
-        /// Note: there are no application-level constraints
-        /// that limit repos to executing read-only 
-        /// stored procedures.
+        /// Executes a stored procedure and returns the result as a json array.
         /// </summary>
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("sp")]
-        public IActionResult GetListFromStoredProcedure([FromQuery] string spName) {
+        public IActionResult GetJsonArrayFromStoredProcedure([FromQuery] string spName) {
 
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
-
-            var result = Repo.Context.GetListFromStoredProcedure<TContext, TEntity>(
-                spName, parms);
+            var parms = GetParamsFromQuery();
+            var result = Repo.Context.GetJsonArrayFromStoredProcedure(spName, parms);
 
             return Ok(result);
         }
 
 
         /// <summary>
-        /// Asynchronously executes a stored procedure and returns the result.
-        /// Note: there are no application-level constraints
-        /// that limit repos to executing read-only 
-        /// stored procedures.
+        /// Asynchronously executes a stored procedure and returns the result as a json array.
         /// </summary>
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("sp/async")]
-        public async Task<IActionResult> GetListFromStoredProcedureAsync([FromQuery] string spName) {
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+        public async Task<IActionResult> GetJsonArrayFromStoredProcedureAsync([FromQuery] string spName) {
 
-            var result = await Repo.Context.GetListFromStoredProcedureAsync<TContext, TEntity>(
-                spName, parms);
+            var parms = GetParamsFromQuery();
+            var result = await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parms);
 
             return Ok(result);
         }
@@ -189,46 +193,87 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         /// <summary>
-        /// Executes a stored procedure and returns the result.
-        /// Note: there are no application-level constraints
-        /// that limit repos to executing read-only 
-        /// stored procedures.
+        /// Executes a stored procedure and returns the result as a json object.
         /// </summary>
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
-        [HttpGet("sp/single")]
-        public IActionResult GetSingleFromStoredProcedure([FromQuery] string spName) {
+        [HttpGet("sp/obj")]
+        public IActionResult GetJsonObjectFromStoredProcedure([FromQuery] string spName) {
 
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
-
-            var result = Repo.Context.GetSingleFromStoredProcedure<TContext, TEntity>(
-                spName, parms);
+            var parms = GetParamsFromQuery();
+            var result = Repo.Context.GetJsonObjectFromStoredProcedure(spName, parms);
 
             return Ok(result);
         }
 
 
         /// <summary>
-        /// Asynchronously executes a stored procedure and returns the result.
-        /// Note: there are no application-level constraints
-        /// that limit repos to executing read-only 
-        /// stored procedures.
+        /// Asynchronously executes a stored procedure and returns the result as a json object.
         /// </summary>
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
-        [HttpGet("sp/single/async")]
-        public async Task<IActionResult> GetSingleFromStoredProcedureAsync([FromQuery] string spName) {
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
+        [HttpGet("sp/obj/async")]
+        public async Task<IActionResult> GetJsonObjectFromStoredProcedureAsync([FromQuery] string spName) {
 
-            var result = await Repo.Context.GetSingleFromStoredProcedureAsync<TContext, TEntity>(
-                spName, parms);
+            var parms = GetParamsFromQuery();
+            var result = await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parms);
 
             return Ok(result);
         }
+
+
+
+        /// <summary>
+        /// Executes a stored procedure and returns the result as a json object.
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
+        [HttpGet("sp/scalar")]
+        public IActionResult GetScalarFromStoredProcedure([FromQuery] string spName, [FromQuery] string returnType) {
+
+            var parms = GetParamsFromQuery();
+
+            if (returnType.Equals("int", StringComparison.OrdinalIgnoreCase) || returnType.Equals("integer", StringComparison.OrdinalIgnoreCase))
+                return Ok(Repo.Context.GetScalarFromStoredProcedure<TContext, int>(spName, parms));
+            else if (returnType.Equals("decimal", StringComparison.OrdinalIgnoreCase) || returnType.Equals("money", StringComparison.OrdinalIgnoreCase))
+                return Ok(Repo.Context.GetScalarFromStoredProcedure<TContext, decimal>(spName, parms));
+            else if (returnType.Equals("date", StringComparison.OrdinalIgnoreCase) || returnType.Equals("datetime", StringComparison.OrdinalIgnoreCase))
+                return Ok(Repo.Context.GetScalarFromStoredProcedure<TContext, DateTime>(spName, parms));
+            else if (returnType.Equals("time", StringComparison.OrdinalIgnoreCase) || returnType.Equals("timespan", StringComparison.OrdinalIgnoreCase))
+                return Ok(Repo.Context.GetScalarFromStoredProcedure<TContext, TimeSpan>(spName, parms));
+            else if (returnType.Equals("bool", StringComparison.OrdinalIgnoreCase) || returnType.Equals("boolean", StringComparison.OrdinalIgnoreCase))
+                return Ok(Repo.Context.GetScalarFromStoredProcedure<TContext, bool>(spName, parms));
+            else
+                return Ok(Repo.Context.GetScalarFromStoredProcedure<TContext, string>(spName, parms));
+
+        }
+
+
+        /// <summary>
+        /// Asynchronously executes a stored procedure and returns the result as a json object.
+        /// </summary>
+        /// <param name="spName">The name of the stored procedure to execute</param>
+        /// <returns></returns>
+        [HttpGet("sp/scalar/async")]
+        public async Task<IActionResult> GetScalarFromStoredProcedureAsync([FromQuery] string spName, [FromQuery] string returnType) {
+
+            var parms = GetParamsFromQuery();
+
+            if (returnType.Equals("int", StringComparison.OrdinalIgnoreCase) || returnType.Equals("integer", StringComparison.OrdinalIgnoreCase))
+                return Ok(await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, int>(spName, parms));
+            else if (returnType.Equals("decimal", StringComparison.OrdinalIgnoreCase) || returnType.Equals("money", StringComparison.OrdinalIgnoreCase))
+                return Ok(await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, decimal>(spName, parms));
+            else if (returnType.Equals("date", StringComparison.OrdinalIgnoreCase) || returnType.Equals("datetime", StringComparison.OrdinalIgnoreCase))
+                return Ok(await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, DateTime>(spName, parms));
+            else if (returnType.Equals("time", StringComparison.OrdinalIgnoreCase) || returnType.Equals("timespan", StringComparison.OrdinalIgnoreCase))
+                return Ok(await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, TimeSpan>(spName, parms));
+            else if (returnType.Equals("bool", StringComparison.OrdinalIgnoreCase) || returnType.Equals("boolean", StringComparison.OrdinalIgnoreCase))
+                return Ok(await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, bool>(spName, parms));
+            else
+                return Ok(Repo.Context.GetScalarFromStoredProcedureAsync<TContext, string>(spName, parms));
+
+        }
+
 
 
         /// <summary>
@@ -237,33 +282,25 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("json")]
-        public IActionResult GetListFromJsonStoredProcedure([FromQuery] string spName) {
+        public IActionResult GetJsonFromJsonStoredProcedure([FromQuery] string spName) {
 
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
-
-            var result = Repo.Context.GetListFromJsonStoredProcedure<TContext,TEntity>(
-                spName, parms);
+            var parms = GetParamsFromQuery();
+            var result = Repo.Context.GetJsonFromJsonStoredProcedure(spName, parms);
 
             return Ok(result);
         }
 
 
         /// <summary>
-        /// Asynchrously obtains a json result from a stored procedure
+        /// Asynchronously obtains a json result from a stored procedure
         /// </summary>
         /// <param name="spName">The name of the stored procedure to execute</param>
         /// <returns></returns>
         [HttpGet("json/async")]
-        public async Task<IActionResult> GetListFromJsonStoredProcedureAsync([FromQuery] string spName) {
+        public async Task<IActionResult> GetJsonFromJsonStoredProcedureAsync([FromQuery] string spName) {
 
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
-
-            var result = await Repo.Context.GetListFromJsonStoredProcedureAsync<TContext, TEntity>(
-                spName, parms);
+            var parms = GetParamsFromQuery();
+            var result = await Repo.Context.GetJsonFromJsonStoredProcedureAsync(spName, parms);
 
             return Ok(result);
         }
@@ -271,41 +308,12 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        /// <summary>
-        /// Obtains a json result from a stored procedure
-        /// </summary>
-        /// <param name="spName">The name of the stored procedure to execute</param>
-        /// <returns></returns>
-        [HttpGet("json/single")]
-        public IActionResult GetSingleFromJsonStoredProcedure([FromQuery] string spName) {
 
+        private Dictionary<string,object> GetParamsFromQuery() {
             var parms = HttpContext.Request.Query
                 .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
-
-            var result = Repo.Context.GetSingleFromJsonStoredProcedure<TContext, TEntity>(
-                spName, parms);
-
-            return Ok(result);
-        }
-
-
-        /// <summary>
-        /// Asynchrously obtains a json result from a stored procedure
-        /// </summary>
-        /// <param name="spName">The name of the stored procedure to execute</param>
-        /// <returns></returns>
-        [HttpGet("json/single/async")]
-        public async Task<IActionResult> GetSingleFromJsonStoredProcedureAsync([FromQuery] string spName) {
-
-            var parms = HttpContext.Request.Query
-                .Where(q => q.Key != "spName")
-                .Select(q => new KeyValuePair<string, string>(q.Key, q.Value[0]));
-
-            var result = await Repo.Context.GetSingleFromJsonStoredProcedureAsync<TContext, TEntity>(
-                spName, parms);
-
-            return Ok(result);
+                .ToDictionary(q => q.Key, q => (object)q.Value);
+            return parms;
         }
 
 

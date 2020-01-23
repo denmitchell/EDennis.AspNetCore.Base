@@ -1,10 +1,10 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Web;
+﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
@@ -55,22 +55,22 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
 
-        public async Task<ExpectedActual<PagedResult<dynamic>>> DeleteAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<List<TEntity>>> DeleteAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
                 Delete_ExpectedActual_Base(t, jsonTestCase, true));
         }
 
-        public ExpectedActual<PagedResult<dynamic>> Delete_ExpectedActual(string t, JsonTestCase jsonTestCase)
+        public ExpectedActual<List<TEntity>> Delete_ExpectedActual(string t, JsonTestCase jsonTestCase)
             => Delete_ExpectedActual_Base(t, jsonTestCase, false);
 
-        public ExpectedActual<PagedResult<dynamic>> Delete_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        public ExpectedActual<List<TEntity>> Delete_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var start = jsonTestCase.GetObject<string>("WindowStart", Output);
             var end = jsonTestCase.GetObject<string>("WindowEnd", Output);
-            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,TEntity>("Expected");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
             var url = $"{controllerPath}/{(isAsync ? "async/" : "")}{id}";
             Output.WriteLine($"url: {url}");
@@ -83,29 +83,29 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
-            actualResult = HttpClient.Get<PagedResult<dynamic>,TEntity>(getUrl);
+            actualResult = HttpClient.Get<PagedResult<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
 
-            PagedResult<dynamic> actual;
+            List<TEntity> actual;
             if (statusCode > 299)
                 throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
             else
-                actual = actualResult.GetObject<PagedResult<dynamic>>();
+                actual = actualResult.GetObject<PagedResult<TEntity>>().Queryable.ToList();
 
-            return new ExpectedActual<PagedResult<dynamic>> { Expected = expected, Actual = actual };
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
         }
 
 
 
-        public async Task<ExpectedActual<PagedResult<dynamic>>> PutAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<List<TEntity>>> PutAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
                 Put_ExpectedActual_Base(t, jsonTestCase, true));
         }
 
-        public ExpectedActual<PagedResult<dynamic>> Put_ExpectedActual(string t, JsonTestCase jsonTestCase)
+        public ExpectedActual<List<TEntity>> Put_ExpectedActual(string t, JsonTestCase jsonTestCase)
             => Put_ExpectedActual_Base(t, jsonTestCase, false);
 
-        public ExpectedActual<PagedResult<dynamic>> Put_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        public ExpectedActual<List<TEntity>> Put_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
@@ -113,7 +113,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var start = jsonTestCase.GetObject<string>("WindowStart", Output);
             var end = jsonTestCase.GetObject<string>("WindowEnd", Output);
-            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,TEntity>("Expected");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
             var url = $"{controllerPath}/{(isAsync ? "async/" : "")}{id}";
             Output.WriteLine($"url: {url}");
@@ -126,28 +126,28 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
-            actualResult = HttpClient.Get<PagedResult<dynamic>,TEntity>(getUrl);
+            actualResult = HttpClient.Get<PagedResult<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
 
-            PagedResult<dynamic> actual;
+            List<TEntity> actual;
             if (statusCode > 299)
                 throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
             else
-                actual = actualResult.GetObject<PagedResult<dynamic>>();
+                actual = actualResult.GetObject<PagedResult<TEntity>>().Queryable.ToList();
 
-            return new ExpectedActual<PagedResult<dynamic>> { Expected = expected, Actual = actual };
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
         }
 
 
-        public async Task<ExpectedActual<PagedResult<dynamic>>> PatchAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<List<TEntity>>> PatchAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
                 Patch_ExpectedActual_Base(t, jsonTestCase, true));
         }
 
-        public ExpectedActual<PagedResult<dynamic>> Patch_ExpectedActual(string t, JsonTestCase jsonTestCase)
+        public ExpectedActual<List<TEntity>> Patch_ExpectedActual(string t, JsonTestCase jsonTestCase)
             => Patch_ExpectedActual_Base(t, jsonTestCase, false);
 
-        public ExpectedActual<PagedResult<dynamic>> Patch_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        public ExpectedActual<List<TEntity>> Patch_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
@@ -155,7 +155,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var start = jsonTestCase.GetObject<string>("WindowStart", Output);
             var end = jsonTestCase.GetObject<string>("WindowEnd", Output);
-            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,TEntity>("Expected");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
             var url = $"{controllerPath}/{(isAsync ? "async/" : "")}{id}";
             Output.WriteLine($"url: {url}");
@@ -168,28 +168,28 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
-            actualResult = HttpClient.Get<PagedResult<dynamic>, TEntity>(getUrl);
+            actualResult = HttpClient.Get<PagedResult<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
 
-            PagedResult<dynamic> actual;
+            List<TEntity> actual;
             if (statusCode > 299)
                 throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
             else
-                actual = actualResult.GetObject<PagedResult<dynamic>>();
+                actual = actualResult.GetObject<PagedResult<TEntity>>().Queryable.ToList();
 
-            return new ExpectedActual<PagedResult<dynamic>> { Expected = expected, Actual = actual };
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
         }
 
 
-        public async Task<ExpectedActual<PagedResult<dynamic>>> PostAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<List<TEntity>>> PostAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             return await Task.Run(() =>
                 Post_ExpectedActual_Base(t, jsonTestCase, true));
         }
 
-        public ExpectedActual<PagedResult<dynamic>> Post_ExpectedActual(string t, JsonTestCase jsonTestCase)
+        public ExpectedActual<List<TEntity>> Post_ExpectedActual(string t, JsonTestCase jsonTestCase)
             => Post_ExpectedActual_Base(t, jsonTestCase, false);
 
-        public ExpectedActual<PagedResult<dynamic>> Post_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        public ExpectedActual<List<TEntity>> Post_ExpectedActual_Base(string t, JsonTestCase jsonTestCase, bool isAsync) {
             Output.WriteLine(t);
 
             var id = jsonTestCase.GetObject<int>("Id");
@@ -197,7 +197,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var start = jsonTestCase.GetObject<string>("WindowStart", Output);
             var end = jsonTestCase.GetObject<string>("WindowEnd", Output);
-            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,TEntity>("Expected");
+            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
 
             var url = $"{controllerPath}/{(isAsync ? "async/" : "")}";
             Output.WriteLine($"url: {url}");
@@ -210,16 +210,16 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var getUrl = $"{controllerPath}/linq?where=(Id ge {start} and Id le {end}) or Id eq {id}&X-Testing-Reset";
 
-            actualResult = HttpClient.Get<PagedResult<dynamic>,TEntity>(getUrl);
+            actualResult = HttpClient.Get<PagedResult<TEntity>>(getUrl);
             var statusCode = actualResult.GetStatusCode();
 
-            PagedResult<dynamic> actual;
+            List<TEntity> actual;
             if (statusCode > 299)
                 throw new Exception($"StatusCode: {statusCode}\n Text:{actualResult.GetObject<string>()}");
             else
-                actual = actualResult.GetObject<PagedResult<dynamic>>();
+                actual = actualResult.GetObject<PagedResult<TEntity>>().Queryable.ToList();
 
-            return new ExpectedActual<PagedResult<dynamic>> { Expected = expected, Actual = actual };
+            return new ExpectedActual<List<TEntity>> { Expected = expected, Actual = actual };
         }
 
 

@@ -75,7 +75,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework
                 if (direction == ParameterDirection.Output)
                     destination.Add(parmDef.ParameterName, null, direction: direction);
                 else {
-                    dynamic value = Convert.ChangeType(parm.Value, TypeMap[parmDef.Type]);
+                    dynamic value = Convert.ChangeType(parm.Value, TypeMap[parmDef.DbTypeName]);
                     destination.Add(parmDef.ParameterName, value, direction: direction);
                 }
             }

@@ -312,14 +312,14 @@ namespace EDennis.AspNetCore.Base.Web {
         public static void AddOrUpdatePagingData(this HttpClient client,
                 HttpRequestMessage msg, PagingData pagingData = null) {
 
-            if (pagingData == null || pagingData.RecordCount < 0)
+            if (pagingData == null || pagingData.RowCount < 0)
                 return;
 
             if (client.DefaultRequestHeaders.Contains("X-RecordCount"))
                 client.DefaultRequestHeaders.Remove("X-RecordCount");
             if (msg.Headers.Contains("X-RecordCount"))
                 msg.Headers.Remove("X-RecordCount");
-            msg.Headers.Add("X-RecordCount", pagingData.RecordCount.ToString());
+            msg.Headers.Add("X-RecordCount", pagingData.RowCount.ToString());
 
         }
 

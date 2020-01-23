@@ -37,7 +37,7 @@ namespace RepoTests {
 
             var spName = jsonTestCase.GetObject<string>("SpName");
             var colorName = jsonTestCase.GetObject<string>("ColorName");
-            var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
+            var parameters = new Dictionary<string,object> { { "ColorName", colorName } };
 
             var expected = jsonTestCase.GetObject<List<Hsl>>("Expected");
             var actual = Repo.Context.GetListFromStoredProcedure<Color2DbContext,Hsl>(spName, parameters);
@@ -56,7 +56,7 @@ namespace RepoTests {
 
             var spName = jsonTestCase.GetObject<string>("SpName");
             var colorName = jsonTestCase.GetObject<string>("ColorName");
-            var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
+            var parameters = new Dictionary<string,object> { { "ColorName", colorName } };
 
 
             var expected = jsonTestCase.GetObject<List<Hsl>>("Expected");

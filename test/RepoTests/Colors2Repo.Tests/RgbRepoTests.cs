@@ -12,6 +12,7 @@ using System.Dynamic;
 using System.Text.Json;
 using EDennis.AspNetCore.Base.Serialization;
 using System;
+using System.Linq.Dynamic.Core;
 
 namespace RepoTests {
     public class RgbRepoTests
@@ -195,7 +196,7 @@ namespace RepoTests {
             int? skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             int? take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,Rgb>("Expected");
+            var expected = jsonTestCase.GetObject<PagedResult>("Expected");
 
             var actual = Repo.GetFromDynamicLinq(where, orderBy, select, skip, take);
 
@@ -217,7 +218,7 @@ namespace RepoTests {
             int? skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             int? take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
 
-            var expected = jsonTestCase.GetObject<PagedResult<dynamic>,Rgb>("Expected");
+            var expected = jsonTestCase.GetObject<PagedResult>("Expected");
 
             var actual = await Repo.GetFromDynamicLinqAsync(where, orderBy, select, skip, take);
 
@@ -227,120 +228,22 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetFromJsonSql", "", "A")]
-        [TestJsonA("GetFromJsonSql", "", "B")]
-        public void GetFromJsonSql(string t, JsonTestCase jsonTestCase) {
-
-            Output.WriteLine($"Test case: {t}");
-
-            var sql = jsonTestCase.GetObject<string>("Sql");
-            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-            var actual = Repo.Context.GetListFromJsonSql<Color2DbContext,Rgb>(sql);
-
-            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
-        }
-
-
-
-        [Theory]
-        [TestJsonA("GetFromJsonSql", "", "A")]
-        [TestJsonA("GetFromJsonSql", "", "B")]
-        public async Task GetFromJsonSqlAsync(string t, JsonTestCase jsonTestCase) {
-
-            Output.WriteLine($"Test case: {t}");
-
-            var sql = jsonTestCase.GetObject<string>("Sql");
-            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-            var actual = await Repo.Context.GetListFromJsonSqlAsync<Color2DbContext,Rgb>(sql);
-
-            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
-        }
-
-
-
-        [Theory]
-        [TestJsonA("GetFromSql", "", "A")]
-        [TestJsonA("GetFromSql", "", "B")]
-        public void GetFromSql(string t, JsonTestCase jsonTestCase) {
-
-            Output.WriteLine($"Test case: {t}");
-
-            var sql = jsonTestCase.GetObject<string>("Sql");
-            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-            var actual = Repo.Context.GetListFromSql<Color2DbContext,Rgb>(sql);
-
-            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
-        }
-
-
-
-        [Theory]
-        [TestJsonA("GetFromSql", "", "A")]
-        [TestJsonA("GetFromSql", "", "B")]
-        public async Task GetFromSqlAsync(string t, JsonTestCase jsonTestCase) {
-
-            Output.WriteLine($"Test case: {t}");
-
-            var sql = jsonTestCase.GetObject<string>("Sql");
-            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
-
-            var actual = await Repo.Context.GetListFromSqlAsync<Color2DbContext, Rgb>(sql);
-
-            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
-        }
-
-
-        [Theory]
-        [TestJsonA("GetScalarFromSql", "", "A")]
-        [TestJsonA("GetScalarFromSql", "", "B")]
-        public void GetScalarFromSql(string t, JsonTestCase jsonTestCase) {
-
-            Output.WriteLine($"Test case: {t}");
-
-            var sql = jsonTestCase.GetObject<string>("Sql");
-            var expected = jsonTestCase.GetObject<int>("Expected");
-
-            var actual = Repo.Context.GetScalarFromSql<Color2DbContext,int>(sql);
-
-            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
-        }
-
-
-        [Theory]
-        [TestJsonA("GetScalarFromSql", "", "A")]
-        [TestJsonA("GetScalarFromSql", "", "B")]
-        public async Task GetScalarFromSqlAsync(string t, JsonTestCase jsonTestCase) {
-
-            Output.WriteLine($"Test case: {t}");
-
-            var sql = jsonTestCase.GetObject<string>("Sql");
-            var expected = jsonTestCase.GetObject<int>("Expected");
-
-            var actual = await Repo.Context.GetScalarFromSqlAsync<Color2DbContext,int>(sql);
-
-            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
-        }
-
-
-        [Theory]
-        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "A")]
-        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "B")]
-        public void GetJsonColumnFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "A")]
+        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "B")]
+        public void GetJsonFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
             var spName = jsonTestCase.GetObject<string>("SpName");
             var colorName = jsonTestCase.GetObject<string>("ColorName");
-            var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
 
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
             var expected = JsonSerializer.Deserialize<Rgb>(expectedJson);
 
-            var actual = Repo.Context.GetSingleFromJsonStoredProcedure<Color2DbContext,Rgb>(spName, parameters);
+            var actualJson = Repo.Context.GetJsonFromJsonStoredProcedure(spName, parameters);
+            var actual = JsonSerializer.Deserialize<Rgb>(actualJson);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -348,21 +251,22 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "A")]
-        [TestJsonA("GetJsonColumnFromStoredProcedure", "", "B")]
-        public async Task GetJsonColumnFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "A")]
+        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "B")]
+        public async Task GetJsonFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
             var spName = jsonTestCase.GetObject<string>("SpName");
             var colorName = jsonTestCase.GetObject<string>("ColorName");
-            var parameters = new List<KeyValuePair<string, string>> { KeyValuePair.Create("ColorName", colorName) };
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
 
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
             var expected = JsonSerializer.Deserialize<Rgb>(expectedJson);
 
-            var actual = await Repo.Context.GetSingleFromJsonStoredProcedureAsync<Color2DbContext, Rgb>(spName, parameters);
+            var actualJson = await Repo.Context.GetJsonFromJsonStoredProcedureAsync(spName, parameters);
+            var actual = JsonSerializer.Deserialize<Rgb>(actualJson);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
