@@ -173,7 +173,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static string ExecuteToJsonObject<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude = null)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -249,7 +249,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static async Task<string> ExecuteToJsonObjectAsync<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude = null)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -325,7 +325,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static string ExecuteToJsonArray<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude = null)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -403,7 +403,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static async Task<string> ExecuteToJsonArrayAsync<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude = null)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
