@@ -445,6 +445,77 @@ namespace RepoTests {
         }
 
         #endregion
+        #region GetListFromStoredProcedure
+
+        [Theory]
+        [TestJsonA("GetListFromStoredProcedure", "", "A")]
+        public void GetListFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorNameContains = jsonTestCase.GetObject<string>("ColorNameContains");
+            var parameters = new Dictionary<string, object> { { "ColorNameContains", colorNameContains } };
+
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var actual = Repo.Context.GetListFromStoredProcedure<Color2DbContext,Rgb>(spName, parameters);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+        [Theory]
+        [TestJsonA("GetListFromStoredProcedure", "", "A")]
+        public async Task GetListFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorNameContains = jsonTestCase.GetObject<string>("ColorNameContains");
+            var parameters = new Dictionary<string, object> { { "ColorNameContains", colorNameContains } };
+
+            var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
+            var actual = await Repo.Context.GetListFromStoredProcedureAsync<Color2DbContext, Rgb>(spName, parameters);
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+        #endregion
+        #region GetObjectFromStoredProcedure
+
+        [Theory]
+        [TestJsonA("GetObjectFromStoredProcedure", "", "A")]
+        public void GetObjectFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
+
+            var expected = jsonTestCase.GetObject<Rgb>("Expected");
+            var actual = Repo.Context.GetObjectFromStoredProcedure<Color2DbContext, Rgb>(spName, parameters);
+
+            Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+        [Theory]
+        [TestJsonA("GetObjectFromStoredProcedure", "", "A")]
+        public async Task GetObjectFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
+
+            var expected = jsonTestCase.GetObject<Rgb>("Expected");
+            var actual = await Repo.Context.GetObjectFromStoredProcedureAsync<Color2DbContext, Rgb>(spName, parameters);
+
+            Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+        #endregion
 
     }
 

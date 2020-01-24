@@ -38,7 +38,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
             where TContext : DbContext {
 
-            var json = await ExecuteToJsonArrayAsync(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
+            var json = await ExecuteToJsonArrayAsync(context, spName, spDefs, parameters);
             var result = JsonSerializer.Deserialize<List<TEntity>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
@@ -48,7 +48,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
             where TContext : DbContext {
 
-            var json = ExecuteToJsonObject(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
+            var json = ExecuteToJsonObject(context, spName, spDefs, parameters);
             var result = JsonSerializer.Deserialize<TEntity>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
@@ -58,7 +58,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
             where TContext : DbContext {
 
-            var json = await ExecuteToJsonObjectAsync(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
+            var json = await ExecuteToJsonObjectAsync(context, spName, spDefs, parameters);
             var result = JsonSerializer.Deserialize<TEntity>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
@@ -80,7 +80,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
             where TContext : DbContext {
 
-            var json = await ExecuteToJsonObjectAsync(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
+            var json = await ExecuteToJsonObjectAsync(context, spName, spDefs, parameters);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             options.Converters.Add(new DynamicJsonConverter<TEntity>());
             var result = JsonSerializer.Deserialize<dynamic>(json, options);
@@ -93,7 +93,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
             where TContext : DbContext {
 
-            var json = ExecuteToJsonArray(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
+            var json = ExecuteToJsonArray(context, spName, spDefs, parameters);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             options.Converters.Add(new DynamicJsonConverter<TEntity>());
             var result = JsonSerializer.Deserialize<List<dynamic>>(json, options);
@@ -105,7 +105,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
             where TContext : DbContext {
 
-            var json = await ExecuteToJsonArrayAsync(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
+            var json = await ExecuteToJsonArrayAsync(context, spName, spDefs, parameters);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             options.Converters.Add(new DynamicJsonConverter<TEntity>());
             var result = JsonSerializer.Deserialize<List<dynamic>>(json, options);
