@@ -85,8 +85,6 @@
   <ItemGroup>
     <Folder Include="GetObjectFromStoredProcedure\" />
     <Folder Include="GetListFromStoredProcedure\" />
-    <Folder Include="GetJsonObjectFromStoredProcedure\" />
-    <Folder Include="GetJsonArrayFromStoredProcedure\" />
     <Folder Include="Update\Dynamic\" />
     <Folder Include="Update\TEntity\" />
   </ItemGroup>

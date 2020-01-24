@@ -13,49 +13,25 @@ go
 
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
-declare @MethodName varchar(255) = 'GetJsonColumnFromStoredProcedure'
+declare @MethodName varchar(255) = 'GetJsonFromJsonStoredProcedure'
 declare @TestScenario varchar(255) = ''
 declare @TestCase varchar(255) = 'A'
 
 declare @SpName varchar(255) = 'RgbJsonByColorName'
 declare @ColorName varchar(255) = 'AliceBlue'
 
+create table #SpResults(Json varchar(max))
 
-select * into #SpResults 
-    from openrowset('SQLNCLI', 
-	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
-      'EXEC RgbJsonByColorName ''AliceBlue''')
+declare @sql nvarchar(max) =
+   N'insert into #SpResults 
+      select *
+        from openrowset(
+            ''SQLNCLI'',
+            ''Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes'',
+            ''EXEC ' + @SpName + ' @ColorName =''''' + @ColorName + ''''''')'
+exec(@sql)
 
-declare 
-	@ExpectedJsonColumn varchar(max) = 
-(
-	select [Json]
-	from #SpResults
-	for json path, without_array_wrapper
-);
-
---use OPENJSON to convert Json column result to regular table
---and then convert back to simplified Json
-declare 
-	@Expected varchar(max) = 
-(
-	select cast(Red as int) Red, cast(Green as int) Green, cast(Blue as int) Blue from
-		(select *
-			from 
-			openjson(
-				(select value
-					from openjson(@ExpectedJsonColumn)
-				)
-			)
-		) t	
-		pivot(
-			min([value])
-			for [key] in ([Red],[Green],[Blue])
-		) as result
-	for json path, without_array_wrapper
-)
-
---select @Expected;
+declare @Expected varchar(max) = (select * from #SpResults)
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName

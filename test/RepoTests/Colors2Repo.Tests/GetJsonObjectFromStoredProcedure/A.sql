@@ -12,25 +12,30 @@ go
 
 use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Repo'
-declare @ClassName varchar(255) = 'HslRepo'
-declare @MethodName varchar(255) = 'GetFromStoredProcedure'
+declare @ClassName varchar(255) = 'RgbRepo'
+declare @MethodName varchar(255) = 'GetJsonObjectFromStoredProcedure'
 declare @TestScenario varchar(255) = ''
 declare @TestCase varchar(255) = 'A'
 
-declare @SpName varchar(255) = 'HslByColorName'
+declare @SpName varchar(255) = 'RgbByColorName'
 declare @ColorName varchar(255) = 'AliceBlue'
 
+select Red,Green,Blue into #SpResults from Rgb where 1=0
 
-select * into #SpResults 
-    from openrowset('SQLNCLI', 
-	  'Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes;',
-      'EXEC HslByColorName ''AliceBlue''')
+declare @sql nvarchar(max) =
+   N'insert into #SpResults 
+      select *
+        from openrowset(
+            ''SQLNCLI'',
+            ''Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes'',
+            ''EXEC ' + @SpName + ' @ColorName =''''' + @ColorName + ''''''')'
+exec(@sql)
 
 declare 
 	@Expected varchar(max) = 
 (
-	select Hue, Saturation, Luminance from #SpResults
-	for json path, include_null_values
+	select * from #SpResults
+	for json path, without_array_wrapper
 );
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName

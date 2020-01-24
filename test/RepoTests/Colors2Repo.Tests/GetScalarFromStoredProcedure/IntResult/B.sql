@@ -30,7 +30,6 @@ declare @sql nvarchar(max) =
             ''Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes'',
             ''EXEC ' + @SpName + ' @ColorName =''''' + @ColorName + ''''''')'
 exec(@sql)
-select * from #SpResults
 declare @Expected int = (select * from #SpResults)
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
