@@ -81,12 +81,4 @@
     </None>
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="GetObjectFromStoredProcedure\" />
-    <Folder Include="GetListFromStoredProcedure\" />
-    <Folder Include="Update\Dynamic\" />
-    <Folder Include="Update\TEntity\" />
-  </ItemGroup>
-
 </Project>
