@@ -14,15 +14,16 @@ namespace Colors2Api.Lib.Controllers {
 
         [HttpGet("RgbHslByColorName")]
         public RgbHsl GetRgbHslByColorName([FromQuery] string colorName) {
-            var parameters = new Params().Add("colorName", colorName);
-            var result = Repo.Context.GetSingleFromStoredProcedure<Color2DbContext, RgbHsl>(
+
+            var parameters = HttpContext.ToStoredProcedureParameters("colorName");
+            var result = Repo.Context.GetObjectFromStoredProcedure<Color2DbContext,RgbHsl>(
                 "RgbHslByColorName", parameters);
             return result;
         }
 
         [HttpGet("RgbHslByColorNameContains")]
         public List<RgbHsl> GetRgbHslByColorNameContains([FromQuery] string colorName) {
-            var parameters = new Params().Add("colorNameContains", colorName);
+            var parameters = HttpContext.ToStoredProcedureParameters("colorNameContains");
             var result = Repo.Context.GetListFromStoredProcedure<Color2DbContext, RgbHsl>(
                 "RgbHslByColorNameContains", parameters);
             return result;
