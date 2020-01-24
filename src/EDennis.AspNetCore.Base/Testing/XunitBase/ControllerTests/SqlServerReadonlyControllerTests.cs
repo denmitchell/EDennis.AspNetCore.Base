@@ -33,6 +33,32 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
+        /// Returns actual and expected results from GetDevExtreme.
+        /// Note: this method looks for the following optional TestJson
+        /// parameters (case sensitive):
+        /// Select, Filter, Sort, Skip, and Take
+        /// </summary>
+        /// <param name="jsonTestCase"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public ExpectedActual<List<dynamic>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+            Output.WriteLine(t);
+            var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
+            var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
+            var sort = jsonTestCase.GetObjectOrDefault<string>("Sort", Output);
+            var skip = jsonTestCase.GetObjectOrDefault<int>("Skip", Output);
+            var take = jsonTestCase.GetObjectOrDefault<int>("Take", Output);
+            if (take == default)
+                take = int.MaxValue;
+
+            var expected = jsonTestCase.GetObject<List<dynamic>>("Expected");
+            var actual = GetDevExtremeResult(select, sort, filter, skip, take, null, null, null);
+
+            return new ExpectedActual<List<dynamic>> { Expected = expected, Actual = actual };
+        }
+
+
+        /// <summary>
         /// Use this method for testing if you want full control over
         /// entry of the parameters to the controller method.
         /// </summary>
@@ -57,34 +83,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             return ToGeneric().ToList();
         }
 
-
-        /// <summary>
-        /// Returns actual and expected results from GetDevExtreme.
-        /// Note: this method looks for the following optional TestJson
-        /// parameters (case sensitive):
-        /// Select, Filter, Sort, Skip, and Take
-        /// </summary>
-        /// <param name="jsonTestCase"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
-        public ExpectedActualList<Dictionary<string, object>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
-            Output.WriteLine(t);
-            var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
-            var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
-            var sort = jsonTestCase.GetObjectOrDefault<string>("Sort", Output);
-            var skip = jsonTestCase.GetObjectOrDefault<int>("Skip", Output);
-            var take = jsonTestCase.GetObjectOrDefault<int>("Take", Output);
-            if (take == default)
-                take = int.MaxValue;
-
-            var expectedDynamic = jsonTestCase.GetObject<List<dynamic>>("Expected");
-            var expected = ObjectExtensions.ToPropertyDictionaryList(expectedDynamic);
-
-            var actualDynamic = GetDevExtremeResult(select, sort, filter, skip, take, null, null, null);
-            var actual = ObjectExtensions.ToPropertyDictionaryList(actualDynamic);
-
-            return new ExpectedActualList<Dictionary<string, object>> { Expected = expected, Actual = actual };
-        }
 
 
         /// <summary>
