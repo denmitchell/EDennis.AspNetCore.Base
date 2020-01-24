@@ -170,7 +170,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public IActionResult GetJsonArrayFromStoredProcedure([FromQuery] string spName) {
 
             var parms = GetParamsFromQuery();
-            var result = Repo.Context.GetJsonArrayFromStoredProcedure(spName, parms);
+            var result = Repo.Context.GetJsonArrayFromStoredProcedure(spName, parms, null);
 
             return Ok(result);
         }
@@ -185,7 +185,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public async Task<IActionResult> GetJsonArrayFromStoredProcedureAsync([FromQuery] string spName) {
 
             var parms = GetParamsFromQuery();
-            var result = await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parms);
+            var result = await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parms, null);
 
             return Ok(result);
         }
@@ -201,7 +201,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public IActionResult GetJsonObjectFromStoredProcedure([FromQuery] string spName) {
 
             var parms = GetParamsFromQuery();
-            var result = Repo.Context.GetJsonObjectFromStoredProcedure(spName, parms);
+            var result = Repo.Context.GetJsonObjectFromStoredProcedure(spName, parms, null);
 
             return Ok(result);
         }
@@ -216,7 +216,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public async Task<IActionResult> GetJsonObjectFromStoredProcedureAsync([FromQuery] string spName) {
 
             var parms = GetParamsFromQuery();
-            var result = await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parms);
+            var result = await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parms, null);
 
             return Ok(result);
         }

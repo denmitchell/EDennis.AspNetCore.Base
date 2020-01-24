@@ -35,7 +35,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Executes a regular stored procedure and returns a json array.
         /// </summary>
         public static string GetJsonArrayFromStoredProcedure<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude)
             where TContext : DbContext => StoredProcedureExecutor.ExecuteToJsonArray(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchronously executes a regular stored procedure and returns a json array.
         /// </summary>
         public static async Task<string> GetJsonArrayFromStoredProcedureAsync<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude)
             where TContext : DbContext => await StoredProcedureExecutor.ExecuteToJsonArrayAsync(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -53,7 +53,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Executes a regular stored procedure and returns a json object.
         /// </summary>
         public static string GetJsonObjectFromStoredProcedure<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude)
             where TContext : DbContext => StoredProcedureExecutor.ExecuteToJsonObject(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -62,7 +62,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchronously executes a regular stored procedure and returns a json object.
         /// </summary>
         public static async Task<string> GetJsonObjectFromStoredProcedureAsync<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude)
             where TContext : DbContext => await StoredProcedureExecutor.ExecuteToJsonObjectAsync(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 

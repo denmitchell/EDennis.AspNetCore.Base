@@ -24,6 +24,7 @@ namespace RepoTests {
         protected string[] PropertiesToIgnore { get; }
             = new string[] { "SysStart", "SysEnd" };
 
+
         internal class TestJsonA : TestJsonAttribute {
             public TestJsonA(string methodName, string testScenario, string testCase)
                 : base("Color2Db", "Colors2Repo", "RgbRepo",
@@ -319,6 +320,30 @@ namespace RepoTests {
 
 
         #endregion
+        #region GetJsonArrayFromStoredProcedure
+        [Theory]
+        [TestJsonA("GetJsonArrayFromStoredProcedure", "", "A")]
+        public void GetJsonArrayFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorNameContains = jsonTestCase.GetObject<string>("ColorNameContains");
+            var parameters = new Dictionary<string, object> { { "ColorNameContains", colorNameContains } };
+
+            var expectedJson = jsonTestCase.GetObject<string>("Expected");
+            var expected = JsonSerializer.Deserialize<List<dynamic>>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+
+            var actualJson = Repo.Context.GetJsonArrayFromStoredProcedure(spName, parameters, null);
+            var actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+
+            Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
+        }
+
+
+        #endregion
+
+
 
 
         [Theory]

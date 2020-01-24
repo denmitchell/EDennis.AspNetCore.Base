@@ -8,6 +8,7 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -172,7 +173,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static string ExecuteToJsonObject<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            params string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -197,6 +198,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             using var writer = new Utf8JsonWriter(stream);
 
             if (reader.HasRows) {
+                if (jsonPropertiesToInclude == null)
+                    jsonPropertiesToInclude = reader.GetColumnSchema().Select(x => x.ColumnName).ToArray();
                 Dictionary<string, FieldInfo> fieldInfo = new Dictionary<string, FieldInfo>();
                 foreach (var prop in jsonPropertiesToInclude) {
                     try {
@@ -246,7 +249,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static async Task<string> ExecuteToJsonObjectAsync<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            params string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -271,6 +274,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             using var writer = new Utf8JsonWriter(stream);
 
             if (reader.HasRows) {
+                if (jsonPropertiesToInclude == null)
+                    jsonPropertiesToInclude = reader.GetColumnSchema().Select(x => x.ColumnName).ToArray();
                 Dictionary<string, FieldInfo> fieldInfo = new Dictionary<string, FieldInfo>();
                 foreach (var prop in jsonPropertiesToInclude) {
                     try {
@@ -320,7 +325,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static string ExecuteToJsonArray<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            params string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -342,9 +347,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             DbDataReader reader = cmd.ExecuteReader();
 
             using var stream = new MemoryStream();
-            using var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Encoder = null });
 
             if (reader.HasRows) {
+                if (jsonPropertiesToInclude == null)
+                    jsonPropertiesToInclude = reader.GetColumnSchema().Select(x => x.ColumnName).ToArray();
                 Dictionary<string, FieldInfo> fieldInfo = new Dictionary<string, FieldInfo>();
                 foreach (var prop in jsonPropertiesToInclude) {
                     try {
@@ -396,7 +403,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         public static async Task<string> ExecuteToJsonArrayAsync<TContext>(ISqlServerDbContext<TContext> context, string spName,
             StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters,
-            params string[] jsonPropertiesToInclude)
+            string[] jsonPropertiesToInclude)
             where TContext : DbContext {
 
             var cxn = context.Database.GetDbConnection();
@@ -421,6 +428,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             using var writer = new Utf8JsonWriter(stream);
 
             if (reader.HasRows) {
+                if (jsonPropertiesToInclude == null)
+                    jsonPropertiesToInclude = reader.GetColumnSchema().Select(x => x.ColumnName).ToArray();
                 Dictionary<string, FieldInfo> fieldInfo = new Dictionary<string, FieldInfo>();
                 foreach (var prop in jsonPropertiesToInclude) {
                     try {
@@ -574,15 +583,22 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             else if (type == typeof(DateTime)) {
                 if (dataTypeName != null && (dataTypeName.Equals("date", StringComparison.OrdinalIgnoreCase)
                     || dataTypeName.Equals("smalldate", StringComparison.OrdinalIgnoreCase)))
-                    writer.WriteStringValue(((DateTime)value).ToString("yyyy-mm-dd"));
+                    writer.WriteStringValue(((DateTime)value).ToString("yyyy-MM-dd"));
                 else if (dataTypeName != null && dataTypeName.Equals("datetime", StringComparison.OrdinalIgnoreCase))
-                    writer.WriteStringValue(((DateTime)value).ToString("yyyy-mm-dd HH:mm:ss"));
+                    writer.WriteStringValue(((DateTime)value).ToString("yyyy-MM-ddTHH:mm:ss"));
                 else if (dataTypeName != null && (dataTypeName.Equals("datetime2", StringComparison.OrdinalIgnoreCase)
-                    || dataTypeName.Equals("datetimeoffset", StringComparison.OrdinalIgnoreCase)))
-                    writer.WriteStringValue(((DateTimeOffset)value).ToString("yyyy-mm-dd HH:mm:ss.0000000"));
+                    || dataTypeName.Equals("datetimeoffset", StringComparison.OrdinalIgnoreCase))) {
+                    if (value.ToString("yyyy-MM-dd") == "9999-12-31")
+                        writer.WriteStringValue(UTCMAX);
+                    else
+                        writer.WriteStringValue(((DateTimeOffset)value).ToString("yyyy-MM-ddTHH:mm:ss.fffffff"));
+                    //writer.WriteStringValue(JsonEncodedText.Encode(((DateTimeOffset)value.ToUniversalTime()).ToString("yyyy-MM-dd HH:mm:ss.fffffff")));
+                }
             } else
                 writer.WriteStringValue((string)value);
         }
+
+        static readonly string UTCMAX = "9999-12-31T23:59:59.9999999";
 
 
     }
