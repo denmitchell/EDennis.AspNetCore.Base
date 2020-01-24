@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-
+using System.Reflection;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
     public class StoredProcedureDefs<TContext> : List<StoredProcedureDef>
@@ -24,6 +24,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 BuildStoredProcedureDefs(this, context);
         }
 
+#pragma warning disable IDE0017
 
         internal static void BuildStoredProcedureDefs(StoredProcedureDefs<TContext> spDefs, TContext context) {
 
@@ -69,10 +70,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
         }
 
+#pragma warning restore IDE0017
 
         public void PopulateParameters(string spName, DbCommand sqlCommand, Dictionary<string, object> parameters, out Dictionary<string, DbParameter> outParameters) {
+            string[] nameComponents = spName.Split('.');
+            string schema = "dbo";
+            if (nameComponents.Length == 2) {
+                schema = nameComponents[0];
+                spName = nameComponents[1];
+            }
             outParameters = new Dictionary<string, DbParameter>();
-            foreach (var parmDef in this.Where(sp => sp.StoredProcedureName.Equals(spName, StringComparison.OrdinalIgnoreCase))) {
+            foreach (var parmDef in this.Where(sp => sp.Schema == schema && sp.StoredProcedureName.Equals(spName, StringComparison.OrdinalIgnoreCase))) {
                 foreach (var parm in parameters.Where(p => $"@{p.Key}".Equals(parmDef.ParameterName, StringComparison.OrdinalIgnoreCase))) {
                     var dbParm = parmDef.ToDbParameter(parm.Value);
                     sqlCommand.Parameters.Add(dbParm);
@@ -88,8 +96,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             }
 
         }
-
-
 
 
         public static string SQL_SERVER_STORED_PROCEDURE_DEFS =

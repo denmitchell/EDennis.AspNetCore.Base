@@ -5,23 +5,20 @@ declare @MethodName varchar(255) = 'Delete'
 declare @TestScenario varchar(255) = ''
 declare @TestCase varchar(255) = 'B'
 
-declare @TargetId int = -999147; --must be in Window range below
+declare @WindowStart int
+select @WindowStart = min(Id) from Rgb;
+declare @WindowEnd int = @WindowStart + 5 
 
--- Limit the window of records inspected for testing purposes
---  -999148		
---  -999147		@TargetId
---  -999146		
---  -999145		
---  -999144		
---  -999143		@WindowStart		Start of test window		
-declare @WindowStart int = -999143
+declare @TargetId int
+select @TargetId = @WindowStart + 3 from Rgb;
+
 
 begin transaction
 
 declare @Expected varchar(max) = 
 (
 	select * from Rgb 
-		where Id <= @WindowStart
+		where Id between @WindowStart and @WindowEnd
 			and Id <> @TargetId
 	for json path
 );
@@ -32,5 +29,6 @@ rollback transaction
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowStart', @WindowStart
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowEnd', @WindowEnd
 
 exec _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

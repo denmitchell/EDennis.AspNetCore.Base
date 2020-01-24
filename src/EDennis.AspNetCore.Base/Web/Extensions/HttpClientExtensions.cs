@@ -44,8 +44,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 RequestUri = new Uri(url)
             };
 
-            AddOrUpdatePagingData(client, msg);
-
             var response = await client.SendAsync(msg);
             var objResult = await GenerateObjectResult<TResponseObject>(response);
 
@@ -74,8 +72,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 RequestUri = new Uri(url)
             };
 
-            AddOrUpdatePagingData(client, msg);
-
             var response = await client.SendAsync(msg);
             var objResult = await GenerateObjectResult<TDynamicResponseObject, TEntity>(response);
 
@@ -102,8 +98,6 @@ namespace EDennis.AspNetCore.Base.Web {
                 RequestUri = new Uri(url),
                 Content = new BodyContent<TRequestObject>(obj)
             };
-
-            AddOrUpdatePagingData(client, msg);
 
             var response = await client.SendAsync(msg);
             var objResult = await GenerateObjectResult<TResponseObject>(response);
@@ -305,22 +299,6 @@ namespace EDennis.AspNetCore.Base.Web {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return ForwardRequest<T>(client, msg, url);
-        }
-
-
-
-        public static void AddOrUpdatePagingData(this HttpClient client,
-                HttpRequestMessage msg, PagingData pagingData = null) {
-
-            if (pagingData == null || pagingData.RowCount < 0)
-                return;
-
-            if (client.DefaultRequestHeaders.Contains("X-RecordCount"))
-                client.DefaultRequestHeaders.Remove("X-RecordCount");
-            if (msg.Headers.Contains("X-RecordCount"))
-                msg.Headers.Remove("X-RecordCount");
-            msg.Headers.Add("X-RecordCount", pagingData.RowCount.ToString());
-
         }
 
 

@@ -2,53 +2,59 @@
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'GetFromDynamicLinq'
-declare @TestScenario varchar(255) = 'WhereOrderBySkipTake'
+declare @TestScenario varchar(255) = 'WithoutSelect'
 declare @TestCase varchar(255) = 'B'
 
-declare @Select varchar(255) = null -- don't use
+--declare @Select varchar(255) = null -- don't use
 declare @OrderBy varchar(255) = 'Id asc'
 declare @Where varchar(255) = 'Red gt 200'
 declare @Skip int = 2
 declare @Take int = 5
 
+/*
+result structure is from :
+https://github.com/StefH/System.Linq.Dynamic.Core/blob/master/src/System.Linq.Dynamic.Core/PagedResult.cs
 
-declare @recordCount int;
+public IQueryable Queryable { get; set; }
+public int CurrentPage { get; set; }
+public int PageCount { get; set; }
+public int PageSize { get; set; }
+public int RowCount { get; set; }
+*/
+
+declare @currentPage int;
 declare @pageCount int;
-declare @pageNumber int;
+declare @pageSize int;
+declare @rowCount int;
 
-select @recordCount = count(*) from Rgb where Red > 200
-select @pageCount = ceiling(convert(decimal(10,2),@recordCount)/@Take)
-select @pageNumber = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
+select @rowCount = count(*) from Rgb where Red > 200
+set @currentPage = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
+set @pageCount = ceiling(convert(decimal(10,2),@rowCount)/@Take)
+set @pageSize = @Take
+
 declare 
 	@Expected varchar(max) = 
 (
 	select
-		RecordCount [PagingData.RecordCount], 
-		PageSize [PagingData.PageSize], 
-		PageNumber [PagingData.PageNumber], 
-		PageCount [PagingData.PageCount],
+		@currentPage [CurrentPage],
+		@pageCount [PageCount],
+		@pageSize [PageSize],
+		@rowCount [RowCount],
 		(
 			select * 
 				from Rgb
 				where Red > 200
-				order by Name desc
+				order by Id asc
 				offset @Skip rows fetch next @Take rows only
 				for json path, include_null_values
-		) Data
+		) Queryable
 		
-		from (
-			select
-				@recordCount RecordCount,
-				@Take PageSize,
-				@pageNumber PageNumber,
-				@pageCount PageCount
-		) PagingData
 		for json path, without_array_wrapper
 );
 
 
+--exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Select', @Select
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Where', @Where
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Select', @Select
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'OrderBy', @OrderBy
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Skip', @Skip
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Take', @Take

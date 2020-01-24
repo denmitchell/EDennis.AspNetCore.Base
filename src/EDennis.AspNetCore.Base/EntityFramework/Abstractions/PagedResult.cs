@@ -1,4 +1,15 @@
-﻿//using EDennis.AspNetCore.Base.Serialization;
+﻿
+
+using System.Linq.Dynamic.Core;
+
+namespace EDennis.AspNetCore.Base.EntityFramework {
+    public class PagedResultExt<TEntity> : PagedResult {
+
+    }
+}
+    
+
+//using EDennis.AspNetCore.Base.Serialization;
 //using System;
 //using System.Collections.Generic;
 //using System.Text;

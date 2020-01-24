@@ -13,12 +13,19 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
+    //disable warning for object simplification -- simplification results in error for DbCommand
+#pragma warning disable IDE0017
+
+
+
     public class StoredProcedureExecutor {
 
 
+
+
         public static List<TEntity> ExecuteToList<TContext, TEntity>(ISqlServerDbContext<TContext> context, string spName,
-            StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
-            where TContext : DbContext {
+                StoredProcedureDefs<TContext> spDefs, Dictionary<string, object> parameters)
+                where TContext : DbContext {
 
             var json = ExecuteToJsonArray(context, spName, spDefs, parameters, typeof(TEntity).GetProperties().Select(p => p.Name).ToArray());
             var result = JsonSerializer.Deserialize<List<TEntity>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -579,6 +586,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
     }
+
+#pragma warning restore IDE0017
 
 
     internal class FieldInfo {

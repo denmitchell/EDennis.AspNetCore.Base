@@ -45,6 +45,9 @@
     <None Update="FodyWeavers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="MigrationsSql\PostUp\02_RgbInt.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="MigrationsSql\PostUp\02_RgbHslByColorNameContains.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -63,7 +66,7 @@
     <None Update="MigrationsSql\PostUp\02_HslByColorNameContains.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MigrationsSql\PostUp\02_RgbByColorName.sql">
+    <None Update="MigrationsSql\PostUp\02_RgbHex.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MigrationsSql\PostUp\02_HslByColorName.sql">

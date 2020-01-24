@@ -1,0 +1,48 @@
+﻿{
+  "CurrentPage": 1,
+  "PageCount": 2,
+  "PageSize": 10,
+  "RowCount": 20,
+  "Queryable": [
+    {
+      "Name": "SteelBlue",
+      "SysUser": "jack@hill.org"
+    },
+    {
+      "Name": "SlateBlue",
+      "SysUser": "jill@hill.org"
+    },
+    {
+      "Name": "SkyBlue",
+      "SysUser": "jill@hill.org"
+    },
+    {
+      "Name": "RoyalBlue",
+      "SysUser": "jill@hill.org"
+    },
+    {
+      "Name": "PowderBlue",
+      "SysUser": "jack@hill.org"
+    },
+    {
+      "Name": "MidnightBlue",
+      "SysUser": "jack@hill.org"
+    },
+    {
+      "Name": "MediumSlateBlue",
+      "SysUser": "jill@hill.org"
+    },
+    {
+      "Name": "MediumBlue",
+      "SysUser": "jill@hill.org"
+    },
+    {
+      "Name": "LightSteelBlue",
+      "SysUser": "jack@hill.org"
+    },
+    {
+      "Name": "LightSkyBlue",
+      "SysUser": "jack@hill.org"
+    }
+  ]
+}

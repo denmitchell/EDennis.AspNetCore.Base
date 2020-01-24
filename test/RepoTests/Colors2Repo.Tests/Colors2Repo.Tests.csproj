@@ -55,22 +55,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="GetFromSql\A.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="GetFromSql\B.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="GetFromJsonSql\A.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
-    <None Update="GetFromJsonSql\B.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Code</SubType>
-    </None>
     <None Update="GetById\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
@@ -95,6 +79,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="GetObjectFromStoredProcedure\" />
+    <Folder Include="GetListFromStoredProcedure\" />
+    <Folder Include="GetJsonObjectFromStoredProcedure\" />
+    <Folder Include="GetJsonArrayFromStoredProcedure\" />
+    <Folder Include="Update\Dynamic\" />
+    <Folder Include="Update\TEntity\" />
   </ItemGroup>
 
 </Project>
