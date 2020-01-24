@@ -11,17 +11,6 @@ declare @Where varchar(255) = 'Red gt 200'
 declare @Skip int = 2
 declare @Take int = 5
 
-/*
-result structure is from :
-https://github.com/StefH/System.Linq.Dynamic.Core/blob/master/src/System.Linq.Dynamic.Core/PagedResult.cs
-
-public IQueryable Queryable { get; set; }
-public int CurrentPage { get; set; }
-public int PageCount { get; set; }
-public int PageSize { get; set; }
-public int RowCount { get; set; }
-*/
-
 declare @currentPage int;
 declare @pageCount int;
 declare @pageSize int;
@@ -47,7 +36,7 @@ declare
 				order by Id asc
 				offset @Skip rows fetch next @Take rows only
 				for json path, include_null_values
-		) Queryable
+		) Data
 		
 		for json path, without_array_wrapper
 );
