@@ -70,7 +70,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Executes a stored procedure and returns a scalar.
         /// </summary>
-        public static string GetScalarFromStoredProcedure<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
+        public static TResult GetScalarFromStoredProcedure<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
             Dictionary<string, object> parameters)
             where TContext : DbContext => StoredProcedureExecutor.ExecuteToScalar<TContext,TResult>(context, spName, context.StoredProcedureDefs, parameters);
 
@@ -78,7 +78,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Asynchronously executes a stored procedure and returns a scalar.
         /// </summary>
-        public static async Task<string> GetScalarFromStoredProcedureAsync<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
+        public static async Task<TResult> GetScalarFromStoredProcedureAsync<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
             Dictionary<string, object> parameters)
             where TContext : DbContext => await StoredProcedureExecutor.ExecuteToScalarAsync<TContext, TResult>(context, spName, context.StoredProcedureDefs, parameters);
 

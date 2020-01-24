@@ -517,6 +517,79 @@ namespace RepoTests {
 
         #endregion
 
+
+        #region GetScalarFromStoredProcedure
+
+        [Theory]
+        [TestJsonA("GetScalarFromStoredProcedure", "IntResult", "B")]
+        public void GetScalarIntFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
+
+            var expected = jsonTestCase.GetObject<int>("Expected");
+            var actual = Repo.Context.GetScalarFromStoredProcedure<Color2DbContext,int>(spName, parameters);
+
+            Assert.Equal(expected,actual);
+        }
+
+        [Theory]
+        [TestJsonA("GetScalarFromStoredProcedure", "StringResult", "A")]
+        public void GetScalarStringFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
+
+            var expected = jsonTestCase.GetObject<string>("Expected");
+            var actual = Repo.Context.GetScalarFromStoredProcedure<Color2DbContext, string>(spName, parameters);
+
+            Assert.Equal(expected, actual);
+        }
+
+
+        [Theory]
+        [TestJsonA("GetScalarFromStoredProcedure", "IntResult", "B")]
+        public async Task GetScalarIntFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
+
+            var expected = jsonTestCase.GetObject<int>("Expected");
+            var actual = await Repo.Context.GetScalarFromStoredProcedureAsync<Color2DbContext, int>(spName, parameters);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [TestJsonA("GetScalarFromStoredProcedure", "StringResult", "A")]
+        public async Task GetScalarStringFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine($"Test case: {t}");
+
+            var spName = jsonTestCase.GetObject<string>("SpName");
+            var colorName = jsonTestCase.GetObject<string>("ColorName");
+            var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
+
+            var expected = jsonTestCase.GetObject<string>("Expected");
+            var actual = await Repo.Context.GetScalarFromStoredProcedureAsync<Color2DbContext, string>(spName, parameters);
+
+            Assert.Equal(expected, actual);
+        }
+
+
+        #endregion
+
+
+
     }
 
 }
