@@ -14,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.Web {
 
-    public abstract class SqlServerWriteableController<TEntity, TContext> : SqlServerReadonlyController<TEntity, TContext>
+    public abstract class SqlServerRepoController<TEntity, TContext> : SqlServerReadonlyController<TEntity, TContext>
             where TEntity : class, IHasIntegerId, IHasSysUser, new()
             where TContext : DbContext, ISqlServerDbContext<TContext> {
 
-        public SqlServerWriteableController(Repo<TEntity, TContext> repo, 
+        public SqlServerRepoController(Repo<TEntity, TContext> repo, 
             ILogger<SqlServerReadonlyController<TEntity, TContext>> logger)
             : base(repo, logger) { }
 

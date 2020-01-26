@@ -19,14 +19,14 @@ using Xunit.Abstractions;
 namespace EDennis.AspNetCore.Base.Testing {
     public abstract class SqlServerWriteableControllerTests<TController, TRepo, TEntity, TContext> :
         RepoTests<TRepo, TEntity, TContext>
-        where TController : SqlServerWriteableController<TEntity,TContext>
+        where TController : SqlServerRepoController<TEntity,TContext>
         where TEntity : class, IHasSysUser, IHasIntegerId, new()
         where TContext : DbContext, ISqlServerDbContext<TContext>
         where TRepo : Repo<TEntity, TContext> {
 
-        public SqlServerWriteableController<TEntity,TContext> Controller { get; }
+        public SqlServerRepoController<TEntity,TContext> Controller { get; }
         public SqlServerWriteableControllerTests(ITestOutputHelper output) : base(output) {
-            var logger = NullLogger<SqlServerWriteableController<TEntity, TContext>>.Instance;
+            var logger = NullLogger<SqlServerRepoController<TEntity, TContext>>.Instance;
             Controller = (TController)Activator.CreateInstance(typeof(TController), new object[] { Repo, logger});
         }
 

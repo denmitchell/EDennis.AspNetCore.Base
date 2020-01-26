@@ -58,6 +58,36 @@ namespace EDennis.AspNetCore.Base {
             return serviceConfig;
         }
 
+        //public static MvcOptionsBuilder AddDefaultPolicies(
+        //    this IServiceConfig serviceConfig, string appName, string identityServerConfigKey = "IdentityServerApi") {
+
+        //    var api = new Api();
+        //    string configKey = null;
+        //    if (serviceConfig.Configuration.ContainsKey(identityServerConfigKey))
+        //        configKey = identityServerConfigKey;
+        //    else if (serviceConfig.Configuration.ContainsKey($"Apis:{identityServerConfigKey}"))
+        //        configKey = $"Apis:{identityServerConfigKey}";
+        //    else if (serviceConfig.Configuration.ContainsKey($"Apis:IdentityServer"))
+        //        configKey = $"Apis:IdentityServer";
+        //    else
+        //        throw new ApplicationException($"Could not find {identityServerConfigKey} or Apis:{identityServerConfigKey} or Apis:IdentityServer in Configuration");
+
+        //    try {
+        //        serviceConfig.Configuration.GetSection(identityServerConfigKey).Bind(api);
+        //    } catch {
+        //        throw new ApplicationException($"Could not bind {configKey} to the EDennis.AspNetCore.Api class");
+        //    }
+
+        //    serviceConfig.Services.AddSingleton<IAuthorizationPolicyProvider>((container) => {
+        //        var logger = container.GetRequiredService<ILogger<DefaultPoliciesAuthorizationPolicyProvider>>();
+        //        return new DefaultPoliciesAuthorizationPolicyProvider(
+        //            serviceConfig.Configuration, api, logger);
+        //    });
+
+        //    serviceConfig.MvcOptions.Conventions.Add(new DefaultAuthorizationPolicyConvention(appName, serviceConfig.Configuration));
+
+        //    return serviceConfig.MvcOptions;
+        //}
 
         public static IServiceConfig AddControllersWithDefaultPolicies(this IServiceConfig serviceConfig,
             string appName, string identityServerConfigKey = "IdentityServerApi") {
@@ -282,6 +312,7 @@ namespace EDennis.AspNetCore.Base {
             serviceConfig.Services.TryAddScoped<IScopeProperties, ScopeProperties>();
             serviceConfig.Services.TryAddScoped<ScopeProperties, ScopeProperties>();
             serviceConfig.Services.AddScoped<TRepo, TRepo>();
+
             return serviceConfig;
         }
 

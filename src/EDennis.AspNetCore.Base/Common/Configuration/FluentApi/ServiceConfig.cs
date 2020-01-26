@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Collections.Generic;
@@ -15,6 +16,11 @@ namespace EDennis.AspNetCore.Base {
 
         public IServiceCollection Services { get; }
         public IConfiguration Configuration { get; }
+        public MvcOptionsBuilder MvcOptions { get; }
+
+        public ServiceConfig() {
+            MvcOptions =  new MvcOptionsBuilder(this);
+        }
 
         public T Bind<T>(string path) where T : class, new() {
             var configSection = Configuration.GetSection(path);

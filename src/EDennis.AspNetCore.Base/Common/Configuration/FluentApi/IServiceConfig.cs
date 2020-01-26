@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ namespace EDennis.AspNetCore.Base {
     public interface IServiceConfig {
         IConfiguration Configuration { get; }
         IServiceCollection Services { get; }
+        MvcOptionsBuilder MvcOptions { get; }
 
         T Bind<T>(string path) where T : class, new();
         void Configure<T>(string path) where T : class, new();
