@@ -1,10 +1,18 @@
 ﻿
 
+using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
-    public class PagedResultExt<TEntity> : PagedResult {
-
+    public class DynamicLinqResult : DynamicLinqResult<dynamic> {
+        public override List<dynamic> Data { get; set; } 
+    }
+    public class DynamicLinqResult<TEntity> {
+        public virtual List<TEntity> Data { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageCount { get; set; }
+        public int PageSize { get; set; }
+        public int RowCount { get; set; }
     }
 }
     

@@ -10,16 +10,14 @@ declare @Red int = 128
 declare @Green int = 128
 declare @Blue int = 128
 declare @SysUser varchar(255) = 'tester@example.org'
-declare @TargetId int = -999145
 
--- Limit the window of records inspected for testing purposes
---  -999148		
---  -999147		
---  -999146		
---  -999145		
---  -999144		
---  -999143		@WindowStart		Start of test window		
-declare @WindowStart int = -999143
+declare @WindowStart int
+select @WindowStart = min(Id) from Rgb;
+declare @WindowEnd int = @WindowStart + 5 
+
+declare @TargetId int
+select @TargetId = @WindowStart + 1 from Rgb;
+
 
 begin transaction
 declare @Input varchar(max) = 
@@ -36,7 +34,7 @@ update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb where Id <= @WindowStart
+	select * from Rgb where Id between @WindowStart and @WindowEnd
 	for json path
 );
 
@@ -47,5 +45,6 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestC
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowStart', @WindowStart
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowEnd', @WindowEnd
 
 exec _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

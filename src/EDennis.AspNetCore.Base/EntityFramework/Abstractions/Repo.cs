@@ -86,7 +86,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual PagedResult GetFromDynamicLinq(
+        public virtual DynamicLinqResult GetFromDynamicLinq(
                 string select,
                 string where = null,
                 string orderBy = null,
@@ -95,10 +95,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 int? totalRecords = null) {
 
             IQueryable qry = BuildLinqQuery(select, where, orderBy, skip, take, totalRecords, 
-                out PagedResult pagedResult);
+                out DynamicLinqResult pagedResult);
 
-            IQueryable result = qry.ToDynamicList().AsQueryable();
-            pagedResult.Queryable = result;
+            var result = qry.ToDynamicList();
+            pagedResult.Data = result;
 
             return pagedResult;
 
@@ -120,7 +120,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual async Task<PagedResult> GetFromDynamicLinqAsync(
+        public virtual async Task<DynamicLinqResult> GetFromDynamicLinqAsync(
                 string select,
                 string where = null,
                 string orderBy = null,
@@ -129,43 +129,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 int? totalRecords = null) {
 
             IQueryable qry = BuildLinqQuery(select, where, orderBy, skip, take, totalRecords,
-                out PagedResult pagedResult);
+                out DynamicLinqResult pagedResult);
 
-            IQueryable result = (await qry.ToDynamicListAsync()).AsQueryable();
-            pagedResult.Queryable = result;
-
-            return pagedResult;
-
-        }
-
-
-
-
-
-        /// <summary>
-        /// Get by Dynamic Linq Expression
-        /// https://github.com/StefH/System.Linq.Dynamic.Core
-        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
-        /// </summary>
-        /// <param name="where">string Where expression</param>
-        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
-        /// <param name="select">string Select expression</param>
-        /// <param name="skip">int number of records to skip</param>
-        /// <param name="take">int number of records to return</param>
-        /// <returns>dynamic-typed object</returns>
-
-        public virtual PagedResult<TEntity> GetFromDynamicLinq(
-                string where = null,
-                string orderBy = null,
-                int? skip = null,
-                int? take = null,
-                int? totalRecords = null) {
-
-            IQueryable<TEntity> qry = BuildLinqQuery(where, orderBy, skip, take, totalRecords,
-                out PagedResult<TEntity> pagedResult);
-
-            IQueryable<TEntity> result = qry.ToDynamicList<TEntity>().AsQueryable();
-            pagedResult.Queryable = result;
+            var result = await qry.ToDynamicListAsync();
+            pagedResult.Data = result;
 
             return pagedResult;
 
@@ -187,7 +154,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual async Task<PagedResult<TEntity>> GetFromDynamicLinqAsync(
+        public virtual DynamicLinqResult<TEntity> GetFromDynamicLinq(
                 string where = null,
                 string orderBy = null,
                 int? skip = null,
@@ -195,10 +162,43 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 int? totalRecords = null) {
 
             IQueryable<TEntity> qry = BuildLinqQuery(where, orderBy, skip, take, totalRecords,
-                out PagedResult<TEntity> pagedResult);
+                out DynamicLinqResult<TEntity> pagedResult);
 
-            IQueryable<TEntity> result = (await qry.ToDynamicListAsync<TEntity>()).AsQueryable();
-            pagedResult.Queryable = result;
+            var result = qry.ToDynamicList<TEntity>();
+            pagedResult.Data = result;
+
+            return pagedResult;
+
+        }
+
+
+
+
+
+        /// <summary>
+        /// Get by Dynamic Linq Expression
+        /// https://github.com/StefH/System.Linq.Dynamic.Core
+        /// https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions
+        /// </summary>
+        /// <param name="where">string Where expression</param>
+        /// <param name="orderBy">string OrderBy expression (with support for descending)</param>
+        /// <param name="select">string Select expression</param>
+        /// <param name="skip">int number of records to skip</param>
+        /// <param name="take">int number of records to return</param>
+        /// <returns>dynamic-typed object</returns>
+
+        public virtual async Task<DynamicLinqResult<TEntity>> GetFromDynamicLinqAsync(
+                string where = null,
+                string orderBy = null,
+                int? skip = null,
+                int? take = null,
+                int? totalRecords = null) {
+
+            IQueryable<TEntity> qry = BuildLinqQuery(where, orderBy, skip, take, totalRecords,
+                out DynamicLinqResult<TEntity> pagedResult);
+
+            var result = await qry.ToDynamicListAsync<TEntity>();
+            pagedResult.Data = result;
 
             return pagedResult;
         }
@@ -208,7 +208,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        private IQueryable BuildLinqQuery(string select, string where, string orderBy, int? skip, int? take, int? totalRecords, out PagedResult pagedResult) {
+        private IQueryable BuildLinqQuery(string select, string where, string orderBy, int? skip, int? take, int? totalRecords, out DynamicLinqResult pagedResult) {
 
             IQueryable qry = Query;
 
@@ -226,7 +226,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var takeValue = take == null ? totalRecords.Value - skipValue : take.Value;
             var pageCount = (int)Math.Ceiling(totalRecords.Value / (double)takeValue);
 
-            pagedResult = new PagedResult {
+            pagedResult = new DynamicLinqResult {
                 CurrentPage = 1 + (int)Math.Ceiling((skipValue) / (double)takeValue),
                 PageCount = pageCount,
                 PageSize = takeValue,
@@ -242,7 +242,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        private IQueryable<TEntity> BuildLinqQuery(string where, string orderBy, int? skip, int? take, int? totalRecords, out PagedResult<TEntity> pagedResult) {
+        private IQueryable<TEntity> BuildLinqQuery(string where, string orderBy, int? skip, int? take, int? totalRecords, out DynamicLinqResult<TEntity> pagedResult) {
 
             IQueryable<TEntity> qry = Query;
 
@@ -258,7 +258,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var takeValue = take == null ? totalRecords.Value - skipValue : take.Value;
             var pageCount = (int)Math.Ceiling(totalRecords.Value / (double)takeValue);
 
-            pagedResult = new PagedResult<TEntity> {
+            pagedResult = new DynamicLinqResult<TEntity> {
                 CurrentPage = 1 + (int)Math.Ceiling((skipValue) / (double)takeValue),
                 PageCount = pageCount,
                 PageSize = takeValue,

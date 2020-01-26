@@ -35,7 +35,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Executes a regular stored procedure and returns a json array.
         /// </summary>
         public static string GetJsonArrayFromStoredProcedure<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude = null)
             where TContext : DbContext => StoredProcedureExecutor.ExecuteToJsonArray(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchronously executes a regular stored procedure and returns a json array.
         /// </summary>
         public static async Task<string> GetJsonArrayFromStoredProcedureAsync<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude = null)
             where TContext : DbContext => await StoredProcedureExecutor.ExecuteToJsonArrayAsync(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -53,7 +53,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Executes a regular stored procedure and returns a json object.
         /// </summary>
         public static string GetJsonObjectFromStoredProcedure<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude = null)
             where TContext : DbContext => StoredProcedureExecutor.ExecuteToJsonObject(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -62,7 +62,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Asynchronously executes a regular stored procedure and returns a json object.
         /// </summary>
         public static async Task<string> GetJsonObjectFromStoredProcedureAsync<TContext>(this ISqlServerDbContext<TContext> context, string spName,
-            Dictionary<string, object> parameters, params string[] jsonPropertiesToInclude)
+            Dictionary<string, object> parameters, string[] jsonPropertiesToInclude = null)
             where TContext : DbContext => await StoredProcedureExecutor.ExecuteToJsonObjectAsync(context, spName, context.StoredProcedureDefs, parameters, jsonPropertiesToInclude);
 
 
@@ -70,7 +70,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Executes a stored procedure and returns a scalar.
         /// </summary>
-        public static string GetScalarFromStoredProcedure<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
+        public static TResult GetScalarFromStoredProcedure<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
             Dictionary<string, object> parameters)
             where TContext : DbContext => StoredProcedureExecutor.ExecuteToScalar<TContext,TResult>(context, spName, context.StoredProcedureDefs, parameters);
 
@@ -78,7 +78,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <summary>
         /// Asynchronously executes a stored procedure and returns a scalar.
         /// </summary>
-        public static async Task<string> GetScalarFromStoredProcedureAsync<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
+        public static async Task<TResult> GetScalarFromStoredProcedureAsync<TContext, TResult>(this ISqlServerDbContext<TContext> context, string spName,
             Dictionary<string, object> parameters)
             where TContext : DbContext => await StoredProcedureExecutor.ExecuteToScalarAsync<TContext, TResult>(context, spName, context.StoredProcedureDefs, parameters);
 
