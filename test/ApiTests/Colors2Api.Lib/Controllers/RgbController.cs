@@ -2,38 +2,38 @@
 using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 
 namespace Colors2Api.Lib.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class RgbController : SqlServerWriteableController<Rgb, Color2DbContext> {
-        public RgbController(RgbRepo repo, ILogger<SqlServerWriteableController<Rgb, Color2DbContext>> logger) 
-            : base(repo, logger) { }
+    public class RgbController : RepoController<Rgb, Color2DbContext, RgbRepo> {
+
+        public RgbController(RgbRepo repo) 
+            : base(repo) { }
 
 
         [HttpGet("RgbHslByColorName")]
-        public RgbHsl GetRgbHslByColorName([FromQuery] string colorName) {
+        public IActionResult GetRgbHslByColorName([FromQuery] string colorName) {
 
-            var parameters = HttpContext.ToStoredProcedureParameters("colorName");
-            var result = Repo.Context.GetObjectFromStoredProcedure<Color2DbContext,RgbHsl>(
+            var parameters = Params.Create(new { colorName });
+
+            var json = Repo.Context.GetJsonObjectFromStoredProcedure(
                 "RgbHslByColorName", parameters);
-            return result;
+
+            return new ContentResult { Content = json, ContentType = "application/json", StatusCode = 200 };
         }
+
 
         [HttpGet("RgbHslByColorNameContains")]
-        public List<RgbHsl> GetRgbHslByColorNameContains([FromQuery] string colorName) {
-            var parameters = HttpContext.ToStoredProcedureParameters("colorNameContains");
-            var result = Repo.Context.GetListFromStoredProcedure<Color2DbContext, RgbHsl>(
-                "RgbHslByColorNameContains", parameters);
-            return result;
-        }
+        public IActionResult GetRgbHslByColorNameContains([FromQuery] string colorNameContains) {
 
-        [HttpPost]
-        public override IActionResult Post([FromBody] Rgb rgb)
-            => base.Post(rgb);
+            var parameters = Params.Create(new { colorNameContains });
+
+            var json = Repo.Context.GetJsonArrayFromStoredProcedure(
+                "RgbHslByColorNameContains", parameters);
+
+            return new ContentResult { Content = json, ContentType = "application/json", StatusCode = 200 };
+        }
 
     }
 }

@@ -1,11 +1,11 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'HslController'
+declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetDevExtreme'
-declare @TestScenario varchar(255) = 'ReadonlyEndpointTests|FilterSortSelectTake'
+declare @TestScenario varchar(255) = 'FilterSortSelectTake'
 declare @TestCase varchar(255) = 'B'
 
-declare @ControllerPath varchar(255) = 'api/Hsl'
+declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @Filter varchar(255) = '["Name","Contains","Blue"]'
 declare @Select varchar(255) = '["Name","SysUser"]'
 declare @Sort varchar(255) = '[{selector:"Name",desc:true}]'

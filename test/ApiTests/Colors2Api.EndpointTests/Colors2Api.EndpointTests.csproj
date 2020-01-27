@@ -26,4 +26,9 @@
     <ProjectReference Include="..\Colors2Api\Colors2Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RgbControllerEndpointTests\RgbHslByColorNameContains\" />
+    <Folder Include="RgbControllerEndpointTests\RgbHslByColorName\" />
+  </ItemGroup>
+
 </Project>

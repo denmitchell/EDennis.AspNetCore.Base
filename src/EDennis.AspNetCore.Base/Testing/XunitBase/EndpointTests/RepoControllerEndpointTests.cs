@@ -2,14 +2,12 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
-namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
+namespace EDennis.AspNetCore.Base.Testing {
     public abstract class RepoControllerEndpointTests<TEntity, TProgram, TLauncher>        
         : LauncherEndpointTests<TProgram, TLauncher>
         where TEntity : class, new()
@@ -18,7 +16,30 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
         public RepoControllerEndpointTests(ITestOutputHelper output, LauncherFixture<TProgram, TLauncher> launcherFixture) : base(output, launcherFixture) {
         }
 
-
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a GetById request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<TEntity>> GetById_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -48,7 +69,31 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
             return eaResult;
         }
 
-        public async Task<ExpectedActual<EndpointTestResult<TEntity>>> GetById_ExpectedActualAsync(
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a GetByIdAsync request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<TEntity>>> GetByIdAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -77,6 +122,33 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
             return eaResult;
         }
 
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a Delete request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<List<TEntity>>> Delete_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -112,7 +184,34 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
         }
 
 
-        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> Delete_ExpectedActualAsync(
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a DeleteAsync request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> DeleteAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -147,6 +246,33 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
         }
 
 
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a Post request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Input</term><description>JSON input object</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<List<TEntity>>> Post_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -183,7 +309,34 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
 
-        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> Post_ExpectedActualAsync(
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a PostAsync request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Input</term><description>JSON input object</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> PostAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -220,6 +373,36 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
 
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a Put request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>Input</term><description>JSON input object</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<List<TEntity>>> Put_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -257,7 +440,37 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
 
-        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> Put_ExpectedActualAsync(
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a PutAsync request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>Input</term><description>JSON input object</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> PutAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -294,6 +507,36 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
 
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a Patch request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>Input</term><description>JSON input object</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<List<TEntity>>> Patch_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -331,7 +574,37 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
 
-        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> Patch_ExpectedActualAsync(
+        /// <summary>
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a PatchAsync request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>Id</term><description>Primary key</description>
+        /// </item>
+        /// <item>
+        ///     <term>Input</term><description>JSON input object</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> PatchAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -368,15 +641,41 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
         /// <summary>
-        /// Returns actual and expected results from GetDevExtreme.
-        /// Note: this method looks for the following optional TestJson
-        /// parameters (case sensitive):
-        /// Select, Filter, Sort, Skip, Take, 
-        ///    and ControllerPath
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a GetDevExtreme request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED/OPTIONAL TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Select</term><description>Comma-delimited list of properties to return (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Filter</term><description>DevExtreme filter expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Sort</term><description>DevExtreme sort expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Skip</term><description>Number of records to skip (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// </list>
         /// </summary>
-        /// <param name="jsonTestCase"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<List<TEntity>>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
@@ -429,16 +728,42 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
         /// <summary>
-        /// Returns actual and expected results from GetDevExtreme.
-        /// Note: this method looks for the following optional TestJson
-        /// parameters (case sensitive):
-        /// Select, Filter, Sort, Skip, Take, 
-        ///    and ControllerPath
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a GetDevExtremeAsync request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED/OPTIONAL TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Select</term><description>Comma-delimited list of properties to return (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Filter</term><description>DevExtreme filter expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Sort</term><description>DevExtreme sort expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Skip</term><description>Number of records to skip (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// </list>
         /// </summary>
-        /// <param name="jsonTestCase"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
-        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> GetDevExtreme_ExpectedActualAsync(string t, JsonTestCase jsonTestCase) {
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> GetDevExtremeAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
@@ -491,15 +816,42 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
         /// <summary>
-        /// Returns actual and expected results from GetDynamicLinq.
-        /// Note: this method looks for the following optional TestJson
-        /// parameters (case sensitive):
-        /// Where, OrderBy, Select, Skip, Take, and ControllerPath
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a GetDynamicLinq request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED/OPTIONAL TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Where</term><description>Dynamic Linq Where expression(optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Select</term><description>Dynamic Linq Select expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>OrderBy</term><description>Dynamic Linq OrderBy expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Skip</term><description>Number of records to skip (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// </list>
         /// </summary>
-        /// <param name="jsonTestCase"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
-        private ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
@@ -548,15 +900,42 @@ namespace EDennis.AspNetCore.Base.Testing.XunitBase.EndpointTests {
 
 
         /// <summary>
-        /// Returns actual and expected results from GetDynamicLinq.
-        /// Note: this method looks for the following optional TestJson
-        /// parameters (case sensitive):
-        /// Where, OrderBy, Select, Skip, Take, and ControllerPath
+        /// <para>Returns the expected and actual status code and response body (Data)
+        /// for a GetDynamicLinq request.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED/OPTIONAL TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Where</term><description>Dynamic Linq Where expression(optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Select</term><description>Dynamic Linq Select expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>OrderBy</term><description>Dynamic Linq OrderBy expression (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Skip</term><description>Number of records to skip (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// </list>
         /// </summary>
-        /// <param name="jsonTestCase"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
-        private async Task<ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>>> GetDynamicLinq_ExpectedActualAsync(string t, JsonTestCase jsonTestCase, bool isAsync) {
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        public async Task<ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
