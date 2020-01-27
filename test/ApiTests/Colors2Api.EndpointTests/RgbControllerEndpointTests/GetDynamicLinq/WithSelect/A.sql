@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetFromDynamicLinq'
-declare @TestScenario varchar(255) = 'WithSelect'
+declare @TestScenario varchar(255) = 'With Select'
 declare @TestCase varchar(255) = 'A'
 
 declare @Where varchar(255) = 'Name.Contains("Blue")'
@@ -20,6 +20,8 @@ select @rowCount = count(*) from Rgb where Name like '%Blue%'
 set @currentPage = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
 set @pageCount = ceiling(convert(decimal(10,2),@rowCount)/@Take)
 set @pageSize = @Take
+
+declare @ExpectedStatusCode int = 200 --Success
 
 declare 
 	@Expected varchar(max) = 
@@ -48,4 +50,5 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCas
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Skip', @Skip
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Take', @Take
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ExpectedStatusCode', @ExpectedStatusCode
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase

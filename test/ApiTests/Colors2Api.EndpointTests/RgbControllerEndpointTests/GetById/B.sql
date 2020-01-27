@@ -2,10 +2,12 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'GetById'
-declare @TestScenario varchar(255) = ''
+declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'B'
 
 declare @TargetId int = -999147
+declare @ExpectedStatusCode int = 200 --Success
+
 begin transaction
 
 declare @Expected varchar(max) = 
@@ -20,5 +22,6 @@ rollback transaction
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ExpectedStatusCode', @ExpectedStatusCode
 
 exec _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

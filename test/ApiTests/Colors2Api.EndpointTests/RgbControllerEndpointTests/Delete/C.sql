@@ -2,12 +2,12 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'Delete'
-declare @TestScenario varchar(255) = 'No Content'
-declare @TestCase varchar(255) = 'A'
+declare @TestScenario varchar(255) = 'Not Found'
+declare @TestCase varchar(255) = 'C'
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
-declare @TargetId int = -999145
-declare @ExpectedStatusCode int = 204 --No Content
+declare @TargetId int = -999299
+declare @ExpectedStatusCode int = 404 --Not Found
 
 begin transaction
 
