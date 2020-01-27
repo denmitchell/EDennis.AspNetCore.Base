@@ -19,12 +19,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         Task DeleteAsync(params object[] keyValues);
         bool Exists(params object[] keyValues);
         Task<bool> ExistsAsync(params object[] keyValues);
-        TEntity GetById(params object[] keyValues);
-        Task<TEntity> GetByIdAsync(params object[] keyValues);
-        DynamicLinqResult GetFromDynamicLinq(string select, string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
-        Task<DynamicLinqResult> GetFromDynamicLinqAsync(string select, string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
-        DynamicLinqResult<TEntity> GetFromDynamicLinq(string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
-        Task<DynamicLinqResult<TEntity>> GetFromDynamicLinqAsync(string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
+        TEntity GetWithId(params object[] keyValues);
+        Task<TEntity> GetWithIdAsync(params object[] keyValues);
+        DynamicLinqResult GetWithDynamicLinq(string select, string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
+        Task<DynamicLinqResult> GetWithDynamicLinqAsync(string select, string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
+        DynamicLinqResult<TEntity> GetWithDynamicLinq(string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
+        Task<DynamicLinqResult<TEntity>> GetWithDynamicLinqAsync(string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
         TEntity Update(dynamic partialEntity, params object[] keyValues);
         TEntity Update(TEntity entity, params object[] keyValues);
         Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues);

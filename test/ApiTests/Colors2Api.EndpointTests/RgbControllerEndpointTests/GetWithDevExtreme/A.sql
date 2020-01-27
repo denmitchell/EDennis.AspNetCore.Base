@@ -1,7 +1,7 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'HslController'
-declare @MethodName varchar(255) = 'GetDevExtreme'
+declare @MethodName varchar(255) = 'GetWithDevExtreme'
 declare @TestScenario varchar(255) = 'FilterSkipTake'
 declare @TestCase varchar(255) = 'A'
 

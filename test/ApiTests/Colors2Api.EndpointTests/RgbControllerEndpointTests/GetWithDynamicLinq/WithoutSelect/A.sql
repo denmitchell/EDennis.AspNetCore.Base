@@ -1,13 +1,13 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'GetFromDynamicLinq'
+declare @MethodName varchar(255) = 'GetWithDynamicLinq'
 declare @TestScenario varchar(255) = 'Without Select'
-declare @TestCase varchar(255) = 'B'
+declare @TestCase varchar(255) = 'A'
 
 --declare @Select varchar(255) = null -- don't use
 declare @OrderBy varchar(255) = 'Id asc'
-declare @Where varchar(255) = 'Red gt 200'
+declare @Where varchar(255) = 'Blue gt 200'
 declare @Skip int = 2
 declare @Take int = 5
 

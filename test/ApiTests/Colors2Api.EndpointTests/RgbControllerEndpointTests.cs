@@ -34,62 +34,62 @@ namespace Colors2Api.EndpointTests {
         }
 
         [Theory]
-        [TestJson_("GetDevExtreme", "FilterSortSelectTake", "A")]
-        [TestJson_("GetDevExtreme", "FilterSkipTake", "B")]
-        [TestJson_("GetDevExtreme", "Bad Request", "C")]
-        public void GetDevExtreme(string t, JsonTestCase jsonTestCase) {
-            var ea = GetDevExtreme_ExpectedActual(t, jsonTestCase);
+        [TestJson_("GetWithDevExtreme", "FilterSortSelectTake", "A")]
+        [TestJson_("GetWithDevExtreme", "FilterSkipTake", "B")]
+        [TestJson_("GetWithDevExtreme", "Bad Request", "C")]
+        public void GetWithDevExtreme(string t, JsonTestCase jsonTestCase) {
+            var ea = GetWithDevExtreme_ExpectedActual(t, jsonTestCase);
 
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
 
         [Theory]
-        [TestJson_("GetDevExtreme", "FilterSortSelectTake", "A")]
-        [TestJson_("GetDevExtreme", "FilterSkipTake", "B")]
-        [TestJson_("GetDevExtreme", "Bad Request", "C")]
-        public async Task GetDevExtremeAsync(string t, JsonTestCase jsonTestCase) {
-            var ea = await GetDevExtremeAsync_ExpectedActual(t, jsonTestCase);
+        [TestJson_("GetWithDevExtreme", "FilterSortSelectTake", "A")]
+        [TestJson_("GetWithDevExtreme", "FilterSkipTake", "B")]
+        [TestJson_("GetWithDevExtreme", "Bad Request", "C")]
+        public async Task GetWithDevExtremeAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetWithDevExtremeAsync_ExpectedActual(t, jsonTestCase);
 
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "With Select", "A")]
-        [TestJson_("GetDynamicLinq", "Without Select", "B")]
-        [TestJson_("GetDynamicLinq", "Bad Request", "C")]
-        public void GetDynamicLinq(string t, JsonTestCase jsonTestCase) {
-            var ea = GetDynamicLinq_ExpectedActual(t, jsonTestCase);
+        [TestJson_("GetWithDynamicLinq", "With Select", "A")]
+        [TestJson_("GetWithDynamicLinq", "Without Select", "B")]
+        [TestJson_("GetWithDynamicLinq", "Bad Request", "C")]
+        public void GetWithDynamicLinq(string t, JsonTestCase jsonTestCase) {
+            var ea = GetWithDynamicLinq_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
 
         [Theory]
-        [TestJson_("GetDynamicLinq", "With Select", "A")]
-        [TestJson_("GetDynamicLinq", "Without Select", "B")]
-        [TestJson_("GetDynamicLinq", "Bad Request", "C")]
-        public async Task GetDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
-            var ea = await GetDynamicLinqAsync_ExpectedActual(t, jsonTestCase);
+        [TestJson_("GetWithDynamicLinq", "With Select", "A")]
+        [TestJson_("GetWithDynamicLinq", "Without Select", "B")]
+        [TestJson_("GetWithDynamicLinq", "Bad Request", "C")]
+        public async Task GetWithDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetWithDynamicLinqAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
 
         [Theory]
-        [TestJson_("GetById", "Success", "A")]
-        [TestJson_("GetById", "Success", "B")]
-        [TestJson_("GetById", "Not Found", "C")]
-        public void GetById(string t, JsonTestCase jsonTestCase) {
-            var ea = GetById_ExpectedActual(t, jsonTestCase);
+        [TestJson_("GetWithId", "Success", "A")]
+        [TestJson_("GetWithId", "Success", "B")]
+        [TestJson_("GetWithId", "Not Found", "C")]
+        public void GetWithId(string t, JsonTestCase jsonTestCase) {
+            var ea = GetWithId_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 
         [Theory]
-        [TestJson_("GetById", "", "A")]
-        [TestJson_("GetById", "", "B")]
-        [TestJson_("GetById", "Not Found", "C")]
-        public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
-            var ea = await GetByIdAsync_ExpectedActual(t, jsonTestCase);
+        [TestJson_("GetWithId", "", "A")]
+        [TestJson_("GetWithId", "", "B")]
+        [TestJson_("GetWithId", "Not Found", "C")]
+        public async Task GetWithIdAsync(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetWithIdAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
         }
 

@@ -14,8 +14,8 @@ where TEntity : class, IEFCoreTemporalModel, new()
 
         Expression<Func<TEntity, bool>> GetAsOfBetweenPredicate(DateTime asOf);
         Expression<Func<TEntity, bool>> GetAsOfRangePredicate(DateTime from, DateTime to);
-        TEntity GetByIdAsOf(DateTime asOf, params object[] key);
-        List<TEntity> GetByIdHistory(params object[] key);
+        TEntity GetWithIdAsOf(DateTime asOf, params object[] key);
+        List<TEntity> GetWithIdHistory(params object[] key);
         List<TEntity> QueryAsOf(DateTime from, DateTime to, Expression<Func<TEntity, bool>> predicate, int pageNumber = 1, int pageSize = 10000, params Expression<Func<TEntity, dynamic>>[] orderSelectors);
         List<TEntity> QueryAsOf(DateTime asOf, Expression<Func<TEntity, bool>> predicate, int pageNumber = 1, int pageSize = 10000, params Expression<Func<TEntity, dynamic>>[] orderSelectors);
         bool WriteDelete(TEntity current);

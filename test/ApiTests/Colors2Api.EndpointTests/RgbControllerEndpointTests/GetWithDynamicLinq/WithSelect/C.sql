@@ -1,13 +1,13 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'GetFromDynamicLinq'
-declare @TestScenario varchar(255) = 'With Select'
-declare @TestCase varchar(255) = 'B'
+declare @MethodName varchar(255) = 'GetWithDynamicLinq'
+declare @TestScenario varchar(255) = 'Bad Request'
+declare @TestCase varchar(255) = 'C'
 
-declare @Where varchar(255) = 'Name.Contains("Green")'
-declare @Select varchar(255) = 'new(Name,SysUser)'
-declare @OrderBy varchar(255) = 'Name desc'
+declare @Where varchar(255) = '$fjiou#jdfah'
+declare @Select varchar(255) = '$jaj84a@!'
+declare @OrderBy varchar(255) = 'ldfa*73D!jd'
 declare @Skip int = 0
 declare @Take int = 10
 
@@ -21,26 +21,12 @@ set @currentPage = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
 set @pageCount = ceiling(convert(decimal(10,2),@rowCount)/@Take)
 set @pageSize = @Take
 
-declare @ExpectedStatusCode int = 200 --Success
+declare @ExpectedStatusCode int = 400 --Bad Request
 
 declare 
 	@Expected varchar(max) = 
 (
-	select
-		@currentPage [CurrentPage],
-		@pageCount [PageCount],
-		@pageSize [PageSize],
-		@rowCount [RowCount],
-		(
-			select Name, SysUser 
-				from Rgb
-				where Name like '%Green%'
-				order by Name desc
-				offset @Skip rows fetch next @Take rows only
-				for json path, include_null_values
-		) Data
-		
-		for json path, without_array_wrapper
+	select null
 );
 
 

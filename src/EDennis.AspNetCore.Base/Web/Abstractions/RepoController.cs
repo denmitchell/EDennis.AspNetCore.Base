@@ -90,8 +90,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpGet(IDREGEX)]
-        public virtual IActionResult GetById([FromRoute]string id) {
-            var entity = Repo.GetById(ParseId(id));
+        public virtual IActionResult GetWithId([FromRoute]string id) {
+            var entity = Repo.GetWithId(ParseId(id));
             if (entity == null)
                 return NotFound();
             else
@@ -100,8 +100,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpGet(ASYNC_IDREGEX)]
-        public virtual async Task<IActionResult> GetByIdAsync([FromRoute]string id) {
-            var entity = await Repo.GetByIdAsync(ParseId(id));
+        public virtual async Task<IActionResult> GetWithIdAsync([FromRoute]string id) {
+            var entity = await Repo.GetWithIdAsync(ParseId(id));
             if (entity == null)
                 return NotFound();
             else
@@ -282,7 +282,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
         [HttpGet("linq")]
-        public virtual IActionResult GetDynamicLinq(
+        public virtual IActionResult GetWithDynamicLinq(
                 [FromQuery]string where = null,
                 [FromQuery]string orderBy = null,
                 [FromQuery]string select = null,
@@ -292,12 +292,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 ) {
 
             if (select != null) {
-                var pagedResult = Repo.GetFromDynamicLinq(
+                var pagedResult = Repo.GetWithDynamicLinq(
                     select, where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
             } else {
-                var pagedResult = Repo.GetFromDynamicLinq(
+                var pagedResult = Repo.GetWithDynamicLinq(
                     where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
@@ -318,7 +318,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
         [HttpGet("linq/async")]
-        public virtual async Task<IActionResult> GetDynamicLinqAsync(
+        public virtual async Task<IActionResult> GetWithDynamicLinqAsync(
                 [FromQuery]string where = null,
                 [FromQuery]string orderBy = null,
                 [FromQuery]string select = null,
@@ -327,12 +327,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? totalRecords = null
                 ) {
             if (select != null) {
-                var pagedResult = await Repo.GetFromDynamicLinqAsync(
+                var pagedResult = await Repo.GetWithDynamicLinqAsync(
                     select, where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
             } else {
-                var pagedResult = await Repo.GetFromDynamicLinqAsync(
+                var pagedResult = await Repo.GetWithDynamicLinqAsync(
                     where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
@@ -347,7 +347,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet("devextreme")]
-        public virtual IActionResult GetDevExtreme(
+        public virtual IActionResult GetWithDevExtreme(
                 [FromQuery]string select,
                 [FromQuery]string sort,
                 [FromQuery]string filter,
@@ -372,7 +372,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet("devextreme/async")]
-        public virtual async Task<IActionResult> GetDevExtremeAsync(
+        public virtual async Task<IActionResult> GetWithDevExtremeAsync(
                 [FromQuery]string select,
                 [FromQuery]string sort,
                 [FromQuery]string filter,

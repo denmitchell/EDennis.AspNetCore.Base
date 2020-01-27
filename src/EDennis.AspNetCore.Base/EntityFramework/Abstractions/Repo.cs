@@ -51,7 +51,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
-        public virtual TEntity GetById(params object[] keyValues) {
+        public virtual TEntity GetWithId(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
             if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;
@@ -65,7 +65,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
 
-        public virtual async Task<TEntity> GetByIdAsync(params object[] keyValues) {
+        public virtual async Task<TEntity> GetWithIdAsync(params object[] keyValues) {
             var entity = await Context.FindAsync<TEntity>(keyValues);
             if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;
@@ -86,7 +86,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual DynamicLinqResult GetFromDynamicLinq(
+        public virtual DynamicLinqResult GetWithDynamicLinq(
                 string select,
                 string where = null,
                 string orderBy = null,
@@ -120,7 +120,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual async Task<DynamicLinqResult> GetFromDynamicLinqAsync(
+        public virtual async Task<DynamicLinqResult> GetWithDynamicLinqAsync(
                 string select,
                 string where = null,
                 string orderBy = null,
@@ -154,7 +154,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual DynamicLinqResult<TEntity> GetFromDynamicLinq(
+        public virtual DynamicLinqResult<TEntity> GetWithDynamicLinq(
                 string where = null,
                 string orderBy = null,
                 int? skip = null,
@@ -187,7 +187,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="take">int number of records to return</param>
         /// <returns>dynamic-typed object</returns>
 
-        public virtual async Task<DynamicLinqResult<TEntity>> GetFromDynamicLinqAsync(
+        public virtual async Task<DynamicLinqResult<TEntity>> GetWithDynamicLinqAsync(
                 string where = null,
                 string orderBy = null,
                 int? skip = null,

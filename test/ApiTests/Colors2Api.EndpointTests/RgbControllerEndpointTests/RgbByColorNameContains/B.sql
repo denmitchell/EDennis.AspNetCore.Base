@@ -13,7 +13,7 @@ go
 use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
-declare @MethodName varchar(255) = 'GetJsonArrayFromStoredProcedure'
+declare @MethodName varchar(255) = 'RgbByColorNameContains'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'B'
 

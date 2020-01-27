@@ -45,7 +45,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpGet("{id}")]
         public virtual IActionResult GetById([FromRoute] int id) {
-            var entity = Repo.GetById(id);
+            var entity = Repo.GetWithId(id);
             if (entity == null)
                 return NotFound();
             else
@@ -55,7 +55,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpGet("async/{id}")]
         public virtual async Task<IActionResult> GetByIdAsync([FromRoute] int id) {
-            var entity = await Repo.GetByIdAsync(id);
+            var entity = await Repo.GetWithIdAsync(id);
             if (entity == null)
                 return NotFound();
             else
@@ -242,12 +242,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 ) {
 
             if (select != null) {
-                var pagedResult = Repo.GetFromDynamicLinq(
+                var pagedResult = Repo.GetWithDynamicLinq(
                     select, where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
             } else {
-                var pagedResult = Repo.GetFromDynamicLinq(
+                var pagedResult = Repo.GetWithDynamicLinq(
                     where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
@@ -277,12 +277,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? totalRecords = null
                 ) {
             if (select != null) {
-                var pagedResult = await Repo.GetFromDynamicLinqAsync(
+                var pagedResult = await Repo.GetWithDynamicLinqAsync(
                     select, where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
             } else {
-                var pagedResult = await Repo.GetFromDynamicLinqAsync(
+                var pagedResult = await Repo.GetWithDynamicLinqAsync(
                     where, orderBy, skip, take, totalRecords);
                 var json = JsonSerializer.Serialize(pagedResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };

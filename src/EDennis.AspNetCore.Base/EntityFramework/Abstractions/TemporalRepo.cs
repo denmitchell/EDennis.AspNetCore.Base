@@ -311,7 +311,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> GetByIdHistory(params object[] key) {
+        public List<TEntity> GetWithIdHistory(params object[] key) {
 
             var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
 
@@ -331,7 +331,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public TEntity GetByIdAsOf(DateTime asOf, params object[] key) {
+        public TEntity GetWithIdAsOf(DateTime asOf, params object[] key) {
             var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);
 

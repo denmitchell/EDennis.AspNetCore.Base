@@ -40,7 +40,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<TEntity>> GetById_ExpectedActual(
+        public ExpectedActual<EndpointTestResult<TEntity>> GetWithId_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -93,7 +93,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<TEntity>>> GetByIdAsync_ExpectedActual(
+        public async Task<ExpectedActual<EndpointTestResult<TEntity>>> GetWithIdAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -676,7 +676,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<List<TEntity>>> GetDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActual<EndpointTestResult<List<TEntity>>> GetWithDevExtreme_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
@@ -763,7 +763,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> GetDevExtremeAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<EndpointTestResult<List<TEntity>>>> GetWithDevExtremeAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var filter = jsonTestCase.GetObjectOrDefault<string>("Filter", Output);
@@ -851,7 +851,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> GetDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> GetWithDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
@@ -935,7 +935,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>>> GetDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>>> GetWithDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
