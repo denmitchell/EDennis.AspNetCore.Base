@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'Patch'
-declare @TestScenario varchar(255) = ''
+declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'B'
 
 declare @Name varchar(255) = 'BlueB'
@@ -11,12 +11,10 @@ declare @Green int = 55
 declare @Blue int = 225
 declare @SysUser varchar(255) = 'tester@example.org'
 
-declare @WindowStart int
-select @WindowStart = min(Id) from Rgb;
-declare @WindowEnd int = @WindowStart + 5 
+declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
-declare @TargetId int
-select @TargetId = @WindowStart + 3 from Rgb;
+declare @TargetId int = -999146
+declare @ExpectedStatusCode int = 200 --Success
 
 
 begin transaction
@@ -34,7 +32,7 @@ update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb where Id between @WindowStart and @WindowEnd
+	select * from Rgb where Id between -999148 and -999143
 	for json path
 );
 
@@ -44,7 +42,7 @@ rollback transaction
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowStart', @WindowStart
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'WindowEnd', @WindowEnd
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ExpectedStatusCode', @ExpectedStatusCode
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'LinqWhere', @LinqWhere
 
 exec _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

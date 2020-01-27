@@ -134,14 +134,20 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpPatch("{id}")]
-        public virtual IActionResult Update([FromRoute]int id) {
+        public virtual IActionResult Patch([FromRoute]int id) {
 
             string json;
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
                 json = reader.ReadToEndAsync().Result;
             }
 
-            var partialEntity = JsonSerializer.Deserialize<dynamic>(json, JsonSerializationOptions);
+            dynamic partialEntity;
+            try {
+                partialEntity = JsonSerializer.Deserialize<dynamic>(json, JsonSerializationOptions);
+            } catch {
+                return BadRequest($"The provided json ({json}) could not be deserialized into a partial ({typeof(TEntity).Name} object)");
+            }
+
             var dId = GetPrimaryKeyDynamic(partialEntity);
 
             if (dId != id)
@@ -161,14 +167,19 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpPatch("async/{id}")]
-        public virtual async Task<IActionResult> UpdateAsync([FromRoute] int id) {
+        public virtual async Task<IActionResult> PatchAsync([FromRoute] int id) {
 
             string json;
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8)) {
                 json = reader.ReadToEndAsync().Result;
             }
 
-            var partialEntity = JsonSerializer.Deserialize<dynamic>(json, JsonSerializationOptions);
+            dynamic partialEntity;
+            try {
+                partialEntity = JsonSerializer.Deserialize<dynamic>(json, JsonSerializationOptions);
+            } catch {
+                return BadRequest($"The provided json ({json}) could not be deserialized into a partial ({typeof(TEntity).Name} object)");
+            }
             var dId = GetPrimaryKeyDynamic(partialEntity);
 
             if (dId != id)

@@ -2,6 +2,7 @@
 using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace Colors2Api.Lib.Controllers {
     [Route("api/[controller]")]
@@ -12,25 +13,25 @@ namespace Colors2Api.Lib.Controllers {
             : base(repo) { }
 
 
-        [HttpGet("RgbHslByColorName")]
-        public IActionResult GetRgbHslByColorName([FromQuery] string colorName) {
+        [HttpGet("RgbByColorName")]
+        public IActionResult GetRgbByColorName([FromQuery] string colorName) {
 
             var parameters = Params.Create(new { colorName });
 
             var json = Repo.Context.GetJsonObjectFromStoredProcedure(
-                "RgbHslByColorName", parameters);
+                "RgbByColorName", parameters);
 
             return new ContentResult { Content = json, ContentType = "application/json", StatusCode = 200 };
         }
 
 
-        [HttpGet("RgbHslByColorNameContains")]
-        public IActionResult GetRgbHslByColorNameContains([FromQuery] string colorNameContains) {
+        [HttpGet("RgbByColorNameContains")]
+        public IActionResult GetRgbByColorNameContains([FromQuery] string colorNameContains) {
 
             var parameters = Params.Create(new { colorNameContains });
 
             var json = Repo.Context.GetJsonArrayFromStoredProcedure(
-                "RgbHslByColorNameContains", parameters);
+                "RgbByColorNameContains", parameters);
 
             return new ContentResult { Content = json, ContentType = "application/json", StatusCode = 200 };
         }

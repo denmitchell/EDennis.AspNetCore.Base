@@ -1,34 +1,27 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'Update'
-declare @TestScenario varchar(255) = 'Success'
-declare @TestCase varchar(255) = 'A'
+declare @MethodName varchar(255) = 'Patch'
+declare @TestScenario varchar(255) = 'Bad Request - Not Deserializable'
+declare @TestCase varchar(255) = 'D'
 
-declare @Name varchar(255) = 'GreyA'
-declare @Red int = 128
-declare @Green int = 128
-declare @Blue int = 128
+declare @Name varchar(255) = 'BlueB'
+declare @Red int = 55
+declare @Green int = 55
+declare @Blue int = 225
 declare @SysUser varchar(255) = 'tester@example.org'
 
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
-declare @TargetId int = -999145
-declare @ExpectedStatusCode int = 200 --Success
-
+declare @TargetId int = -999146
+declare @ExpectedStatusCode int = 400 --Bad Request
 
 begin transaction
 declare @Input varchar(max) = 
 (
-	select
-		@TargetId Id,
-		@Name Name,
-		@Red Red, @Green Green, @Blue Blue
-	for json path, without_array_wrapper
+	select 123 SomeBadField, 'ABC' AnotherBadField
+		for json path, without_array_wrapper
 )
-
-update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
-	where Id = @TargetId
 
 declare @Expected varchar(max) = 
 (
