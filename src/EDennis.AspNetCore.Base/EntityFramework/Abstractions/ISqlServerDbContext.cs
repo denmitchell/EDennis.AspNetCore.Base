@@ -5,12 +5,20 @@ using System.Threading.Tasks;
 
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
+
+    /// <summary>
+    /// Interface used to provide extension methods to implementers 
+    /// </summary>
+    /// <typeparam name="TContext">A DbContext subclass</typeparam>
     public interface ISqlServerDbContext<TContext>
         where TContext : DbContext {
         DatabaseFacade Database { get; }
         StoredProcedureDefs<TContext> StoredProcedureDefs { get; set; }
     }
 
+    /// <summary>
+    /// Extension methods for an ISqlServerDbContext interface
+    /// </summary>
     public static class ISqlServerDbContextExtensions {
 
 

@@ -278,7 +278,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// Provides direct access to the Query property of the context,
         /// allowing any query to be constructed via Linq expression
         /// </summary>
-
         public virtual IQueryable<TEntity> Query { get => Context.Set<TEntity>().AsNoTracking(); }
 
 
@@ -288,7 +287,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key values</param>
         /// <returns>true if an entity with the provided keys exists</returns>
-
         public virtual bool Exists(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
             if (entity != null)
@@ -304,7 +302,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key values</param>
         /// <returns></returns>
-
         public virtual async Task<bool> ExistsAsync(params object[] keyValues) {
             var entity = await Context.FindAsync<TEntity>(keyValues);
             if (entity != null)
@@ -318,7 +315,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The entity to create</param>
         /// <returns>The created entity</returns>
-
         public virtual TEntity Create(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
@@ -335,7 +331,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The entity to create</param>
         /// <returns>The created entity</returns>
-
         public virtual async Task<TEntity> CreateAsync(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
@@ -356,7 +351,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-
         public virtual TEntity Update(TEntity entity, params object[] keyValues) {
             if (entity == null)
                 throw new MissingEntityException(
@@ -384,7 +378,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="entity">The new data for the entity</param>
         /// <returns>The newly updated entity</returns>
-
         public virtual async Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues) {
 
             if (entity == null)
@@ -406,8 +399,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-
-
+        /// <summary>
+        /// Updates an entity from data provided by a partial entity
+        /// </summary>
+        /// <param name="partialEntity">data to update</param>
+        /// <param name="keyValues">the primary key</param>
+        /// <returns></returns>
         public virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
@@ -433,8 +430,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-
-
+        /// <summary>
+        /// Asynchronously updates an entity from data provided by a partial entity
+        /// </summary>
+        /// <param name="partialEntity">data to update</param>
+        /// <param name="keyValues">the primary key</param>
+        /// <returns></returns>
         public virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
@@ -458,18 +459,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-
-
-
-
-
-
-
         /// <summary>
         /// Deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
-
         public virtual void Delete(params object[] keyValues) {
 
             var existing = Context.Find<TEntity>(keyValues);
@@ -483,13 +476,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-
-
         /// <summary>
         /// Asynchrously deletes the entity whose primary keys match the provided input
         /// </summary>
         /// <param name="keyValues">The primary key as key-value object array</param>
-
         public virtual async Task DeleteAsync(params object[] keyValues) {
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
