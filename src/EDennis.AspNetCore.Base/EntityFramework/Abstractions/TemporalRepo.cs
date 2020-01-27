@@ -311,7 +311,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> GetWithIdHistory(params object[] key) {
+        public List<TEntity> GetWithIdIncludeHistory(params object[] key) {
 
             var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
 

@@ -8,15 +8,8 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Web {
 
     /// <summary>
-    /// This middleware will transform headers into user claims per configuration settings.
-    /// 
-    /// This middleware is designed to be used immediately BEFORE or AFTER UseAuthentication() or
-    /// UseAuthorization().  All header/claims configured for PostAuthentication will be ignored if
-    /// the User is not authenticated.
-    /// 
-    /// When used after UseAuthorization, the claims are merely extra claims that can be used for
-    /// purposes other than all-or-nothing access to a protected resource (e.g., using a claim's
-    /// value to filter data requests.)
+    /// This middleware keeps track of the entry point for an application
+    /// and whether the application is a child API of another application
     /// </summary>
     public class ApplicationPropertiesMiddleware {
         private readonly RequestDelegate _next;
