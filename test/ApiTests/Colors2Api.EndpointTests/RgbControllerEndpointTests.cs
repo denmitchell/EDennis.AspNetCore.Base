@@ -1,7 +1,11 @@
 ﻿using Colors2.Models;
+using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
+using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -168,6 +172,73 @@ namespace Colors2Api.EndpointTests {
 
 
 
+        [Theory]
+        [TestJson_("RgbByColorName", "Success", "A")]
+        [TestJson_("RgbByColorName", "Success", "B")]
+        [TestJson_("RgbByColorName", "Bad Request", "C")]
+        public void RgbByColorName(string t, JsonTestCase jsonTestCase) {
+
+            var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var colorName = jsonTestCase.GetObject<string>("ColorName", Output);
+            var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
+            var expected = jsonTestCase.GetObject<List<dynamic>,Rgb>("Expected");
+            var expectedStatusCode = jsonTestCase.GetObject<int>("ExpectedStatusCode");
+
+            var url = $"{controllerPath}/{spName}?colorName={colorName}";
+            Output.WriteLine($"url: {url}");
+
+            IActionResult getResult = HttpClient.Get<dynamic,Rgb>(url);
+
+            var eaResult = new ExpectedActual<EndpointTestResult<List<dynamic>>> {
+                Expected = new EndpointTestResult<List<dynamic>> {
+                    StatusCode = expectedStatusCode,
+                    Data = expected
+                },
+                Actual = new EndpointTestResult<List<dynamic>> {
+                    StatusCode = getResult.GetStatusCode(),
+                }
+            };
+            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+                eaResult.Actual.Data = getResult.GetObject<List<dynamic>>();
+
+            Assert.True(eaResult.Actual.IsEqualAndWrite(eaResult.Expected, Output, true));
+
+        }
+
+
+
+        [Theory]
+        [TestJson_("RgbByColorNameContains", "Success", "A")]
+        [TestJson_("RgbByColorNameContains", "Success", "B")]
+        [TestJson_("RgbByColorNameContains", "Bad Request", "C")]
+        public void RgbByColorNameContains(string t, JsonTestCase jsonTestCase) {
+
+            var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var colorNameContains = jsonTestCase.GetObject<string>("ColorNameContains", Output);
+            var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
+            var expected = jsonTestCase.GetObject<List<dynamic>, Rgb>("Expected");
+            var expectedStatusCode = jsonTestCase.GetObject<int>("ExpectedStatusCode");
+
+            var url = $"{controllerPath}/{spName}?colorNameContains={colorNameContains}";
+            Output.WriteLine($"url: {url}");
+
+            IActionResult getResult = HttpClient.Get<dynamic, Rgb>(url);
+
+            var eaResult = new ExpectedActual<EndpointTestResult<List<dynamic>>> {
+                Expected = new EndpointTestResult<List<dynamic>> {
+                    StatusCode = expectedStatusCode,
+                    Data = expected
+                },
+                Actual = new EndpointTestResult<List<dynamic>> {
+                    StatusCode = getResult.GetStatusCode(),
+                }
+            };
+            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+                eaResult.Actual.Data = getResult.GetObject<List<dynamic>>();
+
+            Assert.True(eaResult.Actual.IsEqualAndWrite(eaResult.Expected, Output, true));
+
+        }
 
     }
 }
