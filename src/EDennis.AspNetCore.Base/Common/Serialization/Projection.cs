@@ -9,6 +9,8 @@ using System.Text.Json;
 
 namespace EDennis.AspNetCore.Base.Serialization {
 
+    public class Projection { }
+
     /// <summary>
     /// A static utility class for generating "projection" types
     /// -- types based upon an underlying type (TEntity), but
@@ -141,8 +143,9 @@ namespace EDennis.AspNetCore.Base.Serialization {
                     TypeAttributes.AutoClass |
                     TypeAttributes.AnsiClass |
                     TypeAttributes.BeforeFieldInit |
-                    TypeAttributes.AutoLayout,
-                   null);
+                    TypeAttributes.AutoLayout|
+                    TypeAttributes.SpecialName,
+                   typeof(Projection));
             return tb;
 
         }

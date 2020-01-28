@@ -18,8 +18,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         Task DeleteAsync(params object[] keyValues);
         bool Exists(params object[] keyValues);
         Task<bool> ExistsAsync(params object[] keyValues);
-        TEntity GetWithId(params object[] keyValues);
-        Task<TEntity> GetWithIdAsync(params object[] keyValues);
+        TEntity Get(params object[] keyValues);
+        Task<TEntity> GetAsync(params object[] keyValues);
         DynamicLinqResult GetWithDynamicLinq(string select, string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
         Task<DynamicLinqResult> GetWithDynamicLinqAsync(string select, string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);
         DynamicLinqResult<TEntity> GetWithDynamicLinq(string where = null, string orderBy = null, int? skip = null, int? take = null, int? totalRecords = null);

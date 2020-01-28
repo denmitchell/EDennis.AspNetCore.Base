@@ -174,6 +174,23 @@ namespace Colors2Api.EndpointTests {
 
 
         [Theory]
+        [TestJson_("RgbByColorName", "Params", "A")]
+        [TestJson_("RgbByColorName", "Params", "B")]
+        public void GetJsonObjectFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetJsonObjectFromStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));
+        }
+
+        [Theory]
+        [TestJson_("RgbByColorName", "Params", "A")]
+        [TestJson_("RgbByColorName", "Params", "B")]
+        public async Task GetJsonObjectFromStoredProcedure_Async(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetJsonObjectFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));
+        }
+
+
+        [Theory]
         [TestJson_("RgbByColorName", "Success", "A")]
         [TestJson_("RgbByColorName", "Success", "B")]
         [TestJson_("RgbByColorName", "Bad Request", "C")]
@@ -211,6 +228,25 @@ namespace Colors2Api.EndpointTests {
 
 
         [Theory]
+        [TestJson_("RgbByColorNameContains", "Params", "A")]
+        [TestJson_("RgbByColorNameContains", "Params", "B")]
+        public void GetJsonArrayFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
+            var ea = GetJsonArrayFromStoredProcedure_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));
+        }
+
+        [Theory]
+        [TestJson_("RgbByColorNameContains", "Params", "A")]
+        [TestJson_("RgbByColorNameContains", "Params", "B")]
+        public async Task GetJsonArrayFromStoredProcedure_Async(string t, JsonTestCase jsonTestCase) {
+            var ea = await GetJsonArrayFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
+            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));
+        }
+
+
+
+
+        [Theory]
         [TestJson_("RgbByColorNameContains", "Success", "A")]
         [TestJson_("RgbByColorNameContains", "Success", "B")]
         [TestJson_("RgbByColorNameContains", "Bad Request", "C")]
@@ -244,6 +280,10 @@ namespace Colors2Api.EndpointTests {
             Assert.True(eaResult.Actual.IsEqualAndWrite(eaResult.Expected, Output, true));
 
         }
+
+
+
+
 
     }
 }

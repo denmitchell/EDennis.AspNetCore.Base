@@ -310,7 +310,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> GetWithIdIncludeHistory(params object[] key) {
+        public List<TEntity> GetIncludeHistory(params object[] key) {
 
             var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
 
@@ -330,7 +330,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public TEntity GetWithIdAsOf(DateTime asOf, params object[] key) {
+        public TEntity GetAsOf(DateTime asOf, params object[] key) {
             var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
             var asOfPredicate = GetAsOfBetweenPredicate(asOf);
 
@@ -377,7 +377,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public virtual Expression<Func<TEntity, bool>> GetAsOfBetweenPredicate(DateTime asOf) {
+        private Expression<Func<TEntity, bool>> GetAsOfBetweenPredicate(DateTime asOf) {
 
             var type = typeof(TEntity);
 
@@ -403,7 +403,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public virtual Expression<Func<TEntity, bool>> GetAsOfRangePredicate(DateTime from, DateTime to) {
+        private Expression<Func<TEntity, bool>> GetAsOfRangePredicate(DateTime from, DateTime to) {
 
             var type = typeof(TEntity);
 
@@ -429,7 +429,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public virtual void WriteToHistory(TEntity existing) {
+        private void WriteToHistory(TEntity existing) {
             var historyEntity = ObjectUtils.CopyFromBaseClass<TEntity, THistoryEntity>(existing);
             historyEntity.SysEnd = DateTime.Now.AddTicks(-1);
             historyEntity.SysUserNext = ScopeProperties.User;
@@ -438,7 +438,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public virtual async Task WriteToHistoryAsync(TEntity existing) {
+        private async Task WriteToHistoryAsync(TEntity existing) {
             var historyEntity = ObjectUtils.CopyFromBaseClass<TEntity, THistoryEntity>(existing);
             historyEntity.SysEnd = DateTime.Now.AddTicks(-1);
             historyEntity.SysUserNext = ScopeProperties.User;

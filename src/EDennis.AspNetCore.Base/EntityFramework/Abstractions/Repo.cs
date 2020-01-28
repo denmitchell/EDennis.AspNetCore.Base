@@ -18,8 +18,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    //[ScopedTraceLogger]
-    //[AspectSkipProperties(true)]
+    [ScopedTraceLogger]
+    [AspectSkipProperties(true)]
     public partial class Repo<TEntity, TContext> : IRepo, IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
@@ -45,7 +45,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
-        public virtual TEntity GetWithId(params object[] keyValues) {
+        public virtual TEntity Get(params object[] keyValues) {
             var entity = Context.Find<TEntity>(keyValues);
             if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;
@@ -59,7 +59,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="keyValues">primary key provided as key-value object array</param>
         /// <returns>Entity whose primary key matches the provided input</returns>
 
-        public virtual async Task<TEntity> GetWithIdAsync(params object[] keyValues) {
+        public virtual async Task<TEntity> GetAsync(params object[] keyValues) {
             var entity = await Context.FindAsync<TEntity>(keyValues);
             if (entity != null)
                 Context.Entry(entity).State = EntityState.Detached;

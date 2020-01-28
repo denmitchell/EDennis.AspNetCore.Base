@@ -103,7 +103,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 return BadRequest(ex);
             }
 
-            var entity = Repo.GetWithId(iPk);
+            var entity = Repo.Get(iPk);
             if (entity == null)
                 return NotFound();
             else
@@ -119,7 +119,7 @@ namespace EDennis.AspNetCore.Base.Web {
             } catch (Exception ex) {
                 return BadRequest(ex);
             }
-            var entity = await Repo.GetWithIdAsync(iPk);
+            var entity = await Repo.GetAsync(iPk);
             if (entity == null)
                 return NotFound();
             else
@@ -139,6 +139,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 } else {
                     throw;
                 }
+            } catch (Exception) {
+                throw;
             }
             //return CreatedAtAction("GetById", new { id = pk.ToTildaDelimited() }, entity);
         }
@@ -156,6 +158,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 } else {
                     throw;
                 }
+            } catch (Exception) {
+                throw;
             }
             //return CreatedAtAction("GetById", new { id = pk.ToTildaDelimited() }, entity);
         }
@@ -184,6 +188,8 @@ namespace EDennis.AspNetCore.Base.Web {
                     return NotFound();
                 else
                     throw;
+            } catch (Exception) {
+                throw;
             }
         }
 
@@ -210,6 +216,8 @@ namespace EDennis.AspNetCore.Base.Web {
                     return NotFound();
                 else
                     throw;
+            } catch (Exception) {
+                throw;
             }
         }
 
@@ -248,8 +256,10 @@ namespace EDennis.AspNetCore.Base.Web {
                     return NotFound();
                 else
                     throw;
+            } catch (Exception) {
+                throw;
             }
-            }
+        }
 
 
         [HttpPatch(ASYNC_IDREGEX)]
@@ -287,7 +297,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     return NotFound();
                 else
                     throw;
-            } catch (Exception ex) {
+            } catch (Exception) {
                 throw;
             }
         }

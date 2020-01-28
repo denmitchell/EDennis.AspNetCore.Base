@@ -30,7 +30,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
-            var rec = Repo.GetWithId(id);
+            var rec = Repo.Get(id);
             if (rec == null)
                 return NotFound();
             else
@@ -44,7 +44,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns></returns>
         [HttpGet("async/{id}")]
         public async Task<IActionResult> GetAsync(int id) {
-            var rec = await Repo.GetWithIdAsync(id);
+            var rec = await Repo.GetAsync(id);
             if (rec == null)
                 return NotFound();
             else
