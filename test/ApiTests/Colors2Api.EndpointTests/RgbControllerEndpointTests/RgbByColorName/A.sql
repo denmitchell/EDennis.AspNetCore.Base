@@ -17,6 +17,7 @@ declare @MethodName varchar(255) = 'RgbByColorName'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
 
+declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @SpName varchar(255) = 'RgbByColorName'
 declare @ColorName varchar(255) = 'AliceBlue'
 
@@ -39,6 +40,7 @@ declare
 	for json path, without_array_wrapper
 );
 
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected

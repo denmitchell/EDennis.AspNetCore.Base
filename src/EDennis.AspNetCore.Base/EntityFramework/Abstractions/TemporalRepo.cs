@@ -10,7 +10,7 @@ using MethodBoundaryAspect.Fody.Attributes;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
-    [ScopedTraceLogger(logEntry:true)]
+    [ScopedTraceLogger]
     [AspectSkipProperties(true)]
     public class TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> : Repo<TEntity, TContext>, ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> 
         where TEntity : class, IEFCoreTemporalModel, new()
@@ -25,9 +25,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public TemporalRepo(DbContextProvider<TContext> provider, DbContextProvider<THistoryContext> historyProvider,
-            IScopeProperties scopeProperties,
-            ILogger<Repo<TEntity, TContext>> logger) 
-            : base(provider, scopeProperties, logger) {
+            IScopeProperties scopeProperties) 
+            : base(provider, scopeProperties) {
 
             HistoryContext = historyProvider.Context;
             ScopeProperties = scopeProperties;

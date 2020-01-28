@@ -9,7 +9,6 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
         TContext Context { get; set; }
-        ILogger Logger { get; }
         IQueryable<TEntity> Query { get; }
         IScopeProperties ScopeProperties { get; set; }
 

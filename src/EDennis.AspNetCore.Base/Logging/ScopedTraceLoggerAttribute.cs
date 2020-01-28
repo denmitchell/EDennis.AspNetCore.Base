@@ -10,6 +10,8 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using EDennis.AspNetCore.Base.Web;
+using System.Threading;
+using System.Diagnostics;
 
 namespace EDennis.AspNetCore.Base.Logging {
     public class ScopedTraceLoggerAttribute : OnMethodBoundaryAspect {
@@ -48,7 +50,7 @@ namespace EDennis.AspNetCore.Base.Logging {
         private readonly int maxLengthOfValues = default;
 
 
-        public ScopedTraceLoggerAttribute(bool logEntry = false, bool logExit = false, int maxLengthOfValues = 0) {
+        public ScopedTraceLoggerAttribute(bool logEntry = true, bool logExit = false, int maxLengthOfValues = 0) {
             this.logExit = logExit;
             this.logEntry = logEntry;
             if (maxLengthOfValues >= 0)
@@ -94,7 +96,7 @@ namespace EDennis.AspNetCore.Base.Logging {
 
 
         public override void OnEntry(MethodExecutionArgs args) {
-            if (!logEntry || args.Method.Name.Contains("ScopeProperties"))
+            if (!logEntry || args.Method.Name.StartsWith("get_") || args.Method.Name.StartsWith("set_"))
                 return;
             var instance = args.Instance;
             var key = GetScopedTraceLoggerKey(instance);
@@ -108,7 +110,7 @@ namespace EDennis.AspNetCore.Base.Logging {
         /// </summary>
         /// <param name="args"></param>
         public override void OnExit(MethodExecutionArgs args) {
-            if (!logExit)
+            if (!logEntry || args.Method.Name.StartsWith("get_") || args.Method.Name.StartsWith("set_"))
                 return;
             var instance = args.Instance;
             var key = GetScopedTraceLoggerKey(instance);
@@ -117,14 +119,15 @@ namespace EDennis.AspNetCore.Base.Logging {
         }
 
         /// <summary>
-        /// Exceptions are logged regardless of user registration
+        /// Exceptions are not logged because they circumvent other exception handling
         /// </summary>
         /// <param name="args"></param>
-        public override void OnException(MethodExecutionArgs args) {
-            var instance = args.Instance;
-            var key = GetScopedTraceLoggerKey(instance);
-            LogException(args,key);
-        }
+        //public override void OnException(MethodExecutionArgs args) {
+        //    var instance = args.Instance;
+        //    var key = GetScopedTraceLoggerKey(instance);
+        //    LogException(args,key);
+        //    throw args.Exception;
+        //}
 
 
         public virtual void LogEntry(MethodExecutionArgs args, string key) {
@@ -169,12 +172,12 @@ namespace EDennis.AspNetCore.Base.Logging {
                 var type = instance.GetType();
                 if (type.Name.StartsWith("<"))
                     return null;
-                var methodInfo = type.GetMethod("GetScopedTraceLoggerKey");
-                var key = (string)methodInfo.Invoke(instance, new object[] { });
-                return key;
-                //var propInfo = instance.GetType().GetProperty("ScopeProperties");
-                //scopeProperties = (ScopeProperties)propInfo.GetValue(instance);
-                //return scopeProperties;
+                //var methodInfo = type.GetMethod("GetScopedTraceLoggerKey");
+                //var key = (string)methodInfo.Invoke(instance, new object[] { });
+                //return key;
+                var propInfo = instance.GetType().GetProperty("ScopeProperties");
+                var scopeProperties = (ScopeProperties)propInfo.GetValue(instance);
+                return scopeProperties.ScopedTraceLoggerKey;
             } catch {
                 throw new ApplicationException($"{instance.GetType().FullName} does not have method '[DisableWeaving] public string GetScopedTraceLoggerKey()=>...'.  It must have this method and the method must be decorated with [DisableWeaving] if the class or a method in the class uses the attribute [ScopedTraceLogger].");
             }

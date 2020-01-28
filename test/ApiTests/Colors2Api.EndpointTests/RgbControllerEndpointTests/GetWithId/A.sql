@@ -5,6 +5,7 @@ declare @MethodName varchar(255) = 'GetWithId'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
 
+declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @TargetId int = -999146
 declare @ExpectedStatusCode int = 200 --Success
 
@@ -20,6 +21,7 @@ declare @Expected varchar(max) =
 rollback transaction
 --exec _.ResetSequences --only needed if no explicit Ids are provided
 
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ExpectedStatusCode', @ExpectedStatusCode

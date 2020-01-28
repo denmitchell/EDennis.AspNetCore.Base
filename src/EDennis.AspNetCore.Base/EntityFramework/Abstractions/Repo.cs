@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using SLDCE = System.Linq.Dynamic.Core.Exceptions;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
@@ -17,31 +18,24 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    [ScopedTraceLogger(logEntry: true)]
+    [ScopedTraceLogger]
     [AspectSkipProperties(true)]
     public partial class Repo<TEntity, TContext> : IRepo, IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
 
-        [DisableWeaving] public virtual string GetScopedTraceLoggerKey() => ScopeProperties?.ScopedTraceLoggerKey;
-
         public TContext Context { get; set; }
         public IScopeProperties ScopeProperties { get; set; }
-
-        public ILogger Logger { get; }
 
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
         /// <param name="context">Entity Framework DbContext</param>
         public Repo(DbContextProvider<TContext> provider,
-            IScopeProperties scopeProperties,
-            ILogger<Repo<TEntity, TContext>> logger) {
+            IScopeProperties scopeProperties) {
 
             Context = provider.Context;
             ScopeProperties = scopeProperties;
-            Logger = logger;
-
         }
 
 
@@ -94,7 +88,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 int? take = null,
                 int? totalRecords = null) {
 
-            IQueryable qry = BuildLinqQuery(select, where, orderBy, skip, take, totalRecords, 
+            IQueryable qry = BuildLinqQuery(select, where, orderBy, skip, take, totalRecords,
                 out DynamicLinqResult pagedResult);
 
             var result = qry.ToDynamicList();

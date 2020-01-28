@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core.Exceptions;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -17,10 +18,10 @@ namespace EDennis.AspNetCore.Base.Web {
 
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class RepoController<TEntity, TContext, TRepo> : ControllerBase 
-        where TEntity: class, IHasSysUser, new()
-        where TContext: DbContext
-        where TRepo : IRepo<TEntity,TContext> {
+    public abstract class RepoController<TEntity, TContext, TRepo> : ControllerBase
+        where TEntity : class, IHasSysUser, new()
+        where TContext : DbContext
+        where TRepo : IRepo<TEntity, TContext> {
 
         public TRepo Repo { get; set; }
 
@@ -38,7 +39,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 var key = s.Split('~');
                 var id = new object[KeyProperties.Count];
                 for (int i = 0; i < id.Length; i++)
-                    id[i] = Convert.ChangeType(key[i],KeyProperties[i].ClrType);
+                    id[i] = Convert.ChangeType(key[i], KeyProperties[i].ClrType);
                 return id;
             };
 
@@ -53,7 +54,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     if (prop == null)
                         throw new ArgumentException($"The provided input does not contain a {keyName} property");
                     var keyValue = prop.GetValue(dyn);
-                    id[i] = Convert.ChangeType(keyValue,keyType);
+                    id[i] = Convert.ChangeType(keyValue, keyType);
                 }
                 return id;
             };
@@ -152,7 +153,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ePk.ToTildaDelimited()})");
 
             try {
-                var updated = Repo.Update(entity,iPk);
+                var updated = Repo.Update(entity, iPk);
                 return Ok(updated);
             } catch (DbUpdateConcurrencyException) {
                 if (!Repo.Exists(iPk))
@@ -247,7 +248,7 @@ namespace EDennis.AspNetCore.Base.Web {
             }
         }
 
-        
+
         [HttpDelete(IDREGEX)]
         public virtual IActionResult Delete(string id) {
             try {
@@ -291,16 +292,21 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? totalRecords = null
                 ) {
 
-            if (select != null) {
-                var pagedResult = Repo.GetWithDynamicLinq(
-                    select, where, orderBy, skip, take, totalRecords);
-                var json = JsonSerializer.Serialize(pagedResult);
-                return new ContentResult { Content = json, ContentType = "application/json" };
-            } else {
-                var pagedResult = Repo.GetWithDynamicLinq(
-                    where, orderBy, skip, take, totalRecords);
-                var json = JsonSerializer.Serialize(pagedResult);
-                return new ContentResult { Content = json, ContentType = "application/json" };
+            try {
+                if (select != null) {
+                    var dynamicLinqResult = Repo.GetWithDynamicLinq(
+                        select, where, orderBy, skip, take, totalRecords);
+                    var json = JsonSerializer.Serialize(dynamicLinqResult);
+                    return new ContentResult { Content = json, ContentType = "application/json" };
+                } else {
+                    var dynamicLinqResult = Repo.GetWithDynamicLinq(
+                        where, orderBy, skip, take, totalRecords);
+                    var json = JsonSerializer.Serialize(dynamicLinqResult);
+                    return new ContentResult { Content = json, ContentType = "application/json" };
+                }
+            } catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
+                return new BadRequestObjectResult(ModelState);
             }
 
         }
@@ -327,14 +333,14 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? totalRecords = null
                 ) {
             if (select != null) {
-                var pagedResult = await Repo.GetWithDynamicLinqAsync(
+                var dynamicLinqResult = await Repo.GetWithDynamicLinqAsync(
                     select, where, orderBy, skip, take, totalRecords);
-                var json = JsonSerializer.Serialize(pagedResult);
+                var json = JsonSerializer.Serialize(dynamicLinqResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
             } else {
-                var pagedResult = await Repo.GetWithDynamicLinqAsync(
+                var dynamicLinqResult = await Repo.GetWithDynamicLinqAsync(
                     where, orderBy, skip, take, totalRecords);
-                var json = JsonSerializer.Serialize(pagedResult);
+                var json = JsonSerializer.Serialize(dynamicLinqResult);
                 return new ContentResult { Content = json, ContentType = "application/json" };
             }
         }
@@ -357,12 +363,28 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]string group,
                 [FromQuery]string groupSummary
             ) {
-            var loadOptions = DataSourceLoadOptionsBuilder.Build(
-                select, sort, filter, skip, take, totalSummary,
-                group, groupSummary);
-
-            var result = DataSourceLoader.Load(Repo.Query, loadOptions);
-            return Ok(result);
+            DataSourceLoadOptions loadOptions = null;
+            try {
+                loadOptions = DataSourceLoadOptionsBuilder.Build(
+                    select, sort, filter, skip, take, totalSummary,
+                    group, groupSummary);
+            } catch (ArgumentException ex) {
+                ModelState.AddModelError("", ex.Message);
+                return new BadRequestObjectResult(ModelState);
+            }
+            try {
+                var result = DataSourceLoader.Load(Repo.Query, loadOptions);
+                return Ok(result);
+            } catch (ArgumentOutOfRangeException) {
+                var obj =
+                    new {
+                        Exception = "Failed executing DevExtreme load expression",
+                        ProvidedArguments = new {
+                            select, sort, filter, skip, take, totalSummary, group, groupSummary
+                        }
+                    };
+                return new BadRequestObjectResult(obj);
+            }
         }
 
 
@@ -386,8 +408,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 select, sort, filter, skip, take, totalSummary,
                 group, groupSummary);
 
-            var result = await Task.Run(()=> DataSourceLoader.Load(Repo.Query, loadOptions));
-            return Ok(result);
+            return await Task.Run(() => GetWithDevExtreme(select, sort, filter, skip, take, totalSummary, group, groupSummary));
         }
 
 

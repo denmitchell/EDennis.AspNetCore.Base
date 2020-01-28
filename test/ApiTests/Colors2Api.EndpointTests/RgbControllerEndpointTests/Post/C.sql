@@ -5,6 +5,7 @@ declare @MethodName varchar(255) = 'Create'
 declare @TestScenario varchar(255) = 'Conflict'
 declare @TestCase varchar(255) = 'B'
 
+declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @Name varchar(255) = 'Marsala'
 declare @Red int = 150
 declare @Green int = 82
@@ -32,6 +33,7 @@ declare @Expected varchar(max) =
 rollback transaction
 --exec _.ResetSequences --only needed if no explicit Ids are provided
 
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ExpectedStatusCode', @ExpectedStatusCode

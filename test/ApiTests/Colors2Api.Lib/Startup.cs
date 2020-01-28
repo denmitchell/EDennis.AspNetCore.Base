@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
+using System.Diagnostics;
+using System.Threading;
 
 namespace Colors2Api.Lib {
     public class Startup {
@@ -39,9 +41,8 @@ namespace Colors2Api.Lib {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
-
             app.UseSession();
             app.UseApplicationProperties();
 

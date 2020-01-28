@@ -8,9 +8,8 @@ namespace Colors2.Models {
     public class RgbRepo : Repo<Rgb, Color2DbContext> {
 
         public RgbRepo(DbContextProvider<Color2DbContext> provider,
-            IScopeProperties scopeProperties,
-            ILogger<RgbRepo> logger)
-            : base(provider, scopeProperties, logger) {
+            IScopeProperties scopeProperties)
+            : base(provider, scopeProperties) {
 
         }
     }

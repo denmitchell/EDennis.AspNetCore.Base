@@ -6,6 +6,7 @@ declare @TestScenario varchar(255) = 'No Content'
 declare @TestCase varchar(255) = 'A'
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
+declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @TargetId int = -999145
 declare @ExpectedStatusCode int = 204 --No Content
 
@@ -22,6 +23,7 @@ declare @Expected varchar(max) =
 rollback transaction
 --exec _.ResetSequences --only needed if no explicit Ids are provided
 
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ExpectedStatusCode', @ExpectedStatusCode

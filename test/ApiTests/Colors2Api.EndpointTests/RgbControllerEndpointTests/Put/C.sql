@@ -5,6 +5,7 @@ declare @MethodName varchar(255) = 'Update'
 declare @TestScenario varchar(255) = 'Bad Request - Bad Id'
 declare @TestCase varchar(255) = 'C'
 
+declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @Name varchar(255) = 'BlueB'
 declare @Red int = 55
 declare @Green int = 55

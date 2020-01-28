@@ -6,7 +6,6 @@ namespace EDennis.AspNetCore.Base.Web {
         Api Api { get; }
         string ApiKey { get; }
         HttpClient HttpClient { get; }
-        ILogger Logger { get; }
         IScopeProperties ScopeProperties { get; }
     }
 }

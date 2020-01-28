@@ -178,6 +178,8 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("RgbByColorName", "Bad Request", "C")]
         public void RgbByColorName(string t, JsonTestCase jsonTestCase) {
 
+            Output.WriteLine(t);
+
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var colorName = jsonTestCase.GetObject<string>("ColorName", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
@@ -212,6 +214,8 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("RgbByColorNameContains", "Success", "B")]
         [TestJson_("RgbByColorNameContains", "Bad Request", "C")]
         public void RgbByColorNameContains(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine(t);
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var colorNameContains = jsonTestCase.GetObject<string>("ColorNameContains", Output);

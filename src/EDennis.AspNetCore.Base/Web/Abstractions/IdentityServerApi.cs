@@ -17,9 +17,8 @@ namespace EDennis.AspNetCore.Base.Web {
         public IdentityServerApi(IHttpClientFactory httpClientFactory, 
             IOptionsMonitor<Apis> apis, 
             IScopeProperties scopeProperties, 
-            IWebHostEnvironment env,
-            ILogger<IdentityServerApi> logger) 
-            : base(httpClientFactory, apis, scopeProperties, env, logger) {
+            IWebHostEnvironment env) 
+            : base(httpClientFactory, apis, scopeProperties, env) {
         }
     }
 }

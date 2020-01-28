@@ -24,6 +24,7 @@ namespace EDennis.AspNetCore.Base {
     public static class IServiceConfigExtensions {
 
         public const string DEFAULT_APIS_PATH = "Apis";
+        public const string DEFAULT_EXCEPTION_LOGGER_SETTINGS_PATH = "ApiExceptionHandler";
         public const string DEFAULT_DBCONTEXTS_PATH = "DbContexts";
         public const string DEFAULT_SCOPE_PROPERTIES_PATH = "ScopeProperties";
         public const string DEFAULT_SCOPED_CONFIGURATION_PATH = "ScopedConfiguration";
@@ -45,7 +46,13 @@ namespace EDennis.AspNetCore.Base {
             return serviceConfig;
         }
 
+        public static IServiceConfig AddExceptionLogger(this IServiceConfig serviceConfig, string exceptionLoggerSettingsKey) {
+            serviceConfig.Configure<ExceptionLoggerSettings>(exceptionLoggerSettingsKey);
+            return serviceConfig;
+        }
 
+        public static IServiceConfig AddExceptionLogger(this IServiceConfig serviceConfig)
+            => AddExceptionLogger(serviceConfig, DEFAULT_EXCEPTION_LOGGER_SETTINGS_PATH);
 
         public static IServiceConfig AddScopedTraceLogger(this IServiceConfig serviceConfig)
             =>   AddScopedTraceLogger(serviceConfig, DEFAULT_SCOPED_LOGGER_SETTINGS_PATH);

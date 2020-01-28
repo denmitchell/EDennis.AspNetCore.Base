@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -15,7 +16,6 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public HttpClient HttpClient { get; }
         public Api Api { get; }
-        public ILogger Logger { get; }
         public IScopeProperties ScopeProperties { get; }
         IWebHostEnvironment HostEnvironment { get; }
 
@@ -23,10 +23,8 @@ namespace EDennis.AspNetCore.Base.Web {
             IHttpClientFactory httpClientFactory,
             IOptionsMonitor<Apis> apis,
             IScopeProperties scopeProperties,
-            IWebHostEnvironment env,
-            ILogger logger) {
+            IWebHostEnvironment env) {
 
-            Logger = logger;
             ScopeProperties = scopeProperties;
             HostEnvironment = env;
 
@@ -34,8 +32,9 @@ namespace EDennis.AspNetCore.Base.Web {
             HttpClient = httpClientFactory.CreateClient(ApiKey);
             try {
                 Api = apis.CurrentValue[ApiKey];
-            } catch (Exception ex) {
-                Logger.LogError(ex, "For ApiClient {ApiClientType} Cannot find '{ApiKey}' in Apis section of Configuration", ApiKey);
+            } catch (Exception) {
+                Debug.WriteLine(string.Format("For ApiClient {0} Cannot find '{1}' in Apis section of Configuration", GetType().Name, ApiKey));
+                throw;
             }
 
             BuildClient();

@@ -1,5 +1,4 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -126,7 +125,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         public virtual TRepo CreateRepo() => (TRepo)Activator.CreateInstance(typeof(TRepo),
-                new object[] { DbContextProvider, ScopeProperties, Logger });
+                new object[] { DbContextProvider, ScopeProperties });
 
 
         public virtual void ResetRepo() {

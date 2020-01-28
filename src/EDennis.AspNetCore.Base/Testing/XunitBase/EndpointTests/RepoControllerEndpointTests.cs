@@ -715,7 +715,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     Data = expected
                 },
                 Actual = new EndpointTestResult<List<TEntity>> {
-                    StatusCode = 200,
+                    StatusCode = actualLoadResult.GetStatusCode()
                 }
             };
             if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
@@ -802,7 +802,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     Data = expected
                 },
                 Actual = new EndpointTestResult<List<TEntity>> {
-                    StatusCode = 200,
+                    StatusCode = actualLoadResult.GetStatusCode()
                 }
             };
             if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
@@ -888,7 +888,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     Data = expected
                 },
                 Actual = new EndpointTestResult<DynamicLinqResult<dynamic>> {
-                    StatusCode = 200,
+                    StatusCode = actualResult.GetStatusCode()
                 }
             };
             if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
@@ -972,7 +972,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     Data = expected
                 },
                 Actual = new EndpointTestResult<DynamicLinqResult<dynamic>> {
-                    StatusCode = 200,
+                    StatusCode = actualResult.GetStatusCode()
                 }
             };
             if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
