@@ -29,8 +29,8 @@ declare @Input varchar(max) =
 	for json path, without_array_wrapper
 )
 
-update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
-	where Id = @TargetId
+--update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
+--	where Id = @TargetId
 
 declare @Expected varchar(max) = 
 (

@@ -1,13 +1,13 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'GetWithId'
-declare @TestScenario varchar(255) = 'Not Found'
-declare @TestCase varchar(255) = 'C'
+declare @MethodName varchar(255) = 'Get'
+declare @TestScenario varchar(255) = 'Success'
+declare @TestCase varchar(255) = 'B'
 
 declare @ControllerPath varchar(255) = 'api/Rgb'
-declare @TargetId int = -999299
-declare @ExpectedStatusCode int = 404 --Not Found
+declare @TargetId int = -999147
+declare @ExpectedStatusCode int = 200 --Success
 
 begin transaction
 

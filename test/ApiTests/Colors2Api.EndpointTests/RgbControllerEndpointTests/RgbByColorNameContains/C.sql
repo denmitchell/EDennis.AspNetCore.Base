@@ -11,8 +11,8 @@ if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
 use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Repo'
-declare @ClassName varchar(255) = 'RgbRepo'
+declare @ProjectName varchar(255) = 'Colors2Api'
+declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'RgbByColorNameContains'
 declare @TestScenario varchar(255) = 'Bad Request'
 declare @TestCase varchar(255) = 'C'
@@ -23,7 +23,7 @@ declare @ColorNameContains varchar(255) = 'Green'
 
 select * into #SpResults from Rgb where 1=0
 
-declare @ExpectedStatusCode int = 200
+declare @ExpectedStatusCode int = 404
 declare 
 	@Expected varchar(max) = 
 (

@@ -38,8 +38,12 @@ namespace EDennis.AspNetCore.Base.Web {
             ParseId = (s) => {
                 var key = s.Split('~');
                 var id = new object[KeyProperties.Count];
-                for (int i = 0; i < id.Length; i++)
-                    id[i] = Convert.ChangeType(key[i], KeyProperties[i].ClrType);
+                try {
+                    for (int i = 0; i < id.Length; i++)
+                        id[i] = Convert.ChangeType(key[i], KeyProperties[i].ClrType);
+                } catch {
+                    throw new ArgumentException($"The provided path parameters ({key}) cannot be converted into a key for {typeof(TEntity).Name}");
+                }
                 return id;
             };
 
@@ -91,8 +95,15 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpGet(IDREGEX)]
-        public virtual IActionResult GetWithId([FromRoute]string id) {
-            var entity = Repo.GetWithId(ParseId(id));
+        public virtual IActionResult Get([FromRoute]string id) {
+            object[] iPk;
+            try {
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex);
+            }
+
+            var entity = Repo.GetWithId(iPk);
             if (entity == null)
                 return NotFound();
             else
@@ -101,8 +112,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpGet(ASYNC_IDREGEX)]
-        public virtual async Task<IActionResult> GetWithIdAsync([FromRoute]string id) {
-            var entity = await Repo.GetWithIdAsync(ParseId(id));
+        public virtual async Task<IActionResult> GetAsync([FromRoute]string id) {
+            object[] iPk;
+            try {
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex);
+            }
+            var entity = await Repo.GetWithIdAsync(iPk);
             if (entity == null)
                 return NotFound();
             else
@@ -110,7 +127,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
         [HttpPost]
-        public virtual IActionResult Create([FromBody]TEntity entity) {
+        public virtual IActionResult Post([FromBody]TEntity entity) {
             var pk = GetPrimaryKey(entity);
             try {
                 var created = Repo.Create(entity);
@@ -127,7 +144,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
         [HttpPost("async")]
-        public virtual async Task<IActionResult> CreateAsync([FromBody] TEntity entity) {
+        public virtual async Task<IActionResult> PostAsync([FromBody] TEntity entity) {
             var pk = GetPrimaryKey(entity);
             try {
                 var created = await Repo.CreateAsync(entity);
@@ -145,9 +162,16 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpPut(IDREGEX)]
-        public virtual IActionResult Update([FromBody]TEntity entity, [FromRoute]string id) {
-            var ePk = GetPrimaryKey(entity);
-            var iPk = ParseId(id);
+        public virtual IActionResult Put([FromBody]TEntity entity, [FromRoute]string id) {
+
+            object[] ePk;
+            object[] iPk;
+            try {
+                ePk = GetPrimaryKey(entity);
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
 
             if (!ePk.EqualsAll(iPk))
                 return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ePk.ToTildaDelimited()})");
@@ -165,9 +189,15 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         [HttpPut(ASYNC_IDREGEX)]
-        public virtual async Task<IActionResult> UpdateAsync([FromBody]TEntity entity, [FromRoute]string id) {
-            var ePk = GetPrimaryKey(entity);
-            var iPk = ParseId(id);
+        public virtual async Task<IActionResult> PutAsync([FromBody]TEntity entity, [FromRoute]string id) {
+            object[] ePk;
+            object[] iPk;
+            try {
+                ePk = GetPrimaryKey(entity);
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
 
             if (!ePk.EqualsAll(iPk))
                 return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ePk.ToTildaDelimited()})");
@@ -198,11 +228,17 @@ namespace EDennis.AspNetCore.Base.Web {
                 return BadRequest($"The provided json ({json}) could not be deserialized into a partial ({typeof(TEntity).Name} object)");
             }
 
-            var ePk = GetPrimaryKey(partialEntity);
-            var iPk = ParseId(id);
+            object[] ePk;
+            object[] iPk;
+            try {
+                ePk = GetPrimaryKeyDynamic(partialEntity);
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
 
-            if (!ePk.EqualsAll(iPk))
-                return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ePk.ToTildaDelimited()})");
+            if (!ObjectArrayExtensions.EqualsAll(ePk, iPk))
+                return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ObjectArrayExtensions.ToTildaDelimited(ePk)})");
 
             try {
                 var updated = Repo.Update(partialEntity, iPk);
@@ -213,7 +249,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 else
                     throw;
             }
-        }
+            }
 
 
         [HttpPatch(ASYNC_IDREGEX)]
@@ -231,28 +267,43 @@ namespace EDennis.AspNetCore.Base.Web {
                 return BadRequest($"The provided json ({json}) could not be deserialized into a partial ({typeof(TEntity).Name} object)");
             }
 
-            var ePk = GetPrimaryKey(partialEntity);
-            var iPk = ParseId(id);
+            object[] ePk;
+            object[] iPk;
+            try {
+                ePk = GetPrimaryKeyDynamic(partialEntity);
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
 
-            if (!ePk.EqualsAll(iPk))
-                return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ePk.ToTildaDelimited()})");
+            if (!ObjectArrayExtensions.EqualsAll(ePk, iPk))
+                return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ObjectArrayExtensions.ToTildaDelimited(ePk)})");
 
             try {
-                var updated = await Repo.Update(partialEntity, iPk);
+                var updated = await Repo.UpdateAsync(partialEntity, iPk);
                 return Ok(updated);
             } catch (DbUpdateConcurrencyException) {
                 if (!Repo.Exists(iPk))
                     return NotFound();
                 else
                     throw;
+            } catch (Exception ex) {
+                throw;
             }
         }
 
 
         [HttpDelete(IDREGEX)]
         public virtual IActionResult Delete(string id) {
+            object[] iPk;
             try {
-                Repo.Delete(ParseId(id));
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+
+            try {
+                Repo.Delete(iPk);
             } catch (MissingEntityException) {
                 return NotFound();
             }
@@ -261,8 +312,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpDelete(ASYNC_IDREGEX)]
         public async virtual Task<IActionResult> DeleteAsync(string id) {
+            object[] iPk;
             try {
-                await Repo.DeleteAsync(ParseId(id));
+                iPk = ParseId(id);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+            try {
+                await Repo.DeleteAsync(iPk);
             } catch (MissingEntityException) {
                 return NotFound();
             }
@@ -304,7 +361,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     var json = JsonSerializer.Serialize(dynamicLinqResult);
                     return new ContentResult { Content = json, ContentType = "application/json" };
                 }
-            } catch (Exception ex) {
+            } catch (ParseException ex) {
                 ModelState.AddModelError("", ex.Message);
                 return new BadRequestObjectResult(ModelState);
             }
@@ -332,16 +389,21 @@ namespace EDennis.AspNetCore.Base.Web {
                 [FromQuery]int? take = null,
                 [FromQuery]int? totalRecords = null
                 ) {
-            if (select != null) {
-                var dynamicLinqResult = await Repo.GetWithDynamicLinqAsync(
-                    select, where, orderBy, skip, take, totalRecords);
-                var json = JsonSerializer.Serialize(dynamicLinqResult);
-                return new ContentResult { Content = json, ContentType = "application/json" };
-            } else {
-                var dynamicLinqResult = await Repo.GetWithDynamicLinqAsync(
-                    where, orderBy, skip, take, totalRecords);
-                var json = JsonSerializer.Serialize(dynamicLinqResult);
-                return new ContentResult { Content = json, ContentType = "application/json" };
+            try {
+                if (select != null) {
+                    var dynamicLinqResult = await Repo.GetWithDynamicLinqAsync(
+                        select, where, orderBy, skip, take, totalRecords);
+                    var json = JsonSerializer.Serialize(dynamicLinqResult);
+                    return new ContentResult { Content = json, ContentType = "application/json" };
+                } else {
+                    var dynamicLinqResult = await Repo.GetWithDynamicLinqAsync(
+                        where, orderBy, skip, take, totalRecords);
+                    var json = JsonSerializer.Serialize(dynamicLinqResult);
+                    return new ContentResult { Content = json, ContentType = "application/json" };
+                }
+            } catch (ParseException ex) {
+                ModelState.AddModelError("", ex.Message);
+                return new BadRequestObjectResult(ModelState);
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'Update'
+declare @MethodName varchar(255) = 'Put'
 declare @TestScenario varchar(255) = 'Bad Request - Bad Id'
 declare @TestCase varchar(255) = 'C'
 
@@ -29,8 +29,8 @@ declare @Input varchar(max) =
 	for json path, without_array_wrapper
 )
 
-update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
-	where Id = @TargetId
+--update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
+--	where Id = @TargetId
 
 declare @Expected varchar(max) = 
 (
@@ -41,6 +41,7 @@ declare @Expected varchar(max) =
 rollback transaction
 --exec _.ResetSequences --only needed if no explicit Ids are provided
 
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected

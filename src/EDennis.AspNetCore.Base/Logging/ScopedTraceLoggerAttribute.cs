@@ -1,17 +1,14 @@
-﻿using EDennis.AspNetCore.Base.Logging;
+﻿using EDennis.AspNetCore.Base.Web;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.Extensions.Configuration;
-using M = Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Configuration;
-using System;
-using Serilog.Extensions.Logging;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
-using EDennis.AspNetCore.Base.Web;
-using System.Threading;
-using System.Diagnostics;
+using System.Reflection;
+using M = Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace EDennis.AspNetCore.Base.Logging {
     public class ScopedTraceLoggerAttribute : OnMethodBoundaryAspect {
@@ -99,6 +96,8 @@ namespace EDennis.AspNetCore.Base.Logging {
             if (!logEntry || args.Method.Name.StartsWith("get_") || args.Method.Name.StartsWith("set_"))
                 return;
             var instance = args.Instance;
+            if (args.Instance == null)
+                return;
             var key = GetScopedTraceLoggerKey(instance);
             if (RegisteredKeys.ContainsKey(key ?? ""))
                 LogEntry(args, key);
@@ -113,6 +112,8 @@ namespace EDennis.AspNetCore.Base.Logging {
             if (!logEntry || args.Method.Name.StartsWith("get_") || args.Method.Name.StartsWith("set_"))
                 return;
             var instance = args.Instance;
+            if (args.Instance == null)
+                return;
             var key = GetScopedTraceLoggerKey(instance);
             if (RegisteredKeys.ContainsKey(key ?? ""))
                 LogExit(args, key);            
@@ -172,14 +173,11 @@ namespace EDennis.AspNetCore.Base.Logging {
                 var type = instance.GetType();
                 if (type.Name.StartsWith("<"))
                     return null;
-                //var methodInfo = type.GetMethod("GetScopedTraceLoggerKey");
-                //var key = (string)methodInfo.Invoke(instance, new object[] { });
-                //return key;
                 var propInfo = instance.GetType().GetProperty("ScopeProperties");
-                var scopeProperties = (ScopeProperties)propInfo.GetValue(instance);
+                var scopeProperties = (IScopeProperties)propInfo.GetValue(instance);
                 return scopeProperties.ScopedTraceLoggerKey;
             } catch {
-                throw new ApplicationException($"{instance.GetType().FullName} does not have method '[DisableWeaving] public string GetScopedTraceLoggerKey()=>...'.  It must have this method and the method must be decorated with [DisableWeaving] if the class or a method in the class uses the attribute [ScopedTraceLogger].");
+                throw new ApplicationException($"{instance.GetType().FullName} does not have a 'public IScopeProperties ScopeProperties {{ get; }}' property.");
             }
         }
 

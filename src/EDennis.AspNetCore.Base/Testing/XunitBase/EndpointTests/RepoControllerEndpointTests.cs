@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using System.Text.Json;
+using System.Diagnostics;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public abstract class RepoControllerEndpointTests<TEntity, TProgram, TLauncher>        
@@ -40,7 +42,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<TEntity>> GetWithId_ExpectedActual(
+        public ExpectedActual<EndpointTestResult<TEntity>> Get_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -63,7 +65,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = getResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<TEntity>();
 
             return eaResult;
@@ -93,7 +95,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<TEntity>>> GetWithIdAsync_ExpectedActual(
+        public async Task<ExpectedActual<EndpointTestResult<TEntity>>> GetAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -116,7 +118,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = getResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<TEntity>();
 
             return eaResult;
@@ -177,7 +179,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = deleteResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -239,7 +241,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = deleteResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -301,7 +303,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = postResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -364,7 +366,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = postResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -407,7 +409,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<TEntity>("Id", Output);
+            var id = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
@@ -432,9 +434,12 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = putResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
-
+            Debug.WriteLine("EXPECTED");
+            Debug.WriteLine(JsonSerializer.Serialize(eaResult.Expected.Data, new JsonSerializerOptions { WriteIndented = true }));
+            Debug.WriteLine("ACTUAL");
+            Debug.WriteLine(JsonSerializer.Serialize(eaResult.Actual.Data, new JsonSerializerOptions { WriteIndented = true }));
             return eaResult;
         }
 
@@ -474,7 +479,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<TEntity>("Id", Output);
+            var id = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
@@ -484,7 +489,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/async/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult putResult = await HttpClient.PostAsync(url, input);
+            IActionResult putResult = await HttpClient.PutAsync(url, input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
@@ -499,7 +504,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = putResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -541,7 +546,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<TEntity>("Id", Output);
+            var id = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<dynamic,TEntity>("Input", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
@@ -566,7 +571,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = patchResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -608,7 +613,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<TEntity>("Id", Output);
+            var id = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<dynamic,TEntity>("Input", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
@@ -633,7 +638,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = patchResult.GetStatusCode(),
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
 
             return eaResult;
@@ -718,7 +723,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = actualLoadResult.GetStatusCode()
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = actualLoadResult.GetObject<DeserializableLoadResult<TEntity>>().data.ToList();
             
 
@@ -805,7 +810,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = actualLoadResult.GetStatusCode()
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = actualLoadResult.GetObject<DeserializableLoadResult<TEntity>>().data.ToList();
 
 
@@ -879,7 +884,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult actualResult = HttpClient.Get<DynamicLinqResult<TEntity>,TEntity>(url);
+            IActionResult actualResult = HttpClient.Get<DynamicLinqResult<dynamic>,TEntity>(url);
 
 
             var eaResult = new ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> {
@@ -891,7 +896,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = actualResult.GetStatusCode()
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = actualResult.GetObject<DynamicLinqResult<dynamic>>();
 
             return eaResult;
@@ -963,7 +968,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult actualResult = await HttpClient.GetAsync<DynamicLinqResult<TEntity>, TEntity>(url);
+            IActionResult actualResult = await HttpClient.GetAsync<DynamicLinqResult<dynamic>, TEntity>(url);
 
 
             var eaResult = new ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> {
@@ -975,7 +980,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     StatusCode = actualResult.GetStatusCode()
                 }
             };
-            if (eaResult.Actual.StatusCode < 300 && eaResult.Expected.Data != null)
+            if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = actualResult.GetObject<DynamicLinqResult<dynamic>>();
 
             return eaResult;

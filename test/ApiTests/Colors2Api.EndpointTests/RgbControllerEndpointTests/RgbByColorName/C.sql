@@ -11,11 +11,11 @@ if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
 use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Repo'
-declare @ClassName varchar(255) = 'RgbRepo'
+declare @ProjectName varchar(255) = 'Colors2Api'
+declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'RgbByColorName'
-declare @TestScenario varchar(255) = 'BadRequest'
-declare @TestCase varchar(255) = 'B'
+declare @TestScenario varchar(255) = 'Bad Request'
+declare @TestCase varchar(255) = 'C'
 
 declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @SpName varchar(255) = '$fjs3i3ls'
@@ -23,7 +23,7 @@ declare @ColorName varchar(255) = 'DarkKhaki'
 
 select Red,Green,Blue into #SpResults from Rgb where 1=0
 
-declare @ExpectedStatusCode int = 400 --Bad Request
+declare @ExpectedStatusCode int = 404 --Not Found
 declare 
 	@Expected varchar(max) = 
 (

@@ -1,0 +1,68 @@
+﻿[
+  {
+    "Id": -999148,
+    "Name": "YellowGreen",
+    "Red": 154,
+    "Green": 205,
+    "Blue": 50,
+    "SysUser": "jack@hill.org",
+    "DateAdded": "2019-01-22T12:29:50",
+    "SysStart": "2020-01-24T12:21:15.9228326",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": -999147,
+    "Name": "Yellow",
+    "Red": 255,
+    "Green": 255,
+    "Blue": 0,
+    "SysUser": "jack@hill.org",
+    "DateAdded": "2019-01-23T12:29:50",
+    "SysStart": "2020-01-24T12:21:15.9228326",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": -999146,
+    "Name": "WhiteSmoke",
+    "Red": 245,
+    "Green": 245,
+    "Blue": 245,
+    "SysUser": "jill@hill.org",
+    "DateAdded": "2019-01-24T12:29:50",
+    "SysStart": "2020-01-24T12:21:15.9228326",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": -999145,
+    "Name": "White",
+    "Red": 255,
+    "Green": 255,
+    "Blue": 255,
+    "SysUser": "jill@hill.org",
+    "DateAdded": "2019-01-25T12:29:50",
+    "SysStart": "2020-01-24T12:21:15.9228326",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": -999144,
+    "Name": "Wheat",
+    "Red": 245,
+    "Green": 222,
+    "Blue": 179,
+    "SysUser": "jill@hill.org",
+    "DateAdded": "2019-01-26T12:29:50",
+    "SysStart": "2020-01-24T12:21:15.9228326",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "Id": -999143,
+    "Name": "Violet",
+    "Red": 238,
+    "Green": 130,
+    "Blue": 238,
+    "SysUser": "jill@hill.org",
+    "DateAdded": "2019-01-27T12:29:50",
+    "SysStart": "2020-01-24T12:21:15.9228326",
+    "SysEnd": "9999-12-31T23:59:59.9999999"
+  }
+]

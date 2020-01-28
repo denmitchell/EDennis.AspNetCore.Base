@@ -11,8 +11,8 @@ if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
 use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Repo'
-declare @ClassName varchar(255) = 'RgbRepo'
+declare @ProjectName varchar(255) = 'Colors2Api'
+declare @ClassName varchar(255) = 'RgbController'
 declare @MethodName varchar(255) = 'RgbByColorName'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'

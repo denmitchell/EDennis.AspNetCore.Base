@@ -1,9 +1,9 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'Create'
+declare @MethodName varchar(255) = 'Post'
 declare @TestScenario varchar(255) = 'Conflict'
-declare @TestCase varchar(255) = 'B'
+declare @TestCase varchar(255) = 'C'
 
 declare @ControllerPath varchar(255) = 'api/Rgb'
 declare @Name varchar(255) = 'Marsala'

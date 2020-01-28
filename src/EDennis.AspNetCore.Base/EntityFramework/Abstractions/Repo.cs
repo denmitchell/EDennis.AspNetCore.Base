@@ -18,8 +18,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    [ScopedTraceLogger]
-    [AspectSkipProperties(true)]
+    //[ScopedTraceLogger]
+    //[AspectSkipProperties(true)]
     public partial class Repo<TEntity, TContext> : IRepo, IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
@@ -406,7 +406,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
             //retrieve the existing entity
-            var existing = Context.Find<TEntity>(keyValues);
+            TEntity existing = Context.Find<TEntity>(keyValues);
 
             //copy property values from entity to existing
             Projection<TEntity>.Patch(partialEntity, existing);

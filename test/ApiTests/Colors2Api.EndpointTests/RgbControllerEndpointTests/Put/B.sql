@@ -1,8 +1,8 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
 declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'Update'
-declare @TestScenario varchar(255) = ''
+declare @MethodName varchar(255) = 'Put'
+declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'B'
 
 declare @ControllerPath varchar(255) = 'api/Rgb'
@@ -10,6 +10,7 @@ declare @Name varchar(255) = 'BlueB'
 declare @Red int = 55
 declare @Green int = 55
 declare @Blue int = 225
+declare @DateAdded datetime2 = '2020-01-01'
 declare @SysUser varchar(255) = 'tester@example.org'
 
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
@@ -24,11 +25,13 @@ declare @Input varchar(max) =
 	select
 		@TargetId Id,
 		@Name Name,
-		@Red Red, @Green Green, @Blue Blue
+		@Red Red, @Green Green, @Blue Blue,
+		@DateAdded DateAdded
+		
 	for json path, without_array_wrapper
 )
 
-update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
+update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser, DateAdded=@DateAdded
 	where Id = @TargetId
 
 declare @Expected varchar(max) = 
