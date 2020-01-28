@@ -125,8 +125,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a Delete request.</para>
+        /// <para>Returns the expected and actual status code for a Delete Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -138,13 +139,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -187,8 +188,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a DeleteAsync request.</para>
+        /// <para>Returns the expected and actual status code for a DeleteAsync Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -200,13 +202,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -249,8 +251,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a Post request.</para>
+        /// <para>Returns the expected and actual status code for a Post Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -262,13 +265,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -312,8 +315,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a PostAsync request.</para>
+        /// <para>Returns the expected and actual status code for a PostAsync Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -325,13 +329,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -376,8 +380,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a Put request.</para>
+        /// <para>Returns the expected and actual status code for a Put Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -392,13 +397,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -436,18 +441,16 @@ namespace EDennis.AspNetCore.Base.Testing {
             };
             if (eaResult.Expected.Data != null)
                 eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
-            Debug.WriteLine("EXPECTED");
-            Debug.WriteLine(JsonSerializer.Serialize(eaResult.Expected.Data, new JsonSerializerOptions { WriteIndented = true }));
-            Debug.WriteLine("ACTUAL");
-            Debug.WriteLine(JsonSerializer.Serialize(eaResult.Actual.Data, new JsonSerializerOptions { WriteIndented = true }));
+
             return eaResult;
         }
 
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a PutAsync request.</para>
+        /// <para>Returns the expected and actual status code for a PutAsync Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -462,13 +465,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -513,8 +516,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a Patch request.</para>
+        /// <para>Returns the expected and actual status code for a Patch Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -529,13 +533,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -580,8 +584,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
 
         /// <summary>
-        /// <para>Returns the expected and actual status code and response body (Data)
-        /// for a PatchAsync request.</para>
+        /// <para>Returns the expected and actual status code for a PatchAsync Request,
+        /// as well as the expected and actual result of a follow-up verification
+        /// query using a Linq Where clause.</para>
         /// <para>----------------------------------</para>
         /// <para>REQUIRED TESTJSON FILES</para>
         /// <para>----------------------------------</para>
@@ -596,13 +601,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>ControllerPath</term><description>Relative path to the controller</description>
         /// </item>
         /// <item>
-        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
-        /// </item>
-        /// <item>
         ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code</description>
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body</description>
+        /// </item>
+        /// <item>
+        ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -653,15 +658,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
-        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
-        /// </item>
-        /// <item>
         ///     <term>Select</term><description>Comma-delimited list of properties to return (optional)</description>
         /// </item>
         /// <item>
@@ -675,6 +671,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -740,15 +745,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
-        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
-        /// </item>
-        /// <item>
         ///     <term>Select</term><description>Comma-delimited list of properties to return (optional)</description>
         /// </item>
         /// <item>
@@ -762,6 +758,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -828,19 +833,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
-        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Select</term><description>Dynamic Linq Select expression (optional)</description>
         /// </item>
         /// <item>
         ///     <term>Where</term><description>Dynamic Linq Where expression(optional)</description>
-        /// </item>
-        /// <item>
-        ///     <term>Select</term><description>Dynamic Linq Select expression (optional)</description>
         /// </item>
         /// <item>
         ///     <term>OrderBy</term><description>Dynamic Linq OrderBy expression (optional)</description>
@@ -851,6 +847,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <item>
         ///     <term>Take</term><description>Page size (optional)</description>
         /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
+        /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
@@ -858,9 +863,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
         public ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> GetWithDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
+            var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var where = jsonTestCase.GetObjectOrDefault<string>("Where", Output);
             var orderBy = jsonTestCase.GetObjectOrDefault<string>("OrderBy", Output);
-            var select = jsonTestCase.GetObjectOrDefault<string>("Select", Output);
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
@@ -912,19 +917,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
-        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Select</term><description>Dynamic Linq Select expression (optional)</description>
         /// </item>
         /// <item>
         ///     <term>Where</term><description>Dynamic Linq Where expression(optional)</description>
-        /// </item>
-        /// <item>
-        ///     <term>Select</term><description>Dynamic Linq Select expression (optional)</description>
         /// </item>
         /// <item>
         ///     <term>OrderBy</term><description>Dynamic Linq OrderBy expression (optional)</description>
@@ -934,6 +930,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Take</term><description>Page size (optional)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>ExpectedStatusCode</term><description>Expected HTTP status code (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected response body (required)</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -998,6 +1003,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
+        ///     <term>SpName</term><description>The name of the stored procedure</description>
+        /// </item>
+        /// <item>
+        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
+        /// </item>
+        /// </list>
+        /// <item>
         ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
         /// </item>
         /// <item>
@@ -1006,13 +1018,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <item>
         ///     <term>Expected</term><description>Expected response body (required)</description>
         /// </item>
-        /// <item>
-        ///     <term>SpName</term><description>The name of the stored procedure</description>
-        /// </item>
-        /// <item>
-        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
-        /// </item>
-        /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
@@ -1067,6 +1072,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
+        ///     <term>SpName</term><description>The name of the stored procedure -- also the relative path of the action method</description>
+        /// </item>
+        /// <item>
+        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
+        /// </item>
+        /// <item>
         ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
         /// </item>
         /// <item>
@@ -1074,12 +1085,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>SpName</term><description>The name of the stored procedure -- also the relative path of the action method</description>
-        /// </item>
-        /// <item>
-        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -1137,6 +1142,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
+        ///     <term>SpName</term><description>The name of the stored procedure</description>
+        /// </item>
+        /// <item>
+        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
+        /// </item>
+        /// <item>
         ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
         /// </item>
         /// <item>
@@ -1144,12 +1155,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>SpName</term><description>The name of the stored procedure</description>
-        /// </item>
-        /// <item>
-        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -1206,6 +1211,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <para>----------------------------------</para>
         /// <list type="table">
         /// <item>
+        ///     <term>SpName</term><description>The name of the stored procedure</description>
+        /// </item>
+        /// <item>
+        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
+        /// </item>
+        /// <item>
         ///     <term>ControllerPath</term><description>Relative path to the controller (required)</description>
         /// </item>
         /// <item>
@@ -1213,12 +1224,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected response body (required)</description>
-        /// </item>
-        /// <item>
-        ///     <term>SpName</term><description>The name of the stored procedure</description>
-        /// </item>
-        /// <item>
-        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
         /// </item>
         /// </list>
         /// </summary>

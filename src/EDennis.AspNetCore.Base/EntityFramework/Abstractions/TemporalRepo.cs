@@ -143,7 +143,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
 
 
-        public new virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
+        public new virtual TEntity Patch(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
@@ -167,7 +167,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public new virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
+        public new virtual async Task<TEntity> PatchAsync(dynamic partialEntity, params object[] keyValues) {
 
             if (partialEntity == null)
                 throw new MissingEntityException(
@@ -310,7 +310,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         }
 
 
-        public List<TEntity> GetIncludeHistory(params object[] key) {
+        public List<TEntity> GetAllRevisions(params object[] key) {
 
             var primaryKeyPredicate = GetPrimaryKeyPredicate(key);
 

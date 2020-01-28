@@ -2,12 +2,10 @@
 using EDennis.AspNetCore.Base.Serialization;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using SLDCE = System.Linq.Dynamic.Core.Exceptions;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
@@ -399,7 +397,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="partialEntity">data to update</param>
         /// <param name="keyValues">the primary key</param>
         /// <returns></returns>
-        public virtual TEntity Update(dynamic partialEntity, params object[] keyValues) {
+        public virtual TEntity Patch(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
@@ -430,7 +428,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <param name="partialEntity">data to update</param>
         /// <param name="keyValues">the primary key</param>
         /// <returns></returns>
-        public virtual async Task<TEntity> UpdateAsync(dynamic partialEntity, params object[] keyValues) {
+        public virtual async Task<TEntity> PatchAsync(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
                 throw new MissingEntityException(
                     $"Cannot update a null {typeof(TEntity).Name}");
