@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
 
-    public abstract class RepoTests<TRepo, TEntity, TContext> 
+    public abstract class RepoTests<TRepo, TEntity, TContext>
             : IDisposable
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext, ISqlServerDbContext<TContext>
@@ -49,31 +49,34 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>"MissingEntityException" or null (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException" or null (optional)</description>
         /// </item>
         /// </list>
+        /// <para>NOTE: An ArgumentException is thrown when the Id parameter is not the correct type</para>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public ExpectedActual<TEntity> Get_ExpectedActual(
+        public ExpectedActual<RepoTestResult<TEntity>> Get_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<string>("Id", Output);
+            var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var expected = jsonTestCase.GetObject<TEntity>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<TEntity> {
-                Expected = expected,
-                Actual = null
+            var eaResult = new ExpectedActual<RepoTestResult<TEntity>> {
+                Expected = new RepoTestResult<TEntity> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<TEntity> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    Assert.Throws<MissingEntityException>(() => { Repo.Get(id); });
-            } else {
-                eaResult.Actual = Repo.Get(id);
+            try {
+                var id = Repo<TEntity, TContext>.ParseId(idStr);
+                eaResult.Actual.Data = Repo.Get(id);
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
 
             return eaResult;
@@ -92,31 +95,33 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>"MissingEntityException" or null (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException" or null (optional)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public async Task<ExpectedActual<TEntity>> GetAsync_ExpectedActual(
+        public async Task<ExpectedActual<RepoTestResult<TEntity>>> GetAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<string>("Id", Output);
+            var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var expected = jsonTestCase.GetObject<TEntity>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<TEntity> {
-                Expected = expected,
-                Actual = null
+            var eaResult = new ExpectedActual<RepoTestResult<TEntity>> {
+                Expected = new RepoTestResult<TEntity> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<TEntity> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<MissingEntityException>(async() => { await Repo.GetAsync(id); });
-            } else {
-                eaResult.Actual = await Repo.GetAsync(id);
+            try {
+                var id = Repo<TEntity, TContext>.ParseId(idStr);
+                eaResult.Actual.Data = await Repo.GetAsync(id);
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
 
             return eaResult;
@@ -137,7 +142,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>"MissingEntityException" or null(optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException", "MissingEntityException" or null(optional)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -147,27 +152,31 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public ExpectedActual<List<TEntity>> Delete_ExpectedActual(
+        public ExpectedActual<RepoTestResult<List<TEntity>>> Delete_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<string>("Id", Output);
+            var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<List<TEntity>> {
-                Expected = expected,
-                Actual = null
+            var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<List<TEntity>> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    Assert.Throws<MissingEntityException>(() => { Repo.Delete(id); });
-            } else {
+            try {
+                var id = Repo<TEntity, TContext>.ParseId(idStr);
                 Repo.Delete(id);
-                eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
+
+            if(eaResult.Expected.Data != null)
+                eaResult.Actual.Data = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -188,7 +197,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>"MissingEntityException" or null (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException", "MissingEntityException" or null (optional)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -198,27 +207,31 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public async Task<ExpectedActual<List<TEntity>>> DeleteAsync_ExpectedActual(
+        public async Task<ExpectedActual<RepoTestResult<List<TEntity>>>> DeleteAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<string>("Id", Output);
+            var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<List<TEntity>> {
-                Expected = expected,
-                Actual = null
+            var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<List<TEntity>> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<MissingEntityException>(async () => { await Repo.DeleteAsync(id); });
-            } else {
+            try {
+                var id = Repo<TEntity, TContext>.ParseId(idStr);
                 await Repo.DeleteAsync(id);
-                eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
+
+            if (eaResult.Expected.Data != null)
+                eaResult.Actual.Data = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -249,7 +262,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public ExpectedActual<List<TEntity>> Create_ExpectedActual(
+        public ExpectedActual<RepoTestResult<List<TEntity>>> Create_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -258,18 +271,21 @@ namespace EDennis.AspNetCore.Base.Testing {
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<List<TEntity>> {
-                Expected = expected,
-                Actual = null
+            var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<List<TEntity>> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("DbUpdateException", StringComparison.OrdinalIgnoreCase))
-                    Assert.Throws<DbUpdateException>(() => { Repo.Create(input); });
-            } else {
+            try {
                 Repo.Create(input);
-                eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
+
+            if (eaResult.Expected.Data != null)
+                eaResult.Actual.Data = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -301,7 +317,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public async Task<ExpectedActual<List<TEntity>>> CreateAsync_ExpectedActual(
+        public async Task<ExpectedActual<RepoTestResult<List<TEntity>>>> CreateAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -310,18 +326,21 @@ namespace EDennis.AspNetCore.Base.Testing {
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<List<TEntity>> {
-                Expected = expected,
-                Actual = null
+            var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<List<TEntity>> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("DbUpdateException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<DbUpdateException>(async () => { await Repo.CreateAsync(input); });
-            } else {
+            try {
                 await Repo.CreateAsync(input);
-                eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
+
+            if (eaResult.Expected.Data != null)
+                eaResult.Actual.Data = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -347,7 +366,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>"MissingEntityException" or null (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException", "MissingEntityException" or null (optional)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -357,28 +376,33 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public ExpectedActual<List<TEntity>> Update_ExpectedActual(
+        public ExpectedActual<RepoTestResult<List<TEntity>>> Update_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<string>("Id", Output);
+            var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<List<TEntity>> {
-                Expected = expected,
-                Actual = null
+
+            var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<List<TEntity>> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    Assert.Throws<MissingEntityException>(() => { Repo.Update(input,id); });
-            } else {
-                Repo.Update(input,id);
-                eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
+            try {
+                var id = Repo<TEntity, TContext>.ParseId(idStr);
+                Repo.Update(input, id);
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
+
+            if (eaResult.Expected.Data != null)
+                eaResult.Actual.Data = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -403,7 +427,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>"MissingEntityException" or null (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException", "MissingEntityException" or null (optional)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -413,28 +437,33 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual results</returns>
-        public async Task<ExpectedActual<List<TEntity>>> UpdateAsync_ExpectedActual(
+        public async Task<ExpectedActual<RepoTestResult<List<TEntity>>>> UpdateAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-            var id = jsonTestCase.GetObject<string>("Id", Output);
+            var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObject<string>("Exception", Output);
 
-            var eaResult = new ExpectedActual<List<TEntity>> {
-                Expected = expected,
-                Actual = null
+
+            var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
+                Actual = new RepoTestResult<List<TEntity>> { }
             };
 
-            if (!string.IsNullOrEmpty(exception)) {
-                if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<MissingEntityException>(async() => { await Repo.UpdateAsync(input, id); });
-            } else {
+            try {
+                var id = Repo<TEntity, TContext>.ParseId(idStr);
                 await Repo.UpdateAsync(input, id);
-                eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
+            } catch (Exception ex) {
+                eaResult.Actual.Exception = ex.GetType().Name;
+                Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
+                Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
+
+            if (eaResult.Expected.Data != null)
+                eaResult.Actual.Data = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -517,7 +546,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>Expected exception name (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException", "MissingEntityException" or null (optional)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -544,9 +573,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!string.IsNullOrEmpty(exception)) {
                 if (exception.Equals("MissingEntityException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<MissingEntityException>(async() => { await Repo.PatchAsync(input, id); });
+                    await Assert.ThrowsAsync<MissingEntityException>(async () => { await Repo.PatchAsync(input, id); });
                 else if (exception.Equals("ArgumentException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<ArgumentException>(async() => { await Repo.PatchAsync(input, id); });
+                    await Assert.ThrowsAsync<ArgumentException>(async () => { await Repo.PatchAsync(input, id); });
             } else {
                 await Repo.PatchAsync(input, id);
                 eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
@@ -645,7 +674,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
-        ///     <term>Exception</term><description>Expected exception name (optional)</description>
+        ///     <term>Exception</term><description>"ArgumentException" or null (optional)</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -670,7 +699,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!string.IsNullOrEmpty(exception)) {
                 if (exception.Equals("ParseException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<ParseException>(async() => { await Repo.GetWithDynamicLinqAsync(select, where, orderBy, skip, take); });
+                    await Assert.ThrowsAsync<ParseException>(async () => { await Repo.GetWithDynamicLinqAsync(select, where, orderBy, skip, take); });
             } else {
                 eaResult.Actual = await Repo.GetWithDynamicLinqAsync(select, where, orderBy, skip, take);
             }
@@ -772,7 +801,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!string.IsNullOrEmpty(exception)) {
                 if (exception.Equals("SqlException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<SqlException>(async() => { await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parameters); });
+                    await Assert.ThrowsAsync<SqlException>(async () => { await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parameters); });
             } else {
                 var actualJson = await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parameters);
                 eaResult.Actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
@@ -875,7 +904,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!string.IsNullOrEmpty(exception)) {
                 if (exception.Equals("SqlException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<SqlException>(async() => { await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parameters); });
+                    await Assert.ThrowsAsync<SqlException>(async () => { await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parameters); });
             } else {
                 var actualJson = await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parameters);
                 eaResult.Actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
@@ -926,7 +955,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!string.IsNullOrEmpty(exception)) {
                 if (exception.Equals("SqlException", StringComparison.OrdinalIgnoreCase))
-                    Assert.Throws<SqlException>(() => { Repo.Context.GetScalarFromStoredProcedure<TContext,TScalarType>(spName, parameters); });
+                    Assert.Throws<SqlException>(() => { Repo.Context.GetScalarFromStoredProcedure<TContext, TScalarType>(spName, parameters); });
             } else {
                 eaResult.Actual = Repo.Context.GetScalarFromStoredProcedure<TContext, TScalarType>(spName, parameters);
             }
@@ -976,7 +1005,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             if (!string.IsNullOrEmpty(exception)) {
                 if (exception.Equals("SqlException", StringComparison.OrdinalIgnoreCase))
-                    await Assert.ThrowsAsync<SqlException>(async() => { await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, TScalarType>(spName, parameters); });
+                    await Assert.ThrowsAsync<SqlException>(async () => { await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, TScalarType>(spName, parameters); });
             } else {
                 eaResult.Actual = await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, TScalarType>(spName, parameters);
             }

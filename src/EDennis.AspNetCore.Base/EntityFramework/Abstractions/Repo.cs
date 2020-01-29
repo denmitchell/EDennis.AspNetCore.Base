@@ -2,9 +2,12 @@
 using EDennis.AspNetCore.Base.Serialization;
 using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -26,6 +29,61 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public TContext Context { get; set; }
         public IScopeProperties ScopeProperties { get; set; }
 
+
+        public static PropertyInfo[] Properties;
+        public static Func<string, object[]> ParseId;
+        public static Func<dynamic, object[]> GetPrimaryKeyDynamic;
+        public static Func<TEntity, object[]> GetPrimaryKey;
+        public static IReadOnlyList<IProperty> KeyProperties;
+
+
+        static Repo() {
+
+            Properties = typeof(TEntity).GetProperties();
+
+            ParseId = (s) => {
+                var key = s.Split('~');
+                var id = new object[KeyProperties.Count];
+                try {
+                    for (int i = 0; i < id.Length; i++)
+                        id[i] = Convert.ChangeType(key[i], KeyProperties[i].ClrType);
+                } catch {
+                    throw new ArgumentException($"The provided path parameters ({key}) cannot be converted into a key for {typeof(TEntity).Name}");
+                }
+                return id;
+            };
+
+            GetPrimaryKeyDynamic = (dyn) => {
+                var id = new object[KeyProperties.Count];
+                Type dynType = dyn.GetType();
+                PropertyInfo[] props = dynType.GetProperties();
+                for (int i = 0; i < KeyProperties.Count; i++) {
+                    var keyName = KeyProperties[i].Name;
+                    var keyType = KeyProperties[i].ClrType;
+                    var prop = props.FirstOrDefault(p => p.Name == keyName);
+                    if (prop == null)
+                        throw new ArgumentException($"The provided input does not contain a {keyName} property");
+                    var keyValue = prop.GetValue(dyn);
+                    id[i] = Convert.ChangeType(keyValue, keyType);
+                }
+                return id;
+            };
+
+            GetPrimaryKey = (entity) => {
+                var id = new object[KeyProperties.Count];
+                for (int i = 0; i < KeyProperties.Count; i++) {
+                    var keyName = KeyProperties[i].Name;
+                    var keyType = KeyProperties[i].ClrType;
+                    var prop = Properties.FirstOrDefault(p => p.Name == keyName);
+                    var keyValue = prop.GetValue(entity);
+                    id[i] = Convert.ChangeType(keyValue, keyType);
+                }
+                return id;
+            };
+        }
+
+
+
         /// <summary>
         /// Constructs a new RepoBase object using the provided DbContext
         /// </summary>
@@ -35,6 +93,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             Context = provider.Context;
             ScopeProperties = scopeProperties;
+
+            if (KeyProperties == null)
+                KeyProperties = Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+
         }
 
 
