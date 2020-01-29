@@ -375,7 +375,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual TEntity Create(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
-                    $"Cannot create a null {entity.GetType().Name}");
+                    $"Cannot create a null {typeof(TEntity).Name}");
 
             SetSysUser(entity);
             Context.Add(entity);
@@ -391,7 +391,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual async Task<TEntity> CreateAsync(TEntity entity) {
             if (entity == null)
                 throw new MissingEntityException(
-                    $"Cannot create a null {entity.GetType().Name}");
+                    $"Cannot create a null {typeof(TEntity).Name}");
 
             SetSysUser(entity);
 
@@ -411,13 +411,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual TEntity Update(TEntity entity, params object[] keyValues) {
             if (entity == null)
                 throw new MissingEntityException(
-                    $"Cannot update a null {entity.GetType().Name}");
+                    $"Cannot update a null {typeof(TEntity).Name}");
 
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
                 throw new MissingEntityException(
-                    $"No {entity.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
+                    $"No {typeof(TEntity).Name} exists with {keyValues.ToTildaDelimited()}");
 
             SetSysUser(entity);
 
@@ -442,13 +442,13 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             if (entity == null)
                 throw new MissingEntityException(
-                    $"Cannot update a null {entity.GetType().Name}");
+                    $"Cannot update a null {typeof(TEntity).Name}");
 
             //retrieve the existing entity (resultEntity)
             var existing = await Context.FindAsync<TEntity>(keyValues);
             if (existing == null)
                 throw new MissingEntityException(
-                    $"No {entity.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
+                    $"No {typeof(TEntity).Name} exists with {keyValues.ToTildaDelimited()}");
 
             SetSysUser(entity);
 
@@ -478,7 +478,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             TEntity existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
                 throw new MissingEntityException(
-                    $"No {existing.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
+                    $"No {typeof(TEntity).Name} exists with {keyValues.ToTildaDelimited()}");
 
             //copy property values from entity to existing
             try {
@@ -514,7 +514,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var existing = await Context.FindAsync<TEntity>(keyValues);
             if (existing == null)
                 throw new MissingEntityException(
-                    $"No {existing.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
+                    $"No {typeof(TEntity).Name} exists with {keyValues.ToTildaDelimited()}");
 
             //copy property values from entity to existing
             try {

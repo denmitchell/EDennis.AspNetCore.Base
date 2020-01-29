@@ -3,6 +3,7 @@ using EDennis.NetCoreTestingUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -500,7 +501,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
-            var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
@@ -511,6 +511,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             };
 
             try {
+                var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output); //test bad input
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 Repo.Patch(input, id);
             } catch (Exception ex) {
@@ -560,7 +561,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
-            var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
             var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
@@ -571,6 +571,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             };
 
             try {
+                var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output); //test bad input
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 await Repo.PatchAsync(input, id);
             } catch (Exception ex) {
@@ -849,7 +850,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
-            var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
+            var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
+            var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObject<List<dynamic>, TEntity>("Expected");
             var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
@@ -859,7 +861,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             };
 
             try {
-                var actualJson = Repo.Context.GetJsonArrayFromStoredProcedure(spName, parameters);
+                var actualJson = Repo.Context.GetJsonArrayFromStoredProcedure(spName, objParms);
                 eaResult.Actual.Data = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
             } catch (Exception ex) {
                 eaResult.Actual.Exception = ex.GetType().Name;

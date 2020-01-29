@@ -13,7 +13,7 @@ declare @SysUser varchar(255) = 'tester@example.org'
 
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
-declare @TargetId int = -999145
+declare @TargetId int = -999299
 declare @InvalidId int = -999299
 declare @Exception varchar(255) = 'MissingEntityException'
 

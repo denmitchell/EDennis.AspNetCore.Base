@@ -130,7 +130,7 @@ namespace Colors2Repo.Tests {
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "B")]
         [TestJson_("Patch", "Verifying with Dynamic Linq, MissingEntityException", "C")]
-        [TestJson_("Patch", "Verifying with Dynamic Linq, ArgumentException", "D")]
+        [TestJson_("Patch", "Verifying with Dynamic Linq, JsonException", "D")]
         public void Patch(string t, JsonTestCase jsonTestCase) {
             var ea = Patch_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -140,7 +140,7 @@ namespace Colors2Repo.Tests {
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "B")]
         [TestJson_("Patch", "Verifying with Dynamic Linq, MissingEntityException", "C")]
-        [TestJson_("Patch", "Verifying with Dynamic Linq, ArgumentException", "D")]
+        [TestJson_("Patch", "Verifying with Dynamic Linq, JsonException", "D")]
         public async Task PatchAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await PatchAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));

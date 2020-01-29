@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'Patch'
-declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, ArgumentException'
+declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, JsonException'
 declare @TestCase varchar(255) = 'D'
 
 declare @DateAdded varchar(255) = 'AnInvalidDate'
@@ -14,7 +14,7 @@ declare @SysUser varchar(255) = 'tester@example.org'
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
 declare @TargetId int = -999146
-declare @Exception varchar(255) = 'ArgumentException'
+declare @Exception varchar(255) = 'JsonException'
 
 begin transaction
 declare @Input varchar(max) = 
