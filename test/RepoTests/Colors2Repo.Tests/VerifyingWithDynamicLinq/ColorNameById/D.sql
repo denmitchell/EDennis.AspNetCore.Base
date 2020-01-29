@@ -3,7 +3,7 @@ declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'ColorNameById'
 declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, SqlException'
-declare @TestCase varchar(255) = 'B'
+declare @TestCase varchar(255) = 'D'
 
 declare @SpName varchar(255) = 'ColorNameById'
 declare @Id varchar(255) = 'a$5@8fal'

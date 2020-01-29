@@ -54,7 +54,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Get", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Get", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Get", "Verifying with Dynamic Linq, MissingEntityException", "C")]
+        [TestJson_("Get", "Verifying with Dynamic Linq, Null", "C")]
         public void Get(string t, JsonTestCase jsonTestCase) {
             var ea = Get_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -63,7 +63,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Get", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Get", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Get", "Verifying with Dynamic Linq, MissingEntityException", "C")]
+        [TestJson_("Get", "Verifying with Dynamic Linq, Null", "C")]
         public async Task GetAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await GetAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));

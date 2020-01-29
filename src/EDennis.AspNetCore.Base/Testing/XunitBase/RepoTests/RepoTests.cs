@@ -59,8 +59,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
-            var expected = jsonTestCase.GetObject<TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<TEntity>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TEntity>> {
                 Expected = new RepoTestResult<TEntity> { Data = expected, Exception = exception },
@@ -104,8 +104,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
-            var expected = jsonTestCase.GetObject<TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<TEntity>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TEntity>> {
                 Expected = new RepoTestResult<TEntity> { Data = expected, Exception = exception },
@@ -156,7 +156,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
                 Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
@@ -210,8 +210,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
                 Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
@@ -265,8 +265,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
                 Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
@@ -320,8 +320,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
                 Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
@@ -380,8 +380,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
@@ -441,8 +441,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
@@ -502,8 +502,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
                 Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
@@ -562,8 +562,8 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
-            var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
                 Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
@@ -631,7 +631,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var expected = jsonTestCase.GetObject<DynamicLinqResult<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<DynamicLinqResult<dynamic>>> {
                 Expected = new RepoTestResult<DynamicLinqResult<dynamic>> { Data = expected, Exception = exception },
@@ -693,7 +693,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var expected = jsonTestCase.GetObject<DynamicLinqResult<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<DynamicLinqResult<dynamic>>> {
                 Expected = new RepoTestResult<DynamicLinqResult<dynamic>> { Data = expected, Exception = exception },
@@ -744,7 +744,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
             var expected = jsonTestCase.GetObject<dynamic, TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<dynamic>> {
                 Expected = new RepoTestResult<dynamic> { Data = expected, Exception = exception },
@@ -797,7 +797,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
             var expected = jsonTestCase.GetObject<dynamic, TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<dynamic>> {
                 Expected = new RepoTestResult<dynamic> { Data = expected, Exception = exception },
@@ -851,7 +851,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
             var expected = jsonTestCase.GetObject<List<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<dynamic>>> {
                 Expected = new RepoTestResult<List<dynamic>> { Data = expected, Exception = exception },
@@ -903,7 +903,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
             var expected = jsonTestCase.GetObject<List<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<dynamic>>> {
                 Expected = new RepoTestResult<List<dynamic>> { Data = expected, Exception = exception },
@@ -955,8 +955,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
-            var expected = jsonTestCase.GetObject<TScalarType>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<TScalarType>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TScalarType>> {
                 Expected = new RepoTestResult<TScalarType> { Data = expected, Exception = exception },
@@ -1006,8 +1006,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
-            var expected = jsonTestCase.GetObject<TScalarType>("Expected");
-            var exception = jsonTestCase.GetObject<string>("Exception", Output);
+            var expected = jsonTestCase.GetObjectOrDefault<TScalarType>("Expected");
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TScalarType>> {
                 Expected = new RepoTestResult<TScalarType> { Data = expected, Exception = exception },
