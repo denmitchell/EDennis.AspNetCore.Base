@@ -1,7 +1,7 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
-declare @MethodName varchar(255) = 'GetFromDynamicLinq'
+declare @MethodName varchar(255) = 'GetWithDynamicLinq'
 declare @TestScenario varchar(255) = 'WithSelect'
 declare @TestCase varchar(255) = 'A'
 

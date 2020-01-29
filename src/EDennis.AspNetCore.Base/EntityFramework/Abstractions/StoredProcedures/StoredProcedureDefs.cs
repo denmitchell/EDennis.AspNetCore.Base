@@ -65,7 +65,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     if (!reader.IsDBNull(8))
                         spDef.HasDefaultValue = reader.GetBoolean(8);
                     if (!reader.IsDBNull(9))
-                        spDef.Length = reader.GetInt32(9);
+                        spDef.Length = reader.GetInt16(9);
                     if (!reader.IsDBNull(10))
                         spDef.Precision = reader.GetInt32(10);
                     if (!reader.IsDBNull(11))

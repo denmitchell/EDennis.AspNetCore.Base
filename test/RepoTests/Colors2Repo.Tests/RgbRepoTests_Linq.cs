@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Colors2Api.EndpointTests {
+namespace Colors2Repo.Tests {
 
     [Collection("Repo Tests")]
     public class RgbRepoTests_Linq

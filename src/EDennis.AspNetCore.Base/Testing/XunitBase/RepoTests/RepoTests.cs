@@ -46,6 +46,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <item>
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
+        /// <item>
+        ///     <term>Exception</term><description>Expected exception name (optional)</description>
+        /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
@@ -79,6 +82,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected result (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Exception</term><description>Expected exception name (optional)</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -115,6 +121,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// <item>
         ///     <term>Expected</term><description>Expected result (required)</description>
+        /// </item>
+        /// <item>
+        ///     <term>Exception</term><description>Expected exception name (optional)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -160,6 +169,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
+        ///     <term>Exception</term><description>Expected exception name (optional)</description>
+        /// </item>
+        /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
@@ -203,6 +215,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
+        ///     <term>Exception</term><description>Expected exception name (optional)</description>
+        /// </item>
+        /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
@@ -216,16 +231,21 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
+            var exception = jsonTestCase.GetObject<string>("Exception", Output);
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-
-            Repo.Create(input);
-
-            var actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             var eaResult = new ExpectedActual<List<TEntity>> {
                 Expected = expected,
-                Actual = actual
+                Actual = null
             };
+
+            if (!string.IsNullOrEmpty(exception)) {
+                if (exception.Equals("DbUpdateException", StringComparison.OrdinalIgnoreCase))
+                    Assert.Throws<DbUpdateException>(() => { Repo.Create(input); });
+            }
+
+            Repo.Create(input);
+            eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }
@@ -247,6 +267,9 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
+        ///     <term>Exception</term><description>Expected exception name (optional)</description>
+        /// </item>
+        /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
         /// </item>
         /// </list>
@@ -260,16 +283,21 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
+            var exception = jsonTestCase.GetObject<string>("Exception", Output);
             var expected = jsonTestCase.GetObject<List<TEntity>>("Expected");
-
-            await Repo.CreateAsync(input);
-
-            var actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             var eaResult = new ExpectedActual<List<TEntity>> {
                 Expected = expected,
-                Actual = actual
+                Actual = null
             };
+
+            if (!string.IsNullOrEmpty(exception)) {
+                if (exception.Equals("DbUpdateException", StringComparison.OrdinalIgnoreCase))
+                    await Assert.ThrowsAsync<DbUpdateException>(async () => { await Repo.CreateAsync(input); });
+            }
+
+            await Repo.CreateAsync(input);
+            eaResult.Actual = Repo.GetWithDynamicLinq(where: linqWhere).Data;
 
             return eaResult;
         }

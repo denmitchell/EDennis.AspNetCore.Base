@@ -14,7 +14,7 @@ using EDennis.AspNetCore.Base.Serialization;
 using System;
 using System.Linq.Dynamic.Core;
 
-namespace RepoTests {
+namespace Colors2Repo.Tests {
 
     [Collection("Repo Tests")]
     public class RgbRepoTests_TestWindow
@@ -170,35 +170,35 @@ namespace RepoTests {
         }
 
         #endregion
-        #region GetById
+        #region Get
 
         [Theory]
-        [TestJson_("GetById", "", "A")]
-        [TestJson_("GetById", "", "B")]
-        public void GetById(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Get", "", "A")]
+        [TestJson_("Get", "", "B")]
+        public void Get(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<Rgb>("Expected");
 
-            var actual = Repo.GetById(id);
+            var actual = Repo.Get(id);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
 
 
         [Theory]
-        [TestJson_("GetById", "", "A")]
-        [TestJson_("GetById", "", "B")]
-        public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Get", "", "A")]
+        [TestJson_("Get", "", "B")]
+        public async Task GetAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
             var id = jsonTestCase.GetObject<int>("Id");
             var expected = jsonTestCase.GetObject<Rgb>("Expected");
 
-            var actual = await Repo.GetByIdAsync(id);
+            var actual = await Repo.GetAsync(id);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -241,8 +241,8 @@ namespace RepoTests {
         #region DynamicLinq
 
         [Theory]
-        [TestJson_("GetFromDynamicLinq", "WithSelect", "A")]
-        public void GetFromDynamicLinqWithSelect(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("GetWithDynamicLinq", "WithSelect", "A")]
+        public void GetWithDynamicLinqWithSelect(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
@@ -254,7 +254,7 @@ namespace RepoTests {
 
             var expected = jsonTestCase.GetObject<DynamicLinqResult,Rgb>("Expected");
 
-            var actual = Repo.GetFromDynamicLinq(select, where, orderBy, skip, take);
+            var actual = Repo.GetWithDynamicLinq(select, where, orderBy, skip, take);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, false));
 
@@ -262,8 +262,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJson_("GetFromDynamicLinq", "WithSelect", "A")]
-        public async Task GetFromDynamicLinqWithSelectAsync(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("GetWithDynamicLinq", "WithSelect", "A")]
+        public async Task GetWithDynamicLinqWithSelectAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
@@ -275,15 +275,15 @@ namespace RepoTests {
 
             var expected = jsonTestCase.GetObject<DynamicLinqResult, Rgb>("Expected");
 
-            var actual = await Repo.GetFromDynamicLinqAsync(select, where, orderBy, skip, take);
+            var actual = await Repo.GetWithDynamicLinqAsync(select, where, orderBy, skip, take);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, false));
 
         }
 
         [Theory]
-        [TestJson_("GetFromDynamicLinq", "WithoutSelect", "B")]
-        public void GetFromDynamicLinqWithoutSelect(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("GetWithDynamicLinq", "WithoutSelect", "B")]
+        public void GetWithDynamicLinqWithoutSelect(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
@@ -294,7 +294,7 @@ namespace RepoTests {
 
             var expected = jsonTestCase.GetObject<DynamicLinqResult<Rgb>>("Expected");
 
-            var actual = Repo.GetFromDynamicLinq(where, orderBy, skip, take);
+            var actual = Repo.GetWithDynamicLinq(where, orderBy, skip, take);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, false));
 
@@ -302,8 +302,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJson_("GetFromDynamicLinq", "WithoutSelect", "B")]
-        public async Task GetFromDynamicLinqWithoutSelectAsync(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("GetWithDynamicLinq", "WithoutSelect", "B")]
+        public async Task GetWithDynamicLinqWithoutSelectAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
 
@@ -314,7 +314,7 @@ namespace RepoTests {
 
             var expected = jsonTestCase.GetObject<DynamicLinqResult<Rgb>>("Expected");
 
-            var actual = await Repo.GetFromDynamicLinqAsync(where, orderBy, skip, take);
+            var actual = await Repo.GetWithDynamicLinqAsync(where, orderBy, skip, take);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, false));
 
@@ -335,10 +335,10 @@ namespace RepoTests {
             var parameters = new Dictionary<string, object> { { "ColorNameContains", colorNameContains } };
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = JsonSerializer.Deserialize<List<dynamic>>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var expected = JsonSerializer.Deserialize<List<dynamic>>(expectedJson, DynamicJsonSerializerOptions);
 
             var actualJson = Repo.Context.GetJsonArrayFromStoredProcedure(spName, parameters);
-            var actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -355,10 +355,10 @@ namespace RepoTests {
             var parameters = new Dictionary<string, object> { { "ColorNameContains", colorNameContains } };
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = JsonSerializer.Deserialize<List<dynamic>>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var expected = JsonSerializer.Deserialize<List<dynamic>>(expectedJson, DynamicJsonSerializerOptions);
 
             var actualJson = await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, parameters);
-            var actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -377,10 +377,10 @@ namespace RepoTests {
             var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions);
 
             var actualJson = Repo.Context.GetJsonObjectFromStoredProcedure(spName, parameters);
-            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -396,10 +396,10 @@ namespace RepoTests {
             var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions);
 
             var actualJson = await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, parameters);
-            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -419,10 +419,10 @@ namespace RepoTests {
             var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions);
 
             var actualJson = Repo.Context.GetJsonFromJsonStoredProcedure(spName, parameters);
-            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual,expected, 3, PropertiesToIgnore, Output, true));
         }
@@ -432,16 +432,16 @@ namespace RepoTests {
         [TestJson_("GetJsonFromJsonStoredProcedure", "", "A")]
         [TestJson_("GetJsonFromJsonStoredProcedure", "", "B")]
         public async Task GetJsonFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
-
+            Output.WriteLine(t);
             var spName = jsonTestCase.GetObject<string>("SpName");
             var colorName = jsonTestCase.GetObject<string>("ColorName");
             var parameters = new Dictionary<string, object> { { "ColorName", colorName } };
 
             var expectedJson = jsonTestCase.GetObject<string>("Expected");
-            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var expected = JsonSerializer.Deserialize<dynamic>(expectedJson, DynamicJsonSerializerOptions);
 
             var actualJson = await Repo.Context.GetJsonFromJsonStoredProcedureAsync(spName, parameters);
-            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions.Create<Rgb>());
+            var actual = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
 
             Assert.True(ObjectExtensions.IsEqualAndWrite(actual, expected, 3, PropertiesToIgnore, Output, true));
         }

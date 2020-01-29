@@ -11,7 +11,7 @@ if object_id('tempdb..#SpResults') is not null drop table #SpResults
 go
 
 use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Api'
+declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'RgbByColorName'
 declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Params'

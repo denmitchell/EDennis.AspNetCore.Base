@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
+using System.Linq.Dynamic.Core.Exceptions;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;

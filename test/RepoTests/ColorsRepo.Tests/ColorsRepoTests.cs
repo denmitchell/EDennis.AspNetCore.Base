@@ -8,7 +8,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 
-namespace RepoTests {
+namespace ColorsRepo.Tests {
     public class ColorsRepoTests
         : TemporalRepoTests<ColorRepo, Color, ColorHistory, ColorDbContext, ColorHistoryDbContext>{
         
@@ -76,7 +76,7 @@ namespace RepoTests {
             Repo.Update(input,id);
 
             var actual = Repo.Query.ToPagedList();
-            var actualHistory = Repo.GetByIdHistory(id);
+            var actualHistory = Repo.GetAllRevisions(id);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
             Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, PropertiesToIgnore, Output, true));
@@ -98,7 +98,7 @@ namespace RepoTests {
             Repo.Delete(id);
 
             var actual = Repo.Query.ToPagedList();
-            var actualHistory = Repo.GetByIdHistory(id);
+            var actualHistory = Repo.GetAllRevisions(id);
 
             Assert.True(actual.IsEqualAndWrite(expected, 3, PropertiesToIgnore, Output, true));
             Assert.True(actualHistory.IsEqualAndWrite(expectedHistory, 3, PropertiesToIgnore, Output, true));

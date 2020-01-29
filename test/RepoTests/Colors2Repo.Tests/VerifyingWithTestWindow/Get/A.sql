@@ -1,7 +1,7 @@
 ﻿use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
-declare @MethodName varchar(255) = 'GetById'
+declare @MethodName varchar(255) = 'Get'
 declare @TestScenario varchar(255) = ''
 declare @TestCase varchar(255) = 'A'
 

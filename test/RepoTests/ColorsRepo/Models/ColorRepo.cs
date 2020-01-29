@@ -8,9 +8,8 @@ namespace Colors.Models {
     public class ColorRepo : TemporalRepo<
         Color, ColorHistory, ColorDbContext, ColorHistoryDbContext> {
         public ColorRepo(DbContextProvider<ColorDbContext> provider, DbContextProvider<ColorHistoryDbContext> historyContext, 
-            IScopeProperties scopeProperties, 
-            ILogger<ColorRepo> logger) 
-            : base(provider, historyContext, scopeProperties, logger) {
+            IScopeProperties scopeProperties) 
+            : base(provider, historyContext, scopeProperties) {
         }
     }
 }
