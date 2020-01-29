@@ -1,13 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.NetCoreTestingUtilities;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq.Dynamic.Core.Exceptions;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace EDennis.AspNetCore.Base.Testing {
