@@ -44,13 +44,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Id</term><description>Primary key</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<TEntity> Get_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -78,13 +78,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Id</term><description>Primary key</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<TEntity>> GetAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -114,7 +114,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Id</term><description>Primary key</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -123,7 +123,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<List<TEntity>> Delete_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -157,7 +157,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Id</term><description>Primary key</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -166,7 +166,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<List<TEntity>>> DeleteAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -200,7 +200,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Input</term><description>JSON input object</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -209,7 +209,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<List<TEntity>> Create_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -244,7 +244,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Input</term><description>JSON input object</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -253,7 +253,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<List<TEntity>>> CreateAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -292,7 +292,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Input</term><description>JSON input object</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -301,7 +301,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<List<TEntity>> Update_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -340,7 +340,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Input</term><description>JSON input object</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -349,7 +349,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<List<TEntity>>> UpdateAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -388,7 +388,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Input</term><description>JSON input object</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -397,7 +397,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<List<TEntity>> Patch_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -436,7 +436,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Input</term><description>JSON input object</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// <item>
         ///     <term>LinqWhere</term><description>Dynamic Linq expression for follow-up GET request</description>
@@ -445,7 +445,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<List<TEntity>>> PatchAsync_ExpectedActual(
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
@@ -493,13 +493,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Take</term><description>Page size (optional)</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<DynamicLinqResult<dynamic>> GetWithDynamicLinq_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -545,13 +545,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Take</term><description>Page size (optional)</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<DynamicLinqResult<dynamic>>> GetWithDynamicLinqAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
@@ -589,12 +589,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// </item>
         /// </list>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<dynamic> GetJsonObjectFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
@@ -630,13 +630,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<dynamic>> GetJsonObjectFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
@@ -673,13 +673,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public ExpectedActual<List<dynamic>> GetJsonArrayFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
@@ -715,13 +715,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
         /// </item>
         /// <item>
-        ///     <term>Expected</term><description>Expected response body (required)</description>
+        ///     <term>Expected</term><description>Expected result (required)</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
-        /// <returns>An object holding expected and actual status code and response body (data)</returns>
+        /// <returns>An object holding expected and actual results</returns>
         public async Task<ExpectedActual<List<dynamic>>> GetJsonArrayFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
@@ -734,6 +734,88 @@ namespace EDennis.AspNetCore.Base.Testing {
             var actual = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
 
             var eaResult = new ExpectedActual<List<dynamic>> {
+                Expected = expected,
+                Actual = actual
+            };
+
+            return eaResult;
+        }
+
+
+
+        /// <summary>
+        /// <para>Returns the expected and actual result of a call to
+        /// GetScalarFromStoredProcedure.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED/OPTIONAL TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>SpName</term><description>The name of the stored procedure</description>
+        /// </item>
+        /// <item>
+        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected scalar value (required)</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual results</returns>
+        public ExpectedActual<TScalarType> GetScalarFromStoredProcedure_ExpectedActual<TScalarType>(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine(t);
+
+            var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
+            var expected = jsonTestCase.GetObject<TScalarType>("Expected");
+
+            var actual = Repo.Context.GetScalarFromStoredProcedure<TContext,TScalarType>(spName, parameters);
+
+            var eaResult = new ExpectedActual<TScalarType> {
+                Expected = expected,
+                Actual = actual
+            };
+
+            return eaResult;
+        }
+
+
+
+        /// <summary>
+        /// <para>Returns the expected and actual result of a call to
+        /// GetScalarFromStoredProcedureAsync.</para>
+        /// <para>----------------------------------</para>
+        /// <para>REQUIRED/OPTIONAL TESTJSON FILES</para>
+        /// <para>----------------------------------</para>
+        /// <list type="table">
+        /// <item>
+        ///     <term>SpName</term><description>The name of the stored procedure</description>
+        /// </item>
+        /// <item>
+        ///     <term>Params</term><description>A JSON object holding the stored procedure parameters</description>
+        /// </item>
+        /// <item>
+        ///     <term>Expected</term><description>Expected scalar value (required)</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="t">TestScenario(TestCase)</param>
+        /// <param name="jsonTestCase">Test input parameters and expected results</param>
+        /// <returns>An object holding expected and actual results</returns>
+        public async Task<ExpectedActual<TScalarType>> GetScalarFromStoredProcedureAsync_ExpectedActual<TScalarType>(string t, JsonTestCase jsonTestCase) {
+
+            Output.WriteLine(t);
+
+            var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var parameters = jsonTestCase.GetObject<Dictionary<string, object>>("Params", Output);
+            var expected = jsonTestCase.GetObject<TScalarType>("Expected");
+
+            var actual = await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, TScalarType>(spName, parameters);
+
+            var eaResult = new ExpectedActual<TScalarType> {
                 Expected = expected,
                 Actual = actual
             };

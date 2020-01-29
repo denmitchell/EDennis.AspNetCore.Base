@@ -134,6 +134,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> _);
 
+            //allow SqlException to propagate
             var obj = cmd.ExecuteScalar();
             var result = Convert.ChangeType(obj, typeof(TResult));
 
@@ -161,6 +162,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> _);
 
+            //allow SqlException to propagate
             var obj = await cmd.ExecuteScalarAsync();
             var result = Convert.ChangeType(obj, typeof(TResult));
 
@@ -192,6 +194,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> outParameters);
 
 
+            //allow SqlException to propagate
             DbDataReader reader = cmd.ExecuteReader();
 
             using var stream = new MemoryStream();
@@ -268,6 +271,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> outParameters);
 
 
+            //allow SqlException to propagate
             DbDataReader reader = await cmd.ExecuteReaderAsync();
 
             using var stream = new MemoryStream();
@@ -344,6 +348,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> outParameters);
 
 
+            //allow SqlException to propagate
             DbDataReader reader = cmd.ExecuteReader();
 
             using var stream = new MemoryStream();
@@ -422,6 +427,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> outParameters);
 
 
+            //allow SqlException to propagate
             DbDataReader reader = await cmd.ExecuteReaderAsync();
 
             using var stream = new MemoryStream();
@@ -498,6 +504,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> outParameters);
 
 
+            //allow SqlException to propagate
             DbDataReader reader = cmd.ExecuteReader();
 
             string json = "";
@@ -543,6 +550,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             spDefs.PopulateParameters(spName, cmd, parameters, out Dictionary<string, DbParameter> outParameters);
 
 
+            //allow SqlException to propagate
             DbDataReader reader = await cmd.ExecuteReaderAsync();
 
             string json = "";

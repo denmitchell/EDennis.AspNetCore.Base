@@ -18,6 +18,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public DbType DbType() => TypeMap.Types.Single(a => a.DbTypeName == DbTypeName).DbType;
         public Type ClrType() => TypeMap.Types.Single(a => a.DbTypeName == DbTypeName).ClrType;
         public bool IsOutput { get; set; }
+        public bool IsReadonly { get; set; }
+        public bool IsNullable { get; set; }
+        public bool HasDefaultValue { get; set; }
         public int? Length { get; set; }
         public int? Precision { get; set; }
         public int? Scale { get; set; }

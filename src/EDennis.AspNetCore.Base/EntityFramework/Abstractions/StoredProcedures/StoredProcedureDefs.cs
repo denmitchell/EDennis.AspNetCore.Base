@@ -59,11 +59,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                     if (!reader.IsDBNull(5))
                         spDef.IsOutput = reader.GetBoolean(5);
                     if (!reader.IsDBNull(6))
-                        spDef.Length = reader.GetInt32(3);
+                        spDef.IsReadonly = reader.GetBoolean(6);
                     if (!reader.IsDBNull(7))
-                        spDef.Precision = reader.GetInt32(3);
+                        spDef.IsNullable = reader.GetBoolean(7);
                     if (!reader.IsDBNull(8))
-                        spDef.Scale = reader.GetInt32(3);
+                        spDef.HasDefaultValue = reader.GetBoolean(8);
+                    if (!reader.IsDBNull(9))
+                        spDef.Length = reader.GetInt32(9);
+                    if (!reader.IsDBNull(10))
+                        spDef.Precision = reader.GetInt32(10);
+                    if (!reader.IsDBNull(11))
+                        spDef.Scale = reader.GetInt32(11);
                     spDefs.Add(spDef);
                 }
             }
@@ -79,21 +85,42 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 schema = nameComponents[0];
                 spName = nameComponents[1];
             }
+
+            //get all parameters for stored procedure name
+            var paramDefs = this.Where(sp => sp.Schema == schema && sp.StoredProcedureName.Equals(spName, StringComparison.OrdinalIgnoreCase));
+
+            if (paramDefs.Count() == 0)
+                throw new ArgumentException($"The current database does not contain a stored procedure named [{schema}].[{spName}]");
+
             outParameters = new Dictionary<string, DbParameter>();
-            foreach (var parmDef in this.Where(sp => sp.Schema == schema && sp.StoredProcedureName.Equals(spName, StringComparison.OrdinalIgnoreCase))) {
-                foreach (var parm in parameters.Where(p => $"@{p.Key}".Equals(parmDef.ParameterName, StringComparison.OrdinalIgnoreCase))) {
-                    var dbParm = parmDef.ToDbParameter(parm.Value);
+
+            if (paramDefs.Count() == 1 && paramDefs.Single().ParameterName == null)
+                return;
+
+
+            List<StoredProcedureDef> remainingDefinedParameters = new List<StoredProcedureDef>( paramDefs );
+
+
+            foreach (var paramDef in paramDefs) {
+
+                //get matching parameter (which could be optional)
+                foreach (var parm in parameters.Where(p => $"@{p.Key}".Equals(paramDef.ParameterName, StringComparison.OrdinalIgnoreCase))) {
+                    var dbParm = paramDef.ToDbParameter(parm.Value);
                     sqlCommand.Parameters.Add(dbParm);
-                    if (parmDef.IsOutput)
+                    if (paramDef.IsOutput)
                         outParameters.Add(parm.Key, dbParm);
+                    remainingDefinedParameters.Remove(paramDef);
                 }
-                foreach (var parm in parameters.Where(p => !$"@{p.Key}".Equals(parmDef.ParameterName, StringComparison.OrdinalIgnoreCase))) {
-                    var dbParm = parmDef.ToDbParameter(null);
+
+                foreach (var parm in remainingDefinedParameters) {
+                    var dbParm = paramDef.ToDbParameter(null);
                     sqlCommand.Parameters.Add(dbParm);
-                    if (parmDef.IsOutput)
+                    if (paramDef.IsOutput)
                         outParameters.Add(dbParm.ParameterName, dbParm);
                 }
+
             }
+
 
         }
 
@@ -107,14 +134,17 @@ select
    parameter_id [Order],  
    type_name(user_type_id) [DbTypeName],  
    is_output [IsOutput],
+   is_readonly [IsReadonly],
+   is_nullable [IsNullable],
+   has_default_value [HasDefaultValue],  
    max_length [Length],  
    case when type_name(system_type_id) = 'uniqueidentifier' 
               then precision  
               else OdbcPrec(system_type_id, max_length, precision) end
 			  [Precision],  
-   OdbcScale(system_type_id, scale) [Scale]  
+   OdbcScale(system_type_id, scale) [Scale]
   from sys.procedures p1
-  inner join sys.parameters p2 on p1.object_id = p2.object_id
+  left outer join sys.parameters p2 on p1.object_id = p2.object_id
 ";
 
     }

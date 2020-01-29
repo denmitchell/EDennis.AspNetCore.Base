@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
@@ -204,6 +205,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             IQueryable qry = Query;
 
+            //no try-catch here -- allow well-documented ParseException to propagate
+
             if (!string.IsNullOrWhiteSpace(where))
                 qry = qry.Where(where);
             if (!string.IsNullOrWhiteSpace(orderBy))
@@ -350,6 +353,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //retrieve the existing entity
             var existing = Context.Find<TEntity>(keyValues);
+            if (existing == null)
+                throw new MissingEntityException(
+                    $"No {entity.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
 
             SetSysUser(entity);
 
@@ -378,6 +384,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //retrieve the existing entity (resultEntity)
             var existing = await Context.FindAsync<TEntity>(keyValues);
+            if (existing == null)
+                throw new MissingEntityException(
+                    $"No {entity.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
 
             SetSysUser(entity);
 
@@ -405,10 +414,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //retrieve the existing entity
             TEntity existing = Context.Find<TEntity>(keyValues);
+            if (existing == null)
+                throw new MissingEntityException(
+                    $"No {existing.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
 
             //copy property values from entity to existing
-            Projection<TEntity>.Patch(partialEntity, existing);
-            //DynamicExtensions.Populate<TEntity>(existing, partialEntity);
+            try {
+                Projection<TEntity>.Patch(partialEntity, existing);
+            } catch {
+                throw new ArgumentException($"Cannot patch/update {existing.GetType().Name} with '{JsonSerializer.Serialize(partialEntity)}'");
+            }
 
             existing.SysUser = ScopeProperties.User;
 
@@ -435,11 +450,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             //retrieve the existing entity
             var existing = await Context.FindAsync<TEntity>(keyValues);
+            if (existing == null)
+                throw new MissingEntityException(
+                    $"No {existing.GetType().Name} exists with {keyValues.ToTildaDelimited()}");
 
             //copy property values from entity to existing
-            Projection<TEntity>.Patch(partialEntity, existing);
-            //DynamicExtensions.Populate<TEntity>(existing, partialEntity);
-
+            try {
+                Projection<TEntity>.Patch(partialEntity, existing);
+            } catch {
+                throw new ArgumentException($"Cannot patch/update {existing.GetType().Name} with '{JsonSerializer.Serialize(partialEntity)}'");
+            }
             existing.SysUser = ScopeProperties.User;
             Context.Entry(existing).State = EntityState.Detached;
 

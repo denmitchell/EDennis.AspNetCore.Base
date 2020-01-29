@@ -39,46 +39,51 @@
 
 
   <ItemGroup>
-    <None Update="Delete\A.sql">
+    <None Update="VerifyingWithTestWindow\Delete\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Delete\B.sql">
+    <None Update="VerifyingWithTestWindow\Delete\B.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Exists\A.sql">
+    <None Update="VerifyingWithTestWindow\Exists\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Exists\B.sql">
+    <None Update="VerifyingWithTestWindow\Exists\B.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="GetById\A.sql">
+    <None Update="VerifyingWithTestWindow\Get\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="GetById\B.sql">
+    <None Update="VerifyingWithTestWindow\Get\B.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Update\A.sql">
+    <None Update="VerifyingWithTestWindow\Update\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Update\B.sql">
+    <None Update="VerifyingWithTestWindow\Update\B.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Create\A.sql">
+    <None Update="VerifyingWithTestWindow\Create\A.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
-    <None Update="Create\B.sql">
+    <None Update="VerifyingWithTestWindow\Create\B.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Code</SubType>
     </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="VerifyingWithDynamicLinq\" />
   </ItemGroup>
 
 </Project>

@@ -15,18 +15,20 @@ using System;
 using System.Linq.Dynamic.Core;
 
 namespace RepoTests {
-    public class RgbRepoTests
+
+    [Collection("Repo Tests")]
+    public class RgbRepoTests_TestWindow
         : RepoTests<RgbRepo, Rgb, Color2DbContext> {
 
-        public RgbRepoTests(ITestOutputHelper output)
+        public RgbRepoTests_TestWindow(ITestOutputHelper output)
             : base(output) { }
 
         protected string[] PropertiesToIgnore { get; }
             = new string[] { "SysStart", "SysEnd" };
 
 
-        internal class TestJsonA : TestJsonAttribute {
-            public TestJsonA(string methodName, string testScenario, string testCase)
+        internal class TestJson_ : TestJsonAttribute {
+            public TestJson_(string methodName, string testScenario, string testCase)
                 : base("Color2Db", "Colors2Repo", "RgbRepo",
                       methodName, testScenario, testCase) {
             }
@@ -43,8 +45,8 @@ namespace RepoTests {
         #region Create
 
         [Theory]
-        [TestJsonA("Create", "", "A")]
-        [TestJsonA("Create", "", "B")]
+        [TestJson_("Create", "", "A")]
+        [TestJson_("Create", "", "B")]
         public void Create(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Test case: {t}");
 
@@ -62,8 +64,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("Create", "", "A")]
-        [TestJsonA("Create", "", "B")]
+        [TestJson_("Create", "", "A")]
+        [TestJson_("Create", "", "B")]
         public async Task CreateAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -85,8 +87,8 @@ namespace RepoTests {
         #region Update
 
         [Theory]
-        [TestJsonA("Update", "", "A")]
-        [TestJsonA("Update", "", "B")]
+        [TestJson_("Update", "", "A")]
+        [TestJson_("Update", "", "B")]
         public void Update(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Test case: {t}");
 
@@ -105,8 +107,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("Update", "", "A")]
-        [TestJsonA("Update", "", "B")]
+        [TestJson_("Update", "", "A")]
+        [TestJson_("Update", "", "B")]
         public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Test case: {t}");
 
@@ -128,8 +130,8 @@ namespace RepoTests {
         #region Delete
 
         [Theory]
-        [TestJsonA("Delete", "", "A")]
-        [TestJsonA("Delete", "", "B")]
+        [TestJson_("Delete", "", "A")]
+        [TestJson_("Delete", "", "B")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -148,8 +150,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("Delete", "", "A")]
-        [TestJsonA("Delete", "", "B")]
+        [TestJson_("Delete", "", "A")]
+        [TestJson_("Delete", "", "B")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -171,8 +173,8 @@ namespace RepoTests {
         #region GetById
 
         [Theory]
-        [TestJsonA("GetById", "", "A")]
-        [TestJsonA("GetById", "", "B")]
+        [TestJson_("GetById", "", "A")]
+        [TestJson_("GetById", "", "B")]
         public void GetById(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -187,8 +189,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetById", "", "A")]
-        [TestJsonA("GetById", "", "B")]
+        [TestJson_("GetById", "", "A")]
+        [TestJson_("GetById", "", "B")]
         public async Task GetByIdAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -205,8 +207,8 @@ namespace RepoTests {
         #region Exists
 
         [Theory]
-        [TestJsonA("Exists", "", "A")]
-        [TestJsonA("Exists", "", "B")]
+        [TestJson_("Exists", "", "A")]
+        [TestJson_("Exists", "", "B")]
         public void Exists(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -221,8 +223,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("Exists", "", "A")]
-        [TestJsonA("Exists", "", "B")]
+        [TestJson_("Exists", "", "A")]
+        [TestJson_("Exists", "", "B")]
         public async Task ExistsAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -239,7 +241,7 @@ namespace RepoTests {
         #region DynamicLinq
 
         [Theory]
-        [TestJsonA("GetFromDynamicLinq", "WithSelect", "A")]
+        [TestJson_("GetFromDynamicLinq", "WithSelect", "A")]
         public void GetFromDynamicLinqWithSelect(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -260,7 +262,7 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetFromDynamicLinq", "WithSelect", "A")]
+        [TestJson_("GetFromDynamicLinq", "WithSelect", "A")]
         public async Task GetFromDynamicLinqWithSelectAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -280,7 +282,7 @@ namespace RepoTests {
         }
 
         [Theory]
-        [TestJsonA("GetFromDynamicLinq", "WithoutSelect", "B")]
+        [TestJson_("GetFromDynamicLinq", "WithoutSelect", "B")]
         public void GetFromDynamicLinqWithoutSelect(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -300,7 +302,7 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetFromDynamicLinq", "WithoutSelect", "B")]
+        [TestJson_("GetFromDynamicLinq", "WithoutSelect", "B")]
         public async Task GetFromDynamicLinqWithoutSelectAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -323,7 +325,7 @@ namespace RepoTests {
         #region GetJsonArrayFromStoredProcedure
 
         [Theory]
-        [TestJsonA("GetJsonArrayFromStoredProcedure", "", "A")]
+        [TestJson_("GetJsonArrayFromStoredProcedure", "", "A")]
         public void GetJsonArrayFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -343,7 +345,7 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetJsonArrayFromStoredProcedure", "", "A")]
+        [TestJson_("GetJsonArrayFromStoredProcedure", "", "A")]
         public async Task GetJsonArrayFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -365,7 +367,7 @@ namespace RepoTests {
         #region GetJsonObjectFromStoredProcedure
 
         [Theory]
-        [TestJsonA("GetJsonObjectFromStoredProcedure", "", "A")]
+        [TestJson_("GetJsonObjectFromStoredProcedure", "", "A")]
         public void GetJsonObjectFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -384,7 +386,7 @@ namespace RepoTests {
         }
 
         [Theory]
-        [TestJsonA("GetJsonObjectFromStoredProcedure", "", "A")]
+        [TestJson_("GetJsonObjectFromStoredProcedure", "", "A")]
         public async Task GetJsonObjectFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -406,8 +408,8 @@ namespace RepoTests {
         #region GetJsonFromJsonStoredProcedure
 
         [Theory]
-        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "A")]
-        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "B")]
+        [TestJson_("GetJsonFromJsonStoredProcedure", "", "A")]
+        [TestJson_("GetJsonFromJsonStoredProcedure", "", "B")]
         public void GetJsonFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -427,8 +429,8 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "A")]
-        [TestJsonA("GetJsonFromJsonStoredProcedure", "", "B")]
+        [TestJson_("GetJsonFromJsonStoredProcedure", "", "A")]
+        [TestJson_("GetJsonFromJsonStoredProcedure", "", "B")]
         public async Task GetJsonFromJsonStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             var spName = jsonTestCase.GetObject<string>("SpName");
@@ -448,7 +450,7 @@ namespace RepoTests {
         #region GetListFromStoredProcedure
 
         [Theory]
-        [TestJsonA("GetListFromStoredProcedure", "", "A")]
+        [TestJson_("GetListFromStoredProcedure", "", "A")]
         public void GetListFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -465,7 +467,7 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetListFromStoredProcedure", "", "A")]
+        [TestJson_("GetListFromStoredProcedure", "", "A")]
         public async Task GetListFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -484,7 +486,7 @@ namespace RepoTests {
         #region GetObjectFromStoredProcedure
 
         [Theory]
-        [TestJsonA("GetObjectFromStoredProcedure", "", "A")]
+        [TestJson_("GetObjectFromStoredProcedure", "", "A")]
         public void GetObjectFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -500,7 +502,7 @@ namespace RepoTests {
         }
 
         [Theory]
-        [TestJsonA("GetObjectFromStoredProcedure", "", "A")]
+        [TestJson_("GetObjectFromStoredProcedure", "", "A")]
         public async Task GetObjectFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -521,7 +523,7 @@ namespace RepoTests {
         #region GetScalarFromStoredProcedure
 
         [Theory]
-        [TestJsonA("GetScalarFromStoredProcedure", "IntResult", "B")]
+        [TestJson_("GetScalarFromStoredProcedure", "IntResult", "B")]
         public void GetScalarIntFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -537,7 +539,7 @@ namespace RepoTests {
         }
 
         [Theory]
-        [TestJsonA("GetScalarFromStoredProcedure", "StringResult", "A")]
+        [TestJson_("GetScalarFromStoredProcedure", "StringResult", "A")]
         public void GetScalarStringFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -554,7 +556,7 @@ namespace RepoTests {
 
 
         [Theory]
-        [TestJsonA("GetScalarFromStoredProcedure", "IntResult", "B")]
+        [TestJson_("GetScalarFromStoredProcedure", "IntResult", "B")]
         public async Task GetScalarIntFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
@@ -570,7 +572,7 @@ namespace RepoTests {
         }
 
         [Theory]
-        [TestJsonA("GetScalarFromStoredProcedure", "StringResult", "A")]
+        [TestJson_("GetScalarFromStoredProcedure", "StringResult", "A")]
         public async Task GetScalarStringFromStoredProcedureAsync(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine($"Test case: {t}");
