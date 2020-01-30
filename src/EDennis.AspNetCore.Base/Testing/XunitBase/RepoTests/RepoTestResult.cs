@@ -14,6 +14,6 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// Simple class name of the exception thrown as a result of the test
         /// operation with the provided parameters
         /// </summary>
-        public string Exception { get; set; }
+        public bool ThrowsException { get; set; }
     }
 }

@@ -13,7 +13,7 @@ declare @Blue int = 81
 declare @LinqWhere varchar(255) = 'Id ge -999149 and Id le -999143'
 
 declare @TargetId int = -999149
-declare @Exception varchar(255) = null --Success
+declare @ThrowsException bit = 0 --Success
 
 begin transaction
 insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) 
@@ -37,6 +37,6 @@ rollback transaction
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
---exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Exception', @Exception
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ThrowsException', @ThrowsException
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'LinqWhere', @LinqWhere
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

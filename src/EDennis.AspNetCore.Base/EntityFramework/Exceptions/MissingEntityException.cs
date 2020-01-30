@@ -7,7 +7,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// <summary>
     /// Exception that can be used with a "Not Found" result
     /// </summary>
-    public class MissingEntityException : Exception {
+    public class MissingEntityException : ApplicationException {
 
         /// <summary>
         /// Constructs a new MissingEntityException with 

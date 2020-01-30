@@ -33,7 +33,11 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             };
             parm.Direction = GetParameterDirection(parmValue);
             if (parm.Direction != ParameterDirection.Output)
-                parm.Value = Convert.ChangeType(parmValue, ClrType());
+                try {
+                    parm.Value = Convert.ChangeType(parmValue, ClrType());
+                } catch {
+                    throw new ArgumentException($"Cannot convert the supplied parameter value '{parmValue}' for {parm.ParameterName} for Stored Procedure {StoredProcedureName}");
+                }
             return parm;
         }
 

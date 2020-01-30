@@ -6,7 +6,7 @@ declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Params'
 declare @TestCase varchar(255) = 'B'
 
 declare @SpName varchar(255) = 'ColorNameById'
-declare @Id varchar(255) = -999001
+declare @Id varchar(255) = -999002
 
 
 declare @Params varchar(max) = 
@@ -16,12 +16,12 @@ declare @Params varchar(max) =
 )
 
 
-declare @Exception varchar(255) = null
+declare @ThrowsException bit = 0
 declare @Expected varchar(max) = 'AntiqueWhite';
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Params', @Params
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
---exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Exception', @Exception
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ThrowsException', @ThrowsException
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
 

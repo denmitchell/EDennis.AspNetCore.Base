@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Dynamic.Core.Exceptions;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -267,14 +268,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             IQueryable qry = Query;
 
-            //no try-catch here -- allow well-documented ParseException to propagate
-
-            if (!string.IsNullOrWhiteSpace(where))
-                qry = qry.Where(where);
-            if (!string.IsNullOrWhiteSpace(orderBy))
-                qry = qry.OrderBy(orderBy);
-            if (!string.IsNullOrWhiteSpace(select))
-                qry = qry.Select(select);
+            try {
+                if (!string.IsNullOrWhiteSpace(where))
+                    qry = qry.Where(where);
+                if (!string.IsNullOrWhiteSpace(orderBy))
+                    qry = qry.OrderBy(orderBy);
+                if (!string.IsNullOrWhiteSpace(select))
+                    qry = qry.Select(select);
+            } catch (ParseException ex) {
+                throw new ArgumentException(ex.Message);
+            }
 
             if (totalRecords == null || totalRecords.Value < 0)
                 totalRecords = qry.Count();
@@ -303,10 +306,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             IQueryable<TEntity> qry = Query;
 
-            if (!string.IsNullOrWhiteSpace(where))
-                qry = qry.Where(where);
-            if (!string.IsNullOrWhiteSpace(orderBy))
-                qry = qry.OrderBy(orderBy);
+            try {
+                if (!string.IsNullOrWhiteSpace(where))
+                    qry = qry.Where(where);
+                if (!string.IsNullOrWhiteSpace(orderBy))
+                    qry = qry.OrderBy(orderBy);
+            } catch (ParseException ex) {
+                throw new ArgumentException(ex.Message);
+            }
 
             if (totalRecords == null || totalRecords.Value < 0)
                 totalRecords = qry.Count();
@@ -374,12 +381,16 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>The created entity</returns>
         public virtual TEntity Create(TEntity entity) {
             if (entity == null)
-                throw new MissingEntityException(
+                throw new ArgumentException(
                     $"Cannot create a null {typeof(TEntity).Name}");
 
             SetSysUser(entity);
-            Context.Add(entity);
-            Context.SaveChanges();
+            try {
+                Context.Add(entity);
+                Context.SaveChanges();
+            } catch (DbUpdateException ex) {
+                throw new DbException($"Cannot create {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+            }
             return entity;
         }
 
@@ -390,13 +401,17 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>The created entity</returns>
         public virtual async Task<TEntity> CreateAsync(TEntity entity) {
             if (entity == null)
-                throw new MissingEntityException(
+                throw new ArgumentException(
                     $"Cannot create a null {typeof(TEntity).Name}");
 
             SetSysUser(entity);
 
-            Context.Add(entity);
-            await Context.SaveChangesAsync();
+            try {
+                Context.Add(entity);
+                await Context.SaveChangesAsync();
+            } catch (DbUpdateException ex) {
+                throw new DbException($"Cannot create {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+            }
             return entity;
         }
 
@@ -410,7 +425,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>The newly updated entity</returns>
         public virtual TEntity Update(TEntity entity, params object[] keyValues) {
             if (entity == null)
-                throw new MissingEntityException(
+                throw new ArgumentException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
             //retrieve the existing entity
@@ -425,8 +440,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             Context.Entry(existing).CurrentValues.SetValues(entity);
             Context.Entry(existing).State = EntityState.Detached;
 
-            Context.Update(entity);
-            Context.SaveChanges();
+            try {
+                Context.Update(entity);
+                Context.SaveChanges();
+            } catch (DbUpdateException ex) {
+                throw new DbException($"Cannot update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+            }
             return existing;
         }
 
@@ -441,7 +460,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual async Task<TEntity> UpdateAsync(TEntity entity, params object[] keyValues) {
 
             if (entity == null)
-                throw new MissingEntityException(
+                throw new ArgumentException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
             //retrieve the existing entity (resultEntity)
@@ -456,8 +475,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             Context.Entry(existing).CurrentValues.SetValues(entity);
             Context.Entry(existing).State = EntityState.Detached;
 
-            Context.Update(entity);
-            await Context.SaveChangesAsync();
+            try {
+                Context.Update(entity);
+                await Context.SaveChangesAsync();
+            } catch (DbUpdateException ex) {
+                throw new DbException($"Cannot update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+            }
             return existing;
         }
 
@@ -470,7 +493,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns></returns>
         public virtual TEntity Patch(dynamic partialEntity, params object[] keyValues) {
             if (partialEntity == null)
-                throw new MissingEntityException(
+                throw new ArgumentException(
                     $"Cannot update a null {typeof(TEntity).Name}");
 
 
@@ -491,9 +514,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             Context.Entry(existing).State = EntityState.Detached;
 
-
-            Context.Update(existing);
-            Context.SaveChanges();
+            try {
+                Context.Update(existing);
+                Context.SaveChanges();
+            } catch (DbUpdateException ex) {
+                throw new DbException($"Cannot patch/update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+            }
             return existing; //updated entity
 
         }
@@ -525,8 +551,12 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             existing.SysUser = ScopeProperties.User;
             Context.Entry(existing).State = EntityState.Detached;
 
-            Context.Update(existing);
-            await Context.SaveChangesAsync();
+            try {
+                Context.Update(existing);
+                await Context.SaveChangesAsync();
+            } catch (DbUpdateException ex) {
+                throw new DbException($"Cannot update/patch {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+            }
             return existing; //updated entity
         }
 
@@ -544,8 +574,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
-            Context.Remove(existing);
-            Context.SaveChanges();
+            try {
+                Context.Remove(existing);
+                Context.SaveChanges();
+            } catch (DbUpdateConcurrencyException ex) {
+                Context.Entry(existing).State = EntityState.Detached;
+                if (Context.Find<TEntity>(existing) != null)
+                    throw new DbException(ex.InnerException.Message, ex.InnerException);
+            }
 
         }
 
@@ -560,9 +596,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 throw new MissingEntityException(
                     $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
-            Context.Remove(existing);
-            await Context.SaveChangesAsync();
-            return;
+            try {
+                Context.Remove(existing);
+                await Context.SaveChangesAsync();
+            } catch (DbUpdateConcurrencyException ex) {
+                Context.Entry(existing).State = EntityState.Detached;
+                if (Context.Find<TEntity>(existing) != null)
+                    throw new DbException(ex.InnerException.Message, ex.InnerException);
+            }
         }
 
 
