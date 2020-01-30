@@ -16,12 +16,12 @@ declare @Params varchar(max) =
 )
 
 
-declare @ThrowsException bit = 0
+declare @Exception varchar(255) = null
 declare @Expected varchar(max) = 'AntiqueWhite';
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Params', @Params
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ThrowsException', @ThrowsException
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Exception', @Exception
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase
 

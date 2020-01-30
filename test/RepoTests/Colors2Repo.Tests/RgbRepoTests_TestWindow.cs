@@ -87,18 +87,19 @@ namespace Colors2Repo.Tests {
         #region Update
 
         [Theory]
-        [TestJson_("Update", "", "A")]
-        [TestJson_("Update", "", "B")]
-        public void Update(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("Patch", "", "A")]
+        [TestJson_("Patch", "", "B")]
+        public void Patch(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Test case: {t}");
 
             var input = jsonTestCase.GetObject<dynamic, Rgb>("Input");
-            var id = jsonTestCase.GetObject<int>("Id");
+            var idStr = jsonTestCase.GetObject<string>("Id");
+            var id = Repo<Rgb, Color2DbContext>.ParseId(idStr);
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
             var end = jsonTestCase.GetObject<int>("WindowEnd");
 
-            Repo.Update(input, id);
+            Repo.Patch(input, id);
 
             var actual = Repo.Query.Where(e => e.Id >= start && e.Id <= end).ToList();
 
@@ -109,16 +110,17 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Update", "", "A")]
         [TestJson_("Update", "", "B")]
-        public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
+        public async Task PatchAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Test case: {t}");
 
             var input = jsonTestCase.GetObject<dynamic, Rgb>("Input");
-            var id = jsonTestCase.GetObject<int>("Id");
+            var idStr = jsonTestCase.GetObject<string>("Id");
+            var id = Repo<Rgb, Color2DbContext>.ParseId(idStr);
             var expected = jsonTestCase.GetObject<List<Rgb>>("Expected");
             var start = jsonTestCase.GetObject<int>("WindowStart");
             var end = jsonTestCase.GetObject<int>("WindowEnd");
 
-            await Repo.UpdateAsync(input, id);
+            await Repo.PatchAsync(input, id);
 
             var actual = Repo.Query.Where(e => e.Id >= start && e.Id <= end).ToList();
 

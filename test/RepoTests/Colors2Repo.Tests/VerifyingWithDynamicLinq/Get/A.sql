@@ -6,7 +6,7 @@ declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Success'
 declare @TestCase varchar(255) = 'A'
 
 declare @TargetId int = -999146
-declare @ThrowsException bit = 0
+declare @Exception varchar(255) = null
 
 begin transaction
 
@@ -22,5 +22,5 @@ rollback transaction
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ThrowsException', @ThrowsException
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Exception', @Exception
 exec _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

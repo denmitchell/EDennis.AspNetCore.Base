@@ -21,7 +21,7 @@ set @currentPage = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
 set @pageCount = ceiling(convert(decimal(10,2),@rowCount)/@Take)
 set @pageSize = @Take
 
-declare @ThrowsException bit = 0 --Success
+declare @Exception varchar(255) = null --Success
 declare 
 	@Expected varchar(max) = 
 (
@@ -49,5 +49,5 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestC
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Skip', @Skip
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Take', @Take
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ThrowsException', @ThrowsException
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Exception', @Exception
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

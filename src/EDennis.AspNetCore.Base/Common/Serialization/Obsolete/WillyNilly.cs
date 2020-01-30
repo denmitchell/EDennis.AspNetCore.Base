@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -33,7 +34,21 @@ namespace EDennis.AspNetCore.Base.Serialization {
             return CreateNewType(key, dict);
         }
 
-        public static Dictionary<string,Type> GetInferredPropertyTypes(PropertyInfo[] props, dynamic dynObj) {
+        public static Type InferExpandoType(ExpandoObject expando) {
+
+            Dictionary<string, Type> dict = new Dictionary<string, Type>();
+            foreach (KeyValuePair<string, object> kvp in expando) {
+                var type = kvp.Value.GetType();
+                dict.Add(kvp.Key, kvp.Value.GetType());
+            }
+
+            var key = Guid.NewGuid().ToString();
+            return CreateNewType(key, dict);
+        }
+
+
+
+        public static Dictionary<string, Type> GetInferredPropertyTypes(PropertyInfo[] props, dynamic dynObj) {
             var dict = new Dictionary<string, Type>();
             foreach (var prop in props) {
                 var value = prop.GetValue(dynObj).ToString();
@@ -56,6 +71,21 @@ namespace EDennis.AspNetCore.Base.Serialization {
             return dict;
         }
 
+        public static Type GetInferredPropertyType(object value) {
+            if (DateTime.TryParse(value.ToString(), out DateTime _))
+                return typeof(DateTime);
+            else if (TimeSpan.TryParse(value.ToString(), out TimeSpan _))
+                return typeof(TimeSpan);
+            else if (decimal.TryParse(value.ToString(), out decimal _))
+                return typeof(decimal);
+            else if (long.TryParse(value.ToString(), out long _))
+                return typeof(long);
+            else if (bool.TryParse(value.ToString(), out bool _))
+                return typeof(bool);
+            else
+                return typeof(string);
+
+        }
 
 
         /// <summary>
@@ -67,7 +97,7 @@ namespace EDennis.AspNetCore.Base.Serialization {
         /// <param name="key"></param>
         /// <param name="dict"></param>
         /// <returns></returns>
-        private static Type CreateNewType(string key, Dictionary<string,Type> dict) {
+        private static Type CreateNewType(string key, Dictionary<string, Type> dict) {
             var typeInfo = CompileResultTypeInfo(key, dict);
             var type = typeInfo.AsType();
             return type;
@@ -80,7 +110,7 @@ namespace EDennis.AspNetCore.Base.Serialization {
         /// <param name="typeName"></param>
         /// <param name="properties"></param>
         /// <returns></returns>
-        public static TypeInfo CompileResultTypeInfo(string typeName, Dictionary<string,Type> dict) {
+        public static TypeInfo CompileResultTypeInfo(string typeName, Dictionary<string, Type> dict) {
             TypeBuilder tb = GetTypeBuilder(typeName);
             ConstructorBuilder constructor = tb.DefineDefaultConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
 
@@ -114,7 +144,7 @@ namespace EDennis.AspNetCore.Base.Serialization {
                     TypeAttributes.AutoClass |
                     TypeAttributes.AnsiClass |
                     TypeAttributes.BeforeFieldInit |
-                    TypeAttributes.AutoLayout|
+                    TypeAttributes.AutoLayout |
                     TypeAttributes.SpecialName,
                    typeof(Projection));
             return tb;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
-    public class DbException : ApplicationException {
+    public class DbOperationException : ApplicationException {
 
-        public DbException(string message, Exception inner) :
+        public DbOperationException(string message, Exception inner) :
             base(message,inner) { }
     }
 }

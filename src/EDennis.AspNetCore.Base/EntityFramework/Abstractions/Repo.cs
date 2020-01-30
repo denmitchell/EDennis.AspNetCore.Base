@@ -389,7 +389,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Add(entity);
                 Context.SaveChanges();
             } catch (DbUpdateException ex) {
-                throw new DbException($"Cannot create {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+                throw new DbOperationException($"Cannot create {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
             }
             return entity;
         }
@@ -410,7 +410,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Add(entity);
                 await Context.SaveChangesAsync();
             } catch (DbUpdateException ex) {
-                throw new DbException($"Cannot create {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+                throw new DbOperationException($"Cannot create {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
             }
             return entity;
         }
@@ -444,7 +444,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Update(entity);
                 Context.SaveChanges();
             } catch (DbUpdateException ex) {
-                throw new DbException($"Cannot update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+                throw new DbOperationException($"Cannot update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
             }
             return existing;
         }
@@ -479,7 +479,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Update(entity);
                 await Context.SaveChangesAsync();
             } catch (DbUpdateException ex) {
-                throw new DbException($"Cannot update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+                throw new DbOperationException($"Cannot update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
             }
             return existing;
         }
@@ -518,7 +518,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Update(existing);
                 Context.SaveChanges();
             } catch (DbUpdateException ex) {
-                throw new DbException($"Cannot patch/update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+                throw new DbOperationException($"Cannot patch/update {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
             }
             return existing; //updated entity
 
@@ -555,7 +555,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
                 Context.Update(existing);
                 await Context.SaveChangesAsync();
             } catch (DbUpdateException ex) {
-                throw new DbException($"Cannot update/patch {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
+                throw new DbOperationException($"Cannot update/patch {typeof(TEntity).Name}: {ex.InnerException.Message}", ex.InnerException);
             }
             return existing; //updated entity
         }
@@ -571,8 +571,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
 
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
-                throw new MissingEntityException(
-                    $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
+                return;
+                //throw new MissingEntityException(
+                //    $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
             try {
                 Context.Remove(existing);
@@ -580,7 +581,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } catch (DbUpdateConcurrencyException ex) {
                 Context.Entry(existing).State = EntityState.Detached;
                 if (Context.Find<TEntity>(existing) != null)
-                    throw new DbException(ex.InnerException.Message, ex.InnerException);
+                    throw new DbOperationException(ex.InnerException.Message, ex.InnerException);
             }
 
         }
@@ -593,8 +594,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual async Task DeleteAsync(params object[] keyValues) {
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
-                throw new MissingEntityException(
-                    $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
+                return;
+            //    throw new MissingEntityException(
+            //        $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
             try {
                 Context.Remove(existing);
@@ -602,7 +604,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } catch (DbUpdateConcurrencyException ex) {
                 Context.Entry(existing).State = EntityState.Detached;
                 if (Context.Find<TEntity>(existing) != null)
-                    throw new DbException(ex.InnerException.Message, ex.InnerException);
+                    throw new DbOperationException(ex.InnerException.Message, ex.InnerException);
             }
         }
 

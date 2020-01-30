@@ -7,7 +7,7 @@ declare @TestCase varchar(255) = 'A'
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
 declare @TargetId int = -999145
-declare @ThrowsException bit = 0
+declare @Exception varchar(255) = null
 
 begin transaction
 
@@ -24,6 +24,6 @@ rollback transaction
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ThrowsException', @ThrowsException
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Exception', @Exception
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'LinqWhere', @LinqWhere
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

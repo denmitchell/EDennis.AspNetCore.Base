@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'Create'
-declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Exception'
+declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, DbOperationException'
 declare @TestCase varchar(255) = 'C'
 
 declare @Name varchar(255) = 'Marsala'
@@ -13,7 +13,7 @@ declare @Blue int = 81
 declare @LinqWhere varchar(255) = 'Id ge -999149 and Id le -999143'
 
 declare @TargetId int = -999145
-declare @ThrowsException bit = 1 --Conflict
+declare @Exception varchar(255) = 'DbOperationException' --Conflict
 
 begin transaction
 
@@ -34,6 +34,6 @@ rollback transaction
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ThrowsException', @ThrowsException
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Exception', @Exception
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'LinqWhere', @LinqWhere
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase

@@ -33,8 +33,10 @@ namespace Colors2Repo.Tests {
 
         [Theory]
         [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, With Select", "A")]
+        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, With Select", "A")]
         [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, Without Select", "B")]
-        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, Exception", "C")]
+        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, Without Select", "B")]
+        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, ArgumentException", "C")]
         public void GetWithDynamicLinq(string t, JsonTestCase jsonTestCase) {
             var ea = GetWithDynamicLinq_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -43,8 +45,10 @@ namespace Colors2Repo.Tests {
 
         [Theory]
         [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, With Select", "A")]
+        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, With Select", "A")]
         [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, Without Select", "B")]
-        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, Exception", "C")]
+        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, Without Select", "B")]
+        [TestJson_("GetWithDynamicLinq", "Verifying with Dynamic Linq, ArgumentException", "C")]
         public async Task GetWithDynamicLinqAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await GetWithDynamicLinqAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -73,7 +77,6 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Delete", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Delete", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Delete", "Verifying with Dynamic Linq, Exception", "C")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             var ea = Delete_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -82,7 +85,6 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Delete", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Delete", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Delete", "Verifying with Dynamic Linq, Exception", "C")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await DeleteAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -92,7 +94,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Create", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Create", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Create", "Verifying with Dynamic Linq, Exception", "C")]
+        [TestJson_("Create", "Verifying with Dynamic Linq, DbOperationException", "C")]
         public void Create(string t, JsonTestCase jsonTestCase) {
             var ea = Create_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -101,7 +103,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Create", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Create", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Create", "Verifying with Dynamic Linq, Exception", "C")]
+        [TestJson_("Create", "Verifying with Dynamic Linq, DbOperationException", "C")]
         public async Task CreateAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await CreateAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -111,7 +113,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Update", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Update", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Update", "Verifying with Dynamic Linq, Exception", "C")]
+        [TestJson_("Update", "Verifying with Dynamic Linq, MissingEntityException", "C")]
         public void Update(string t, JsonTestCase jsonTestCase) {
             var ea = Update_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -120,7 +122,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Update", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Update", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Update", "Verifying with Dynamic Linq, Exception", "C")]
+        [TestJson_("Update", "Verifying with Dynamic Linq, MissingEntityException", "C")]
         public async Task UpdateAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await UpdateAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -129,8 +131,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Patch", "Verifying with Dynamic Linq, Exception", "C")]
-        [TestJson_("Patch", "Verifying with Dynamic Linq, Exception", "D")]
+        [TestJson_("Patch", "Verifying with Dynamic Linq, MissingEntityException", "C")]
         public void Patch(string t, JsonTestCase jsonTestCase) {
             var ea = Patch_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -139,8 +140,7 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "A")]
         [TestJson_("Patch", "Verifying with Dynamic Linq, Success", "B")]
-        [TestJson_("Patch", "Verifying with Dynamic Linq, Exception", "C")]
-        [TestJson_("Patch", "Verifying with Dynamic Linq, Exception", "D")]
+        [TestJson_("Patch", "Verifying with Dynamic Linq, MissingEntityException", "C")]
         public async Task PatchAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await PatchAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -184,8 +184,8 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Params", "A")]
         [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Params", "B")]
-        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Exception", "C")]
-        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Exception", "D")]
+        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, ArgumentException", "C")]
+        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, ArgumentException", "D")]
         public void GetScalarFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
             var ea = GetScalarFromStoredProcedure_ExpectedActual<string>(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));
@@ -194,8 +194,8 @@ namespace Colors2Repo.Tests {
         [Theory]
         [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Params", "A")]
         [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Params", "B")]
-        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Exception", "C")]
-        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, Exception", "D")]
+        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, ArgumentException", "C")]
+        [TestJson_("ColorNameById", "Verifying with Dynamic Linq, ArgumentException", "D")]
         public async Task GetScalarFromStoredProcedure_Async(string t, JsonTestCase jsonTestCase) {
             var ea = await GetScalarFromStoredProcedureAsync_ExpectedActual<string>(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, PropertiesToIgnore, Output));

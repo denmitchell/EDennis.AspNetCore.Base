@@ -1,4 +1,5 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Serialization;
 using EDennis.NetCoreTestingUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -60,10 +61,10 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var expected = jsonTestCase.GetObjectOrDefault<TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TEntity>> {
-                Expected = new RepoTestResult<TEntity> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<TEntity> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<TEntity> { }
             };
 
@@ -71,7 +72,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 eaResult.Actual.Data = Repo.Get(id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -105,10 +106,10 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var expected = jsonTestCase.GetObjectOrDefault<TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TEntity>> {
-                Expected = new RepoTestResult<TEntity> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<TEntity> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<TEntity> { }
             };
 
@@ -116,7 +117,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 eaResult.Actual.Data = await Repo.GetAsync(id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -156,10 +157,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
@@ -167,7 +168,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 Repo.Delete(id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -211,10 +212,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
@@ -222,7 +223,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 await Repo.DeleteAsync(id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -266,17 +267,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
             try {
                 Repo.Create(input);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -321,17 +322,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
             try {
                 await Repo.CreateAsync(input);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -381,11 +382,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
@@ -393,7 +394,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 Repo.Update(input, id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -442,11 +443,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var input = jsonTestCase.GetObject<TEntity>("Input", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
@@ -454,7 +455,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 await Repo.UpdateAsync(input, id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -499,25 +500,23 @@ namespace EDennis.AspNetCore.Base.Testing {
             string t, JsonTestCase jsonTestCase) {
             Output.WriteLine(t);
 
-
-
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
+            var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output); //test bad input
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
             try {
-                var input = jsonTestCase.GetObject<dynamic, TEntity>("Input", Output); //test bad input
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 Repo.Patch(input, id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -565,10 +564,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var idStr = jsonTestCase.GetObject<string>("Id", Output);
             var linqWhere = jsonTestCase.GetObject<string>("LinqWhere", Output);
             var expected = jsonTestCase.GetObjectOrDefault<List<TEntity>>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<TEntity>>> {
-                Expected = new RepoTestResult<List<TEntity>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<TEntity>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<TEntity>> { }
             };
 
@@ -577,7 +576,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var id = Repo<TEntity, TContext>.ParseId(idStr);
                 await Repo.PatchAsync(input, id);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -634,17 +633,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var expected = jsonTestCase.GetObject<DynamicLinqResult<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<DynamicLinqResult<dynamic>>> {
-                Expected = new RepoTestResult<DynamicLinqResult<dynamic>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<DynamicLinqResult<dynamic>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<DynamicLinqResult<dynamic>> { }
             };
 
             try {
                 eaResult.Actual.Data = Repo.GetWithDynamicLinq(select, where, orderBy, skip, take);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -696,17 +695,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var skip = jsonTestCase.GetObjectOrDefault<int?>("Skip", Output);
             var take = jsonTestCase.GetObjectOrDefault<int?>("Take", Output);
             var expected = jsonTestCase.GetObject<DynamicLinqResult<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<DynamicLinqResult<dynamic>>> {
-                Expected = new RepoTestResult<DynamicLinqResult<dynamic>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<DynamicLinqResult<dynamic>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<DynamicLinqResult<dynamic>> { }
             };
 
             try {
                 eaResult.Actual.Data = await Repo.GetWithDynamicLinqAsync(select, where, orderBy, skip, take);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -748,10 +747,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObject<dynamic, TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<dynamic>> {
-                Expected = new RepoTestResult<dynamic> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<dynamic> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<dynamic> { }
             };
 
@@ -759,7 +758,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var actualJson = Repo.Context.GetJsonObjectFromStoredProcedure(spName, objParms);
                 eaResult.Actual.Data = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -802,10 +801,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObject<dynamic, TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<dynamic>> {
-                Expected = new RepoTestResult<dynamic> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<dynamic> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<dynamic> { }
             };
 
@@ -813,7 +812,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var actualJson = await Repo.Context.GetJsonObjectFromStoredProcedureAsync(spName, objParms);
                 eaResult.Actual.Data = JsonSerializer.Deserialize<dynamic>(actualJson, DynamicJsonSerializerOptions);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -857,10 +856,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObject<List<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<dynamic>>> {
-                Expected = new RepoTestResult<List<dynamic>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<dynamic>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<dynamic>> { }
             };
 
@@ -868,7 +867,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var actualJson = Repo.Context.GetJsonArrayFromStoredProcedure(spName, objParms);
                 eaResult.Actual.Data = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -910,10 +909,10 @@ namespace EDennis.AspNetCore.Base.Testing {
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObject<List<dynamic>, TEntity>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<List<dynamic>>> {
-                Expected = new RepoTestResult<List<dynamic>> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<List<dynamic>> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<List<dynamic>> { }
             };
 
@@ -921,7 +920,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 var actualJson = await Repo.Context.GetJsonArrayFromStoredProcedureAsync(spName, objParms);
                 eaResult.Actual.Data = JsonSerializer.Deserialize<List<dynamic>>(actualJson, DynamicJsonSerializerOptions);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -964,17 +963,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObjectOrDefault<TScalarType>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TScalarType>> {
-                Expected = new RepoTestResult<TScalarType> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<TScalarType> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<TScalarType> { }
             };
 
             try {
                 eaResult.Actual.Data = Repo.Context.GetScalarFromStoredProcedure<TContext,TScalarType>(spName, objParms);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }
@@ -1016,17 +1015,17 @@ namespace EDennis.AspNetCore.Base.Testing {
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var objParms = parameters.ToDictionary(x => x.Key, x => (object)x.Value);
             var expected = jsonTestCase.GetObjectOrDefault<TScalarType>("Expected");
-            var exception = jsonTestCase.GetObjectOrDefault<bool>("ThrowsException", Output);
+            var exception = jsonTestCase.GetObjectOrDefault<string>("Exception", Output);
 
             var eaResult = new ExpectedActual<RepoTestResult<TScalarType>> {
-                Expected = new RepoTestResult<TScalarType> { Data = expected, ThrowsException = exception },
+                Expected = new RepoTestResult<TScalarType> { Data = expected, Exception = exception },
                 Actual = new RepoTestResult<TScalarType> { }
             };
 
             try {
                 eaResult.Actual.Data = await Repo.Context.GetScalarFromStoredProcedureAsync<TContext, TScalarType>(spName, objParms);
             } catch (Exception ex) {
-                eaResult.Actual.ThrowsException = true;
+                eaResult.Actual.Exception = ex.GetType().Name;
                 Output.WriteLine($"EXCEPTION ({ex.GetType().Name}): {ex.Message}");
                 Output.WriteLine($"STACK TRACE:\n {ex.StackTrace}");
             }

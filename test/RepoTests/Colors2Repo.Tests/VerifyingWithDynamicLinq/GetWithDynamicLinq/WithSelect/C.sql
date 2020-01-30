@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'GetWithDynamicLinq'
-declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Exception'
+declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, ArgumentException'
 declare @TestCase varchar(255) = 'C'
 
 declare @Where varchar(255) = '$fjiou#jdfah'
@@ -21,13 +21,9 @@ set @currentPage = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
 set @pageCount = ceiling(convert(decimal(10,2),@rowCount)/@Take)
 set @pageSize = @Take
 
-declare @ThrowsException bit = 1
+declare @Exception varchar(255) = 'ArgumentException'
 
-declare 
-	@Expected varchar(max) = 
-(
-	select null
-);
+declare @Expected varchar(max) = null;
 
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Select', @Select
@@ -35,6 +31,6 @@ exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestC
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'OrderBy', @OrderBy
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Skip', @Skip
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Take', @Take
---exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ThrowsException', @ThrowsException
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Exception', @Exception
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase
