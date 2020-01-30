@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'Patch'
-declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, JsonException'
+declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Exception'
 declare @TestCase varchar(255) = 'D'
 
 declare @DateAdded varchar(255) = 'AnInvalidDate'

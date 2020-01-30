@@ -2,7 +2,7 @@
 declare @ProjectName varchar(255) = 'Colors2Repo'
 declare @ClassName varchar(255) = 'RgbRepo'
 declare @MethodName varchar(255) = 'Delete'
-declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, MissingEntityException'
+declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Exception'
 declare @TestCase varchar(255) = 'C'
 declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
 
