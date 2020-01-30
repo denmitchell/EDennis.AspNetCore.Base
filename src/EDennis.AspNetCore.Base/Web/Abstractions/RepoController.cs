@@ -132,7 +132,7 @@ namespace EDennis.AspNetCore.Base.Web {
             try {
                 var created = Repo.Create(entity);
                 return Ok(created);
-            } catch (DbUpdateException) {
+            } catch (DbOperationException) {
                 if (Repo.Exists(pk)) {
                     ModelState.AddModelError("", $"A {typeof(TEntity).Name} instance with the specified id {pk.ToTildaDelimited()} already exists");
                     return Conflict(ModelState);
@@ -151,7 +151,7 @@ namespace EDennis.AspNetCore.Base.Web {
             try {
                 var created = await Repo.CreateAsync(entity);
                 return Ok(created);
-            } catch (DbUpdateException) {
+            } catch (DbOperationException) {
                 if (Repo.Exists(pk)) {
                     ModelState.AddModelError("", $"A {typeof(TEntity).Name} instance with the specified id {pk.ToTildaDelimited()} already exists");
                     return Conflict(ModelState);
@@ -249,7 +249,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ObjectArrayExtensions.ToTildaDelimited(ePk)})");
 
             try {
-                var updated = Repo.Update(partialEntity, iPk);
+                var updated = Repo.Patch(partialEntity, iPk);
                 return Ok(updated);
             } catch (DbUpdateConcurrencyException) {
                 if (!Repo.Exists(iPk))
@@ -290,7 +290,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 return BadRequest($"The path parameter id ({id}) does not match the provided object's id ({ObjectArrayExtensions.ToTildaDelimited(ePk)})");
 
             try {
-                var updated = await Repo.UpdateAsync(partialEntity, iPk);
+                var updated = await Repo.PatchAsync(partialEntity, iPk);
                 return Ok(updated);
             } catch (DbUpdateConcurrencyException) {
                 if (!Repo.Exists(iPk))
@@ -371,7 +371,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     var json = JsonSerializer.Serialize(dynamicLinqResult);
                     return new ContentResult { Content = json, ContentType = "application/json" };
                 }
-            } catch (ParseException ex) {
+            } catch (ArgumentException ex) {
                 ModelState.AddModelError("", ex.Message);
                 return new BadRequestObjectResult(ModelState);
             }
@@ -411,7 +411,7 @@ namespace EDennis.AspNetCore.Base.Web {
                     var json = JsonSerializer.Serialize(dynamicLinqResult);
                     return new ContentResult { Content = json, ContentType = "application/json" };
                 }
-            } catch (ParseException ex) {
+            } catch (ArgumentException ex) {
                 ModelState.AddModelError("", ex.Message);
                 return new BadRequestObjectResult(ModelState);
             }

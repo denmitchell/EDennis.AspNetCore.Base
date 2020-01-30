@@ -98,7 +98,6 @@ namespace Colors2Api.EndpointTests {
         [Theory]
         [TestJson_("Delete", "No Content", "A")]
         [TestJson_("Delete", "No Content", "B")]
-        [TestJson_("Delete", "Not Found", "C")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             var ea = Delete_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));
@@ -107,7 +106,6 @@ namespace Colors2Api.EndpointTests {
         [Theory]
         [TestJson_("Delete", "No Content", "A")]
         [TestJson_("Delete", "No Content", "B")]
-        [TestJson_("Delete", "Not Found", "C")]
         public async Task DeleteAsync(string t, JsonTestCase jsonTestCase) {
             var ea = await DeleteAsync_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));
