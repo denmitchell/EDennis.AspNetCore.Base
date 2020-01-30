@@ -2,6 +2,7 @@
 using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Security;
 using EDennis.AspNetCore.Base.Web;
+using EDennis.AspNetCore.Web;
 using Hr.Api.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -20,18 +21,20 @@ namespace Hr.RazorApp {
         private const string PERSON_URL = "api/Person";
         private const string ADDRESS_URL = "api/Address";
 
-        public HrApi(IHttpClientFactory httpClientFactory, IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties, ISecureTokenService secureTokenService, IWebHostEnvironment env, ILogger logger)
-            : base(httpClientFactory, apis, scopeProperties, secureTokenService, env, logger) {
+        public HrApi(IHttpClientFactory httpClientFactory, IOptionsMonitor<Apis> apis, IScopeProperties scopeProperties, ISecureTokenService secureTokenService, IWebHostEnvironment env)
+            : base(httpClientFactory, apis, scopeProperties, secureTokenService, env) {
         }
 
 
-        public async Task<ObjectResult> GetPersonsAsync(string where = null,
+        public async Task<DynamicLinqResult<Person>> GetPersonsAsync(string where = null,
             string orderBy = null, string select = null, int? skip = null,
             int? take = null, int? totalRecords = null
             ) {
-    
-            var url = $"{PERSON_URL}{GetQueryString(where, orderBy, select, skip, take, totalRecords)}";           
-            return await HttpClient.GetAsync<PagedResult<dynamic>,Person>(url);
+
+            var url = $"{PERSON_URL}{GetQueryString(where, orderBy, select, skip, take, totalRecords)}";
+            var result = await HttpClient.GetAsync<DynamicLinqResult<Person>, Person>(url);
+            var obj = result.GetObject<DynamicLinqResult<Person>>();
+            return obj;
         }
 
         public async Task<ObjectResult> GetPersonDetailsAsync(int? id) {
@@ -51,13 +54,15 @@ namespace Hr.RazorApp {
         }
 
 
-        public async Task<ObjectResult> GetAddressesAsync(string where = null,
+        public async Task<DynamicLinqResult<Address>> GetAddressesAsync(string where = null,
             string orderBy = null, string select = null, int? skip = null,
             int? take = null, int? totalRecords = null
             ) {
 
             var url = $"{ADDRESS_URL}{GetQueryString(where, orderBy, select, skip, take, totalRecords)}";
-            return await HttpClient.GetAsync<PagedResult<dynamic>, Address>(url);
+            var result = await HttpClient.GetAsync<DynamicLinqResult<Address>, Address>(url);
+            var obj = result.GetObject<DynamicLinqResult<Address>>();
+            return obj;
         }
 
 

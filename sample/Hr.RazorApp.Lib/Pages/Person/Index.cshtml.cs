@@ -1,28 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using Hr.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Hr.Api.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Hr.RazorApp.PersonPages
-{
-    public class IndexModel : PageModel
-    {
-        private readonly Hr.Api.Models.HrContext _context;
+namespace Hr.RazorApp.PersonPages {
+    public class IndexModel : PageModel {
+        private readonly HrApi _api;
 
-        public IndexModel(Hr.Api.Models.HrContext context)
-        {
-            _context = context;
+        public IndexModel(HrApi api) {
+            _api = api;
         }
 
-        public IList<Person> Person { get;set; }
+        [BindProperty(SupportsGet = true)] public string Where { get; set; }
+        [BindProperty(SupportsGet = true)] public string OrderBy { get; set; }
+        [BindProperty(SupportsGet = true)] public string Select { get; set; }
+        [BindProperty(SupportsGet = true)] public int CurrentPage { get; set; } = -1;
+        [BindProperty(SupportsGet = true)] public int PageSize { get; set; } = 10;
+        [BindProperty(SupportsGet = true)] public int RowCount { get; set; } = -1;
 
-        public async Task OnGetAsync()
-        {
-            Person = await _context.Persons.ToListAsync();
+        [BindProperty] public PagingData PagingData { get; set; }
+
+
+        public IList<Person> Persons { get; set; }
+
+        public async Task OnGetAsync() {
+            PagingData = new PagingData {
+
+                RowCount = RowCount,
+                CurrentPage = CurrentPage,
+                PageSize = PageSize
+            };
+
+            DynamicLinqResult<Person> result = await _api.GetPersonsAsync(
+                skip: (PagingData.CurrentPage - 1) * PagingData.PageCount,
+                take: PagingData.PageSize
+                );
+
+            Persons = result.Data;
+
         }
     }
 }

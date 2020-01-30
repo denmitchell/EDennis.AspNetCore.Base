@@ -71,27 +71,27 @@
     </tbody>
 </table>
 <!-- pager -->
-@if (Model.PagingData.RecordCount > 0) {
+@if (Model.PagingData.RowCount > 0) {
     <nav class="table-responsive">
         <ul class="pagination justify-content-center d-flex flex-wrap">
-            @if (Model.PagingData.PageNumber > 1) {
+            @if (Model.PagingData.CurrentPage > 1) {
                 <li class="page-item">
                     <a class="page-link" href="/">First</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageNumber - 1))&take=@(Model.PagingData.PageSize)">Previous</a>
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.CurrentPage - 1))&take=@(Model.PagingData.PageSize)">Previous</a>
                 </li>
             }
 
             @for(int i=1; i <= Model.PagingData.PageCount; i++) {
-                <li class="page-item @(i == Model.PagingData.PageNumber ? "active" : "")">
-                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageNumber + i))&take=@(Model.PagingData.PageSize)">@i</a>
+                <li class="page-item @(i == Model.PagingData.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.CurrentPage + i))&take=@(Model.PagingData.PageSize)">@i</a>
                 </li>
             }
 
-            @if (Model.PagingData.PageNumber < Model.PagingData.PageCount) {
+            @if (Model.PagingData.CurrentPage < Model.PagingData.PageCount) {
                 <li class="page-item">
-                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageNumber + 1))&take=@(Model.PagingData.PageSize)">Next</a>
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.CurrentPage + 1))&take=@(Model.PagingData.PageSize)">Next</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageCount - 1))&take=@(Model.PagingData.PageSize)">Last</a>

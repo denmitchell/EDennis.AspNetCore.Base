@@ -14,53 +14,84 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Person[0].FirstName)
+                @Html.DisplayNameFor(model => model.Persons[0].FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Person[0].LastName)
+                @Html.DisplayNameFor(model => model.Persons[0].LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Person[0].DateOfBirth)
+                @Html.DisplayNameFor(model => model.Persons[0].DateOfBirth)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Person[0].SysUser)
+                @Html.DisplayNameFor(model => model.Persons[0].SysUser)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Person[0].SysStart)
+                @Html.DisplayNameFor(model => model.Persons[0].SysStart)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Person[0].SysEnd)
+                @Html.DisplayNameFor(model => model.Persons[0].SysEnd)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Person) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SysUser)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SysStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SysEnd)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Persons) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SysUser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SysStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SysEnd)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<!-- pager -->
+@if (Model.PagingData.RowCount > 0) {
+    <nav class="table-responsive">
+        <ul class="pagination justify-content-center d-flex flex-wrap">
+            @if (Model.PagingData.CurrentPage > 1) {
+                <li class="page-item">
+                    <a class="page-link" href="/">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.CurrentPage - 1))&take=@(Model.PagingData.PageSize)">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.PagingData.PageCount; i++) {
+                <li class="page-item @(i == Model.PagingData.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.CurrentPage + i))&take=@(Model.PagingData.PageSize)">@i</a>
+                </li>
+            }
+
+            @if (Model.PagingData.CurrentPage < Model.PagingData.PageCount) {
+                <li class="page-item">
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.CurrentPage + 1))&take=@(Model.PagingData.PageSize)">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="/?skip=@(Model.PagingData.PageSize*(Model.PagingData.PageCount - 1))&take=@(Model.PagingData.PageSize)">Last</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+

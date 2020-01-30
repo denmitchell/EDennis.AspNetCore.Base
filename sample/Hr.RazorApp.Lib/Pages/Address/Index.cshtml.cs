@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using EDennis.AspNetCore.Base.EntityFramework;
+using Hr.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Hr.Api.Models;
-using EDennis.AspNetCore.Base.EntityFramework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Hr.RazorApp.AddressPages
-{
+namespace Hr.RazorApp.AddressPages {
     public class IndexModel : PageModel
     {
         private readonly HrApi _api;
@@ -22,9 +18,9 @@ namespace Hr.RazorApp.AddressPages
         [BindProperty(SupportsGet = true)] public string Where { get; set; }
         [BindProperty(SupportsGet = true)] public string OrderBy { get; set; }
         [BindProperty(SupportsGet = true)] public string Select { get; set; }
-        [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = -1;
+        [BindProperty(SupportsGet = true)] public int CurrentPage { get; set; } = -1;
         [BindProperty(SupportsGet = true)] public int PageSize { get; set; } = 10;
-        [BindProperty(SupportsGet = true)] public int RecordCount { get; set; } = -1;
+        [BindProperty(SupportsGet = true)] public int RowCount { get; set; } = -1;
 
         [BindProperty] public PagingData PagingData { get; set; }
 
@@ -34,17 +30,18 @@ namespace Hr.RazorApp.AddressPages
         public async Task OnGetAsync()
         {
             PagingData = new PagingData {
-                RecordCount = RecordCount,
-                PageNumber = PageNumber,
+                 
+                RowCount = RowCount,
+                CurrentPage = CurrentPage,
                 PageSize = PageSize
             };
 
-            var result = await _api.GetAddressesAsync(
-                skip:(PagingData.PageNumber - 1)*PagingData.PageCount,
+            DynamicLinqResult<Address> result = await _api.GetAddressesAsync(
+                skip:(PagingData.CurrentPage - 1)*PagingData.PageCount,
                 take:PagingData.PageSize
                 );
 
-            Addresses = (List<Address>)result.Value;
+            Addresses = result.Data;
 
         }
     }
