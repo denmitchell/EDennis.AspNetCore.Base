@@ -25,35 +25,35 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public TRepo Repo { get; set; }
 
-        public static PropertyInfo[] Properties;
-        public static Func<string, object[]> ParseId;
-        public static Func<dynamic, object[]> GetPrimaryKeyDynamic;
-        public static Func<TEntity, object[]> GetPrimaryKey;
-        public static IReadOnlyList<IProperty> KeyProperties;
+        static readonly PropertyInfo[] _properties;
+        static readonly Func<string, object[]> _parseId;
+        static readonly Func<dynamic, object[]> _getPrimaryKeyDynamic;
+        static readonly Func<TEntity, object[]> _getPrimaryKey;
+        static IReadOnlyList<IProperty> _keyProperties;
 
         static RepoController() {
 
-            Properties = typeof(TEntity).GetProperties();
+            _properties = typeof(TEntity).GetProperties();
 
-            ParseId = (s) => {
+            _parseId = (s) => {
                 var key = s.Split('~');
-                var id = new object[KeyProperties.Count];
+                var id = new object[_keyProperties.Count];
                 try {
                     for (int i = 0; i < id.Length; i++)
-                        id[i] = Convert.ChangeType(key[i], KeyProperties[i].ClrType);
+                        id[i] = Convert.ChangeType(key[i], _keyProperties[i].ClrType);
                 } catch {
                     throw new ArgumentException($"The provided path parameters ({key}) cannot be converted into a key for {typeof(TEntity).Name}");
                 }
                 return id;
             };
 
-            GetPrimaryKeyDynamic = (dyn) => {
-                var id = new object[KeyProperties.Count];
+            _getPrimaryKeyDynamic = (dyn) => {
+                var id = new object[_keyProperties.Count];
                 Type dynType = dyn.GetType();
                 PropertyInfo[] props = dynType.GetProperties();
-                for (int i = 0; i < KeyProperties.Count; i++) {
-                    var keyName = KeyProperties[i].Name;
-                    var keyType = KeyProperties[i].ClrType;
+                for (int i = 0; i < _keyProperties.Count; i++) {
+                    var keyName = _keyProperties[i].Name;
+                    var keyType = _keyProperties[i].ClrType;
                     var prop = props.FirstOrDefault(p => p.Name == keyName);
                     if (prop == null)
                         throw new ArgumentException($"The provided input does not contain a {keyName} property");
@@ -63,12 +63,12 @@ namespace EDennis.AspNetCore.Base.Web {
                 return id;
             };
 
-            GetPrimaryKey = (entity) => {
-                var id = new object[KeyProperties.Count];
-                for (int i = 0; i < KeyProperties.Count; i++) {
-                    var keyName = KeyProperties[i].Name;
-                    var keyType = KeyProperties[i].ClrType;
-                    var prop = Properties.FirstOrDefault(p => p.Name == keyName);
+            _getPrimaryKey = (entity) => {
+                var id = new object[_keyProperties.Count];
+                for (int i = 0; i < _keyProperties.Count; i++) {
+                    var keyName = _keyProperties[i].Name;
+                    var keyType = _keyProperties[i].ClrType;
+                    var prop = _properties.FirstOrDefault(p => p.Name == keyName);
                     var keyValue = prop.GetValue(entity);
                     id[i] = Convert.ChangeType(keyValue, keyType);
                 }
@@ -86,8 +86,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public RepoController(TRepo repo) {
             Repo = repo;
-            if (KeyProperties == null)
-                KeyProperties = Repo.Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+            if (_keyProperties == null)
+                _keyProperties = Repo.Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
 
             JsonSerializationOptions = new JsonSerializerOptions();
             JsonSerializationOptions.Converters.Add(new DynamicJsonConverter<TEntity>());
@@ -98,7 +98,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual IActionResult Get([FromRoute]string id) {
             object[] iPk;
             try {
-                iPk = ParseId(id);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex);
             }
@@ -115,7 +115,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual async Task<IActionResult> GetAsync([FromRoute]string id) {
             object[] iPk;
             try {
-                iPk = ParseId(id);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex);
             }
@@ -128,7 +128,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpPost]
         public virtual IActionResult Post([FromBody]TEntity entity) {
-            var pk = GetPrimaryKey(entity);
+            var pk = _getPrimaryKey(entity);
             try {
                 var created = Repo.Create(entity);
                 return Ok(created);
@@ -147,7 +147,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpPost("async")]
         public virtual async Task<IActionResult> PostAsync([FromBody] TEntity entity) {
-            var pk = GetPrimaryKey(entity);
+            var pk = _getPrimaryKey(entity);
             try {
                 var created = await Repo.CreateAsync(entity);
                 return Ok(created);
@@ -171,8 +171,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = GetPrimaryKey(entity);
-                iPk = ParseId(id);
+                ePk = _getPrimaryKey(entity);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -199,8 +199,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = GetPrimaryKey(entity);
-                iPk = ParseId(id);
+                ePk = _getPrimaryKey(entity);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -239,8 +239,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = GetPrimaryKeyDynamic(partialEntity);
-                iPk = ParseId(id);
+                ePk = _getPrimaryKeyDynamic(partialEntity);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -280,8 +280,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = GetPrimaryKeyDynamic(partialEntity);
-                iPk = ParseId(id);
+                ePk = _getPrimaryKeyDynamic(partialEntity);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -307,7 +307,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual IActionResult Delete(string id) {
             object[] iPk;
             try {
-                iPk = ParseId(id);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -324,7 +324,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public async virtual Task<IActionResult> DeleteAsync(string id) {
             object[] iPk;
             try {
-                iPk = ParseId(id);
+                iPk = _parseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -426,19 +426,22 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns></returns>
         [HttpGet("devextreme")]
         public virtual IActionResult GetWithDevExtreme(
-                [FromQuery]string select,
-                [FromQuery]string sort,
-                [FromQuery]string filter,
-                [FromQuery]int skip,
-                [FromQuery]int take,
-                [FromQuery]string totalSummary,
-                [FromQuery]string group,
-                [FromQuery]string groupSummary
+                [FromQuery]string select = null,
+                [FromQuery]string sort = null,
+                [FromQuery]string filter = null,
+                [FromQuery]int? skip = null,
+                [FromQuery]int? take = null,
+                [FromQuery]string totalSummary = null,
+                [FromQuery]string group = null,
+                [FromQuery]string groupSummary = null
             ) {
             DataSourceLoadOptions loadOptions = null;
             try {
                 loadOptions = DataSourceLoadOptionsBuilder.Build(
-                    select, sort, filter, skip, take, totalSummary,
+                    select, sort, filter, 
+                    skip ?? 0, 
+                    take ?? int.MaxValue, 
+                    totalSummary,
                     group, groupSummary);
             } catch (ArgumentException ex) {
                 ModelState.AddModelError("", ex.Message);
@@ -467,24 +470,24 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <returns></returns>
         [HttpGet("devextreme/async")]
         public virtual async Task<IActionResult> GetWithDevExtremeAsync(
-                [FromQuery]string select,
-                [FromQuery]string sort,
-                [FromQuery]string filter,
-                [FromQuery]int skip,
-                [FromQuery]int take,
-                [FromQuery]string totalSummary,
-                [FromQuery]string group,
-                [FromQuery]string groupSummary
+                [FromQuery]string select = null,
+                [FromQuery]string sort = null,
+                [FromQuery]string filter = null,
+                [FromQuery]int? skip = null,
+                [FromQuery]int? take = null,
+                [FromQuery]string totalSummary = null,
+                [FromQuery]string group = null,
+                [FromQuery]string groupSummary = null
             ) {
             var loadOptions = DataSourceLoadOptionsBuilder.Build(
-                select, sort, filter, skip, take, totalSummary,
+                select, sort, filter, 
+                skip ?? 0, 
+                take ?? int.MaxValue, 
+                totalSummary,
                 group, groupSummary);
 
             return await Task.Run(() => GetWithDevExtreme(select, sort, filter, skip, take, totalSummary, group, groupSummary));
         }
-
-
-
 
     }
 }

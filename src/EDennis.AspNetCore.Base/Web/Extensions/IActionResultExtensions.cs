@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 
-namespace EDennis.AspNetCore.Web {
+namespace EDennis.AspNetCore.Base.Web {
     
     /// <summary>
     /// These extension methods return the body object and status

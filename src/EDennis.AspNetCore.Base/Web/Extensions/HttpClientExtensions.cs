@@ -302,6 +302,22 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
+
+
+        public static async Task<ObjectResult> ForwardAsync<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
+            var msg = request.ToHttpRequestMessage(client);
+            var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            return await ForwardRequestAsync<T>(client, msg, url);
+        }
+
+
+        public static async Task<ObjectResult> ForwardAsync<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
+            var msg = request.ToHttpRequestMessage(client, body);
+            var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
+            return await ForwardRequestAsync<T>(client, msg, url);
+        }
+
+
         public static void AddOrUpdateHeaders(this HttpClient client,
                 HttpRequestMessage msg, Dictionary<string, StringValues> headers) {
 
@@ -403,6 +419,22 @@ namespace EDennis.AspNetCore.Base.Web {
             msg.RequestUri = uri;
             var response = client.SendAsync(msg).Result;
             var objResult = GenerateObjectResult<T>(response).Result;
+
+            return objResult;
+
+        }
+
+
+        private static async Task<ObjectResult> ForwardRequestAsync<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
+            var url = new Url(client.BaseAddress)
+                  .AppendPathSegment(relativeUrlFromBase);
+
+            url = WebUtility.UrlDecode(url);
+
+            var uri = url.ToUri();
+            msg.RequestUri = uri;
+            var response = await client.SendAsync(msg);
+            var objResult = await GenerateObjectResult<T>(response);
 
             return objResult;
 
