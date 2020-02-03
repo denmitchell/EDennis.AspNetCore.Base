@@ -7,9 +7,7 @@ using Microsoft.Data.SqlClient;
 namespace Colors2Api.Lib.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class RgbController : 
-        RepoController<Rgb, Color2DbContext, RgbRepo>,
-        ISqlServerController<Rgb,Color2DbContext,RgbRepo>{
+    public class RgbController : RepoController<Rgb, Color2DbContext, RgbRepo>{
 
         public RgbController(RgbRepo repo) 
             : base(repo) { }
@@ -38,10 +36,6 @@ namespace Colors2Api.Lib.Controllers {
             return new ContentResult { Content = json, ContentType = "application/json", StatusCode = 200 };
         }
 
-
-        [HttpGet("sp/obj")]
-        public IActionResult GetJsonObjectFromStoredProcedure_([FromQuery] string spName)
-            => this.GetJsonObjectFromStoredProcedure(spName);
 
     }
 }
