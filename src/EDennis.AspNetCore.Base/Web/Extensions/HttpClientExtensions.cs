@@ -48,14 +48,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static ObjectResult<TDynamic> Get<TDynamic,TEntity>(this HttpClient client,
+        public static ObjectResult<TDynamic> Get<TDynamic, TEntity>(this HttpClient client,
             string relativeUrlFromBase
             ) {
-            return client.GetAsync<TDynamic,TEntity>(relativeUrlFromBase).Result;
+            return client.GetAsync<TDynamic, TEntity>(relativeUrlFromBase).Result;
         }
 
 
-        public static async Task<ObjectResult<TDynamic>> GetAsync<TDynamic,TEntity>(
+        public static async Task<ObjectResult<TDynamic>> GetAsync<TDynamic, TEntity>(
                 this HttpClient client, string relativeUrlFromBase
                 ) {
 
@@ -300,43 +300,6 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-
-
-        //public static void SendReset(this HttpClient client, string instance) {
-        //    client.SendResetAsync(instance).Wait();
-        //}
-
-        //public static async Task SendResetAsync(this HttpClient client, string instance) {
-        //try {
-        //var msg = new HttpRequestMessage {
-        //    Method = HttpMethod.Delete,
-        //    RequestUri = new Uri($"{client.BaseAddress.ToString()}?{Constants.TESTING_RESET_KEY}={instance}")
-        //};
-        //await client.SendAsync(msg);
-        //return;
-        //} catch {
-        //    //ignore; client is already disposed.
-        //}
-        //try {
-        //    using var tcp = new TcpClient(client.BaseAddress.Host, client.BaseAddress.Port) {
-        //        SendTimeout = 500,
-        //        ReceiveTimeout = 1000
-        //    };
-        //    var builder = new StringBuilder()
-        //        .AppendLine($"{Constants.RESET_METHOD} /?{Constants.TESTING_RESET_KEY}={instance} HTTP/1.1")
-        //        .AppendLine($"Host: {client.BaseAddress.Host}")
-        //        .AppendLine("Connection: close")
-        //        .AppendLine();
-        //    var header = Encoding.ASCII.GetBytes(builder.ToString());
-        //    using var stream = tcp.GetStream();
-        //    await stream.WriteAsync(header, 0, header.Length);
-        //}
-        //catch (Exception)
-        //{
-        //    //ignore this exception, object is disposed.
-        //}
-        //}
-
         public static bool Ping(this HttpClient client, int timeoutSeconds = 5) {
             return client.PingAsync(timeoutSeconds).Result;
         }
@@ -510,12 +473,18 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
             }
 
-            return new ObjectResult<T>(value) {
-                StatusCode = statusCode
-            };
+            if(statusCode < 299)
+                return new ObjectResult<T>(value) {
+                    StatusCode = statusCode
+                };
+            else {
+                return new ObjectResult<T>(null) {
+                    StatusCode = statusCode,
+                    Value = value
+                };
+            }
 
         }
-
 
 
         private async static Task<ObjectResult<TDynamic>> GenerateObjectResult<TDynamic, TEntity>(HttpResponseMessage response) {
@@ -538,9 +507,17 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
             }
 
-            return new ObjectResult<TDynamic>(value) {
-                StatusCode = statusCode
-            };
+            if (statusCode < 299)
+                return new ObjectResult<TDynamic>(value) {
+                    StatusCode = statusCode
+                };
+            else {
+                return new ObjectResult<TDynamic>(null) {
+                    StatusCode = statusCode,
+                    Value = value
+                };
+            }
+
 
         }
 

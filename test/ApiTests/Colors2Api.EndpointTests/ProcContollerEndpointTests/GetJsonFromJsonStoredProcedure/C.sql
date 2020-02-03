@@ -12,27 +12,18 @@ go
 
 use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'RgbByColorNameContains'
-declare @TestScenario varchar(255) = 'Success'
-declare @TestCase varchar(255) = 'A'
+declare @ClassName varchar(255) = 'ProcController'
+declare @MethodName varchar(255) = 'GetJsonFromJsonStoredProcedure'
+declare @TestScenario varchar(255) = 'Bad Request'
+declare @TestCase varchar(255) = 'C'
 
-declare @ControllerPath varchar(255) = 'api/Rgb'
-declare @SpName varchar(255) = 'RgbByColorNameContains'
-declare @ColorNameContains varchar(255) = 'Blue'
+declare @ControllerPath varchar(255) = 'api/Proc'
+declare @SpName varchar(255) = 'mjdflkkaj'
+declare @ColorNameContains varchar(255) = 'Green'
 
 select * into #SpResults from Rgb where 1=0
 
-declare @sql nvarchar(max) =
-   N'insert into #SpResults 
-      select *
-        from openrowset(
-            ''SQLNCLI'',
-            ''Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes'',
-            ''EXEC ' + @SpName + ' @ColorNameContains =''''' + @ColorNameContains + ''''''')'
-exec(@sql)
-
-declare @ExpectedStatusCode int = 200
+declare @ExpectedStatusCode int = 400
 declare 
 	@Expected varchar(max) = 
 (

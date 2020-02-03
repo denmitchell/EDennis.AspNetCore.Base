@@ -572,7 +572,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     Data = expected
                 },
                 Actual = new EndpointTestResult<List<TEntity>> {
-                    StatusCode = patchResult.GetStatusCode(),
+                    StatusCode = IActionResultExtensions.GetStatusCode(patchResult)
                 }
             };
             if (eaResult.Expected.Data != null)
@@ -640,7 +640,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                     Data = expected
                 },
                 Actual = new EndpointTestResult<List<TEntity>> {
-                    StatusCode = patchResult.GetStatusCode(),
+                    StatusCode = IActionResultExtensions.GetStatusCode(patchResult)
                 }
             };
             if (eaResult.Expected.Data != null)

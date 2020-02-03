@@ -12,16 +12,18 @@ go
 
 use Color2Db;
 declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'RgbController'
-declare @MethodName varchar(255) = 'RgbByColorName'
-declare @TestScenario varchar(255) = 'Params'
-declare @TestCase varchar(255) = 'A'
+declare @ClassName varchar(255) = 'ProcController'
+declare @MethodName varchar(255) = 'GetJsonFromJsonStoredProcedure'
+declare @TestScenario varchar(255) = 'Success'
+declare @TestCase varchar(255) = 'B'
 
-declare @ControllerPath varchar(255) = 'api/Rgb'
-declare @SpName varchar(255) = 'RgbByColorName'
-declare @ColorName varchar(255) = 'AliceBlue'
+declare @ControllerPath varchar(255) = 'api/Proc'
+declare @SpName varchar(255) = 'RgbJsonByColorNameContains'
+declare @ColorNameContains varchar(255) = 'Green'
 
-select Red,Green,Blue into #SpResults from Rgb where 1=0
+create table #SpResults(
+    json varchar(max)
+);
 
 declare @sql nvarchar(max) =
    N'insert into #SpResults 
@@ -29,23 +31,18 @@ declare @sql nvarchar(max) =
         from openrowset(
             ''SQLNCLI'',
             ''Server=(localdb)\MSSQLLocalDb;Database=Color2Db;Trusted_Connection=yes'',
-            ''EXEC ' + @SpName + ' @ColorName =''''' + @ColorName + ''''''')'
+            ''EXEC ' + @SpName + ' @ColorNameContains =''''' + @ColorNameContains + ''''''')'
 exec(@sql)
 
 declare @Params varchar(max) = 
 (
-    select @ColorName ColorName
+    select @ColorNameContains ColorNameContains
 	for json path, without_array_wrapper
 )
 
-
 declare @ExpectedStatusCode int = 200
-declare 
-	@Expected varchar(max) = 
-(
-	select * from #SpResults
-	for json path, without_array_wrapper
-);
+declare @Expected varchar(max);
+select @Expected = json from #SpResults
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
