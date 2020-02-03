@@ -478,10 +478,11 @@ namespace EDennis.AspNetCore.Base.Web {
                     StatusCode = statusCode
                 };
             else {
-                return new ObjectResult<T>(null) {
+                var result = new ObjectResult<T>(default) {
                     StatusCode = statusCode,
                     Value = value
                 };
+                return result;
             }
 
         }

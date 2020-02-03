@@ -20,6 +20,7 @@ declare @TestCase varchar(255) = 'A'
 declare @ControllerPath varchar(255) = 'api/Proc'
 declare @SpName varchar(255) = 'RgbInt'
 declare @ColorName varchar(255) = 'AliceBlue'
+declare @ReturnType varchar(255) = 'int'
 
 select 0 intVal into #SpResults from Rgb where 1=0
 
@@ -34,7 +35,8 @@ exec(@sql)
 
 declare @Params varchar(max) = 
 (
-    select @ColorName ColorName
+    select
+        @ColorName ColorName
 	for json path, without_array_wrapper
 )
 
@@ -47,6 +49,7 @@ select @Expected = intVal from #spResults
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ReturnType', @ReturnType
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Params', @Params
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ExpectedStatusCode', @ExpectedStatusCode

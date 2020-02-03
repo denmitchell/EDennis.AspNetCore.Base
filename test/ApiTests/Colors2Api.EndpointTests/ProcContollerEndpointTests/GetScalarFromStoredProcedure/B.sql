@@ -20,6 +20,7 @@ declare @TestCase varchar(255) = 'B'
 declare @ControllerPath varchar(255) = 'api/Proc'
 declare @SpName varchar(255) = 'RgbInt'
 declare @ColorName varchar(255) = 'DarkKhaki'
+declare @ReturnType varchar(255) = 'int'
 
 select 0 intVal into #SpResults from Rgb where 1=0
 
@@ -45,6 +46,7 @@ select @Expected = intVal from #spResults
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ReturnType', @ReturnType
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Params', @Params
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ExpectedStatusCode', @ExpectedStatusCode

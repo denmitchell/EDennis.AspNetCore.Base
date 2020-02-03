@@ -38,7 +38,7 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("GetJsonObjectFromStoredProcedure", "Bad Request", "C")]
         public void GetJsonObjectFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
             var ea = GetJsonObjectFromStoredProcedure_ExpectedActual(t, jsonTestCase);
-            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, _propertiesToIgnore, Output));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected, ea.Actual, Output, _propertiesToIgnore, true, false));
         }
 
         [Theory]
@@ -47,7 +47,7 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("GetJsonObjectFromStoredProcedure", "Bad Request", "C")]
         public async Task GetJsonObjectFromStoredProcedure_Async(string t, JsonTestCase jsonTestCase) {
             var ea = await GetJsonObjectFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
-            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, _propertiesToIgnore, Output));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected, ea.Actual, Output, _propertiesToIgnore, true, false));
         }
 
 
@@ -57,7 +57,7 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("GetJsonArrayFromStoredProcedure", "Bad Request", "C")]
         public void GetJsonArrayFromStoredProcedure(string t, JsonTestCase jsonTestCase) {
             var ea = GetJsonArrayFromStoredProcedure_ExpectedActual(t, jsonTestCase);
-            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, _propertiesToIgnore, Output));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected,ea.Actual,Output,_propertiesToIgnore,true,false));
         }
 
         [Theory]
@@ -66,7 +66,7 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("GetJsonArrayFromStoredProcedure", "Bad Request", "C")]
         public async Task GetJsonArrayFromStoredProcedure_Async(string t, JsonTestCase jsonTestCase) {
             var ea = await GetJsonArrayFromStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
-            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, _propertiesToIgnore, Output));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected, ea.Actual, Output, _propertiesToIgnore, true, false));
         }
 
 
@@ -76,7 +76,7 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("GetJsonFromJsonStoredProcedure", "Bad Request", "C")]
         public void GetJsonFromJsonStoredProcedure(string t, JsonTestCase jsonTestCase) {
             var ea = GetJsonFromJsonStoredProcedure_ExpectedActual(t, jsonTestCase);
-            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, _propertiesToIgnore, Output));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected, ea.Actual, Output, _propertiesToIgnore, true, false));
         }
 
         [Theory]
@@ -85,7 +85,7 @@ namespace Colors2Api.EndpointTests {
         [TestJson_("GetJsonFromJsonStoredProcedure", "Bad Request", "C")]
         public async Task GetJsonFromJsonStoredProcedure_Async(string t, JsonTestCase jsonTestCase) {
             var ea = await GetJsonFromJsonStoredProcedureAsync_ExpectedActual(t, jsonTestCase);
-            Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, _propertiesToIgnore, Output));
+            Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected, ea.Actual, Output, _propertiesToIgnore, true, false));
         }
 
 

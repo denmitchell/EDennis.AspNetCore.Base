@@ -20,20 +20,24 @@ declare @TestCase varchar(255) = 'C'
 declare @ControllerPath varchar(255) = 'api/Proc'
 declare @SpName varchar(255) = '$fjs3i3ls'
 declare @ColorName varchar(255) = 'DarkKhaki'
+declare @ReturnType varchar(255) = 'int'
 
 select Red,Green,Blue into #SpResults from Rgb where 1=0
 
 declare @ExpectedStatusCode int = 400 --Bad Request
-declare 
-	@Expected varchar(max) = 
+declare @Expected int = 0
+
+declare @Params varchar(max) = 
 (
-	select * from #SpResults
+    select @ColorName ColorName
 	for json path, without_array_wrapper
-);
+)
+
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ControllerPath', @ControllerPath
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'SpName', @SpName
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ColorName', @ColorName
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ReturnType', @ReturnType
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Params', @Params
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase,'ExpectedStatusCode', @ExpectedStatusCode
 exec  _.GetTestJson @ProjectName, @ClassName, @MethodName,@TestScenario,@TestCase

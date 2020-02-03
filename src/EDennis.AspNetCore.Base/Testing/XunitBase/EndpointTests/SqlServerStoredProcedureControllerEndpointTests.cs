@@ -1,16 +1,13 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
-using System.Text.Json;
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
 
-namespace EDennis.AspNetCore.Base.Testing {
+namespace EDennis.AspNetCore.Base.Testing
+{
     public abstract class SqlServerStoredProcedureControllerEndpointTests<TContext, TProgram, TLauncher>        
         : LauncherEndpointTests<TProgram, TLauncher>
         where TContext : DbContext, ISqlServerDbContext<TContext>
@@ -48,7 +45,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<string>> GetJsonObjectFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActual<string> GetJsonObjectFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -70,20 +67,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"url: {url}");
 
             ObjectResult<string> getResult = HttpClient.Get<string>(url);
-
-            var eaResult = new ExpectedActual<EndpointTestResult<string>> {
-                Expected = new EndpointTestResult<string> {
-                    StatusCode = expectedStatusCode,
-                    Data = expected
-                },
-                Actual = new EndpointTestResult<string> {
-                    StatusCode = getResult.GetStatusCode(),
-                }
+            return new ExpectedActual<string>
+            {
+                Expected = BuildEndpointTestResultJson(expectedStatusCode, expected),
+                Actual = BuildEndpointTestResultJson(getResult.StatusCode.Value, getResult.TypedValue)
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
 
-            return eaResult;
         }
 
 
@@ -117,7 +106,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<string>>> GetJsonObjectFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<string>> GetJsonObjectFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -138,21 +127,14 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
+
             ObjectResult<string> getResult = await HttpClient.GetAsync<string>(url);
-
-            var eaResult = new ExpectedActual<EndpointTestResult<string>> {
-                Expected = new EndpointTestResult<string> {
-                    StatusCode = expectedStatusCode,
-                    Data = expected
-                },
-                Actual = new EndpointTestResult<string> {
-                    StatusCode = getResult.GetStatusCode(),
-                }
+            return new ExpectedActual<string>
+            {
+                Expected = BuildEndpointTestResultJson(expectedStatusCode, expected),
+                Actual = BuildEndpointTestResultJson(getResult.StatusCode.Value, getResult.TypedValue)
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
 
-            return eaResult;
         }
 
 
@@ -187,7 +169,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<string>> GetJsonArrayFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActual<string> GetJsonArrayFromStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -209,21 +191,15 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"url: {url}");
 
             ObjectResult<string> getResult = HttpClient.Get<string>(url);
-
-            var eaResult = new ExpectedActual<EndpointTestResult<string>> {
-                Expected = new EndpointTestResult<string> {
-                    StatusCode = expectedStatusCode,
-                    Data = expected
-                },
-                Actual = new EndpointTestResult<string> {
-                    StatusCode = getResult.GetStatusCode(),
-                }
+            return new ExpectedActual<string>
+            {
+                Expected = BuildEndpointTestResultJson(expectedStatusCode, expected),
+                Actual = BuildEndpointTestResultJson(getResult.StatusCode.Value, getResult.TypedValue)
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<string>();
 
-            return eaResult;
         }
+
+
 
 
 
@@ -256,7 +232,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<string>>> GetJsonArrayFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<string>> GetJsonArrayFromStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -278,20 +254,12 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"url: {url}");
 
             ObjectResult<string> getResult = await HttpClient.GetAsync<string>(url);
-
-            var eaResult = new ExpectedActual<EndpointTestResult<string>> {
-                Expected = new EndpointTestResult<string> {
-                    StatusCode = expectedStatusCode,
-                    Data = expected
-                },
-                Actual = new EndpointTestResult<string> {
-                    StatusCode = getResult.GetStatusCode(),
-                }
+            return new ExpectedActual<string>
+            {
+                Expected = BuildEndpointTestResultJson(expectedStatusCode, expected),
+                Actual = BuildEndpointTestResultJson(getResult.StatusCode.Value, getResult.TypedValue)
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
 
-            return eaResult;
         }
 
 
@@ -326,7 +294,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public ExpectedActual<EndpointTestResult<string>> GetJsonFromJsonStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public ExpectedActual<string> GetJsonFromJsonStoredProcedure_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -348,20 +316,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"url: {url}");
 
             ObjectResult<string> getResult = HttpClient.Get<string>(url);
-
-            var eaResult = new ExpectedActual<EndpointTestResult<string>> {
-                Expected = new EndpointTestResult<string> {
-                    StatusCode = expectedStatusCode,
-                    Data = expected
-                },
-                Actual = new EndpointTestResult<string> {
-                    StatusCode = getResult.GetStatusCode(),
-                }
+            return new ExpectedActual<string>
+            {
+                Expected = BuildEndpointTestResultJson(expectedStatusCode, expected),
+                Actual = BuildEndpointTestResultJson(getResult.StatusCode.Value, getResult.TypedValue)
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
-
-            return eaResult;
         }
 
 
@@ -395,7 +354,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// <param name="t">TestScenario(TestCase)</param>
         /// <param name="jsonTestCase">Test input parameters and expected results</param>
         /// <returns>An object holding expected and actual status code and response body (data)</returns>
-        public async Task<ExpectedActual<EndpointTestResult<string>>> GetJsonFromJsonStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
+        public async Task<ExpectedActual<string>> GetJsonFromJsonStoredProcedureAsync_ExpectedActual(string t, JsonTestCase jsonTestCase) {
 
             Output.WriteLine(t);
 
@@ -417,20 +376,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine($"url: {url}");
 
             ObjectResult<string> getResult = await HttpClient.GetAsync<string>(url);
-
-            var eaResult = new ExpectedActual<EndpointTestResult<string>> {
-                Expected = new EndpointTestResult<string> {
-                    StatusCode = expectedStatusCode,
-                    Data = expected
-                },
-                Actual = new EndpointTestResult<string> {
-                    StatusCode = getResult.GetStatusCode(),
-                }
+            return new ExpectedActual<string>
+            {
+                Expected = BuildEndpointTestResultJson(expectedStatusCode, expected),
+                Actual = BuildEndpointTestResultJson(getResult.StatusCode.Value, getResult.TypedValue)
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
-
-            return eaResult;
         }
 
 
@@ -470,12 +420,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var returnType = jsonTestCase.GetObject<string>("ReturnType", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var expected = jsonTestCase.GetObject<TResult>("Expected");
             var expectedStatusCode = jsonTestCase.GetObject<int>("ExpectedStatusCode");
 
-            var url = $"{controllerPath}/scalar?spName={spName}";
+            var url = $"{controllerPath}/scalar?spName={spName}&returnType={returnType}";
 
             var qry = new List<string>();
             foreach (var param in parameters)
@@ -495,10 +446,9 @@ namespace EDennis.AspNetCore.Base.Testing {
                 },
                 Actual = new EndpointTestResult<TResult> {
                     StatusCode = getResult.GetStatusCode(),
+                    Data = getResult.TypedValue
                 }
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
@@ -539,12 +489,13 @@ namespace EDennis.AspNetCore.Base.Testing {
             Output.WriteLine(t);
 
             var spName = jsonTestCase.GetObject<string>("SpName", Output);
+            var returnType = jsonTestCase.GetObject<string>("ReturnType", Output);
             var parameters = jsonTestCase.GetObject<Dictionary<string, string>>("Params", Output);
             var controllerPath = jsonTestCase.GetObject<string>("ControllerPath", Output);
             var expected = jsonTestCase.GetObject<TResult>("Expected");
             var expectedStatusCode = jsonTestCase.GetObject<int>("ExpectedStatusCode");
 
-            var url = $"{controllerPath}/scalar/async?spName={spName}";
+            var url = $"{controllerPath}/scalar/async?spName={spName}&returnType={returnType}";
 
             var qry = new List<string>();
             foreach (var param in parameters)
@@ -564,15 +515,24 @@ namespace EDennis.AspNetCore.Base.Testing {
                 },
                 Actual = new EndpointTestResult<TResult> {
                     StatusCode = getResult.GetStatusCode(),
+                    Data = getResult.TypedValue
                 }
             };
-            if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
 
-
+        /// <summary>
+        /// Build a JSON object that encapsulates the statusCode and data
+        /// as an EndpointTestResult
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private string BuildEndpointTestResultJson(int statusCode, string data)
+        {
+            return $"{{\"StatusCode\":{statusCode},\"Data\":{data ?? "null"}}}";
+        }
 
 
 
