@@ -1,7 +1,4 @@
-﻿using Castle.Core.Configuration;
-using DevExpress.Utils.Serializing.Helpers;
-using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Serialization;
+﻿using EDennis.AspNetCore.Base.Serialization;
 using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +7,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,14 +20,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
     public static partial class HttpClientExtensions {
 
-        public static ObjectResult Get<TResponseObject>(this HttpClient client,
+        public static ObjectResult<T> Get<T>(this HttpClient client,
             string relativeUrlFromBase
             ) {
-            return client.GetAsync<TResponseObject>(relativeUrlFromBase).Result;
+            return client.GetAsync<T>(relativeUrlFromBase).Result;
         }
 
 
-        public static async Task<ObjectResult> GetAsync<TResponseObject>(
+        public static async Task<ObjectResult<T>> GetAsync<T>(
                 this HttpClient client, string relativeUrlFromBase
                 ) {
 
@@ -45,7 +40,7 @@ namespace EDennis.AspNetCore.Base.Web {
             };
 
             var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TResponseObject>(response);
+            var objResult = await GenerateObjectResult<T>(response);
 
             return objResult;
 
@@ -53,14 +48,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static ObjectResult Get<TDynamicResponseObject,TEntity>(this HttpClient client,
+        public static ObjectResult<TDynamic> Get<TDynamic,TEntity>(this HttpClient client,
             string relativeUrlFromBase
             ) {
-            return client.GetAsync<TDynamicResponseObject,TEntity>(relativeUrlFromBase).Result;
+            return client.GetAsync<TDynamic,TEntity>(relativeUrlFromBase).Result;
         }
 
 
-        public static async Task<ObjectResult> GetAsync<TDynamicResponseObject,TEntity>(
+        public static async Task<ObjectResult<TDynamic>> GetAsync<TDynamic,TEntity>(
                 this HttpClient client, string relativeUrlFromBase
                 ) {
 
@@ -73,39 +68,11 @@ namespace EDennis.AspNetCore.Base.Web {
             };
 
             var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TDynamicResponseObject, TEntity>(response);
+            var objResult = await GenerateObjectResult<TDynamic, TEntity>(response);
 
             return objResult;
 
         }
-
-
-
-        public static ObjectResult Get<TRequestObject, TResponseObject>(this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
-            return client.GetAsync<TRequestObject, TResponseObject>(relativeUrlFromBase, obj).Result;
-        }
-
-
-
-        public static async Task<ObjectResult> GetAsync<TRequestObject, TResponseObject>(
-                this HttpClient client, string relativeUrlFromBase, TRequestObject obj) {
-
-            var url = Url.Combine(client.BaseAddress.ToString(), relativeUrlFromBase);
-
-            //build the request message object for the GET
-            var msg = new HttpRequestMessage {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(url),
-                Content = new BodyContent<TRequestObject>(obj)
-            };
-
-            var response = await client.SendAsync(msg);
-            var objResult = await GenerateObjectResult<TResponseObject>(response);
-
-            return objResult;
-
-        }
-
 
 
 
@@ -155,11 +122,11 @@ namespace EDennis.AspNetCore.Base.Web {
 
         }
 
-        public static ObjectResult Post<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static ObjectResult<T> Post<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
             return client.PostAsync(relativeUrlFromBase, obj).Result;
         }
 
-        public static async Task<ObjectResult> PostAsync<T>(
+        public static async Task<ObjectResult<T>> PostAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj) {
 
 
@@ -179,12 +146,12 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static ObjectResult Put<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static ObjectResult<T> Put<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
             return client.PutAsync(relativeUrlFromBase, obj).Result;
         }
 
 
-        public static async Task<ObjectResult> PutAsync<T>(
+        public static async Task<ObjectResult<T>> PutAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj) {
 
 
@@ -206,12 +173,12 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static ObjectResult Patch<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
+        public static ObjectResult<T> Patch<T>(this HttpClient client, string relativeUrlFromBase, T obj) {
             return client.PatchAsync(relativeUrlFromBase, obj).Result;
         }
 
 
-        public static async Task<ObjectResult> PatchAsync<T>(
+        public static async Task<ObjectResult<T>> PatchAsync<T>(
                 this HttpClient client, string relativeUrlFromBase, T obj) {
 
 
@@ -288,14 +255,14 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        public static ObjectResult Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
+        public static ObjectResult<T> Forward<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return ForwardRequest<T>(client, msg, url);
         }
 
 
-        public static ObjectResult Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
+        public static ObjectResult<T> Forward<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return ForwardRequest<T>(client, msg, url);
@@ -304,14 +271,14 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        public static async Task<ObjectResult> ForwardAsync<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
+        public static async Task<ObjectResult<T>> ForwardAsync<T>(this HttpClient client, HttpRequest request, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return await ForwardRequestAsync<T>(client, msg, url);
         }
 
 
-        public static async Task<ObjectResult> ForwardAsync<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
+        public static async Task<ObjectResult<T>> ForwardAsync<T>(this HttpClient client, HttpRequest request, T body, string relativeUrlFromBase) {
             var msg = request.ToHttpRequestMessage(client, body);
             var url = relativeUrlFromBase + (msg.Properties["QueryString"] ?? "");
             return await ForwardRequestAsync<T>(client, msg, url);
@@ -409,7 +376,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        private static ObjectResult ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
+        private static ObjectResult<T> ForwardRequest<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
             var url = new Url(client.BaseAddress)
                   .AppendPathSegment(relativeUrlFromBase);
 
@@ -425,7 +392,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private static async Task<ObjectResult> ForwardRequestAsync<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
+        private static async Task<ObjectResult<T>> ForwardRequestAsync<T>(this HttpClient client, HttpRequestMessage msg, string relativeUrlFromBase) {
             var url = new Url(client.BaseAddress)
                   .AppendPathSegment(relativeUrlFromBase);
 
@@ -524,7 +491,7 @@ namespace EDennis.AspNetCore.Base.Web {
         }
 
 
-        private async static Task<ObjectResult> GenerateObjectResult<T>(HttpResponseMessage response) {
+        private async static Task<ObjectResult<T>> GenerateObjectResult<T>(HttpResponseMessage response) {
 
             object value = null;
 
@@ -543,7 +510,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
             }
 
-            return new ObjectResult(value) {
+            return new ObjectResult<T>(value) {
                 StatusCode = statusCode
             };
 
@@ -551,7 +518,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
 
-        private async static Task<ObjectResult> GenerateObjectResult<TDynamicResponseObject, TEntity>(HttpResponseMessage response) {
+        private async static Task<ObjectResult<TDynamic>> GenerateObjectResult<TDynamic, TEntity>(HttpResponseMessage response) {
 
             object value = null;
 
@@ -565,13 +532,13 @@ namespace EDennis.AspNetCore.Base.Web {
                         PropertyNameCaseInsensitive = true
                     };
                     options.Converters.Add(new DynamicJsonConverter<TEntity>());
-                    value = JsonSerializer.Deserialize<TDynamicResponseObject>(json, options);
+                    value = JsonSerializer.Deserialize<TDynamic>(json, options);
                 } else {
                     value = json;
                 }
             }
 
-            return new ObjectResult(value) {
+            return new ObjectResult<TDynamic>(value) {
                 StatusCode = statusCode
             };
 

@@ -23,90 +23,45 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
         string GetControllerUrl(Type type);
     }
 
-    public interface ISqlServerControllerApiClient<TContext> : IApiClient
-        where TContext : DbContext, ISqlServerDbContext<TContext>{
-        /// <summary>
-        /// Returns the controller URL associated with a given 
-        /// TEntity or TContext.
-        /// For IRepoControllerApiClient, this is typeof(TEntity)
-        /// For ISqlServerControllerApiClient, this is typeof(TContext)
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        string GetControllerUrl(Type type);
-    }
-
-    public class RContext : DbContext, ISqlServerDbContext<RContext> {
-        public StoredProcedureDefs<RContext> StoredProcedureDefs { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    }
-
-    public class P : IHasSysUser { public string SysUser { get; set; } }
-    public class Q : IHasSysUser { public string SysUser { get; set; } }
-    public class Tmp : IRepoControllerApiClient<P>, IRepoControllerApiClient<Q>, ISqlServerControllerApiClient<RContext> {
-        public Api Api => throw new NotImplementedException();
-
-        public string ApiKey => throw new NotImplementedException();
-
-        public HttpClient HttpClient => throw new NotImplementedException();
-
-        public IScopeProperties ScopeProperties => throw new NotImplementedException();
-
-        public string GetControllerUrl(Type type) {
-            if (type == typeof(P))
-                return "api/jfkdaj";
-            else if (type == typeof(Q))
-                return "api/dfjks";
-            else if (type == typeof(RContext))
-                return "api/sdkl";
-            else
-                return null;
-        }
-    }
-
-
     public static class IRepoControllerApiClientExtensionMethods {
 
-        public static void Test<TEntity>(this IRepoControllerApiClient<TEntity> client)
-        where TEntity : class, IHasSysUser, new() {
 
-        }
-
-        public static ObjectResult Get<TEntity>(
+        public static ObjectResult<TEntity> Get<TEntity>(
             this IRepoControllerApiClient<TEntity> api, params object[] id)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/{id.ToTildaDelimited()}";
             return api.HttpClient.Get<TEntity>(url);
         }
 
-        public static async Task<ObjectResult> GetAsync<TEntity>(
+        public static async Task<ObjectResult<TEntity>> GetAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api, params object[] id)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/{id.ToTildaDelimited()}";
             return await api.HttpClient.GetAsync<TEntity>(url);
         }
 
-        public static ObjectResult Create<TEntity>(
+        public static ObjectResult<TEntity> Create<TEntity>(
             this IRepoControllerApiClient<TEntity> api, TEntity entity)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}";
             return api.HttpClient.Post(url, entity);
         }
 
-        public static async Task<ObjectResult> CreateAsync<TEntity>(
+        public static async Task<ObjectResult<TEntity>> CreateAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api, TEntity entity)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}";
             return await api.HttpClient.PostAsync(url, entity);
         }
 
-        public static ObjectResult Update<TEntity>(
+        public static ObjectResult<TEntity> Update<TEntity>(
             this IRepoControllerApiClient<TEntity> api, TEntity entity, params object[] id)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/{id.ToTildaDelimited()}";
             return api.HttpClient.Put(url, entity);
         }
 
-        public static async Task<ObjectResult> UpdateAsync<TEntity>(
+        public static async Task<ObjectResult<TEntity>> UpdateAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api, TEntity entity, params object[] id)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/{id.ToTildaDelimited()}";
@@ -114,14 +69,14 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
         }
 
 
-        public static ObjectResult Patch<TEntity>(
+        public static ObjectResult<TEntity> Patch<TEntity>(
             this IRepoControllerApiClient<TEntity> api, dynamic partialEntity, params object[] id)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/{id.ToTildaDelimited()}";
             return HttpClientExtensions.Patch<TEntity>(api.HttpClient, url, partialEntity);
         }
 
-        public static async Task<ObjectResult> PatchAsync<TEntity>(
+        public static async Task<ObjectResult<TEntity>> PatchAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api, dynamic partialEntity, params object[] id)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/{id.ToTildaDelimited()}";
@@ -144,7 +99,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
         }
 
 
-        public static DynamicLinqResult<TEntity> GetWithDynamicLinq<TEntity>(
+        public static ObjectResult<DynamicLinqResult<TEntity>> GetWithDynamicLinq<TEntity>(
             this IRepoControllerApiClient<TEntity> api,
             string where = null, string orderBy = null,
             string select = null, int? skip = null,
@@ -153,12 +108,11 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/linq{GetDynamicLinqQueryString(where, orderBy, select, skip, take, totalRecords)}";
             var result = api.HttpClient.Get<DynamicLinqResult<TEntity>, TEntity>(url);
-            var obj = result.GetObject<DynamicLinqResult<TEntity>>();
-            return obj;
+            return result;
         }
 
 
-        public static async Task<DynamicLinqResult<TEntity>> GetWithDynamicLinqAsync<TEntity>(
+        public static async Task<ObjectResult<DynamicLinqResult<TEntity>>> GetWithDynamicLinqAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api,
             string where = null, string orderBy = null,
             string select = null, int? skip = null,
@@ -167,32 +121,30 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
 
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/linq/async{GetDynamicLinqQueryString(where, orderBy, select, skip, take, totalRecords)}";
             var result = await api.HttpClient.GetAsync<DynamicLinqResult<TEntity>, TEntity>(url);
-            var obj = result.GetObject<DynamicLinqResult<TEntity>>();
-            return obj;
+            return result;
         }
 
 
 
-        public static ObjectResult GetWithDevExtreme<TEntity>(
+        public static ObjectResult<DeserializableLoadResult<TEntity>> GetWithDevExtreme<TEntity>(
             this IRepoControllerApiClient<TEntity> api, HttpRequest request)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/devextreme";
-            var result = api.HttpClient.Forward<TEntity>(request, url);
+            var result = api.HttpClient.Forward<DeserializableLoadResult<TEntity>>(request, url);
             return result;
         }
 
 
-        public static async Task<ObjectResult> GetWithDevExtremeAsync<TEntity>(
+        public static async Task<ObjectResult<DeserializableLoadResult<TEntity>>> GetWithDevExtremeAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api, HttpRequest request)
             where TEntity : class, IHasSysUser, new() {
             var url = $"{api.GetControllerUrl(typeof(TEntity))}/devextreme/async";
-            var result = await api.HttpClient.ForwardAsync<TEntity>(request, url);
+            var result = await api.HttpClient.ForwardAsync<DeserializableLoadResult<TEntity>>(request, url);
             return result;
         }
 
 
-
-        public static ObjectResult GetWithDevExtreme<TEntity>(
+        public static ObjectResult<DeserializableLoadResult<TEntity>> GetWithDevExtreme<TEntity>(
             this IRepoControllerApiClient<TEntity> api, 
             string select = null, string sort = null,
             string filter = null, string totalSummary = null,
@@ -205,7 +157,7 @@ namespace EDennis.AspNetCore.Base.Web.Abstractions {
             return result;
         }
 
-        public static async Task<ObjectResult> GetWithDevExtremeAsync<TEntity>(
+        public static async Task<ObjectResult<DeserializableLoadResult<TEntity>>> GetWithDevExtremeAsync<TEntity>(
             this IRepoControllerApiClient<TEntity> api,
             string select = null, string sort = null,
             string filter = null, string totalSummary = null,

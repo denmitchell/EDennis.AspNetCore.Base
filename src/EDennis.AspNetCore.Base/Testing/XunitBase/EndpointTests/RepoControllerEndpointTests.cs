@@ -54,7 +54,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult getResult = HttpClient.Get<TEntity>(url);
+            var getResult = HttpClient.Get<TEntity>(url);
 
             var eaResult = new ExpectedActual<EndpointTestResult<TEntity>> {
                 Expected = new EndpointTestResult<TEntity> {
@@ -66,7 +66,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<TEntity>();
+                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
@@ -107,7 +107,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/async/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult getResult = await HttpClient.GetAsync<TEntity>(url);
+            var getResult = await HttpClient.GetAsync<TEntity>(url);
 
             var eaResult = new ExpectedActual<EndpointTestResult<TEntity>> {
                 Expected = new EndpointTestResult<TEntity> {
@@ -119,7 +119,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<TEntity>();
+                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
@@ -165,11 +165,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult deleteResult = HttpClient.Delete<TEntity>(url);
+            var deleteResult = HttpClient.Delete<TEntity>(url);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -181,7 +181,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -228,11 +228,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/async/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult deleteResult = await HttpClient.DeleteAsync<TEntity>(url);
+            var deleteResult = await HttpClient.DeleteAsync<TEntity>(url);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -244,7 +244,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -291,11 +291,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult postResult = HttpClient.Post(url,input);
+            var postResult = HttpClient.Post(url,input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -307,7 +307,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -355,11 +355,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/async";
             Output.WriteLine($"url: {url}");
 
-            IActionResult postResult = await HttpClient.PostAsync(url, input);
+            var postResult = await HttpClient.PostAsync(url, input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -371,7 +371,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -424,11 +424,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult putResult = HttpClient.Put(url, input);
+            var putResult = HttpClient.Put(url, input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -440,7 +440,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -492,11 +492,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/async/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult putResult = await HttpClient.PutAsync(url, input);
+            var putResult = await HttpClient.PutAsync(url, input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -508,7 +508,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -560,11 +560,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult patchResult = HttpClientExtensions.Patch(HttpClient,url, input);
+            var patchResult = HttpClientExtensions.Patch(HttpClient,url, input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -576,7 +576,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -628,11 +628,11 @@ namespace EDennis.AspNetCore.Base.Testing {
             var url = $"{controllerPath}/async/{id}";
             Output.WriteLine($"url: {url}");
 
-            IActionResult patchResult = await HttpClientExtensions.PatchAsync(HttpClient, url, input);
+            var patchResult = await HttpClientExtensions.PatchAsync(HttpClient, url, input);
 
             var getUrl = $"{controllerPath}/linq?where={linqWhere}&X-Testing-Reset";
 
-            IActionResult getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
+            var getResult = HttpClient.Get<DynamicLinqResult<TEntity>>(getUrl);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<TEntity>>> {
                 Expected = new EndpointTestResult<List<TEntity>> {
@@ -644,7 +644,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<DynamicLinqResult<TEntity>>().Data;
+                eaResult.Actual.Data = getResult.TypedValue.Data;
 
             return eaResult;
         }
@@ -729,7 +729,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = actualLoadResult.GetObject<DeserializableLoadResult<TEntity>>().data.ToList();
+                eaResult.Actual.Data = actualLoadResult.TypedValue.data.ToList();
             
 
             return eaResult;
@@ -816,7 +816,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = actualLoadResult.GetObject<DeserializableLoadResult<TEntity>>().data.ToList();
+                eaResult.Actual.Data = actualLoadResult.TypedValue.data.ToList();
 
 
             return eaResult;
@@ -889,7 +889,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult actualResult = HttpClient.Get<DynamicLinqResult<dynamic>,TEntity>(url);
+            var actualResult = HttpClient.Get<DynamicLinqResult<dynamic>,TEntity>(url);
 
 
             var eaResult = new ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> {
@@ -902,7 +902,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = actualResult.GetObject<DynamicLinqResult<dynamic>>();
+                eaResult.Actual.Data = actualResult.TypedValue;
 
             return eaResult;
         }
@@ -973,7 +973,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult actualResult = await HttpClient.GetAsync<DynamicLinqResult<dynamic>, TEntity>(url);
+            var actualResult = await HttpClient.GetAsync<DynamicLinqResult<dynamic>, TEntity>(url);
 
 
             var eaResult = new ExpectedActual<EndpointTestResult<DynamicLinqResult<dynamic>>> {
@@ -986,7 +986,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = actualResult.GetObject<DynamicLinqResult<dynamic>>();
+                eaResult.Actual.Data = actualResult.TypedValue;
 
             return eaResult;
         }
@@ -1043,7 +1043,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult getResult = HttpClient.Get<dynamic, TEntity>(url);
+            var getResult = HttpClient.Get<dynamic, TEntity>(url);
 
             var eaResult = new ExpectedActual<EndpointTestResult<dynamic>> {
                 Expected = new EndpointTestResult<dynamic> {
@@ -1055,7 +1055,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<dynamic>();
+                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
@@ -1112,7 +1112,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult getResult = await HttpClient.GetAsync<dynamic, TEntity>(url);
+            var getResult = await HttpClient.GetAsync<dynamic, TEntity>(url);
 
             var eaResult = new ExpectedActual<EndpointTestResult<dynamic>> {
                 Expected = new EndpointTestResult<dynamic> {
@@ -1124,7 +1124,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<dynamic>();
+                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
@@ -1182,7 +1182,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult getResult = HttpClient.Get<List<dynamic>, TEntity>(url);
+            var getResult = HttpClient.Get<List<dynamic>, TEntity>(url);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<dynamic>>> {
                 Expected = new EndpointTestResult<List<dynamic>> {
@@ -1194,7 +1194,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<List<dynamic>>();
+                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
@@ -1251,7 +1251,7 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             Output.WriteLine($"url: {url}");
 
-            IActionResult getResult = await HttpClient.GetAsync<List<dynamic>, TEntity>(url);
+            var getResult = await HttpClient.GetAsync<List<dynamic>, TEntity>(url);
 
             var eaResult = new ExpectedActual<EndpointTestResult<List<dynamic>>> {
                 Expected = new EndpointTestResult<List<dynamic>> {
@@ -1263,7 +1263,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 }
             };
             if (eaResult.Expected.Data != null)
-                eaResult.Actual.Data = getResult.GetObject<List<dynamic>>();
+                eaResult.Actual.Data = getResult.TypedValue;
 
             return eaResult;
         }
