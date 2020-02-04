@@ -15,6 +15,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// <summary>
         /// Returns the controller URL associated with a given 
         /// TEntity or TContext.
+        /// For IIntegerIdRepoControllerApiClient, this is typeof(TEntity)
         /// For IRepoControllerApiClient, this is typeof(TEntity)
         /// For ISqlServerControllerApiClient, this is typeof(TContext)
         /// </summary>

@@ -3,13 +3,8 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Linq.Dynamic.Core.Exceptions;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -25,58 +20,58 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public TRepo Repo { get; set; }
 
-        static readonly PropertyInfo[] _properties;
-        static readonly Func<string, object[]> _parseId;
-        static readonly Func<dynamic, object[]> _getPrimaryKeyDynamic;
-        static readonly Func<TEntity, object[]> _getPrimaryKey;
-        static IReadOnlyList<IProperty> _keyProperties;
+        //static readonly PropertyInfo[] _properties;
+        //static readonly Func<string, object[]> _parseId;
+        //static readonly Func<dynamic, object[]> _getPrimaryKeyDynamic;
+        //static readonly Func<TEntity, object[]> _getPrimaryKey;
+        //static IReadOnlyList<IProperty> _keyProperties;
 
-        static RepoController() {
+        //static RepoController() {
 
-            _properties = typeof(TEntity).GetProperties();
+        //    _properties = typeof(TEntity).GetProperties();
 
-            _parseId = (s) => {
-                var key = s.Split('~');
-                var id = new object[_keyProperties.Count];
-                try {
-                    for (int i = 0; i < id.Length; i++)
-                        id[i] = Convert.ChangeType(key[i], _keyProperties[i].ClrType);
-                } catch {
-                    throw new ArgumentException($"The provided path parameters ({key}) cannot be converted into a key for {typeof(TEntity).Name}");
-                }
-                return id;
-            };
+        //    _parseId = (s) => {
+        //        var key = s.Split('~');
+        //        var id = new object[_keyProperties.Count];
+        //        try {
+        //            for (int i = 0; i < id.Length; i++)
+        //                id[i] = Convert.ChangeType(key[i], _keyProperties[i].ClrType);
+        //        } catch {
+        //            throw new ArgumentException($"The provided path parameters ({key}) cannot be converted into a key for {typeof(TEntity).Name}");
+        //        }
+        //        return id;
+        //    };
 
-            _getPrimaryKeyDynamic = (dyn) => {
-                var id = new object[_keyProperties.Count];
-                Type dynType = dyn.GetType();
-                PropertyInfo[] props = dynType.GetProperties();
-                for (int i = 0; i < _keyProperties.Count; i++) {
-                    var keyName = _keyProperties[i].Name;
-                    var keyType = _keyProperties[i].ClrType;
-                    var prop = props.FirstOrDefault(p => p.Name == keyName);
-                    if (prop == null)
-                        throw new ArgumentException($"The provided input does not contain a {keyName} property");
-                    var keyValue = prop.GetValue(dyn);
-                    id[i] = Convert.ChangeType(keyValue, keyType);
-                }
-                return id;
-            };
+        //    _getPrimaryKeyDynamic = (dyn) => {
+        //        var id = new object[_keyProperties.Count];
+        //        Type dynType = dyn.GetType();
+        //        PropertyInfo[] props = dynType.GetProperties();
+        //        for (int i = 0; i < _keyProperties.Count; i++) {
+        //            var keyName = _keyProperties[i].Name;
+        //            var keyType = _keyProperties[i].ClrType;
+        //            var prop = props.FirstOrDefault(p => p.Name == keyName);
+        //            if (prop == null)
+        //                throw new ArgumentException($"The provided input does not contain a {keyName} property");
+        //            var keyValue = prop.GetValue(dyn);
+        //            id[i] = Convert.ChangeType(keyValue, keyType);
+        //        }
+        //        return id;
+        //    };
 
-            _getPrimaryKey = (entity) => {
-                var id = new object[_keyProperties.Count];
-                for (int i = 0; i < _keyProperties.Count; i++) {
-                    var keyName = _keyProperties[i].Name;
-                    var keyType = _keyProperties[i].ClrType;
-                    var prop = _properties.FirstOrDefault(p => p.Name == keyName);
-                    var keyValue = prop.GetValue(entity);
-                    id[i] = Convert.ChangeType(keyValue, keyType);
-                }
-                return id;
-            };
+        //    _getPrimaryKey = (entity) => {
+        //        var id = new object[_keyProperties.Count];
+        //        for (int i = 0; i < _keyProperties.Count; i++) {
+        //            var keyName = _keyProperties[i].Name;
+        //            var keyType = _keyProperties[i].ClrType;
+        //            var prop = _properties.FirstOrDefault(p => p.Name == keyName);
+        //            var keyValue = prop.GetValue(entity);
+        //            id[i] = Convert.ChangeType(keyValue, keyType);
+        //        }
+        //        return id;
+        //    };
 
 
-        }
+        //}
 
 
         const string IDREGEX = "{id:regex(((?:[[^~]]+~[[^~]]+(?:~[[^~]]+)*)|(?:^-?[[0-9]]+$)))}";
@@ -86,8 +81,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
         public RepoController(TRepo repo) {
             Repo = repo;
-            if (_keyProperties == null)
-                _keyProperties = Repo.Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
+            //if (_keyProperties == null)
+            //    _keyProperties = Repo.Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties;
 
             JsonSerializationOptions = new JsonSerializerOptions();
             JsonSerializationOptions.Converters.Add(new DynamicJsonConverter<TEntity>());
@@ -98,7 +93,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual IActionResult Get([FromRoute]string id) {
             object[] iPk;
             try {
-                iPk = _parseId(id);
+                iPk = Repo<TEntity,TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex);
             }
@@ -115,7 +110,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual async Task<IActionResult> GetAsync([FromRoute]string id) {
             object[] iPk;
             try {
-                iPk = _parseId(id);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex);
             }
@@ -128,7 +123,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpPost]
         public virtual IActionResult Post([FromBody]TEntity entity) {
-            var pk = _getPrimaryKey(entity);
+            var pk = Repo<TEntity, TContext>.GetPrimaryKey(entity);
             try {
                 var created = Repo.Create(entity);
                 return Ok(created);
@@ -147,7 +142,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
         [HttpPost("async")]
         public virtual async Task<IActionResult> PostAsync([FromBody] TEntity entity) {
-            var pk = _getPrimaryKey(entity);
+            var pk = Repo<TEntity, TContext>.GetPrimaryKey(entity);
             try {
                 var created = await Repo.CreateAsync(entity);
                 return Ok(created);
@@ -171,8 +166,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = _getPrimaryKey(entity);
-                iPk = _parseId(id);
+                ePk = Repo<TEntity, TContext>.GetPrimaryKey(entity);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -199,8 +194,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = _getPrimaryKey(entity);
-                iPk = _parseId(id);
+                ePk = Repo<TEntity, TContext>.GetPrimaryKey(entity);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -239,8 +234,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = _getPrimaryKeyDynamic(partialEntity);
-                iPk = _parseId(id);
+                ePk = Repo<TEntity, TContext>.GetPrimaryKeyDynamic(partialEntity);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -280,8 +275,8 @@ namespace EDennis.AspNetCore.Base.Web {
             object[] ePk;
             object[] iPk;
             try {
-                ePk = _getPrimaryKeyDynamic(partialEntity);
-                iPk = _parseId(id);
+                ePk = Repo<TEntity, TContext>.GetPrimaryKeyDynamic(partialEntity);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -307,7 +302,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual IActionResult Delete(string id) {
             object[] iPk;
             try {
-                iPk = _parseId(id);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -324,7 +319,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public async virtual Task<IActionResult> DeleteAsync(string id) {
             object[] iPk;
             try {
-                iPk = _parseId(id);
+                iPk = Repo<TEntity, TContext>.ParseId(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }

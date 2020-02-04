@@ -2,7 +2,6 @@
 using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using APIS = Colors2ExternalApi.Lib.ApiClients;
 
@@ -10,8 +9,7 @@ namespace Colors2Api.Lib.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class ColorsController : ControllerBase {
-
-        APIS.Colors2Api _api;
+        readonly APIS.Colors2Api _api;
 
         public ColorsController(APIS.Colors2Api api) {
             _api = api;
