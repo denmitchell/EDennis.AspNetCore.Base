@@ -32,9 +32,13 @@ namespace Colors2Api.Lib.Controllers {
             return _api.Hsl.GetWithDynamicLinq(where, orderBy, skip, take);
         }
 
-        [HttpGet("rgbid/{colorName}")]
-        public ObjectResult<int> GetRgbId(string colorName) {
-            return _api.GetScalarFromStoredProcedure<Color2DbContext, int>("RgbInt", new Dictionary<string, string> { { "colorName", colorName } });
+        [HttpGet("rgbid")]
+        public ObjectResult<int> GetRgbId([FromQuery]string colorName) {
+            return _api.GetScalarFromStoredProcedure<Color2DbContext, int>(
+                "RgbInt", new Dictionary<string, string> { 
+                    { "colorName", colorName },
+                    { "returnType", "int" } 
+                });
         }
 
 

@@ -21,11 +21,11 @@ namespace Colors2ExternalApi.Lib.ApiClients {
 
         public string GetControllerUrl(Type type) {
             if (type == typeof(Rgb))
-                return "Rgb";
+                return "api/Rgb";
             else if (type == typeof(Hsl))
-                return "Hsl";
+                return "api/Hsl";
             else if (type == typeof(Color2DbContext))
-                return "Proc";
+                return "api/Proc";
             else
                 return null;
         }
