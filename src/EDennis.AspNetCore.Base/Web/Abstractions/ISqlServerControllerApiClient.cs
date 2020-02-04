@@ -1,15 +1,10 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
-using EDennis.AspNetCore.Base.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web.Abstractions {
+namespace EDennis.AspNetCore.Base.Web {
     public interface ISqlServerControllerApiClient<TContext> : IApiClient
         where TContext : DbContext, ISqlServerDbContext<TContext>{
         /// <summary>

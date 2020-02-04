@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EDennis.AspNetCore.Base.Web.Abstractions {
+namespace EDennis.AspNetCore.Base.Web {
     public interface IRepoControllerApiClient<TEntity> : IApiClient
         where TEntity : class, IHasSysUser, new(){
         /// <summary>
