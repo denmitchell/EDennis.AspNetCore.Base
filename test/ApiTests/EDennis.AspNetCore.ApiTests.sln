@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Api.EndpointTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2Repo", "..\RepoTests\Colors2Repo\Colors2Repo.csproj", "{741B7BAB-3D0B-494F-8AD3-ABC9E161DE89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2ExternalApi.Lib", "Colors2ExternalApi.Lib\Colors2ExternalApi.Lib.csproj", "{2CACFC47-7385-42AA-8C61-0A64495CDC13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2ExternalApi.Lib", "Colors2ExternalApi.Lib\Colors2ExternalApi.Lib.csproj", "{2CACFC47-7385-42AA-8C61-0A64495CDC13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2ExternalApi", "Colors2ExternalApi\Colors2ExternalApi.csproj", "{64F6A69A-D9CE-4C6E-97B1-9943DFEBCE2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Colors2ExternalApi", "Colors2ExternalApi\Colors2ExternalApi.csproj", "{64F6A69A-D9CE-4C6E-97B1-9943DFEBCE2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colors2Launcher", "Colors2Launcher\Colors2Launcher.csproj", "{FB505E0B-8F7C-4BA8-A526-0246FE3DA7C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{64F6A69A-D9CE-4C6E-97B1-9943DFEBCE2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64F6A69A-D9CE-4C6E-97B1-9943DFEBCE2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64F6A69A-D9CE-4C6E-97B1-9943DFEBCE2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB505E0B-8F7C-4BA8-A526-0246FE3DA7C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB505E0B-8F7C-4BA8-A526-0246FE3DA7C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB505E0B-8F7C-4BA8-A526-0246FE3DA7C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB505E0B-8F7C-4BA8-A526-0246FE3DA7C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

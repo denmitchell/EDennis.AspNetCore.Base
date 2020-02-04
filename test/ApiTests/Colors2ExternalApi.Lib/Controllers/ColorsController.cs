@@ -22,9 +22,16 @@ namespace Colors2Api.Lib.Controllers {
             return _api.Rgb.Get(id);
         }
 
-        [HttpGet("hsl/{id}")]
-        public ObjectResult<Hsl> GetHsl(int id) {
-            return _api.Hsl.Get(id);
+        [HttpDelete("rgb/{id}")]
+        public StatusCodeResult DeleteRgb(int id) {
+            return _api.Rgb.Delete(id);
+        }
+
+        [HttpGet("hsl/linq")]
+        public ObjectResult<DynamicLinqResult<Hsl>> GetHsl(string where,
+            string orderBy, int? skip, int? take
+            ) {
+            return _api.Hsl.GetWithDynamicLinq(where, orderBy, skip, take);
         }
 
         [HttpGet("rgbid/{colorName}")]
@@ -32,10 +39,6 @@ namespace Colors2Api.Lib.Controllers {
             return _api.GetScalarFromStoredProcedure<Color2DbContext, int>("RgbInt", new Dictionary<string, string> { { "colorName", colorName } });
         }
 
-        [HttpDelete("rgb/{id}")]
-        public StatusCodeResult DeleteRgb(int id) {
-            return _api.Rgb.Delete(id);
-        }
 
     }
 }

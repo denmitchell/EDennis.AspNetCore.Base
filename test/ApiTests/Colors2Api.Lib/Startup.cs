@@ -63,7 +63,7 @@ namespace Colors2Api.Lib {
 
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Colors2 API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Colors2 Internal API V1");
             });
 
         }
