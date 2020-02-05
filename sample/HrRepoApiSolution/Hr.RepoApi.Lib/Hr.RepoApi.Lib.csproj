@@ -12,18 +12,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="appsettings.json"/>
-    <EmbeddedResource Include="appsettings.Development.json"/>
+    <EmbeddedResource Include="appsettings.json" />
+    <EmbeddedResource Include="appsettings.Development.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
     <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <Folder Include="MigrationsSql\PreUp\" />
+    <Folder Include="MigrationsSql\TemporalInserts\" />
   </ItemGroup>
 
 </Project>

@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<ProjectReference Include="..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />-->
-    <ProjectReference Include="..\Hr.Api.Lib\Hr.Api.Lib.csproj" />
-    <!--<ProjectReference Include="..\IdentityServer.Lib\IdentityServer.Lib.csproj" />-->
+    <ProjectReference Include="..\Hr.RepoApi.Lib\Hr.RepoApi.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

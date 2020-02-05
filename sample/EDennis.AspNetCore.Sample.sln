@@ -5,16 +5,6 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{4CC9F2E0-81E6-49D1-B16E-C1A4C3D8E794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api", "Hr.Api\Hr.Api.csproj", "{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Lib", "Hr.Api.Lib\Hr.Api.Lib.csproj", "{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Tests", "Hr.Api.Tests\Hr.Api.Tests.csproj", "{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "IdentityServer.Lib\IdentityServer.Lib.csproj", "{65981806-7B5F-45CA-8FA2-B32A3CD083CE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{19EBDFBC-5A4A-4142-BC3E-147B09CF87BB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Launcher", "Hr.Launcher\Hr.Api.Launcher.csproj", "{F883FF32-8C93-4D83-8E23-30BAD383224A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp.Lib", "Hr.RazorApp.Lib\Hr.RazorApp.Lib.csproj", "{5D5DE738-7638-4FA5-8D5B-100F47D85011}"

@@ -32,7 +32,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
   </ItemGroup>
 
 </Project>
