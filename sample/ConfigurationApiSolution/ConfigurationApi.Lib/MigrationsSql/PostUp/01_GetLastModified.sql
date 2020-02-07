@@ -8,7 +8,5 @@ BEGIN
 	SET NOCOUNT ON;
 	select ProjectName, max(SysStart) LastModified
 		from ProjectSetting ps 
-		inner join Project p
-			on p.Id = ps.ProjectId
 		group by ProjectName
 END

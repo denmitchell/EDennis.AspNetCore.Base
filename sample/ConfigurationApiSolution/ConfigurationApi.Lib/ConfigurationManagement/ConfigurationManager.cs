@@ -1,4 +1,5 @@
 ﻿using ConfigCore.Models;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -29,37 +30,37 @@ namespace ConfigurationApi.Lib.Models {
             using var cmd = GetSqlCommand(context);
 
             foreach (var filePath in dir) {
-                Debug.WriteLine($"Processing {filePath} ...");
-                var projectName = filePath;
+                var projectName = filePath.Substring(PROJECT_CONFIGURATIONS_FOLDER.Length + 1).Replace(".json", "");
+                Debug.WriteLine($"Processing {projectName} ...");
                 var lastModified = File.GetLastWriteTime(filePath);
                 if(serverLastModifieds.TryGetValue(projectName,out DateTime serverLastModified)){
                     if (lastModified <= serverLastModified)
                         continue;
                 }
-                await Upload(cmd, PROJECT_CONFIGURATIONS_FOLDER, projectName);
+                await Upload(context, PROJECT_CONFIGURATIONS_FOLDER, projectName);
             }
         }
 
 
-        private async Task Upload(SqlCommand cmd, string folder, string projectName) {
+        private async Task Upload(ConfigurationDbContext context, string folder, string projectName) {
 
             var config = new ConfigurationBuilder()
                 .AddJsonFile($"{folder}/{SHARED_SETTINGS_FILE}", true)
-                .AddJsonFile($"{folder}/{projectName}")
+                .AddJsonFile($"{folder}/{projectName}.json")
                 .Build();
 
-            IEnumerable<ConfigSetting> configSettings = 
+            List<ProjectSetting> projectSettings = 
                 config.Flatten()
-                .Select(x=>new ConfigSetting{ 
+                .Select(x=>new ProjectSetting{
+                    ProjectName = projectName,
                     SettingKey = x.Key, 
                     SettingValue = x.Value 
-                });
+                }).ToList();
 
-            cmd.Parameters["@projectName"].Value = projectName;
-            cmd.Parameters["@tvpSettings"].Value = configSettings;
 
             Debug.WriteLine($"Uploading {projectName} ...");
-            await cmd.ExecuteNonQueryAsync();
+
+            await context.BulkInsertOrUpdateOrDeleteAsync(projectSettings);
 
         }
 

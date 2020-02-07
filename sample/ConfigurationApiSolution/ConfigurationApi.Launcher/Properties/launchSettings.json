@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:52718",
+      "sslPort": 44398
+    }
+  },
+  "profiles": {
+    "Upload Configs and Launch": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "commandLineArgs": "uploadConfigs=true",
+      "launchUrl": "https://localhost:44312/swagger",
+      "applicationUrl": "https://localhost:52718;http://localhost:44398",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Launch Without Uploading": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "commandLineArgs": "uploadConfigs=false",
+      "launchUrl": "https://localhost:44312/swagger",
+      "applicationUrl": "https://localhost:52718;http://localhost:44398",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

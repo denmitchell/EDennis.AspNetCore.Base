@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConfigurationApiServer.Lib.Controllers {
+namespace ConfigurationApi.Lib.Controllers {
     [ApiController]
     [Route("api/[controller]")]
     public class ConfigurationController : ControllerBase {
@@ -18,7 +18,7 @@ namespace ConfigurationApiServer.Lib.Controllers {
 
         [HttpGet]
         public IActionResult Get([FromQuery] string appId) {
-            var configs = _context.ProjectSettingView.Where(p => p.ProjectName == appId);
+            var configs = _context.ProjectSettings.Where(p => p.ProjectName == appId);
             if (configs.Count() == 0)
                 return NotFound();
             else

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationApi", "Configu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{7F7FAF49-A09D-4F15-876E-D9913FD7955E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationApi.Launcher", "ConfigurationApi.Launcher\ConfigurationApi.Launcher.csproj", "{297E4A4C-97F8-4BD7-9A02-50F603B6B774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{297E4A4C-97F8-4BD7-9A02-50F603B6B774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{297E4A4C-97F8-4BD7-9A02-50F603B6B774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{297E4A4C-97F8-4BD7-9A02-50F603B6B774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{297E4A4C-97F8-4BD7-9A02-50F603B6B774}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
