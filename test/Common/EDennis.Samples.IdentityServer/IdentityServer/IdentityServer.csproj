@@ -13,7 +13,6 @@
   
     
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\IdentityServer.Lib\IdentityServer.Lib.csproj" />
   </ItemGroup>
 

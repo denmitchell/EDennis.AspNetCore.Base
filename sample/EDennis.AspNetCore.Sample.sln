@@ -3,13 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{4CC9F2E0-81E6-49D1-B16E-C1A4C3D8E794}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Launcher", "Hr.Launcher\Hr.Api.Launcher.csproj", "{F883FF32-8C93-4D83-8E23-30BAD383224A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp.Lib", "Hr.RazorApp.Lib\Hr.RazorApp.Lib.csproj", "{5D5DE738-7638-4FA5-8D5B-100F47D85011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{20A9521E-4EB4-495C-962F-488B7F6BCDBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{20A9521E-4EB4-495C-962F-488B7F6BCDBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{0D3BCC3D-8F63-4E30-BF94-9B5106E3B3B8}"
+	ProjectSection(SolutionItems) = preProject
+		EDennis.AspNetCore.Base.3.0.0.nupkg = EDennis.AspNetCore.Base.3.0.0.nupkg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,30 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4CC9F2E0-81E6-49D1-B16E-C1A4C3D8E794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4CC9F2E0-81E6-49D1-B16E-C1A4C3D8E794}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4CC9F2E0-81E6-49D1-B16E-C1A4C3D8E794}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4CC9F2E0-81E6-49D1-B16E-C1A4C3D8E794}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA4D9FFA-C0BD-43A3-9297-ADC0E82506E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{398BBC0C-3E3B-4FD0-89AD-4069C22EA0E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{612D0460-F4A0-4EC8-8C2F-65E7D53CECD6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65981806-7B5F-45CA-8FA2-B32A3CD083CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65981806-7B5F-45CA-8FA2-B32A3CD083CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65981806-7B5F-45CA-8FA2-B32A3CD083CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65981806-7B5F-45CA-8FA2-B32A3CD083CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19EBDFBC-5A4A-4142-BC3E-147B09CF87BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19EBDFBC-5A4A-4142-BC3E-147B09CF87BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19EBDFBC-5A4A-4142-BC3E-147B09CF87BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19EBDFBC-5A4A-4142-BC3E-147B09CF87BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F883FF32-8C93-4D83-8E23-30BAD383224A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F883FF32-8C93-4D83-8E23-30BAD383224A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F883FF32-8C93-4D83-8E23-30BAD383224A}.Release|Any CPU.ActiveCfg = Release|Any CPU
