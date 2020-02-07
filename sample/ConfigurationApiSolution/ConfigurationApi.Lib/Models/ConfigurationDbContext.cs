@@ -16,10 +16,12 @@ namespace ConfigurationApi.Lib.Models {
                     .HasKey(e=> new { e.ProjectName, e.SettingKey });
 
                 e.Property(e => e.SysStart)
+                    .HasColumnType("datetime2(7)")
                     .HasDefaultValueSql("(getdate())")
                     .ValueGeneratedOnAddOrUpdate();
 
                 e.Property(e => e.SysEnd)
+                    .HasColumnType("datetime2(7)")
                     .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
                     .ValueGeneratedOnAddOrUpdate();
 

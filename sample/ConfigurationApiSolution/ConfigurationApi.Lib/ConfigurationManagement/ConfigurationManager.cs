@@ -1,13 +1,8 @@
-﻿using ConfigCore.Models;
-using EFCore.BulkExtensions;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,9 +20,15 @@ namespace ConfigurationApi.Lib.Models {
             var dir = Directory.EnumerateFiles(PROJECT_CONFIGURATIONS_FOLDER);
 
             Debug.WriteLine("Building Sql Connection/Command Objects ...");
-            using var context = GetDbContext();
-            var serverLastModifieds = await GetServerLastModifieds(context);
-            using var cmd = GetSqlCommand(context);
+            var context = GetDbContext();
+            var serverLastModifieds =
+                context.ProjectSettings.GroupBy(a => a.ProjectName)
+                .Select(g => new {
+                    ProjectName = g.Key,
+                    MaxSysStart = g.Max(x => x.SysStart)
+                }).ToDictionary(x => x.ProjectName, x => x.MaxSysStart);
+                
+            //using var cmd = GetSqlCommand(context);
 
             foreach (var filePath in dir) {
                 var projectName = filePath.Substring(PROJECT_CONFIGURATIONS_FOLDER.Length + 1).Replace(".json", "");
@@ -37,12 +38,14 @@ namespace ConfigurationApi.Lib.Models {
                     if (lastModified <= serverLastModified)
                         continue;
                 }
-                await Upload(context, PROJECT_CONFIGURATIONS_FOLDER, projectName);
+                Upload(context, PROJECT_CONFIGURATIONS_FOLDER, projectName);
             }
+            await context.SaveChangesAsync();
+
         }
 
 
-        private async Task Upload(ConfigurationDbContext context, string folder, string projectName) {
+        private void Upload(ConfigurationDbContext context, string folder, string projectName) {
 
             var config = new ConfigurationBuilder()
                 .AddJsonFile($"{folder}/{SHARED_SETTINGS_FILE}", true)
@@ -60,38 +63,15 @@ namespace ConfigurationApi.Lib.Models {
 
             Debug.WriteLine($"Uploading {projectName} ...");
 
-            await context.BulkInsertOrUpdateOrDeleteAsync(projectSettings);
-
+            var existingProjectSettings = context.ProjectSettings.Where(ps => ps.ProjectName == projectName);
+            foreach(var projectSetting in existingProjectSettings) {
+                context.ProjectSettings.Remove(projectSetting);
+            }
+            foreach (var projectSetting in projectSettings) {
+                context.ProjectSettings.Add(projectSetting);
+            }
         }
 
-        private SqlCommand GetSqlCommand(ConfigurationDbContext context) {
- 
-            SqlConnection cxn = (SqlConnection)context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-
-            using SqlCommand cmd = new SqlCommand {
-                Connection = cxn,
-                CommandType = CommandType.StoredProcedure,
-                CommandText = "SaveSettings"
-            };
-
-            if (context.Database.CurrentTransaction is IDbContextTransaction trans)
-                cmd.Transaction = (SqlTransaction)trans.GetDbTransaction();
-
-            cmd.Parameters.Add(
-                new SqlParameter {
-                    ParameterName = "@projectName",
-                    SqlDbType = SqlDbType.VarChar
-                });
-            cmd.Parameters.Add(
-                new SqlParameter { 
-                    ParameterName = "@tvpSettings",
-                    SqlDbType = SqlDbType.Structured,
-                    TypeName = "dbo.SettingTableType"
-                });
-            return cmd;
-        }
 
         private ConfigurationDbContext GetDbContext() {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -109,37 +89,6 @@ namespace ConfigurationApi.Lib.Models {
             return new ConfigurationDbContext(options);
         }
 
-
-        private async Task<Dictionary<string,DateTime>> GetServerLastModifieds(
-            ConfigurationDbContext context) {
-
-            Debug.WriteLine("Getting Server LastModified ...");
-
-            SqlConnection cxn = (SqlConnection)context.Database.GetDbConnection();
-            if (cxn.State == ConnectionState.Closed)
-                cxn.Open();
-
-
-            using SqlCommand cmd = new SqlCommand {
-                Connection = cxn,
-                CommandType = CommandType.StoredProcedure,
-                CommandText = "GetLastModified"
-            };
-
-            if (context.Database.CurrentTransaction is IDbContextTransaction trans)
-                cmd.Transaction = (SqlTransaction)trans.GetDbTransaction();
-
-            var dict = new Dictionary<string, DateTime>();
-
-            DbDataReader reader = await cmd.ExecuteReaderAsync();
-
-            if(reader.HasRows)
-                while (reader.Read()){
-                    dict.Add(reader.GetString(0), reader.GetDateTime(1));
-                }
-
-            return dict;
-        }
 
     }
 
