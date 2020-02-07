@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ConfigurationApi.Lib.Models {
     public class Project {
-        [Key]
         public int Id { get; set; }
         public string ProjectName { get; set; }
+        public List<ProjectSetting> ProjectSettings { get; set; }
     }
 }

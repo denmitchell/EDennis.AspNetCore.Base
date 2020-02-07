@@ -7,8 +7,6 @@ namespace ConfigurationApiServer.Lib {
     public class Program {
 
         public static void Main(string[] args) {
-            var configurationManager = new ConfigurationManager();
-            Task.Run(async()=> { await configurationManager.UploadNew(); });
             CreateHostBuilder(args).Build().Run();
         }
 

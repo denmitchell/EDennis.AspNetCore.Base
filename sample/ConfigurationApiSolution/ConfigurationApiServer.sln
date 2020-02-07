@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationApi.Lib", "Con
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationApi", "ConfigurationApi\ConfigurationApi.csproj", "{99B49DED-8B7C-405F-A0E1-4C9229B68BC7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{7F7FAF49-A09D-4F15-876E-D9913FD7955E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{99B49DED-8B7C-405F-A0E1-4C9229B68BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99B49DED-8B7C-405F-A0E1-4C9229B68BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99B49DED-8B7C-405F-A0E1-4C9229B68BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F7FAF49-A09D-4F15-876E-D9913FD7955E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

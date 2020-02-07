@@ -4,4 +4,4 @@
 		INNER JOIN Project p
 			on p.Id = ps.ProjectId
 		INNER JOIN Setting s
-			on s.Id = ps.SettingKey
+			on s.Id = ps.SettingId

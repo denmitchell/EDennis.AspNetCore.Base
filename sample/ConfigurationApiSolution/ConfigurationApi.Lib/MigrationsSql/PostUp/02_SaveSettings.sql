@@ -37,11 +37,9 @@ BEGIN
 
 	--insert the new config settings
 	insert into ProjectConfigSettings(ProjectId, SettingId, SettingValue)
-		select p.Id, s.Id, ps.SettingValue
+		select @projectId, s.Id, ps.SettingValue
 			from @tvpSettings ps
-			inner join Project p
-				on p.Id = ps.ProjectId
 			inner join Setting s
-				on s.Id = ps.SettingId
+				on s.SettingKey = ps.SettingKey
 
 END
