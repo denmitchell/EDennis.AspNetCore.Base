@@ -18,7 +18,9 @@ namespace ConfigurationApi.Lib.Controllers {
 
         [HttpGet]
         public IActionResult Get([FromQuery] string appId) {
-            var configs = _context.ProjectSettings.Where(p => p.ProjectName == appId);
+            var configs = _context.ProjectSettings
+                .Where(p => p.ProjectName == appId)
+                .Select(p=> new { p.SettingKey, p.SettingValue });
             if (configs.Count() == 0)
                 return NotFound();
             else
