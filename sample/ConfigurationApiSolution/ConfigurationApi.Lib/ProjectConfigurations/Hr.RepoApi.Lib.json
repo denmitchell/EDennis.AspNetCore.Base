@@ -1,0 +1,131 @@
+{
+  "Apis": {     
+    "HrApi": {  //settings for a specific API
+      "ProjectName": "Hr.Api", //project name for API
+      "HttpsPort": 44319, //API SSL port
+      "HttpPort": 64126,  //API port
+      "Scopes": [
+        "Hr.Api.*"  //allowed scope for the API
+      ]
+    },
+    "IdentityServerApi": {  //settings for identity server
+      "ProjectName": "IdentityServer",
+      "HttpsPort": 44355,
+      "HttpPort": 54006,
+      "OAuth": {  //OAuth settings
+        "ClientSecret": "secret",
+        "Audience": "Hr.Api",  //current project
+        "Authority": "https://localhost:44355"  //identity server URL
+      }
+    }
+  },
+  "MockHeaders": {
+    "Enabled": true,
+    "X-User": {
+      "Values": [ "tester@example.org" ],
+      "ConflictResolution": "Skip"
+    },
+    "X-Role": {
+      "Values": [ "admin", "user" ],
+      "ConflictResolution": "Skip"
+    }
+  },
+  "HeadersToClaims": {
+    "Enabled": true,
+    "X-UserScope": "user_scope",
+    "X-Role": "role",
+    "X-User": "name"
+  },
+  "ScopeProperties": {
+    "Enabled": true,
+    "UserSource": "JwtNameClaim",
+    "CopyHeaders": true,
+    "CopyClaims": true,
+    "AppendHostPath": false
+  },
+  "DbContexts": {
+    "HrContext": { //key must be name of class extending DbContext
+      "DatabaseProvider": "SqlServer",
+      "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=Hr123;Trusted_Connection=True;MultipleActiveResultSets=True;",
+      "Interceptor": {
+        "Enabled": true, // must be explicitly enabled for middleware
+        "IsInMemory": false,
+        "IsolationLevel": "ReadCommitted",
+        "ResetSqlServerIdentities": false,
+        "ResetSqlServerSequences": false
+      }
+    }
+  },
+  "MockClient": {
+    "Enabled": true,
+    "ActiveMockClientKey": "Hr.Api.Client1",
+    "MockClients": {
+      "Hr.Api.Client1": {
+        "ClientId": "Hr.Api.Client1",
+        "ClientSecret": "secret",
+        "Scopes": [ "Hr.Api.*" ]
+      },
+      "Hr.Api.Client2": {
+        "ClientId": "Hr.Api.Client2",
+        "ClientSecret": "secret",
+        "Scopes": [ "Hr.Api.Person.*" ]
+      }
+    }
+  },
+  "Logging": {
+    "Loggers": {
+      "Default": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+        "MinimumLevel": {
+          "Default": "Information",
+          "Override": {
+            "Microsoft.AspNetCore": "Warning",
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" },
+          {
+            "Name": "File",
+            "Args": {
+              "path": "log.txt",
+              "rollingInterval": "Day"
+            }
+          }
+        ],
+        "Enrich": [ "FromLogContext" ],
+        "Properties": {
+          "Application": "ColorsApi"
+        }
+      },
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeySource": "User",
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+        "MinimumLevel": {
+          "Default": "Debug",
+          "Override": {
+            "Microsoft.AspNetCore": "Warning",
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" },
+          {
+            "Name": "File",
+            "Args": {
+              "path": "scoped-log.txt",
+              "rollingInterval": "Day"
+            }
+          }
+        ],
+        "Enrich": [ "FromLogContext" ],
+        "Properties": {
+          "Application": "Hr.Api"
+        }
+      }
+    }
+  }
+}

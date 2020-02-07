@@ -10,6 +10,8 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using ConfigCore.ApiSource;
+using ConfigCore.Extensions;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -26,7 +28,8 @@ namespace EDennis.AspNetCore.Base.Web {
     public abstract class ProgramBase : IProgram {
         public virtual Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
         public virtual Func<string[], IConfigurationBuilder> HostConfigurationBuilderFunc { get; set; }
-        public virtual bool UsesEmbeddedConfigurationFiles { get; } = true;
+        public virtual bool UsesConfigurationApi { get; } = true;
+        public virtual bool UsesEmbeddedConfigurationFiles { get; } = false;
         public virtual bool UsesLauncherConfigurationFile { get; } = true;
         public virtual string ApisConfigurationSection { get; } = "Apis";
         public abstract Type Startup { get; }
@@ -122,7 +125,9 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var configBuilder = new ConfigurationBuilder();
 
-            if (UsesEmbeddedConfigurationFiles) {
+            if (UsesConfigurationApi)
+                configBuilder.AddApiSource("ConfigurationApiUrl", true);
+            else if (UsesEmbeddedConfigurationFiles) {
                 var assembly = Startup.Assembly;
                 var provider = new ManifestEmbeddedFileProvider(assembly);
                 configBuilder.AddJsonFile(provider, $"appsettings.json", true, true);
@@ -131,8 +136,11 @@ namespace EDennis.AspNetCore.Base.Web {
                 configBuilder.AddJsonFile($"appsettings.json", true, true);
                 configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
             }
+
+            //if needed, to add/overwrite settings for a Launcher (during testing)
             if (UsesLauncherConfigurationFile)
                 configBuilder.AddJsonFile($"appsettings.Launcher.json", true, true);
+
 
             configBuilder
                 .AddEnvironmentVariables()
