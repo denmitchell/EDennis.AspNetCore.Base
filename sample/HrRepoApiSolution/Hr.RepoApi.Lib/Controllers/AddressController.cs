@@ -1,8 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using Hr.Api.Models;
+using Hr.RepoApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hr.Api.Controllers {
+namespace Hr.RepoApi.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class AddressController: RepoController<Address,HrContext,AddressRepo>{

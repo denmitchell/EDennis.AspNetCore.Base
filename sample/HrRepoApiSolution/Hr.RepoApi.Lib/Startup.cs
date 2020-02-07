@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace Hr.Api.Lib {
+namespace Hr.RepoApi.Lib {
     public class Startup {
         public Startup(IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;

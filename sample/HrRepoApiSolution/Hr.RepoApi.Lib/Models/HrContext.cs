@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using System;
 using System.Data.Common;
 
-namespace Hr.Api.Models {
+namespace Hr.RepoApi.Models {
 
     /// <summary>
     /// To Add First Migration :

@@ -1,30 +1,58 @@
 {
-  "Apis": {
-    "HrRazorApp": {
-      "ProjectName": "Hr.RazorApp",
-      "HttpsPort": 44307,
-      "HttpPort": 53512,
-      "Scopes": [
-        "Hr.RazorApp.*"
-      ]
-    },
-    "IdentityServerApi": {
-      "ProjectName": "IdentityServer",
-      "HttpsPort": 44355,
-      "HttpPort": 54006,
-      "Oidc": {
-        "ClientSecret": "secret",
-        "Audience": "Hr.RazorApp",
-        "Authority": "https://localhost:44355",
-        "GetClaimsFromUserInfoEndpoint": true
-      }
-    }
-  },
   "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
+    "Loggers": {
+      "Default": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+        "MinimumLevel": {
+          "Default": "Information",
+          "Override": {
+            "Microsoft.AspNetCore": "Warning",
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" },
+          {
+            "Name": "File",
+            "Args": {
+              "path": "log.txt",
+              "rollingInterval": "Day"
+            }
+          }
+        ],
+        "Enrich": [ "FromLogContext" ],
+        "Properties": {
+          "Application": "ColorsApi"
+        }
+      },
+      "ScopedTraceLogger": {
+        "Enabled": true,
+        "AssignmentKeySource": "User",
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+        "MinimumLevel": {
+          "Default": "Debug",
+          "Override": {
+            "Microsoft.AspNetCore": "Warning",
+            "Microsoft": "Warning",
+            "System": "Warning"
+          }
+        },
+        "WriteTo": [
+          { "Name": "Console" },
+          {
+            "Name": "File",
+            "Args": {
+              "path": "scoped-log.txt",
+              "rollingInterval": "Day"
+            }
+          }
+        ],
+        "Enrich": [ "FromLogContext" ],
+        "Properties": {
+          "Application": "Hr.Api"
+        }
+      }
     }
   }
 }

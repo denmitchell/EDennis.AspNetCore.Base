@@ -1,9 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Hr.Api.Models {
+namespace Hr.RepoApi.Models {
     public class Person : IHasIntegerId, IHasSysUser {
 
         [Key]

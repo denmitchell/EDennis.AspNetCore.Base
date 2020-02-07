@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wiki", "Wiki", "{F42482EE-F
 		Wiki\TemporalEntities.png = Wiki\TemporalEntities.png
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{23F5A36A-9646-456D-B0FB-6986F17B273E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OldTestProjects", "OldTestProjects", "{9D5DF897-6981-44CF-80DD-04AF445B486D}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{11EF6620-8034-4D03-A1C9-032FED7523AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11EF6620-8034-4D03-A1C9-032FED7523AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11EF6620-8034-4D03-A1C9-032FED7523AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23F5A36A-9646-456D-B0FB-6986F17B273E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23F5A36A-9646-456D-B0FB-6986F17B273E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23F5A36A-9646-456D-B0FB-6986F17B273E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23F5A36A-9646-456D-B0FB-6986F17B273E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

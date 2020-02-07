@@ -1,5 +1,5 @@
 using EDennis.AspNetCore.Base.Web;
 
-namespace Hr.Api.Lib {
+namespace Hr.RepoApi.Lib {
     public class Program : ProgramBase<Startup> { }
 }

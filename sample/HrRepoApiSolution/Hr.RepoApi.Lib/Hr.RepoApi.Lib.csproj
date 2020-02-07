@@ -18,8 +18,9 @@
 
   <ItemGroup>
     <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />
-    <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.1" />
-    <PackageReference Include="IdentityServer.Lib" Version="1.0.0" />
+    
+    <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.3" />
+
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
     <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RepoApi", "Hr.RepoApi\Hr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RepoApi.Tests", "Hr.RepoApi.Tests\Hr.RepoApi.Tests.csproj", "{E34D77E6-D9AA-42AA-AC2B-038179FF7A6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.RepoApi.Model.Lib", "Hr.RepoApi.Model.Lib\Hr.RepoApi.Model.Lib.csproj", "{305B14D8-031B-4C46-91C5-920F51C01C24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RepoApi.Model.Lib", "Hr.RepoApi.Model.Lib\Hr.RepoApi.Model.Lib.csproj", "{305B14D8-031B-4C46-91C5-920F51C01C24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.RepoApi.Launcher", "Hr.RepoApi.Launcher\Hr.RepoApi.Launcher.csproj", "{DEE71350-C511-4043-891B-E5E6D4CF187E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{305B14D8-031B-4C46-91C5-920F51C01C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{305B14D8-031B-4C46-91C5-920F51C01C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{305B14D8-031B-4C46-91C5-920F51C01C24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEE71350-C511-4043-891B-E5E6D4CF187E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEE71350-C511-4043-891B-E5E6D4CF187E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEE71350-C511-4043-891B-E5E6D4CF187E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEE71350-C511-4043-891B-E5E6D4CF187E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,8 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Hr.Api.Models {
+namespace Hr.RepoApi.Models {
     public class Address : IHasIntegerId, IHasSysUser {
         [Key]
         public int Id { get; set; }
@@ -21,7 +20,6 @@ namespace Hr.Api.Models {
         public string PostalCode { get; set; }
 
 
-        [ForeignKey("PersonId")]
         public Person Person { get; set; }
         public int PersonId { get; set; }
 

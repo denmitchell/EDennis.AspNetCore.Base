@@ -31,8 +31,7 @@ namespace ConfigurationApi.Lib.Models {
         public virtual IConfiguration BuildConfiguration() {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
             var builder = new ConfigurationBuilder();
-            builder.AddJsonFile($"appsettings.json", true);
-            builder.AddJsonFile($"appsettings.{env}.json", true);
+            builder.AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env));
             return builder.Build();
         }
 
