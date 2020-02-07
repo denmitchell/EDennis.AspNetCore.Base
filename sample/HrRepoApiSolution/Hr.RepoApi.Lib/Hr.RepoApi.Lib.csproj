@@ -12,11 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="appsettings.json" />
-    <EmbeddedResource Include="appsettings.Development.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />
     
     <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.3" />
