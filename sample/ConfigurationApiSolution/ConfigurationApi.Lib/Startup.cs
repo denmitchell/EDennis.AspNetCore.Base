@@ -1,4 +1,6 @@
 using ConfigurationApi.Lib.Models;
+using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,9 @@ namespace ConfigurationApi.Lib {
                 options.UseSqlServer(cxnString);
             });
 
+            var _ = new ServiceConfig(services, Configuration)
+                .AddMockHeaders();
+
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConfigurationApi", Version = "v1" });
             });
@@ -39,6 +44,9 @@ namespace ConfigurationApi.Lib {
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            if (!env.IsProduction())
+                app.UseMockHeaders();
 
             app.UseAuthorization();
 

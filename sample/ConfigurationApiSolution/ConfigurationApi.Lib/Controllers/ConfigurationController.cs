@@ -1,4 +1,5 @@
-﻿using ConfigurationApi.Lib.Models;
+﻿using ConfigurationApi.Lib.Filters;
+using ConfigurationApi.Lib.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConfigurationApi.Lib.Controllers {
+    [ApiKeyAuth]
     [ApiController]
     [Route("api/[controller]")]
     public class ConfigurationController : ControllerBase {
