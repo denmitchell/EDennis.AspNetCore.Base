@@ -30,6 +30,7 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
         public virtual Func<string[], IConfigurationBuilder> HostConfigurationBuilderFunc { get; set; }
         public virtual bool UsesConfigurationApi { get; } = true;
+        public virtual bool UsesProjectWebRoot { get; } = false;
         public virtual bool UsesEmbeddedConfigurationFiles { get; } = false;
         public virtual bool UsesLauncherConfigurationFile { get; } = true;
         public virtual string ApisConfigurationSection { get; } = "Apis";
@@ -104,6 +105,11 @@ namespace EDennis.AspNetCore.Base.Web {
                     })
                     .UseUrls(urls)
                     .UseStartup(Startup);
+
+                if (UsesProjectWebRoot)
+                    webBuilder.UseWebRoot($"webroot\\{ProjectName}");
+
+                
             });
             return builder;
         }
