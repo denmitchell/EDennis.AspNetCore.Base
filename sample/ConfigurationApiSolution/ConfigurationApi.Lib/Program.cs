@@ -13,7 +13,10 @@ namespace ConfigurationApi.Lib {
                     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
                     var configBuilder = new ConfigurationBuilder();
-                    configBuilder.AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env));
+                    configBuilder
+                        .AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env))
+                        .AddJsonFile("appsettings.Launcher.json", true);
+
 
                     configBuilder
                         .AddEnvironmentVariables()

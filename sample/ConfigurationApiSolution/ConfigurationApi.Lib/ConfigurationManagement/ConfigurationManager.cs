@@ -76,8 +76,7 @@ namespace ConfigurationApi.Lib.Models {
         private ConfigurationDbContext GetDbContext() {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var config = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", true)
-                .AddJsonFile($"appsettings.{env}.json", true)
+                .AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env))
                 .Build();
 
             var cxnString = config["DbContexts:ConfigurationDbContext:ConnectionString"];
