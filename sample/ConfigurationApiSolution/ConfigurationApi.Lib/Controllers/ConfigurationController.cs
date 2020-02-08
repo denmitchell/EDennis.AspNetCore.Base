@@ -20,7 +20,7 @@ namespace ConfigurationApi.Lib.Controllers {
 
         [HttpGet("{appId}")]
         public IActionResult Get([FromRoute] string appId) {
-            var configs = _context.ProjectSettings
+         var configs = _context.ProjectSettings
                 .Where(p => p.ProjectName == appId)
                 .Select(p=> new { p.SettingKey, p.SettingValue });
             if (configs.Count() == 0)

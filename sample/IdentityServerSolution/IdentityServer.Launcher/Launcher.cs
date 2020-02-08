@@ -28,16 +28,13 @@ namespace IdentityServer.Launcher {
         /// <param name="openBrowser"></param>
         public void Launch(string[] args, bool openBrowser = false) {
 
+            //start Configuration API
             var cApi = new C.Program().Run(args);
             ProgramBase.CanPingAsync(cApi);
-            using var client = new HttpClient();
-            var response = client.GetAsync("https://localhost:44312/api/Alive").Result;
 
-            while (!response.IsSuccessStatusCode) {
-                Thread.Sleep(1000);
-                response = client.GetAsync("https://localhost:44312/api/Alive").Result;
-            }
+            //start Identity Server
             var iApi = new I.Program().Run(args);
+            ProgramBase.CanPingAsync(iApi);
 
         }
 

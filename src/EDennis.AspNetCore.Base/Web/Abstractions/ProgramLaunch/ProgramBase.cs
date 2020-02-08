@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ConfigCore.ApiSource;
 using ConfigCore.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -36,6 +37,8 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual string ApisConfigurationSection { get; } = "Apis";
         public abstract Type Startup { get; }
 
+        private static ILogger logger;
+
         public Apis Apis { get; }
         public Api Api { get; }
 
@@ -55,12 +58,24 @@ namespace EDennis.AspNetCore.Base.Web {
             }
             try {
                 Api = Apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Value;
-            } catch (Exception) {
+                LogLaunch("Attempting to start {0} at {1}", projectName, $"{Api.Urls[0]};{Api.Urls[1]}");
+            } catch (Exception ex) {
                 throw new ApplicationException($"Cannot bind to {ApisConfigurationSection}:{projectName} in Configuration.");
             }
 
         }
 
+
+        static ProgramBase() {
+            var loggerFactory = LoggerFactory.Create(builder => {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddConsole()
+                    .AddEventLog();
+            });
+            logger = loggerFactory.CreateLogger<ProgramBase>();
+        }
 
         public IProgram Run(string[] args) {
             Task.Run(() => {
@@ -126,6 +141,10 @@ namespace EDennis.AspNetCore.Base.Web {
             }
         }
 
+        private static void LogLaunch(string message, params object[] messageArgs) {
+            logger.LogInformation(string.Format(message, messageArgs));
+        }
+
 
         private IConfigurationBuilder CreateDefaultConfigurationBuilder(string[] args) {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
@@ -169,6 +188,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 Task.Run(async ()=> { return await CanPingAsync(program1.Api.Host, program1.Api.MainPort.Value); })
             };
             Task.WhenAll(tasks);
+            LogLaunch("Successfully pinged {0}", $"{program1.Api.MainAddress}");
+
             return true;
 
         }
