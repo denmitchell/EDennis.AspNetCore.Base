@@ -11,15 +11,15 @@ namespace ConfigurationApi.Lib.Controllers {
     [ApiController]
     [Route("api/[controller]")]
     public class ConfigurationController : ControllerBase {
-        
+
         readonly ConfigurationDbContext _context;
 
         public ConfigurationController(ConfigurationDbContext context) {
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult Get([FromQuery] string appId) {
+        [HttpGet("{appId}")]
+        public IActionResult Get([FromRoute] string appId) {
             var configs = _context.ProjectSettings
                 .Where(p => p.ProjectName == appId)
                 .Select(p=> new { p.SettingKey, p.SettingValue });

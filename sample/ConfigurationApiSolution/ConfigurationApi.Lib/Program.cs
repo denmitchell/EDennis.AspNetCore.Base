@@ -5,6 +5,8 @@ using System;
 namespace ConfigurationApi.Lib {
     public class Program : ProgramBase<Startup> {
 
+        public override string ProjectName => "ConfigurationApi.Lib";
+
         /// <summary>
         /// Override the default builder to use an in-memory collection
         /// </summary>

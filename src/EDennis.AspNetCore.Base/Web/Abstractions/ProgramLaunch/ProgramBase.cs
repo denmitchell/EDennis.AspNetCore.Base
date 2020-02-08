@@ -26,6 +26,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
     public abstract class ProgramBase : IProgram {
+        public abstract string ProjectName { get; }
         public virtual Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
         public virtual Func<string[], IConfigurationBuilder> HostConfigurationBuilderFunc { get; set; }
         public virtual bool UsesConfigurationApi { get; } = true;
@@ -122,11 +123,13 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private IConfigurationBuilder CreateDefaultConfigurationBuilder(string[] args) {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            var apiUrl = Environment.GetEnvironmentVariable("ConfigurationApiUrl");
+            var apiKey = Environment.GetEnvironmentVariable("ConfigurationApiKey");
 
             var configBuilder = new ConfigurationBuilder();
 
             if (UsesConfigurationApi)
-                configBuilder.AddApiSource("ConfigurationApiUrl", true);
+                configBuilder.AddApiSource("ConfigurationApiUrl", "ApiKey", "ConfigurationApiKey", ProjectName, true);
             else if (UsesEmbeddedConfigurationFiles) {
                 var assembly = Startup.Assembly;
                 var provider = new ManifestEmbeddedFileProvider(assembly);

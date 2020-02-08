@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{32F097EF-D49C-4449-B5B0-47C2958331A8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Launcher", "IdentityServer.Launcher\IdentityServer.Launcher.csproj", "{9714480A-7D02-4541-9F08-A1299781FD94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigCore", "..\..\..\ConfigCore\src\ConfigCore\ConfigCore.csproj", "{FB32C084-5F54-4CAD-8C79-F6882E213B38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9714480A-7D02-4541-9F08-A1299781FD94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9714480A-7D02-4541-9F08-A1299781FD94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9714480A-7D02-4541-9F08-A1299781FD94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9714480A-7D02-4541-9F08-A1299781FD94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB32C084-5F54-4CAD-8C79-F6882E213B38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB32C084-5F54-4CAD-8C79-F6882E213B38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB32C084-5F54-4CAD-8C79-F6882E213B38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB32C084-5F54-4CAD-8C79-F6882E213B38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

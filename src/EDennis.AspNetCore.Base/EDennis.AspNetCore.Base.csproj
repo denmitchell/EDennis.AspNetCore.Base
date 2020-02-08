@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>library</OutputType>
     <IsPackable>true</IsPackable>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
     <Authors>Dennis Mitchell</Authors>
@@ -16,9 +16,9 @@
     <PackageIcon>icon.png</PackageIcon>
     <!--<PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>-->
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Support .NET Core 3.0</PackageReleaseNotes>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <PackageReleaseNotes>Update ProgramBase to include ProjectName abstract property</PackageReleaseNotes>
+    <AssemblyVersion>3.0.1.0</AssemblyVersion>
+    <FileVersion>3.0.1.0</FileVersion>
 
   </PropertyGroup>
 
@@ -38,7 +38,7 @@
   
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.0" />
-    <PackageReference Include="ConfigCore" Version="2.0.0" />
+    <!--<PackageReference Include="ConfigCore" Version="2.0.0" />-->
     <PackageReference Include="Dapper" Version="2.0.30" />
     <PackageReference Include="DevExpress.Xpo" Version="19.2.5" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
@@ -70,6 +70,11 @@
     <!--<PackageReference Include="xunit.core" Version="2.4.1" />-->
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.1" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ConfigCore\src\ConfigCore\ConfigCore.csproj" />
   </ItemGroup>  
       
 
