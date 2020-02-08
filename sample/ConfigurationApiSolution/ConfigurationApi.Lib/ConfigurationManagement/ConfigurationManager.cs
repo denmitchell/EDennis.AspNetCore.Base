@@ -12,12 +12,12 @@ namespace ConfigurationApi.Lib.Models {
     public class ConfigurationManager {
 
         public const string PROJECT_CONFIGURATIONS_FOLDER = "ProjectConfigurations";
-        public const string SHARED_SETTINGS_FILE = "Shared.json";
+        public const string SHARED_SETTINGS_FOLDER = "Shared";
 
         public async Task UploadNew() {
 
             Debug.WriteLine("Getting Project Configuration Files ...");
-            var dir = Directory.EnumerateFiles(PROJECT_CONFIGURATIONS_FOLDER);
+            var folders = Directory.EnumerateDirectories(PROJECT_CONFIGURATIONS_FOLDER);
 
             Debug.WriteLine("Building Sql Connection/Command Objects ...");
             var context = GetDbContext();
@@ -30,15 +30,15 @@ namespace ConfigurationApi.Lib.Models {
                 
             //using var cmd = GetSqlCommand(context);
 
-            foreach (var filePath in dir) {
-                var projectName = filePath.Substring(PROJECT_CONFIGURATIONS_FOLDER.Length + 1).Replace(".json", "");
+            foreach (var folder in folders.Where(f=>!f.EndsWith(SHARED_SETTINGS_FOLDER))) {
+                var projectName = folder.Substring(PROJECT_CONFIGURATIONS_FOLDER.Length + 1);
                 Debug.WriteLine($"Processing {projectName} ...");
-                var lastModified = File.GetLastWriteTime(filePath);
+                var lastModified = File.GetLastWriteTime(folder);
                 if(serverLastModifieds.TryGetValue(projectName,out DateTime serverLastModified)){
                     if (lastModified <= serverLastModified)
                         continue;
                 }
-                Upload(context, PROJECT_CONFIGURATIONS_FOLDER, projectName);
+                Upload(context, folder, projectName);
             }
             await context.SaveChangesAsync();
 
@@ -47,9 +47,13 @@ namespace ConfigurationApi.Lib.Models {
 
         private void Upload(ConfigurationDbContext context, string folder, string projectName) {
 
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
             var config = new ConfigurationBuilder()
-                .AddJsonFile($"{folder}/{SHARED_SETTINGS_FILE}", true)
-                .AddJsonFile($"{folder}/{projectName}.json")
+                .AddJsonFile($"{PROJECT_CONFIGURATIONS_FOLDER}\\{SHARED_SETTINGS_FOLDER}\\appsettings.json", true)
+                .AddJsonFile($"{PROJECT_CONFIGURATIONS_FOLDER}\\{SHARED_SETTINGS_FOLDER}\\appsettings.{env}.json", true)
+                .AddJsonFile($"{folder}\\appsettings.json", true)
+                .AddJsonFile($"{folder}\\appsettings.{env}.json", true)
                 .Build();
 
             List<ProjectSetting> projectSettings = 
