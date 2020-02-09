@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using System;
 using System.Data.Common;
+using System.Diagnostics;
 
 namespace Hr.RepoApi.Models {
 
@@ -15,8 +16,10 @@ namespace Hr.RepoApi.Models {
     ///     PM > Update-Database -Context HrContext -Project Hr.Api.Lib -StartupProject Hr.Api
     /// </summary>
     public class HrContextDesignTimeFactory :
-        MigrationsExtensionsDbContextDesignTimeFactory<HrContext> { 
-        
+        MigrationsExtensionsDbContextDesignTimeFactory<HrContext> {
+        public HrContextDesignTimeFactory() { 
+            //Debugger.Launch(); 
+        }
     }
 
     public class HrContext : DbContext, ISqlServerDbContext<HrContext> {
@@ -170,6 +173,11 @@ namespace Hr.RepoApi.Models {
                 e.Property(e => e.SysEnd)
                     .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
                     .ValueGeneratedOnAddOrUpdate();
+
+                e.HasOne(e => e.Person)
+                    .WithMany(f => f.Addresses)
+                    .HasForeignKey(e => e.PersonId)
+                    .OnDelete(DeleteBehavior.ClientCascade);
 
                 if (Database.IsInMemory()) {
                     e.Property(e => e.Id)

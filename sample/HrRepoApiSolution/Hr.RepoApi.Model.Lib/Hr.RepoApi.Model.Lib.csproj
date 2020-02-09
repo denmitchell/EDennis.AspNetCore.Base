@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
-    <Version>1.0.3</Version>
-    <PackageReleaseNotes>Removed Foreign Key attributes</PackageReleaseNotes>
+    <Version>1.0.5</Version>
+    <PackageReleaseNotes>Added Person.Addresses</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

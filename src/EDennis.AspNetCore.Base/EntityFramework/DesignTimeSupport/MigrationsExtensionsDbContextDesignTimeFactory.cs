@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Diagnostics;
 
 namespace EDennis.AspNetCore.Base.EntityFramework {
 
@@ -22,7 +23,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         : IDesignTimeDbContextFactory<TContext>
         where TContext : DbContext {
 
-        public virtual string ProjectName { get; } = typeof(TContext).Name;
+        public virtual string ProjectName { get; } = typeof(TContext).Assembly.GetName().Name;
 
         //holds configuration data
         private IConfiguration _config;
@@ -56,12 +57,14 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             //create the options builder from the configuration data
             _config = BuildConfiguration();
 
-            DbContextSettings<TContext> settings = new DbContextSettings<TContext>();
-            _config.GetSection($"DbContexts:{typeof(TContext).Name}").Bind(settings);
+            var configKey = $"DbContexts:{typeof(TContext).Name}:ConnectionString";
+            var cxnString = _config[configKey];
+
+            Debug.WriteLine($"Creating {typeof(TContext).Name} for {cxnString}");
 
             var builder = new DbContextOptionsBuilder<TContext>();
             builder = builder
-                    .UseSqlServer(settings.ConnectionString)
+                    .UseSqlServer(cxnString)
                     .ReplaceService<IMigrationsSqlGenerator, MigrationsExtensionsSqlGenerator>();
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { builder.Options });

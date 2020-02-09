@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.EntityFramework;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hr.RepoApi.Models {
@@ -25,5 +26,7 @@ namespace Hr.RepoApi.Models {
 
         [DataType("datetime2(7)")]
         public DateTime SysEnd { get; set; }
+
+        public IEnumerable<Address> Addresses { get; set; }
     }
 }

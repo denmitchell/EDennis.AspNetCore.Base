@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />    
     <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.3" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />

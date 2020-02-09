@@ -22,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\Hr.RepoApi.Lib\Hr.RepoApi.Lib.csproj" />
+    <ProjectReference Include="..\Hr.RepoApi.Model.Lib\Hr.RepoApi.Model.Lib.csproj" />
   </ItemGroup>
 
 </Project>
