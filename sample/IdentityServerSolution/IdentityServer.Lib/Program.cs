@@ -5,6 +5,7 @@ using EDennis.AspNetCore.Base.Web;
 namespace IdentityServer.Lib {
     public class Program : ProgramBase<Startup> {
         public override string ProjectName { get => "IdentityServer.Lib"; }
+        public override bool UsesProjectRoot => true;
 
     }
 }

@@ -1,19 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigurationApi.Lib" Version="1.0.0" />
-    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />
-    <PackageReference Include="IdentityServer.Lib" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    
+    <PackageReference Include="ConfigurationApi.Lib" Version="1.0.9" />
+    <PackageReference Include="IdentityServer.Lib" Version="1.0.6" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\Hr.RepoApi.Lib\Hr.RepoApi.Lib.csproj" />
   </ItemGroup>
 

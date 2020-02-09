@@ -25,21 +25,18 @@ namespace Hr.RepoApi.Launcher {
         /// <param name="openBrowser"></param>
         public void Launch(string[] args, bool openBrowser = false) {
 
-            var iApi = new I.Program().Run(args);
             var cApi = new C.Program().Run(args);
-            var aApi = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(cApi);
 
-            //conditionally launch the External Swagger UI (based upon commandline arg)
-            //(see launchSettings.json for how to pass commandline arguments)
-            if (args.ToCommandLineArgs()["entryPoint"]
-                    .Equals("External", StringComparison.Ordinal)) {
-                var eApi = new External.Program().Run(args);
-                ProgramBase.CanPingAsync(iApi, eApi);
-                ProgramBase.OpenBrowser("https://localhost:44358/swagger");
-            } else {
-                ProgramBase.CanPingAsync(iApi);
-                ProgramBase.OpenBrowser("https://localhost:44352/swagger");
-            }
+            var iApi = new I.Program().Run(args);
+            ProgramBase.CanPingAsync(iApi);
+
+            var aApi = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(aApi);
+
+            if (openBrowser) 
+                ProgramBase.OpenBrowser("https://localhost:44319/swagger");
+
         }
 
     }

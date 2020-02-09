@@ -15,7 +15,9 @@ namespace Hr.RepoApi.Models {
     ///     PM > Update-Database -Context HrContext -Project Hr.Api.Lib -StartupProject Hr.Api
     /// </summary>
     public class HrContextDesignTimeFactory :
-        MigrationsExtensionsDbContextDesignTimeFactory<HrContext> { }
+        MigrationsExtensionsDbContextDesignTimeFactory<HrContext> { 
+        
+    }
 
     public class HrContext : DbContext, ISqlServerDbContext<HrContext> {
         public DbSet<Person> Persons { get; set; }
@@ -45,6 +47,11 @@ namespace Hr.RepoApi.Models {
                 e.Property(e => e.SysEnd)
                     .HasDefaultValueSql("(CONVERT(datetime2, '9999-12-31 23:59:59.9999999'))")
                     .ValueGeneratedOnAddOrUpdate();
+
+                if (Database.IsInMemory()) {
+                    e.Property(e => e.Id)
+                        .HasValueGenerator<MaxPlusOneValueGenerator<Address>>();
+                }
 
                 e.HasData(
                         new Person { Id = -999001, FirstName = "Justino", LastName = "Castille", SysUser = "Castille", DateOfBirth = new DateTime(1964, 2, 23) },

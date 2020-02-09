@@ -10,23 +10,23 @@ namespace ConfigurationApi.Lib {
         /// <summary>
         /// Override the default builder to use an in-memory collection
         /// </summary>
-        public override Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
-                = (args) => {
-                    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+        //public override Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
+        //        = (args) => {
+        //            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
-                    var configBuilder = new ConfigurationBuilder();
-                    configBuilder
-                        .AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env))
-                        .AddJsonFile("appsettings.Launcher.json", true);
+        //            var configBuilder = new ConfigurationBuilder();
+        //            configBuilder
+        //                .AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env))
+        //                .AddJsonFile("appsettings.Launcher.json", true);
 
 
-                    configBuilder
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args)
-                        .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
+        //            configBuilder
+        //                .AddEnvironmentVariables()
+        //                .AddCommandLine(args)
+        //                .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
 
-                    return configBuilder;
-                };
+        //            return configBuilder;
+        //        };
 
 
     }

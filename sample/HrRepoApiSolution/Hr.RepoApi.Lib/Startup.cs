@@ -1,6 +1,6 @@
 using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.Web;
-using Hr.Api.Models;
+using Hr.RepoApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

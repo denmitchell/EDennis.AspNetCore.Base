@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>library</OutputType>
     <IsPackable>true</IsPackable>
-    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Hr.Api.Lib</PackageId>
     <Authors>Hr.Api.Lib</Authors>
@@ -12,11 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />
-    
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.0" />    
     <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.3" />
 
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
     <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
@@ -24,6 +29,11 @@
   <ItemGroup>
     <Folder Include="MigrationsSql\PreUp\" />
     <Folder Include="MigrationsSql\TemporalInserts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <ProjectReference Include="..\Hr.RepoApi.Model.Lib\Hr.RepoApi.Model.Lib.csproj" />
   </ItemGroup>
 
 </Project>

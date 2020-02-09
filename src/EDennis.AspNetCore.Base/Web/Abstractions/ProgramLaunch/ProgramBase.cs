@@ -31,9 +31,14 @@ namespace EDennis.AspNetCore.Base.Web {
         public virtual Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
         public virtual Func<string[], IConfigurationBuilder> HostConfigurationBuilderFunc { get; set; }
         public virtual bool UsesConfigurationApi { get; } = true;
-        public virtual bool UsesProjectWebRoot { get; } = false;
-        public virtual bool UsesEmbeddedConfigurationFiles { get; } = false;
+        public virtual bool UsesEmbeddedConfigurationFiles { get; } = true;
         public virtual bool UsesLauncherConfigurationFile { get; } = true;
+
+        /// <summary>
+        /// Whether the project places all wwwroot artifacts in 
+        /// wwwroot\{ProjectName}.
+        /// </summary>
+        public virtual bool UsesProjectRoot { get; } = true;
         public virtual string ApisConfigurationSection { get; } = "Apis";
         public abstract Type Startup { get; }
 
@@ -121,10 +126,10 @@ namespace EDennis.AspNetCore.Base.Web {
                     .UseUrls(urls)
                     .UseStartup(Startup);
 
-                if (UsesProjectWebRoot)
-                    webBuilder.UseWebRoot($"webroot\\{ProjectName}");
+                if (UsesProjectRoot)
+                    webBuilder.UseWebRoot($"ProjectRoot\\{ProjectName}\\wwwroot");
 
-                
+
             });
             return builder;
         }
@@ -153,17 +158,29 @@ namespace EDennis.AspNetCore.Base.Web {
 
             var configBuilder = new ConfigurationBuilder();
 
-            if (UsesConfigurationApi)
-                configBuilder.AddApiSource("ConfigurationApiUrl", "ApiKey", "ConfigurationApiKey", ProjectName, true);
-            else if (UsesEmbeddedConfigurationFiles) {
+
+            if (UsesEmbeddedConfigurationFiles) {
                 var assembly = Startup.Assembly;
                 var provider = new ManifestEmbeddedFileProvider(assembly);
-                configBuilder.AddJsonFile(provider, $"appsettings.json", true, true);
-                configBuilder.AddJsonFile(provider, $"appsettings.{env}.json", true, true);
+                if (UsesProjectRoot) {
+                    configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.json", true, true);
+                    configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true, true);
+                } else {
+                    configBuilder.AddJsonFile(provider, $"appsettings.json", true, true);
+                    configBuilder.AddJsonFile(provider, $"appsettings.{env}.json", true, true);
+                }
             } else {
-                configBuilder.AddJsonFile($"appsettings.json", true, true);
-                configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
+                if (UsesProjectRoot) {
+                    configBuilder.AddJsonFile($"ProjectRoot\\{ProjectName}\\appsettings.json", true, true);
+                    configBuilder.AddJsonFile($"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true, true);
+                } else {
+                    configBuilder.AddJsonFile($"appsettings.json", true, true);
+                    configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
+                }
             }
+
+            if (UsesConfigurationApi)
+                configBuilder.AddApiSource("ConfigurationApiUrl", "ApiKey", "ConfigurationApiKey", ProjectName, true);
 
             //if needed, to add/overwrite settings for a Launcher (during testing)
             if (UsesLauncherConfigurationFile)

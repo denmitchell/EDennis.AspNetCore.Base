@@ -22,6 +22,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         : IDesignTimeDbContextFactory<TContext>
         where TContext : DbContext {
 
+        public virtual string ProjectName { get; } = typeof(TContext).Name;
+
         //holds configuration data
         private IConfiguration _config;
 
@@ -34,6 +36,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var builder = new ConfigurationBuilder();
             builder.AddJsonFile($"appsettings.json", true);
             builder.AddJsonFile($"appsettings.{env}.json", true);
+            builder.AddJsonFile($"ProjectConfigurations\\{ProjectName}\\appsettings.json", true);
+            builder.AddJsonFile($"ProjectConfigurations\\{ProjectName}\\appsettings.{env}.json", true);
             return builder.Build();
         }
 
