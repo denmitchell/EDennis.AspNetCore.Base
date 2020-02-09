@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hr.RepoApi.Controllers {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AddressController: RepoController<Address,HrContext,AddressRepo>{
         public AddressController(AddressRepo repo) : base(repo) { }
     }
