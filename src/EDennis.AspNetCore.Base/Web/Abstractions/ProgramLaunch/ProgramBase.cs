@@ -64,7 +64,7 @@ namespace EDennis.AspNetCore.Base.Web {
             try {
                 Api = Apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Value;
                 LogLaunch("Attempting to start {0} at {1}", projectName, $"{Api.Urls[0]};{Api.Urls[1]}");
-            } catch (Exception ex) {
+            } catch (Exception) {
                 throw new ApplicationException($"Cannot bind to {ApisConfigurationSection}:{projectName} in Configuration.");
             }
 

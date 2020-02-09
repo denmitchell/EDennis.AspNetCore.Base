@@ -18,7 +18,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         private DbContextProvider<THistoryContext> _dbContextProvider;
 
 
-        public TestTemporalRepoFactory() :base() {
+        public TestTemporalRepoFactory(string projectName) :base(projectName) {
             HistoryDbContext = DbContextProvider<THistoryContext>.GetInterceptorContext(HistoryDbContextSettings, HistoryCachedConnection);
             if (HistoryDbContext is ISqlServerDbContext<THistoryContext>)
                 (HistoryDbContext as ISqlServerDbContext<THistoryContext>).StoredProcedureDefs = HistoryStoredProcedureDefs;

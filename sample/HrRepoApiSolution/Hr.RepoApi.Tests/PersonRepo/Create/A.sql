@@ -9,7 +9,7 @@ declare @TestCase varchar(255) = 'A'
 declare @Id int = -999101
 declare @FirstName varchar(255) = 'Chandler'
 declare @LastName varchar(255) = 'Bing'
-declare @DateOfBirth int = '1970-05-01'
+declare @DateOfBirth datetime = '1970-05-01'
 declare @SysUser varchar(255) = 'tester@example.org'
 
 declare @LinqWhere varchar(255) = 'Id ge -999101 and Id le -999099'

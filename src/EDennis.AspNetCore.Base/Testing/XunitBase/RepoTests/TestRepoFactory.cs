@@ -23,8 +23,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         private DbContextProvider<TContext> _dbContextProvider;
         private StoredProcedureDefs<TContext> _storedProcedureDefs;
 
+        protected string _projectName;
 
-        public TestRepoFactory() {
+        public TestRepoFactory(string projectName) {
+            _projectName = projectName;
             DbContext = DbContextProvider<TContext>.GetInterceptorContext(DbContextSettings, CachedConnection);
             if (DbContext is ISqlServerDbContext<TContext>)
                 (DbContext as ISqlServerDbContext<TContext>).StoredProcedureDefs = StoredProcedureDefs;
@@ -36,7 +38,8 @@ namespace EDennis.AspNetCore.Base.Testing {
                 if (_configuration == null) {
                     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                     _configuration = new ConfigurationBuilder()
-                        .AddJsonFile($"appsettings.{env}.json")
+                        .AddJsonFile($"appsettings.{env}.json", true, true)
+                        .AddJsonFile($"ProjectRoot\\{_projectName}\\appsettings.{env}.json", true, true)
                         .Build();
                 }
                 return _configuration;

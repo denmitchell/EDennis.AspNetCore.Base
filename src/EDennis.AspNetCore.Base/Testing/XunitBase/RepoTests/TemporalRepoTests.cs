@@ -14,12 +14,14 @@ namespace EDennis.AspNetCore.Base.Testing {
         where THistoryContext : DbContext
         where TTemporalRepo : TemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext> {
 
+        public virtual string ProjectName { get; set; } = typeof(TTemporalRepo).Assembly.GetName().Name;
+
         protected ITestOutputHelper Output { get; }
         protected TTemporalRepo Repo { get; }
         protected TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> Factory { get; }
         public TemporalRepoTests(ITestOutputHelper output) {
             Output = output;
-            Factory = new TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>();
+            Factory = new TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext>(ProjectName);
             Repo = Factory.CreateRepo();
         }
 

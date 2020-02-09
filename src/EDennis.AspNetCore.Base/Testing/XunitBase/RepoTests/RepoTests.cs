@@ -17,13 +17,15 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TContext : DbContext, ISqlServerDbContext<TContext>
         where TRepo : Repo<TEntity, TContext> {
 
+        public virtual string ProjectName { get; set; } = typeof(TRepo).Assembly.GetName().Name;
+
         protected ITestOutputHelper Output { get; }
         protected TRepo Repo { get; }
         protected TestRepoFactory<TRepo, TEntity, TContext> Factory { get; }
 
         public RepoTests(ITestOutputHelper output) {
             Output = output;
-            Factory = new TestRepoFactory<TRepo, TEntity, TContext>();
+            Factory = new TestRepoFactory<TRepo, TEntity, TContext>(ProjectName);
             Repo = Factory.CreateRepo();
         }
 
