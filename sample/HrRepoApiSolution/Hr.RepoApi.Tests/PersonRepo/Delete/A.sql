@@ -1,20 +1,20 @@
-﻿use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Repo'
-declare @ClassName varchar(255) = 'RgbRepo'
+﻿use Hr123;
+declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
+declare @ClassName varchar(255) = 'PersonRepo'
 declare @MethodName varchar(255) = 'Delete'
-declare @TestScenario varchar(255) = 'Verifying with Dynamic Linq, Success'
+declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
-declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
+declare @LinqWhere varchar(255) = 'Id ge -999005 and Id le -999003'
 
-declare @TargetId int = -999145
+declare @TargetId int = -999004
 declare @Exception varchar(255) = null
 
 begin transaction
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb 
-		where Id between -999148 and -999143
+	select * from Person 
+		where Id between -999005 and -999003
 			and Id <> @TargetId
 	for json path
 );

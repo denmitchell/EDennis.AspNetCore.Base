@@ -572,16 +572,18 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             var existing = Context.Find<TEntity>(keyValues);
             if (existing == null)
                 return;
-                //throw new MissingEntityException(
-                //    $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
+            //throw new MissingEntityException(
+            //    $"Cannot find {typeof(TEntity).Name} object with key value = {PrintKeys(keyValues)}");
 
             try {
                 Context.Remove(existing);
                 Context.SaveChanges();
-            } catch (DbUpdateConcurrencyException ex) {
+            } catch (DbUpdateConcurrencyException ex2) {
                 Context.Entry(existing).State = EntityState.Detached;
                 if (Context.Find<TEntity>(existing) != null)
-                    throw new DbOperationException(ex.InnerException.Message, ex.InnerException);
+                    throw new DbOperationException(ex2.InnerException.Message, ex.InnerException);
+            } catch (DbUpdateException ex1) {
+                throw new DbOperationException(ex1.InnerException.Message, ex1.InnerException);
             }
 
         }
