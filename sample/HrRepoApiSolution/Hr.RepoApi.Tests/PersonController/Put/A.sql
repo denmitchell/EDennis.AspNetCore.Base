@@ -1,21 +1,17 @@
-﻿use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'RgbController'
+﻿use Hr123;
+declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
+declare @ClassName varchar(255) = 'PersonController'
 declare @MethodName varchar(255) = 'Put'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
 
-declare @ControllerPath varchar(255) = 'api/Rgb'
-declare @Name varchar(255) = 'GreyA'
-declare @Red int = 128
-declare @Green int = 128
-declare @Blue int = 128
-declare @DateAdded datetime2 = '2020-01-01'
+declare @ControllerPath varchar(255) = 'api/Person'
+declare @FirstName varchar(255) = 'Chandler'
 declare @SysUser varchar(255) = 'tester@example.org'
 
-declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
+declare @LinqWhere varchar(255) = 'Id ge -999006 and Id le -999004'
 
-declare @TargetId int = -999145
+declare @TargetId int = -999005
 declare @ExpectedStatusCode int = 200 --Success
 
 
@@ -24,19 +20,20 @@ declare @Input varchar(max) =
 (
 	select
 		@TargetId Id,
-		@Name Name,
-		@Red Red, @Green Green, @Blue Blue,
-		@DateAdded DateAdded
-		
+		@FirstName FirstName,
+		LastName LastName,
+		DateOfBirth DateOfBirth,
+		@SysUser SysUser
+		from Person where Id = @TargetId
 	for json path, without_array_wrapper
 )
 
-update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser, DateAdded=@DateAdded
+update Person set FirstName=@FirstName, SysUser=@SysUser
 	where Id = @TargetId
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb where Id between -999148 and -999143
+	select * from Person where Id between -999006 and -999004
 	for json path
 );
 

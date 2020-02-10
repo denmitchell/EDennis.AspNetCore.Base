@@ -1,35 +1,35 @@
-﻿use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'RgbController'
+﻿use Hr123;
+declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
+declare @ClassName varchar(255) = 'PersonController'
 declare @MethodName varchar(255) = 'Post'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
 
-declare @ControllerPath varchar(255) = 'api/Rgb'
-declare @Name varchar(255) = 'Lucite'
-declare @Red int = 125
-declare @Green int = 208
-declare @Blue int = 182
+declare @ControllerPath varchar(255) = 'api/Person'
+declare @Id int = -999101
+declare @FirstName varchar(255) = 'Chandler'
+declare @LastName varchar(255) = 'Bing'
+declare @DateOfBirth datetime = '1970-05-01'
+declare @SysUser varchar(255) = 'tester@example.org'
 
-declare @LinqWhere varchar(255) = 'Id ge -999149 and Id le -999143'
+declare @LinqWhere varchar(255) = 'Id ge -999101 and Id le -999099'
 
-declare @TargetId int = -999149
 declare @ExpectedStatusCode int = 200 --Success
 
 begin transaction
-insert into Rgb (Id, Name, Red, Green, Blue, SysUser, DateAdded) 
+insert into Person (Id, FirstName, LastName, DateOfBirth, SysUser) 
     values 
-        (@TargetId, @Name, @Red, @Green, @Blue, 'tester@example.org', GETDATE())
+        (@Id, @FirstName, @LastName, @DateOfBirth, @SysUser)
 
 declare @Input varchar(max) = 
 (
-	select * from Rgb where Id = @TargetId
+	select * from Person where Id = @Id
 	for json path, without_array_wrapper
 )
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb where Id between -999149 and -999143
+	select * from Person where Id between -999101 and -999099
 	for json path
 );
 

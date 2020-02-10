@@ -1,20 +1,17 @@
-﻿use Color2Db;
-declare @ProjectName varchar(255) = 'Colors2Api'
-declare @ClassName varchar(255) = 'RgbController'
+﻿use Hr123;
+declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
+declare @ClassName varchar(255) = 'PersonController'
 declare @MethodName varchar(255) = 'Patch'
 declare @TestScenario varchar(255) = 'Bad Request - Bad Id'
 declare @TestCase varchar(255) = 'C'
 
-declare @ControllerPath varchar(255) = 'api/Rgb'
-declare @Name varchar(255) = 'BlueB'
-declare @Red int = 55
-declare @Green int = 55
-declare @Blue int = 225
+declare @ControllerPath varchar(255) = 'api/Person'
+declare @FirstName varchar(255) = 'Chandler'
 declare @SysUser varchar(255) = 'tester@example.org'
 
-declare @LinqWhere varchar(255) = 'Id ge -999148 and Id le -999143'
+declare @LinqWhere varchar(255) = 'Id ge -999006 and Id le -999004'
 
-declare @TargetId int = -999146
+declare @TargetId int = -999005
 declare @InvalidId int = -999299
 declare @ExpectedStatusCode int = 400 --Bad Request
 
@@ -24,17 +21,14 @@ declare @Input varchar(max) =
 (
 	select
 		@InvalidId Id,
-		@Name Name,
-		@Red Red, @Green Green, @Blue Blue
+		@FirstName FirstName, @SysUser SysUser
 	for json path, without_array_wrapper
 )
 
---update Rgb set Name=@Name, Red=@Red, Blue=@Blue, Green=@Green, SysUser=@SysUser
---	where Id = @TargetId
 
 declare @Expected varchar(max) = 
 (
-	select * from Rgb where Id between -999148 and -999143
+	select * from Person where Id between -999006 and -999004
 	for json path
 );
 
