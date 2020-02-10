@@ -11,7 +11,7 @@ declare @SysUser varchar(255) = 'tester@example.org'
 
 declare @LinqWhere varchar(255) = 'Id ge -999006 and Id le -999004'
 
-declare @TargetId int = -999005
+declare @Id int = -999005
 declare @ExpectedStatusCode int = 200 --Success
 
 
@@ -38,7 +38,7 @@ rollback transaction
 --exec _.ResetSequences --only needed if no explicit Ids are provided
 
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ControllerPath', @ControllerPath
-exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @TargetId
+exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Id', @Id
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Input', @Input
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'Expected', @Expected
 exec _.SaveTestJson @ProjectName, @ClassName, @MethodName, @TestScenario, @TestCase, 'ExpectedStatusCode', @ExpectedStatusCode

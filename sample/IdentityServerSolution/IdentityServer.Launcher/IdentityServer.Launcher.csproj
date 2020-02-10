@@ -14,5 +14,11 @@
     <ProjectReference Include="..\IdentityServer.Lib\IdentityServer.Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="C:\Users\MitchellDenC\.nuget\packages\configurationapi.lib\1.0.9\contentFiles\any\netcoreapp3.1\ProjectRoot\ConfigurationApi\appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 
 </Project>

@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.3" />
+    <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.5" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
@@ -23,6 +23,8 @@
     </PackageReference>
 
     <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
+
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 

@@ -12,6 +12,14 @@
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\Hr.RepoApi.Lib\Hr.RepoApi.Lib.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="C:\Users\MitchellDenC\.nuget\packages\configurationapi.lib\1.0.9\contentFiles\any\netcoreapp3.1\ProjectRoot\ConfigurationApi\appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\MitchellDenC\.nuget\packages\identityserver.lib\1.0.6\contentFiles\any\netcoreapp3.1\ProjectRoot\IdentityServer.Lib\appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 
 </Project>

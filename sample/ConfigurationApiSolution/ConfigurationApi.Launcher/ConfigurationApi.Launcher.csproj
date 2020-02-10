@@ -5,8 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\..\Hr.RazorApp.Lib\ProjectRoot\Hr.RazorApp.Lib\appsettings.Development.json" Link="ProjectConfigurations\Hr.RazorApp.Lib\appsettings.Development.json" />
+    <Content Include="..\..\HrRepoApiSolution\Hr.RepoApi.Lib\ProjectRoot\Hr.RepoApi.Lib\appsettings.Development.json" Link="ProjectConfigurations\Hr.RepoApi.Lib\appsettings.Development.json" />
+    <Content Include="..\..\IdentityServerSolution\IdentityServer.Lib\ProjectRoot\IdentityServer.Lib\appsettings.Development.json" Link="ProjectConfigurations\IdentityServer.Lib\appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\ConfigurationApi.Lib\ConfigurationApi.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ProjectConfigurations\Hr.RazorApp.Lib\" />
+    <Folder Include="ProjectConfigurations\Hr.RepoApi.Lib\" />
+    <Folder Include="ProjectConfigurations\IdentityServer.Lib\" />
+    <Folder Include="ProjectConfigurations\Shared\" />
   </ItemGroup>
 
 

@@ -1,6 +1,6 @@
 ﻿use Hr123;
 declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
-declare @ClassName varchar(255) = 'PersonController'
+declare @ClassName varchar(255) = 'AddressController'
 declare @MethodName varchar(255) = 'GetWithDynamicLinq'
 declare @TestScenario varchar(255) = 'With Select'
 declare @TestCase varchar(255) = 'B'
