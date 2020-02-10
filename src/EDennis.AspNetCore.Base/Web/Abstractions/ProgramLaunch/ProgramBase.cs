@@ -161,7 +161,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             if (UsesEmbeddedConfigurationFiles) {
                 var assembly = Startup.Assembly;
-                var provider = new ManifestEmbeddedFileProvider(assembly);
+                var provider = new ManifestEmbeddedFileProvider(assembly, $"ProjectRoot\\{ProjectName}");
                 if (UsesProjectRoot) {
                     configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.json", true, true);
                     configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true, true);
