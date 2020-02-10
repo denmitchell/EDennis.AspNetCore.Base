@@ -21,8 +21,8 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
     /// </summary>
     /// <typeparam name="TEntity">The associated model class</typeparam>
     /// <typeparam name="TContext">The associated DbContextBase class</typeparam>
-    [ScopedTraceLogger]
-    [AspectSkipProperties(true)]
+    //[ScopedTraceLogger]
+    //[AspectSkipProperties(true)]
     public partial class Repo<TEntity, TContext> : IRepo, IRepo<TEntity, TContext>
         where TEntity : class, IHasSysUser, new()
         where TContext : DbContext {
@@ -581,7 +581,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             } catch (DbUpdateConcurrencyException ex2) {
                 Context.Entry(existing).State = EntityState.Detached;
                 if (Context.Find<TEntity>(existing) != null)
-                    throw new DbOperationException(ex2.InnerException.Message, ex.InnerException);
+                    throw new DbOperationException(ex2.InnerException.Message, ex2.InnerException);
             } catch (DbUpdateException ex1) {
                 throw new DbOperationException(ex1.InnerException.Message, ex1.InnerException);
             }

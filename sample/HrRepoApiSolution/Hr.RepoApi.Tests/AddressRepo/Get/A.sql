@@ -1,6 +1,6 @@
 ﻿use Hr123;
 declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
-declare @ClassName varchar(255) = 'PersonRepo'
+declare @ClassName varchar(255) = 'AddressRepo'
 declare @MethodName varchar(255) = 'Get'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
@@ -10,7 +10,7 @@ declare @Exception varchar(255) = null
 
 declare @Expected varchar(max) = 
 (
-	select * from Person 
+	select * from Address 
 		where Id = @TargetId
 	for json path, without_array_wrapper
 );

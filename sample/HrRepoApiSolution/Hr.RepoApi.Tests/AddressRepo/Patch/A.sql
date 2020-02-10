@@ -1,12 +1,12 @@
 ﻿use Hr123;
 declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
-declare @ClassName varchar(255) = 'PersonRepo'
+declare @ClassName varchar(255) = 'AddressRepo'
 declare @MethodName varchar(255) = 'Patch'
 declare @TestScenario varchar(255) = 'Success'
 declare @TestCase varchar(255) = 'A'
 
 declare @Id int = -999005
-declare @FirstName varchar(255) = 'Chandler'
+declare @StreetAddress varchar(255) = '123 Main Street'
 declare @SysUser varchar(255) = 'tester@example.org'
 
 declare @LinqWhere varchar(255) = 'Id ge -999006 and Id le -999004'
@@ -19,17 +19,17 @@ declare @Input varchar(max) =
 (
 	select
 		@Id Id,
-		@FirstName FirstName,
+		@StreetAddress StreetAddress,
 		@SysUser SysUser
 	for json path, without_array_wrapper
 )
 
-update Person set FirstName=@FirstName, SysUser=@SysUser
+update Address set StreetAddress=@StreetAddress, SysUser=@SysUser
 	where Id = @Id
 
 declare @Expected varchar(max) = 
 (
-	select * from Person where Id between -999006 and -999004
+	select * from Address where Id between -999006 and -999004
 	for json path
 );
 
