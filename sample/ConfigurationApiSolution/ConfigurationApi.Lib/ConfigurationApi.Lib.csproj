@@ -6,9 +6,10 @@
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    <PackageReleaseNotes>Reorganize ProjectConfigurations folders to provide support for uploading configurations for multiple environments.</PackageReleaseNotes>
-    <Version>1.1.1</Version>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <PackageReleaseNotes>Remove .Lib from ProjectRoot subfolder structure -- to keep consistent with other ProjectName use in ProgramBase</PackageReleaseNotes>
+    <Version>1.1.5</Version>
+    <AssemblyVersion>1.1.5.0</AssemblyVersion>
+    <FileVersion>1.1.5.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,9 +27,20 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 
+
   <ItemGroup>
+    <Content Remove="ProjectRoot\ConfigurationApi\**\*.*" />
     <EmbeddedResource Include="ProjectRoot\ConfigurationApi\**\*.*" />
   </ItemGroup>
+
+
+  <!--<ItemGroup>
+    <Content Remove="ProjectRoot\ConfigurationApi.Lib\appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectRoot\ConfigurationApi.Lib\appsettings.Development.json" />
+  </ItemGroup>-->
 
 
   <ItemGroup>

@@ -109,59 +109,59 @@ namespace IdentityServer
             };
         }
 
-        public class UserClientClaimSpec {
-            public string ClientId { get; set; }
+        public class AppUserClaim {
+            public string AppClientId { get; set; }
             public string Username { get; set; }
             public List<Claim> Claims { get; set; }
         }
 
-        public static IEnumerable<UserClientClaimSpec> UserClientClaims { get; } =
-            new UserClientClaimSpec[] {
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+        public static IEnumerable<AppUserClaim> UserClientClaims { get; } =
+            new AppUserClaim[] {
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="mike",
                     Claims = new List<Claim> {
                         new Claim("user_scope","Hr.RazorApp.*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="carol",
                     Claims = new List<Claim> {
                         new Claim("user_scope","Hr.RazorApp.*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="greg",
                     Claims = new List<Claim> {
                         new Claim("user_scope","Hr.RazorApp.Person.*"),
                         new Claim("user_scope","Hr.RazorApp.Address.*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="marcia",
                     Claims = new List<Claim> {
                         new Claim("user_scope","-Hr.RazorApp.*Delete*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="peter",
                     Claims = new List<Claim> {
                         new Claim("user_scope","Hr.RazorApp.Person.*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="jan",
                     Claims = new List<Claim> {
                         new Claim("user_scope","Hr.RazorApp.Address.*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="bobby",
                     Claims = new List<Claim> {
                         new Claim ("user_scope","Hr.RazorApp.Person.Index"),
@@ -169,8 +169,8 @@ namespace IdentityServer
                         new Claim ("user_scope","Hr.RazorApp.Address.*")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="cindy",
                     Claims = new List<Claim> {
                         new Claim ("user_scope","Hr.RazorApp.Person.Index"),
@@ -179,8 +179,8 @@ namespace IdentityServer
                         new Claim ("user_scope","Hr.RazorApp.Person.Edit")
                     }
                 },
-                new UserClientClaimSpec {
-                    ClientId = "Hr.RazorApp",
+                new AppUserClaim {
+                    AppClientId = "Hr.RazorApp",
                     Username="alice",
                     Claims = new List<Claim> {
                         new Claim("user_scope","Hr.RazorApp.*Index*,Hr.RazorApp.*Details*")
@@ -210,68 +210,68 @@ namespace IdentityServer
             return new List<ApiResource>
             {
                 new ApiResource{
-                    Name ="Hr.Api",
-                    DisplayName="Hr.Api",
+                    Name ="Hr.RepoApi",
+                    DisplayName="Hr.RepoApi",
                     Scopes={
                         new Scope {
-                            Name = "Hr.Api.*",
-                            DisplayName = "Hr.Api.*"
+                            Name = "Hr.RepoApi.*",
+                            DisplayName = "Hr.RepoApi.*"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.*",
-                            DisplayName = "Hr.Api.Person.*"
+                            Name = "Hr.RepoApi.Person.*",
+                            DisplayName = "Hr.RepoApi.Person.*"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.Index",
-                            DisplayName = "Hr.Api.Person.Index"
+                            Name = "Hr.RepoApi.Person.Index",
+                            DisplayName = "Hr.RepoApi.Person.Index"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.Details",
-                            DisplayName = "Hr.Api.Person.Details"
+                            Name = "Hr.RepoApi.Person.Details",
+                            DisplayName = "Hr.RepoApi.Person.Details"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.Create",
-                            DisplayName = "Hr.Api.Person.Create"
+                            Name = "Hr.RepoApi.Person.Create",
+                            DisplayName = "Hr.RepoApi.Person.Create"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.Edit",
-                            DisplayName = "Hr.Api.Person.Edit"
+                            Name = "Hr.RepoApi.Person.Edit",
+                            DisplayName = "Hr.RepoApi.Person.Edit"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.Delete",
-                            DisplayName = "Hr.Api.Person.Delete"
+                            Name = "Hr.RepoApi.Person.Delete",
+                            DisplayName = "Hr.RepoApi.Person.Delete"
                         },
                         new Scope {
-                            Name = "Hr.Api.Person.Exists",
-                            DisplayName = "Hr.Api.Person.Exists"
+                            Name = "Hr.RepoApi.Person.Exists",
+                            DisplayName = "Hr.RepoApi.Person.Exists"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.*",
-                            DisplayName = "Hr.Api.Address.*"
+                            Name = "Hr.RepoApi.Address.*",
+                            DisplayName = "Hr.RepoApi.Address.*"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.Index",
-                            DisplayName = "Hr.Api.Address.Index"
+                            Name = "Hr.RepoApi.Address.Index",
+                            DisplayName = "Hr.RepoApi.Address.Index"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.Details",
-                            DisplayName = "Hr.Api.Address.Details"
+                            Name = "Hr.RepoApi.Address.Details",
+                            DisplayName = "Hr.RepoApi.Address.Details"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.Create",
-                            DisplayName = "Hr.Api.Address.Create"
+                            Name = "Hr.RepoApi.Address.Create",
+                            DisplayName = "Hr.RepoApi.Address.Create"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.Edit",
-                            DisplayName = "Hr.Api.Address.Edit"
+                            Name = "Hr.RepoApi.Address.Edit",
+                            DisplayName = "Hr.RepoApi.Address.Edit"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.Delete",
-                            DisplayName = "Hr.Api.Address.Delete"
+                            Name = "Hr.RepoApi.Address.Delete",
+                            DisplayName = "Hr.RepoApi.Address.Delete"
                         },
                         new Scope {
-                            Name = "Hr.Api.Address.Exists",
-                            DisplayName = "Hr.Api.Address.Exists"
+                            Name = "Hr.RepoApi.Address.Exists",
+                            DisplayName = "Hr.RepoApi.Address.Exists"
                         }
                     }
                 },
@@ -300,9 +300,9 @@ namespace IdentityServer
         public static IEnumerable<Client> GetClients() {
             return new List<Client> {
                 new MockClient {
-                    ClientId = "Hr.Api.Client1",
+                    ClientId = "Hr.RepoApi.Client1",
                     AllowedScopes = {
-                        "Hr.Api.*",
+                        "Hr.RepoApi.*",
                         "EDennis.Samples.Hr.InternalApi.*"
                     },
                     Claims = {
@@ -311,28 +311,27 @@ namespace IdentityServer
                     }
                 },
                 new MockClient {
-                    ClientId = "Hr.Api.Client2",
+                    ClientId = "Hr.RepoApi.Client2",
                     AllowedScopes = {
-                        "Hr.Api.Person.*",
-                        "EDennis.Samples.Hr.InternalApi.Employee.*"
+                        "Hr.RepoApi.Person.*",
                     },
                     Claims = {
                         new Claim("name","larry@stooges.org")
                     }
                 },
                 new MockClient {
-                    ClientId = "Hr.Api.Client3",
+                    ClientId = "Hr.RepoApi.Client3",
                     AllowedScopes = {
-                        "Hr.Api.Person.Index",
-                        "Hr.Api.Person.Details",
-                        "Hr.Api.Address.Create"
+                        "Hr.RepoApi.Person.Index",
+                        "Hr.RepoApi.Person.Details",
+                        "Hr.RepoApi.Address.Create"
                     },
                     Claims = {
                         new Claim("name","curly@stooges.org")
                     }
                 },
                 new MockClient {
-                    ClientId = "Hr.Api.Client4",
+                    ClientId = "Hr.RepoApi.Client4",
                     AllowedScopes = {
                         "N/A"
                     }
@@ -358,7 +357,7 @@ namespace IdentityServer
                         "user_scope",
                         "role",
                         "name",
-                        "Hr.Api.*"
+                        "Hr.RepoApi.*"
                     },
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,

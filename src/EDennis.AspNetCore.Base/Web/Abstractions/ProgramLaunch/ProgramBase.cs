@@ -55,17 +55,17 @@ namespace EDennis.AspNetCore.Base.Web {
 
             Apis = new Apis();
             var config = AppConfigurationBuilderFunc(new string[] { }).Build();
-            var projectName = GetType().Assembly.GetName().Name.Replace(".Lib", "");
+            //var projectName = GetType().Assembly.GetName().Name.Replace(".Lib", "");
             try {
                 config.GetSection(ApisConfigurationSection).Bind(Apis);
             } catch (Exception) {
                 throw new ApplicationException($"Cannot bind to {ApisConfigurationSection} in Configuration.");
             }
             try {
-                Api = Apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Value;
-                LogLaunch("Attempting to start {0} at {1}", projectName, $"{Api.Urls[0]};{Api.Urls[1]}");
+                Api = Apis.FirstOrDefault(a => a.Value.ProjectName == ProjectName).Value;
+                LogLaunch("Attempting to start {0} at {1}", ProjectName, $"{Api.Urls[0]};{Api.Urls[1]}");
             } catch (Exception) {
-                throw new ApplicationException($"Cannot bind to {ApisConfigurationSection}:{projectName} in Configuration.");
+                throw new ApplicationException($"Cannot bind to {ApisConfigurationSection}:{ProjectName} in Configuration.");
             }
 
         }
@@ -161,7 +161,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
             if (UsesEmbeddedConfigurationFiles) {
                 var assembly = Startup.Assembly;
-                var provider = new ManifestEmbeddedFileProvider(assembly, $"ProjectRoot\\{ProjectName}");
+                ManifestEmbeddedFileProvider provider = new ManifestEmbeddedFileProvider(assembly);
                 if (UsesProjectRoot) {
                     configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.json", true, true);
                     configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true, true);

@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigurationApi.Lib" Version="1.0.9" />
-    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.0.1" />
+    <PackageReference Include="ConfigurationApi.Lib" Version="1.1.5" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 namespace EDennis.AspNetCore.Base.Web.Security {
     public abstract class UserClientClaimsProfileService : IProfileService {
 
-        public abstract IEnumerable<Claim> GetUserClientClaims(string clientId, string subjectName);
+        public abstract IEnumerable<Claim> GetUserClientClaims(string clientId, string userName);
 
 
         public Task GetProfileDataAsync(ProfileDataRequestContext context) {
             var clientId = context.Client.ClientId;
-            var subjectName = context.Subject.Identity.Name;
-            if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(subjectName)) {
-                var claimsToAdd = GetUserClientClaims(clientId, subjectName);
+            var userName = context.Subject.Identity.Name;
+            if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(userName)) {
+                var claimsToAdd = GetUserClientClaims(clientId, userName);
                 context.IssuedClaims.AddRange(claimsToAdd);
             }
             return Task.CompletedTask;

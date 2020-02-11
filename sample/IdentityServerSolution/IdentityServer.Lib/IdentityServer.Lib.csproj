@@ -10,7 +10,7 @@
     <Authors>IdentityServer.Lib</Authors>
     <Product>IdentityServer.Lib</Product>
     <Company>IdentityServer.Lib</Company>
-    <Version>1.0.6</Version>
+    <Version>1.0.8</Version>
   </PropertyGroup>
 
 
@@ -27,52 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\appsettings.Development.json" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\css\site.css" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\css\site.less" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\css\site.min.css" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\favicon.ico" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\icon.jpg" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\icon.png" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\js\signin-redirect.js" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\js\signout-redirect.js" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\css\bootstrap.css" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\css\bootstrap.css.map" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\css\bootstrap.min.css" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\js\bootstrap.js" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\js\bootstrap.min.js" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\jquery\jquery.js" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\jquery\jquery.min.js" />
-    <Content Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\jquery\jquery.min.map" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\css\site.css" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\css\site.less" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\css\site.min.css" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\favicon.ico" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\icon.jpg" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\icon.png" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\js\signin-redirect.js" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\js\signout-redirect.js" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\css\bootstrap.css" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\css\bootstrap.css.map" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\css\bootstrap.min.css" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\js\bootstrap.js" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\bootstrap\js\bootstrap.min.js" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\jquery\jquery.js" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\jquery\jquery.min.js" />
-    <EmbeddedResource Include="ProjectRoot\IdentityServer.Lib\wwwroot\lib\jquery\jquery.min.map" />
+    <Content Remove="ProjectRoot\IdentityServer\**\*.*" />
+    <EmbeddedResource Include="ProjectRoot\IdentityServer\**\*.*" />
   </ItemGroup>
 
-  
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
   </ItemGroup>

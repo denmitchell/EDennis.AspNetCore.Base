@@ -29,7 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ProjectRoot\Hr.RepoApi.Lib\**\*.*" />
+    <Content Remove="ProjectRoot\Hr.RepoApi\**\*.*" />
+    <EmbeddedResource Include="ProjectRoot\Hr.RepoApi\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
