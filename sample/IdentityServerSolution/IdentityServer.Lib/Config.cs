@@ -1,18 +1,126 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
+﻿using EDennis.AspNetCore.Base;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Text.Json;
 
-namespace IdentityServer
-{
-    public static class Config
-    {
+namespace IdentityServer {
+
+
+    /// <summary>
+    /// NOTE: This Config class has been modified to build
+    /// ApiResources, Clients, and UserClientClaims 
+    /// (app-specific role/claims) from Configuration data
+    /// provided by the Configuration API.
+    /// </summary>
+    public static class Config {
+
+        public static HttpClient HttpClient { get; }
+
+        /// <summary>
+        /// Statically build a new HttpClient that points to
+        /// the Configuration Api
+        /// </summary>
+        static Config() {
+            HttpClient = new HttpClient();
+            var url = Environment.GetEnvironmentVariable("ConfigurationApiUrl");
+            HttpClient.BaseAddress = new Uri(url);
+        }
+
+        static List<string> _projects;
+        static readonly Dictionary<string, ActiveMockClientSettings> _activeMockClientSettings = new Dictionary<string, ActiveMockClientSettings>();
+        static readonly Dictionary<string, Apis> _apis = new Dictionary<string, Apis>();
+        static readonly Dictionary<string, RoleClaims> _roleClaims = new Dictionary<string, RoleClaims>();
+        static readonly Dictionary<string, TestUserRoles> _testUserRoles = new Dictionary<string, TestUserRoles>();
+
+        internal class ProjectConfigData {
+            public string ProjectName { get; set; }
+            public string ConfigKey { get; set; }
+            public string ConfigValue { get; set; }
+        }
+
+        /// <summary>
+        /// Retrieve configuration data across all projects
+        /// that have configuration data in the Configuration API.
+        /// </summary>
+        public static void GetDataFromConfigurationApi() {
+
+            //retrieve the raw data from the endpoint
+            var result = HttpClient.GetAsync("identity-server-configs").Result;
+            var content = result.Content.ReadAsStringAsync().Result;
+
+            //deserialzie to a list
+            var projectConfigData = JsonSerializer.Deserialize<List<ProjectConfigData>>(content);
+
+            //get a distinct list of projects
+            _projects = projectConfigData.Select(p => p.ProjectName).Distinct().ToList();
+
+            //iterate over the projects, populating each dictionary
+            //with config data for the project
+            foreach (var project in _projects) {
+                var configData = projectConfigData
+                    .Where(p => p.ProjectName == project)
+                    .Select(p => KeyValuePair.Create(p.ConfigKey, p.ConfigValue));
+
+                var config = new ConfigurationBuilder()
+                        .AddInMemoryCollection(configData)
+                        .Build();
+
+                //build the apis dictionary
+                var apis = new Apis();
+                config.GetSection("Apis").Bind(apis);
+                _apis.Add(project, apis);
+
+                //build the mock clients dictionary
+                var activeMockClientSettings = new ActiveMockClientSettings();
+                config.GetSection("MockClient").Bind(activeMockClientSettings);
+                _activeMockClientSettings.Add(project, activeMockClientSettings);
+
+                //build the role claims dictionary
+                var roleClaims = new RoleClaims();
+                config.GetSection("RoleClaims").Bind(roleClaims);
+                _roleClaims.Add(project, roleClaims);
+
+                //build the test user roles dictionary
+                var testUserRoles = new TestUserRoles();
+                config.GetSection("TestUserRoles").Bind(testUserRoles);
+                _testUserRoles.Add(project, testUserRoles);
+
+            }
+
+        }
+
+        /// <summary>
+        /// Use the Allen-Baier-provided method to configure Identity resources
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<IdentityResource> GetIdentityResources() {
+            var name = new IdentityResource("name", new string[] { "name" });
+            var userScope = new IdentityResource("user_scope", new string[] { "user_scope" });
+            var role = new IdentityResource("role", new string[] { "role" });
+
+            return new IdentityResource[]
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+                userScope,
+                role,
+                name
+            };
+        }
+
+
+        /// <summary>
+        /// Use the Allen-Baier-provided method to build a list of test users
+        /// </summary>
+        /// <returns></returns>
         public static List<TestUser> GetUsers() {
             return new List<TestUser>
             {
@@ -106,264 +214,290 @@ namespace IdentityServer
                         new Claim ("email","alice@example.com"),
                     }
                 },
+                new TestUser
+                {
+                    SubjectId = "10",
+                    Username = "keenan",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Keenan"),
+                        new Claim ("email","keenan@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "11",
+                    Username = "damon",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Damon"),
+                        new Claim ("email","damon@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "12",
+                    Username = "kim",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Kim"),
+                        new Claim ("email","kim@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "13",
+                    Username = "shawn",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Shawn"),
+                        new Claim ("email","shawn@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "14",
+                    Username = "marlon",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Marlon"),
+                        new Claim ("email","marlon@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "15",
+                    Username = "dwayne",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Dwayne"),
+                        new Claim ("email","dwayne@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "16",
+                    Username = "nadia",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Nadia"),
+                        new Claim ("email","nadia@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "17",
+                    Username = "elvira",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Elvira"),
+                        new Claim ("email","elvira@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "18",
+                    Username = "dierdre",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Dierdre"),
+                        new Claim ("email","dierdre@example.com"),
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "19",
+                    Username = "vonnie",
+                    Password = "password",
+                    Claims = new List<Claim> {
+                        new Claim ("name","Vonnie"),
+                        new Claim ("email","vonnie@example.com"),
+                    }
+                },
+
+
+
             };
         }
 
+        /// <summary>
+        /// Build a list of Apis from the Apis entry in Configuration.  
+        /// Add scopes from relevant MockClient entries.
+        /// NOTE: the configuration data represent only
+        /// projects that use the Configuration API.  
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<ApiResource> GetApis() {
+            var apiResources = new List<ApiResource>();
+
+            //iterate over all projects
+            foreach (var key in _apis.Keys) {
+                var apis = _apis[key];
+
+                //iterate over all apis in the project's configuration
+                foreach (var api in apis.Values) {
+                    //retrieve the apiResource if it already exists
+                    ApiResource apiResource = apiResources.FirstOrDefault(a => a.Name == api.ProjectName);
+
+                    //otherwise, create it
+                    if (apiResource == null)
+                        apiResource = new ApiResource {
+                            Name = api.ProjectName,
+                            DisplayName = api.ProjectName,
+                            Scopes = new List<Scope>()
+                        };
+
+                    //add main scope, if not already present
+                    if (!apiResource.Scopes.Any(a => a.Name == $"{api.ProjectName}.*"))
+                        apiResource.Scopes.Add(new Scope($"{api.ProjectName}.*"));
+
+                    //add scopes from all relevant mock client scopes
+                    foreach (var mockClients in _activeMockClientSettings.Where(a => a.Key == api.ProjectName)) {
+                        foreach (var mockClient in mockClients.Value.MockClients)
+                            foreach (var scope in mockClient.Value.Scopes)
+                                if (!apiResource.Scopes.Any(a => a.Name == scope))
+                                    apiResource.Scopes.Add(new Scope(scope));
+                    }
+
+                    apiResources.Add(apiResource);
+                }
+            }
+
+            return apiResources;
+        }
+
+        /// <summary>
+        /// Build a list of clients from configuration --
+        /// either MockClient entries (OAuth) or the Identity
+        /// Server entry in Apis (OIDC) 
+        /// NOTE: the configuration data represent only
+        /// projects that use the Configuration API.  
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Client> GetClients() {
+            var clients = new List<Client>();
+
+            //iterate over all projects
+            foreach (var project in _projects) {
+
+                //get a reference to the project's own API entry
+                var selfApi = _apis[project].FirstOrDefault(a => a.Value.ProjectName == project).Value;
+
+                //check the identity server API entry for the existence of an Oidc section
+                var isOidc = _apis[project].Any(a => a.Value.Oidc != null);
+
+                //add OIDC settings, if relevant
+                if (isOidc) {
+                    Client client = new Client {
+                        ClientId = project,
+                        ClientSecrets = new List<Secret> { new Secret("secret".Sha256()) },
+                        ClientClaimsPrefix = "",
+                        AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+                        RedirectUris = new string[] { $"http://localhost:{selfApi.HttpPort}/signin-oidc" },
+                        PostLogoutRedirectUris = new string[] { $"http://localhost:{selfApi.HttpPort}/signout-callback-oidc" },
+                        AllowOfflineAccess = true,
+                        AlwaysIncludeUserClaimsInIdToken = true,
+                        AllowAccessTokensViaBrowser = true,
+                        AllowedScopes = new string[] {
+                            IdentityServerConstants.StandardScopes.OpenId,
+                            IdentityServerConstants.StandardScopes.Profile,
+                            IdentityServerConstants.StandardScopes.Email,
+                            "user_scope", "role", "name"
+                        }
+                    };
+
+                    clients.Add(client);
+
+                } else {
+
+                    //iterate over all relevant mockclients
+                    foreach (var mockClients in _activeMockClientSettings.Where(a => a.Key == project)) {
+                        foreach (var mockClient in mockClients.Value.MockClients) {
+
+                            //build a new client
+                            Client client = new Client {
+                                ClientId = mockClient.Value.ClientId,
+                                ClientSecrets = new List<Secret> { new Secret(mockClient.Value.ClientSecret.Sha256()) },
+                                ClientClaimsPrefix = "",
+                                AllowedScopes = new List<string>(),
+                                AllowedGrantTypes = GrantTypes.ClientCredentials
+                            };
+
+                            //add a project-level scope
+                            client.AllowedScopes.Add($"{project}.*");
+
+                            //get scoped from mock clients
+                            foreach (var scope in mockClient.Value.Scopes)
+                                if (!client.AllowedScopes.Any(a => a == scope))
+                                    client.AllowedScopes.Add(scope);
+
+                            clients.Add(client);
+                        }
+
+                    }
+                }
+            }
+
+            return clients;
+
+        }
+
+        /// <summary>
+        /// Retrieve a list of AppUserClaim entries for the
+        /// StaticClaimsProfileService.  Use the entries in the
+        /// Configuration API for RoleClaims and TestUserRoles
+        /// to construct the UserClientClaims collection.
+        /// </summary>
+        public static IEnumerable<AppUserClaim> UserClientClaims {
+            get {
+                var auClaims = new List<AppUserClaim>();
+
+                //iterate over all projects
+                foreach (var project in _projects) {
+
+                    //iterate over all test users defined for the project
+                    foreach (var user in _testUserRoles[project].Keys) {
+
+                        //build the base object
+                        var auClaim = new AppUserClaim {
+                            AppClientId = project,
+                            Username = user,
+                            Claims = new List<Claim>()
+                        };
+
+                        //iterate over all roles defined for the test user 
+                        foreach (var role in _testUserRoles[project][user]) {
+                            
+                            //add a role claim
+                            auClaim.Claims.Add(new Claim("role", role));
+
+                            //iterate over all role claims to add each
+                            //claim associated with the current role
+                            foreach (var kvp in _roleClaims[project].Where(r => r.Key == role)) {
+                                var cRoles = kvp.Value;
+                                foreach (var cRole in cRoles)
+                                    auClaim.Claims.Add(new Claim(cRole.Key, cRole.Value));
+                            }
+
+                        }
+
+
+                    }
+                }
+                return auClaims;
+            }
+        }
+
+        /// <summary>
+        /// Encapsulates claims associated with
+        /// an application and user (often roles or
+        /// role-related scopes)
+        /// </summary>
         public class AppUserClaim {
             public string AppClientId { get; set; }
             public string Username { get; set; }
             public List<Claim> Claims { get; set; }
         }
 
-        public static IEnumerable<AppUserClaim> UserClientClaims { get; } =
-            new AppUserClaim[] {
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="mike",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","Hr.RazorApp.*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="carol",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","Hr.RazorApp.*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="greg",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","Hr.RazorApp.Person.*"),
-                        new Claim("user_scope","Hr.RazorApp.Address.*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="marcia",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","-Hr.RazorApp.*Delete*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="peter",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","Hr.RazorApp.Person.*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="jan",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","Hr.RazorApp.Address.*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="bobby",
-                    Claims = new List<Claim> {
-                        new Claim ("user_scope","Hr.RazorApp.Person.Index"),
-                        new Claim ("user_scope","Hr.RazorApp.Person.Details"),
-                        new Claim ("user_scope","Hr.RazorApp.Address.*")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="cindy",
-                    Claims = new List<Claim> {
-                        new Claim ("user_scope","Hr.RazorApp.Person.Index"),
-                        new Claim ("user_scope","Hr.RazorApp.Person.Details"),
-                        new Claim ("user_scope","Hr.RazorApp.Person.Create"),
-                        new Claim ("user_scope","Hr.RazorApp.Person.Edit")
-                    }
-                },
-                new AppUserClaim {
-                    AppClientId = "Hr.RazorApp",
-                    Username="alice",
-                    Claims = new List<Claim> {
-                        new Claim("user_scope","Hr.RazorApp.*Index*,Hr.RazorApp.*Details*")
-                    }
-                }
-            };
-
-
-
-        public static IEnumerable<IdentityResource> GetIdentityResources() {
-            var name = new IdentityResource("name", new string[] { "name" });
-            var userScope = new IdentityResource("user_scope", new string[] { "user_scope" });
-            var role = new IdentityResource("role", new string[] { "role" });
-
-            return new IdentityResource[]
-            {
-                new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
-                new IdentityResources.Email(),
-                userScope,
-                role,
-                name
-            };
-        }
-
-        public static IEnumerable<ApiResource> GetApis() {
-            return new List<ApiResource>
-            {
-                new ApiResource{
-                    Name ="Hr.RepoApi",
-                    DisplayName="Hr.RepoApi",
-                    Scopes={
-                        new Scope {
-                            Name = "Hr.RepoApi.*",
-                            DisplayName = "Hr.RepoApi.*"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.*",
-                            DisplayName = "Hr.RepoApi.Person.*"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.Index",
-                            DisplayName = "Hr.RepoApi.Person.Index"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.Details",
-                            DisplayName = "Hr.RepoApi.Person.Details"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.Create",
-                            DisplayName = "Hr.RepoApi.Person.Create"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.Edit",
-                            DisplayName = "Hr.RepoApi.Person.Edit"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.Delete",
-                            DisplayName = "Hr.RepoApi.Person.Delete"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Person.Exists",
-                            DisplayName = "Hr.RepoApi.Person.Exists"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.*",
-                            DisplayName = "Hr.RepoApi.Address.*"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.Index",
-                            DisplayName = "Hr.RepoApi.Address.Index"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.Details",
-                            DisplayName = "Hr.RepoApi.Address.Details"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.Create",
-                            DisplayName = "Hr.RepoApi.Address.Create"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.Edit",
-                            DisplayName = "Hr.RepoApi.Address.Edit"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.Delete",
-                            DisplayName = "Hr.RepoApi.Address.Delete"
-                        },
-                        new Scope {
-                            Name = "Hr.RepoApi.Address.Exists",
-                            DisplayName = "Hr.RepoApi.Address.Exists"
-                        }
-                    }
-                },
-                new ApiResource{
-                    Name ="Hr.RazorApp",
-                    DisplayName="Hr.RazorApp",
-                    Scopes={
-                        new Scope {
-                            Name = "Hr.RazorApp.*",
-                            DisplayName = "Hr.RazorApp.*"
-                        },
-                    }
-                },
-
-            };
-        }
-
-        internal class MockClient : Client {
-            public MockClient() : base() {
-                ClientClaimsPrefix = "";
-                AllowedGrantTypes = GrantTypes.ClientCredentials;
-                ClientSecrets = new Collection<Secret> { new Secret("secret".Sha256()) };
-            }
-        };
-
-        public static IEnumerable<Client> GetClients() {
-            return new List<Client> {
-                new MockClient {
-                    ClientId = "Hr.RepoApi.Client1",
-                    AllowedScopes = {
-                        "Hr.RepoApi.*",
-                        "EDennis.Samples.Hr.InternalApi.*"
-                    },
-                    Claims = {
-                        new Claim("name","moe@stooges.org"),
-                        new Claim("Some Claim Type","Some Claim Value")
-                    }
-                },
-                new MockClient {
-                    ClientId = "Hr.RepoApi.Client2",
-                    AllowedScopes = {
-                        "Hr.RepoApi.Person.*",
-                    },
-                    Claims = {
-                        new Claim("name","larry@stooges.org")
-                    }
-                },
-                new MockClient {
-                    ClientId = "Hr.RepoApi.Client3",
-                    AllowedScopes = {
-                        "Hr.RepoApi.Person.Index",
-                        "Hr.RepoApi.Person.Details",
-                        "Hr.RepoApi.Address.Create"
-                    },
-                    Claims = {
-                        new Claim("name","curly@stooges.org")
-                    }
-                },
-                new MockClient {
-                    ClientId = "Hr.RepoApi.Client4",
-                    AllowedScopes = {
-                        "N/A"
-                    }
-                },
-                new Client
-                {
-                    ClientId = "Hr.RazorApp",
-                    ClientName = "Hr.RazorApp",
-                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    RedirectUris = { "http://localhost:65474/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:65474/signout-callback-oidc" },
-
-                    AllowedScopes = {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Email,
-                        "user_scope",
-                        "role",
-                        "name",
-                        "Hr.RepoApi.*"
-                    },
-                    AllowOfflineAccess = true,
-                    AlwaysIncludeUserClaimsInIdToken = true,
-                    AllowAccessTokensViaBrowser = true
-                }
-            };
-        }
     }
 }

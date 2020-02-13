@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -49,7 +50,8 @@ namespace ConfigurationApi.Lib.Models {
 
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            var config = new ConfigurationBuilder()
+
+                var config = new ConfigurationBuilder()
                 .AddJsonFile($"{PROJECT_CONFIGURATIONS_FOLDER}\\{SHARED_SETTINGS_FOLDER}\\appsettings.json", true)
                 .AddJsonFile($"{PROJECT_CONFIGURATIONS_FOLDER}\\{SHARED_SETTINGS_FOLDER}\\appsettings.{env}.json", true)
                 .AddJsonFile($"{folder}\\appsettings.json", true)

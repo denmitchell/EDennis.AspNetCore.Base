@@ -5,9 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\..\Hr.RazorApp.Lib\ProjectRoot\Hr.RazorApp.Lib\appsettings.Development.json" Link="ProjectConfigurations\Hr.RazorApp.Lib\appsettings.Development.json" />
-    <Content Include="..\..\HrRepoApiSolution\Hr.RepoApi.Lib\ProjectRoot\Hr.RepoApi.Lib\appsettings.Development.json" Link="ProjectConfigurations\Hr.RepoApi.Lib\appsettings.Development.json" />
-    <Content Include="..\..\IdentityServerSolution\IdentityServer.Lib\ProjectRoot\IdentityServer.Lib\appsettings.Development.json" Link="ProjectConfigurations\IdentityServer.Lib\appsettings.Development.json" />
+    <Content Include="..\..\Hr.RazorApp.Lib\ProjectRoot\Hr.RazorApp.Lib\appsettings.Development.json" Link="ProjectConfigurations\Hr.RazorApp.Lib\appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\HrRepoApiSolution\Hr.RepoApi.Lib\ProjectRoot\Hr.RepoApi\appsettings.Development.json" Link="ProjectConfigurations\Hr.RepoApi.Lib\appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\IdentityServerSolution\IdentityServer.Lib\ProjectRoot\IdentityServer\appsettings.Development.json" Link="ProjectConfigurations\IdentityServer.Lib\appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

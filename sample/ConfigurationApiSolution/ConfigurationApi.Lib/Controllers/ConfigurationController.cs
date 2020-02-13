@@ -27,7 +27,24 @@ namespace ConfigurationApi.Lib.Controllers {
                 return NotFound();
             else
                 return Ok(configs);
-        } 
+        }
+
+
+        [HttpGet("identity-server-configs")]
+        public IActionResult Get() {
+            var configs = _context.ProjectSettings
+                   .Where(p =>
+                        p.SettingKey.StartsWith("Api")
+                        || p.SettingKey.StartsWith("MockClient")
+                        || p.SettingKey.StartsWith("RoleClaims")
+                        || p.SettingKey.StartsWith("TestUserRoles"))
+                   .Select(p => new { p.ProjectName, p.SettingKey, p.SettingValue });
+            if (configs.Count() == 0)
+                return NotFound();
+            else
+                return Ok(configs);
+        }
+
 
     }
 }
