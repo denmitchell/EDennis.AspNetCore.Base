@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -19,13 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\ConfigurationApi.Lib\ConfigurationApi.Lib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ProjectConfigurations\Hr.RazorApp.Lib\" />
-    <Folder Include="ProjectConfigurations\Hr.RepoApi.Lib\" />
-    <Folder Include="ProjectConfigurations\IdentityServer.Lib\" />
-    <Folder Include="ProjectConfigurations\Shared\" />
   </ItemGroup>
 
 
