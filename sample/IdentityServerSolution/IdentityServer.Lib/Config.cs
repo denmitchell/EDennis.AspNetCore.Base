@@ -3,6 +3,9 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +34,17 @@ namespace IdentityServer {
             HttpClient = new HttpClient();
             var url = Environment.GetEnvironmentVariable("ConfigurationApiUrl");
             HttpClient.BaseAddress = new Uri(url);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("System", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.File(@"identityserver4_log.txt")
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
+                .CreateLogger();
+
         }
 
         static List<string> _projects;
@@ -55,7 +69,7 @@ namespace IdentityServer {
             var result = HttpClient.GetAsync("identity-server-configs").Result;
             var content = result.Content.ReadAsStringAsync().Result;
 
-            //deserialzie to a list
+            //deserialize to a list
             var projectConfigData = JsonSerializer.Deserialize<List<ProjectConfigData>>(content);
 
             //get a distinct list of projects
@@ -64,6 +78,7 @@ namespace IdentityServer {
             //iterate over the projects, populating each dictionary
             //with config data for the project
             foreach (var project in _projects) {
+                Log.Logger.Debug("Getting Identity-Related Configs for {Project}", project);
                 var configData = projectConfigData
                     .Where(p => p.ProjectName == project)
                     .Select(p => KeyValuePair.Create(p.ConfigKey, p.ConfigValue));
@@ -76,21 +91,25 @@ namespace IdentityServer {
                 var apis = new Apis();
                 config.GetSection("Apis").Bind(apis);
                 _apis.Add(project, apis);
+                Log.Logger.Debug("Bound Api Configs for {Project}: {Apis}", project, string.Join(',', apis.Select(a=>a.Value.ProjectName)));
 
                 //build the mock clients dictionary
                 var activeMockClientSettings = new ActiveMockClientSettings();
                 config.GetSection("MockClient").Bind(activeMockClientSettings);
                 _activeMockClientSettings.Add(project, activeMockClientSettings);
+                Log.Logger.Debug("Bound MockClient Configs for {Project}: {MockClients}", project, string.Join(',', activeMockClientSettings.MockClients.Select(a => a.Value.ClientId)));
 
                 //build the role claims dictionary
                 var roleClaims = new RoleClaims();
                 config.GetSection("RoleClaims").Bind(roleClaims);
                 _roleClaims.Add(project, roleClaims);
+                Log.Logger.Debug("Bound RoleClaim Configs for {Project}: {RoleClaims}", project, string.Join(',', roleClaims.Keys));
 
                 //build the test user roles dictionary
                 var testUserRoles = new TestUserRoles();
                 config.GetSection("TestUserRoles").Bind(testUserRoles);
                 _testUserRoles.Add(project, testUserRoles);
+                Log.Logger.Debug("Bound TestUserRole Configs for {Project}: {TestUserRole}", project, string.Join(',', testUserRoles.Keys));
 
             }
 
