@@ -1,0 +1,11 @@
+2020-02-14 04:40:04.283 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp.Lib
+2020-02-14 04:40:53.625 -05:00 [DBG] Bound Api Configs for Hr.RazorApp.Lib: Hr.RazorApp,IdentityServer
+2020-02-14 04:46:37.301 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp.Lib
+2020-02-14 04:46:40.735 -05:00 [DBG] Bound Api Configs for Hr.RazorApp.Lib: Hr.RazorApp,IdentityServer
+2020-02-14 04:50:16.169 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp.Lib
+2020-02-14 04:50:20.273 -05:00 [DBG] Bound Api Configs for Hr.RazorApp.Lib: Hr.RazorApp,IdentityServer
+2020-02-14 04:50:29.744 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi.Lib
+2020-02-14 04:50:33.287 -05:00 [DBG] Bound Api Configs for Hr.RepoApi.Lib: Hr.Api,IdentityServer
+2020-02-14 04:51:07.978 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi.Lib: Hr.Api.Client1,Hr.Api.Client2
+2020-02-14 04:51:14.624 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer.Lib
+2020-02-14 04:51:17.679 -05:00 [DBG] Bound Api Configs for IdentityServer.Lib: IdentityServer

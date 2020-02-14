@@ -55,8 +55,8 @@ namespace IdentityServer {
 
         internal class ProjectConfigData {
             public string ProjectName { get; set; }
-            public string ConfigKey { get; set; }
-            public string ConfigValue { get; set; }
+            public string SettingKey { get; set; }
+            public string SettingValue { get; set; }
         }
 
         /// <summary>
@@ -66,11 +66,12 @@ namespace IdentityServer {
         public static void GetDataFromConfigurationApi() {
 
             //retrieve the raw data from the endpoint
-            var result = HttpClient.GetAsync("identity-server-configs").Result;
+            var result = HttpClient.GetAsync("Configuration/identity-server-configs").Result;
             var content = result.Content.ReadAsStringAsync().Result;
 
             //deserialize to a list
-            var projectConfigData = JsonSerializer.Deserialize<List<ProjectConfigData>>(content);
+            var projectConfigData = JsonSerializer.Deserialize<List<ProjectConfigData>>(
+                content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             //get a distinct list of projects
             _projects = projectConfigData.Select(p => p.ProjectName).Distinct().ToList();
@@ -81,7 +82,7 @@ namespace IdentityServer {
                 Log.Logger.Debug("Getting Identity-Related Configs for {Project}", project);
                 var configData = projectConfigData
                     .Where(p => p.ProjectName == project)
-                    .Select(p => KeyValuePair.Create(p.ConfigKey, p.ConfigValue));
+                    .Select(p => KeyValuePair.Create(p.SettingKey, p.SettingValue));
 
                 var config = new ConfigurationBuilder()
                         .AddInMemoryCollection(configData)
@@ -96,21 +97,26 @@ namespace IdentityServer {
                 //build the mock clients dictionary
                 var activeMockClientSettings = new ActiveMockClientSettings();
                 config.GetSection("MockClient").Bind(activeMockClientSettings);
-                _activeMockClientSettings.Add(project, activeMockClientSettings);
-                Log.Logger.Debug("Bound MockClient Configs for {Project}: {MockClients}", project, string.Join(',', activeMockClientSettings.MockClients.Select(a => a.Value.ClientId)));
+                if (activeMockClientSettings.MockClients?.Count > 0) {
+                    _activeMockClientSettings.Add(project, activeMockClientSettings);
+                    Log.Logger.Debug("Bound MockClient Configs for {Project}: {MockClients}", project, string.Join(',', activeMockClientSettings.MockClients.Select(a => a.Value.ClientId)));
+                }
 
                 //build the role claims dictionary
                 var roleClaims = new RoleClaims();
                 config.GetSection("RoleClaims").Bind(roleClaims);
-                _roleClaims.Add(project, roleClaims);
-                Log.Logger.Debug("Bound RoleClaim Configs for {Project}: {RoleClaims}", project, string.Join(',', roleClaims.Keys));
+                if (roleClaims.Count > 0) {
+                    _roleClaims.Add(project, roleClaims);
+                    Log.Logger.Debug("Bound RoleClaim Configs for {Project}: {RoleClaims}", project, string.Join(',', roleClaims.Keys));
+                }
 
                 //build the test user roles dictionary
                 var testUserRoles = new TestUserRoles();
                 config.GetSection("TestUserRoles").Bind(testUserRoles);
-                _testUserRoles.Add(project, testUserRoles);
-                Log.Logger.Debug("Bound TestUserRole Configs for {Project}: {TestUserRole}", project, string.Join(',', testUserRoles.Keys));
-
+                if (testUserRoles.Count > 0) {
+                    _testUserRoles.Add(project, testUserRoles);
+                    Log.Logger.Debug("Bound TestUserRole Configs for {Project}: {TestUserRole}", project, string.Join(',', testUserRoles.Keys));
+                }
             }
 
         }

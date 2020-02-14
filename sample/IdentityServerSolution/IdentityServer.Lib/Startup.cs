@@ -33,7 +33,7 @@ namespace IdentityServer.Lib
                 options.AutomaticAuthentication = false;
                 options.AuthenticationDisplayName = "Windows";
             });
-
+            Config.GetDataFromConfigurationApi();
             var builder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
