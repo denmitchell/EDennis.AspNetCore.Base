@@ -49,6 +49,9 @@ namespace EDennis.AspNetCore.Base.Web {
                 Debug.WriteLine($"EntryPoint: {_applicationProperties.EntryPoint}");
                 //update the Scope Properties User with identity, claim or header data
                 scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.UserSource, _applicationProperties, "ScopeProperties.User");
+                if (scopeProperties.User == null)
+                    scopeProperties.User = MiddlewareUtils.ResolveUser(context, settings.AlternateUserSource, _applicationProperties, "ScopeProperties.User");
+
 
 
                 //copy all headers to ScopeProperties headers

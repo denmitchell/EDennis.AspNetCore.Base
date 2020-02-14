@@ -179,7 +179,7 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
             }
 
-            if (UsesConfigurationApi && ProjectName != "ConfigurationApi")
+            if (UsesConfigurationApi)
                 configBuilder.AddApiSource(apiUrl, "ApiKey", apiKey, ProjectName, false);
 
             //if needed, to add/overwrite settings for a Launcher (during testing)
