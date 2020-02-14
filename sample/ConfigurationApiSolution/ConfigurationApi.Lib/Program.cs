@@ -5,6 +5,7 @@ using System;
 namespace ConfigurationApi.Lib {
     public class Program : ProgramBase<Startup> {
         public override string ProjectName => "ConfigurationApi";
+        public override bool UsesConfigurationApi => false;
     }
 }
 

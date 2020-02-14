@@ -153,8 +153,8 @@ namespace EDennis.AspNetCore.Base.Web {
 
         private IConfigurationBuilder CreateDefaultConfigurationBuilder(string[] args) {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-            var apiUrl = Environment.GetEnvironmentVariable("ConfigurationApiUrl");
-            var apiKey = Environment.GetEnvironmentVariable("ConfigurationApiKey");
+            var apiUrl = "ConfigurationApiUrl";
+            var apiKey = "ConfigurationApiKey";
 
             var configBuilder = new ConfigurationBuilder();
 
@@ -179,8 +179,8 @@ namespace EDennis.AspNetCore.Base.Web {
                 }
             }
 
-            if (UsesConfigurationApi)
-                configBuilder.AddApiSource("ConfigurationApiUrl", "ApiKey", "ConfigurationApiKey", ProjectName, true);
+            if (UsesConfigurationApi && ProjectName != "ConfigurationApi")
+                configBuilder.AddApiSource(apiUrl, "ApiKey", apiKey, ProjectName, false);
 
             //if needed, to add/overwrite settings for a Launcher (during testing)
             if (UsesLauncherConfigurationFile)
