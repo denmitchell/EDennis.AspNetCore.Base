@@ -35,6 +35,9 @@ namespace IdentityServer {
             var url = Environment.GetEnvironmentVariable("ConfigurationApiUrl");
             HttpClient.BaseAddress = new Uri(url);
 
+            var apiKey = Environment.GetEnvironmentVariable("ConfigurationApiKey");
+            HttpClient.DefaultRequestHeaders.Add("X-API-Key",apiKey);
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
