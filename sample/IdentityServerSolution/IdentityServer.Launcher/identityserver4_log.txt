@@ -9,3 +9,96 @@
 2020-02-14 04:51:07.978 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi.Lib: Hr.Api.Client1,Hr.Api.Client2
 2020-02-14 04:51:14.624 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer.Lib
 2020-02-14 04:51:17.679 -05:00 [DBG] Bound Api Configs for IdentityServer.Lib: IdentityServer
+2020-02-14 08:28:51.610 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp.Lib
+2020-02-14 08:28:51.637 -05:00 [DBG] Bound Api Configs for Hr.RazorApp.Lib: Hr.RazorApp,IdentityServer
+2020-02-14 08:29:24.449 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp.Lib: Admin,Readonly
+2020-02-14 08:29:47.951 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp.Lib: cindy,mike
+2020-02-14 08:30:04.861 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi.Lib
+2020-02-14 08:30:11.030 -05:00 [DBG] Bound Api Configs for Hr.RepoApi.Lib: Hr.RepoApi,IdentityServer
+2020-02-14 08:30:15.222 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi.Lib: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 08:30:48.862 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer.Lib
+2020-02-14 08:30:48.865 -05:00 [DBG] Bound Api Configs for IdentityServer.Lib: IdentityServer
+2020-02-14 08:33:39.659 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp.Lib
+2020-02-14 08:33:39.686 -05:00 [DBG] Bound Api Configs for Hr.RazorApp.Lib: Hr.RazorApp,IdentityServer
+2020-02-14 08:33:39.687 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp.Lib: Admin,Readonly
+2020-02-14 08:33:39.687 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp.Lib: cindy,mike
+2020-02-14 08:33:39.688 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi.Lib
+2020-02-14 08:33:39.690 -05:00 [DBG] Bound Api Configs for Hr.RepoApi.Lib: Hr.RepoApi,IdentityServer
+2020-02-14 08:33:39.693 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi.Lib: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 08:33:39.693 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer.Lib
+2020-02-14 08:33:39.694 -05:00 [DBG] Bound Api Configs for IdentityServer.Lib: IdentityServer
+2020-02-14 09:11:41.635 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:11:41.661 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:11:41.662 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:11:41.662 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:11:41.663 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:11:41.666 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:11:41.669 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:11:41.671 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:11:41.673 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:22:10.431 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:22:10.458 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:22:10.459 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:22:10.460 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:22:10.460 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:22:10.463 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:22:10.469 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:22:10.470 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:22:10.471 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:26:04.438 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:26:04.467 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:26:04.468 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:26:04.469 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:26:04.469 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:26:04.472 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:26:04.475 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:26:04.475 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:26:04.476 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:33:18.997 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:33:19.023 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:33:19.024 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:33:19.025 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:33:19.025 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:33:19.026 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:33:19.032 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:33:19.033 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:33:19.033 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:36:06.235 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:36:06.262 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:36:06.263 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:36:06.264 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:36:06.266 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:36:06.271 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:36:06.274 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:36:06.275 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:36:06.276 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:37:18.764 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:37:18.793 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:37:18.795 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:37:18.795 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:37:18.796 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:37:18.797 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:37:18.800 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:37:18.802 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:37:18.808 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:38:36.264 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:38:36.288 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:38:36.290 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:38:36.291 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:38:36.291 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:38:36.292 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:38:36.295 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:38:36.295 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:38:36.295 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:44:19.701 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-14 09:44:19.730 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-14 09:44:19.731 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-14 09:44:19.731 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-14 09:44:19.732 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-14 09:44:19.733 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-14 09:44:19.735 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-14 09:44:19.735 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-14 09:44:19.736 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-14 09:44:19.739 -05:00 [DBG] Added UserClientClaims for cindy,mike
+2020-02-14 09:44:19.782 -05:00 [DBG] Added ApiResources: Hr.RazorApp,Hr.RepoApi,IdentityServer
+2020-02-14 09:44:19.800 -05:00 [DBG] Added Clients: Hr.RazorApp,Hr.RepoApi.Client1,Hr.RepoApi.Client2

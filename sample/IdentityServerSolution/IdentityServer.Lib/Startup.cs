@@ -34,14 +34,13 @@ namespace IdentityServer.Lib
                 options.AuthenticationDisplayName = "Windows";
             });
             Config.GetDataFromConfigurationApi();
-            var builder = services.AddIdentityServer(options =>
-            {
+            var builder = services.AddIdentityServer(options => {
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-            })
-                .AddTestUsers(TestUsers.Users);
+            });
+                //.AddTestUsers(TestUsers.Users);
 
             // in-memory, code config
             builder.AddInMemoryIdentityResources(Config.GetIdentityResources());

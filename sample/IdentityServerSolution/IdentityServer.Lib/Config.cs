@@ -66,7 +66,12 @@ namespace IdentityServer {
         public static void GetDataFromConfigurationApi() {
 
             //retrieve the raw data from the endpoint
-            var result = HttpClient.GetAsync("Configuration/identity-server-configs").Result;
+
+            var ba = HttpClient.BaseAddress;
+            var url = $"{ba.Scheme}://{ba.Host}:{ba.Port}/api/Configuration/identity-server-configs";
+
+
+            var result = HttpClient.GetAsync(url).Result;
             var content = result.Content.ReadAsStringAsync().Result;
 
             //deserialize to a list
@@ -92,7 +97,7 @@ namespace IdentityServer {
                 var apis = new Apis();
                 config.GetSection("Apis").Bind(apis);
                 _apis.Add(project, apis);
-                Log.Logger.Debug("Bound Api Configs for {Project}: {Apis}", project, string.Join(',', apis.Select(a=>a.Value.ProjectName)));
+                Log.Logger.Debug("Bound Api Configs for {Project}: {Apis}", project, string.Join(',', apis.Select(a => a.Value.ProjectName)));
 
                 //build the mock clients dictionary
                 var activeMockClientSettings = new ActiveMockClientSettings();
@@ -118,6 +123,8 @@ namespace IdentityServer {
                     Log.Logger.Debug("Bound TestUserRole Configs for {Project}: {TestUserRole}", project, string.Join(',', testUserRoles.Keys));
                 }
             }
+
+            BuildUserClientClaims();
 
         }
 
@@ -343,6 +350,7 @@ namespace IdentityServer {
 
 
             };
+
         }
 
         /// <summary>
@@ -356,38 +364,34 @@ namespace IdentityServer {
             var apiResources = new List<ApiResource>();
 
             //iterate over all projects
-            foreach (var key in _apis.Keys) {
-                var apis = _apis[key];
+            foreach (var project in _projects) {
 
-                //iterate over all apis in the project's configuration
-                foreach (var api in apis.Values) {
-                    //retrieve the apiResource if it already exists
-                    ApiResource apiResource = apiResources.FirstOrDefault(a => a.Name == api.ProjectName);
+                //get the project's API entry for itself
+                var api = _apis[project].Where(a => a.Value.ProjectName == project);
 
-                    //otherwise, create it
-                    if (apiResource == null)
-                        apiResource = new ApiResource {
-                            Name = api.ProjectName,
-                            DisplayName = api.ProjectName,
-                            Scopes = new List<Scope>()
-                        };
+                ApiResource apiResource = new ApiResource {
+                    Name = project,
+                    DisplayName = project,
+                    Scopes = new List<Scope>()
+                };
 
-                    //add main scope, if not already present
-                    if (!apiResource.Scopes.Any(a => a.Name == $"{api.ProjectName}.*"))
-                        apiResource.Scopes.Add(new Scope($"{api.ProjectName}.*"));
+                //add main scope, if not already present
+                if (!apiResource.Scopes.Any(a => a.Name == $"{project}.*"))
+                    apiResource.Scopes.Add(new Scope($"{project}.*"));
 
-                    //add scopes from all relevant mock client scopes
-                    foreach (var mockClients in _activeMockClientSettings.Where(a => a.Key == api.ProjectName)) {
-                        foreach (var mockClient in mockClients.Value.MockClients)
-                            foreach (var scope in mockClient.Value.Scopes)
-                                if (!apiResource.Scopes.Any(a => a.Name == scope))
-                                    apiResource.Scopes.Add(new Scope(scope));
-                    }
-
-                    apiResources.Add(apiResource);
+                //add scopes from all relevant mock client scopes
+                foreach (var mockClients in _activeMockClientSettings.Where(a => a.Key == project)) {
+                    foreach (var mockClient in mockClients.Value.MockClients)
+                        foreach (var scope in mockClient.Value.Scopes)
+                            if (!apiResource.Scopes.Any(a => a.Name == scope))
+                                apiResource.Scopes.Add(new Scope(scope));
                 }
+
+                apiResources.Add(apiResource);
+
             }
 
+            Log.Logger.Debug("Added ApiResources: {ApiResources}", string.Join(',', apiResources.Select(a => a.Name)));
             return apiResources;
         }
 
@@ -448,9 +452,6 @@ namespace IdentityServer {
                                 AllowedGrantTypes = GrantTypes.ClientCredentials
                             };
 
-                            //add a project-level scope
-                            client.AllowedScopes.Add($"{project}.*");
-
                             //get scoped from mock clients
                             foreach (var scope in mockClient.Value.Scopes)
                                 if (!client.AllowedScopes.Any(a => a == scope))
@@ -463,6 +464,7 @@ namespace IdentityServer {
                 }
             }
 
+            Log.Logger.Debug("Added Clients: {Clients}", string.Join(',', clients.Select(c => c.ClientId)));
             return clients;
 
         }
@@ -473,44 +475,49 @@ namespace IdentityServer {
         /// Configuration API for RoleClaims and TestUserRoles
         /// to construct the UserClientClaims collection.
         /// </summary>
-        public static IEnumerable<AppUserClaim> UserClientClaims {
-            get {
-                var auClaims = new List<AppUserClaim>();
+        public static IEnumerable<AppUserClaim> UserClientClaims { get; private set; }
 
-                //iterate over all projects
-                foreach (var project in _projects) {
 
-                    //iterate over all test users defined for the project
-                    foreach (var user in _testUserRoles[project].Keys) {
+        private static void BuildUserClientClaims() {
+            var auClaims = new List<AppUserClaim>();
 
-                        //build the base object
-                        var auClaim = new AppUserClaim {
-                            AppClientId = project,
-                            Username = user,
-                            Claims = new List<Claim>()
-                        };
+            //iterate over all projects
+            foreach (var project in _projects) {
 
-                        //iterate over all roles defined for the test user 
-                        foreach (var role in _testUserRoles[project][user]) {
-                            
-                            //add a role claim
-                            auClaim.Claims.Add(new Claim("role", role));
+                if (!_testUserRoles.ContainsKey(project))
+                    continue;
 
-                            //iterate over all role claims to add each
-                            //claim associated with the current role
-                            foreach (var kvp in _roleClaims[project].Where(r => r.Key == role)) {
-                                var cRoles = kvp.Value;
-                                foreach (var cRole in cRoles)
-                                    auClaim.Claims.Add(new Claim(cRole.Key, cRole.Value));
-                            }
+                //iterate over all test users defined for the project
+                foreach (var user in _testUserRoles[project].Keys) {
 
+                    //build the base object
+                    var auClaim = new AppUserClaim {
+                        AppClientId = project,
+                        Username = user,
+                        Claims = new List<Claim>()
+                    };
+
+                    //iterate over all roles defined for the test user 
+                    foreach (var role in _testUserRoles[project][user]) {
+
+                        //add a role claim
+                        auClaim.Claims.Add(new Claim("role", role));
+
+                        //iterate over all role claims to add each
+                        //claim associated with the current role
+                        foreach (var kvp in _roleClaims[project].Where(r => r.Key == role)) {
+                            var cRoles = kvp.Value;
+                            foreach (var cRole in cRoles)
+                                auClaim.Claims.Add(new Claim(cRole.Key, cRole.Value));
                         }
 
-
                     }
+
+                    auClaims.Add(auClaim);
                 }
-                return auClaims;
             }
+            UserClientClaims = auClaims;
+            Log.Logger.Debug("Added UserClientClaims for {Users}", string.Join(',', auClaims.Select(c => c.Username)));
         }
 
         /// <summary>
