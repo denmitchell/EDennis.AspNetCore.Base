@@ -114,3 +114,15 @@
 2020-02-14 11:27:39.614 -05:00 [DBG] Added UserClientClaims for cindy,mike
 2020-02-14 11:27:39.660 -05:00 [DBG] Added ApiResources: Hr.RazorApp,Hr.RepoApi,IdentityServer
 2020-02-14 11:27:39.681 -05:00 [DBG] Added Clients: Hr.RazorApp,Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-15 17:04:22.591 -05:00 [DBG] Getting Identity-Related Configs for Hr.RazorApp
+2020-02-15 17:04:22.638 -05:00 [DBG] Bound Api Configs for Hr.RazorApp: Hr.RazorApp,IdentityServer
+2020-02-15 17:04:22.640 -05:00 [DBG] Bound RoleClaim Configs for Hr.RazorApp: Admin,Readonly
+2020-02-15 17:04:22.641 -05:00 [DBG] Bound TestUserRole Configs for Hr.RazorApp: cindy,mike
+2020-02-15 17:04:22.642 -05:00 [DBG] Getting Identity-Related Configs for Hr.RepoApi
+2020-02-15 17:04:22.644 -05:00 [DBG] Bound Api Configs for Hr.RepoApi: Hr.RepoApi,IdentityServer
+2020-02-15 17:04:22.648 -05:00 [DBG] Bound MockClient Configs for Hr.RepoApi: Hr.RepoApi.Client1,Hr.RepoApi.Client2
+2020-02-15 17:04:22.648 -05:00 [DBG] Getting Identity-Related Configs for IdentityServer
+2020-02-15 17:04:22.649 -05:00 [DBG] Bound Api Configs for IdentityServer: IdentityServer
+2020-02-15 17:04:22.654 -05:00 [DBG] Added UserClientClaims for cindy,mike
+2020-02-15 17:04:22.789 -05:00 [DBG] Added ApiResources: Hr.RazorApp,Hr.RepoApi,IdentityServer
+2020-02-15 17:04:22.915 -05:00 [DBG] Added Clients: Hr.RazorApp,Hr.RepoApi.Client1,Hr.RepoApi.Client2

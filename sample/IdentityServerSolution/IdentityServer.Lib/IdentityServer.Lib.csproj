@@ -10,8 +10,8 @@
     <Authors>IdentityServer.Lib</Authors>
     <Product>IdentityServer.Lib</Product>
     <Company>IdentityServer.Lib</Company>
-    <Version>1.1.0</Version>
-    <PackageReleaseNotes>Add ConfigurationApi's ApiKey to Config.cs</PackageReleaseNotes>
+    <Version>1.1.1</Version>
+    <PackageReleaseNotes>Uses ConfigurationUtils</PackageReleaseNotes>
   </PropertyGroup>
 
 
