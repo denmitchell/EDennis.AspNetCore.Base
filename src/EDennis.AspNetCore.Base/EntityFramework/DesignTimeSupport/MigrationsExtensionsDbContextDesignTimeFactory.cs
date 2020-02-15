@@ -23,28 +23,10 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         : IDesignTimeDbContextFactory<TContext>
         where TContext : DbContext {
 
-        public virtual string ProjectName { get; } = typeof(TContext).Assembly.GetName().Name;
-
         //holds configuration data
         private IConfiguration _config;
 
-        /// <summary>
-        /// Overrideable method for building a relevant configuration
-        /// </summary>
-        /// <returns>Configuration object</returns>
-        public virtual IConfiguration BuildConfiguration() {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonFile($"appsettings.json", true);
-            builder.AddJsonFile($"appsettings.{env}.json", true);
-            builder.AddJsonFile($"ProjectRoot\\{ProjectName}\\appsettings.json", true);
-            builder.AddJsonFile($"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true);
-            return builder.Build();
-        }
-
-
-
-
+        public virtual ConfigurationType ConfigurationType { get; }
 
         /// <summary>
         /// Builds the DbContextBase object based upon the connection string
@@ -55,7 +37,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual TContext CreateDbContext(string[] args) {
 
             //create the options builder from the configuration data
-            _config = BuildConfiguration();
+            _config = ConfigurationUtils.BuildBuilder(typeof(TContext).Assembly, ConfigurationType, args).Build();
 
             var configKey = $"DbContexts:{typeof(TContext).Name}:ConnectionString";
             var cxnString = _config[configKey];

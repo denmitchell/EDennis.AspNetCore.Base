@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Reflection;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class TestTemporalRepoFactory<TTemporalRepo, TEntity, THistoryEntity, TContext, THistoryContext> 
@@ -12,13 +13,15 @@ namespace EDennis.AspNetCore.Base.Testing {
             where THistoryContext : DbContext
             where TTemporalRepo : ITemporalRepo<TEntity, THistoryEntity, TContext, THistoryContext>{
 
+
         private DbContextSettings<THistoryContext> _historyDbContextSettings;
         private StoredProcedureDefs<THistoryContext> _historyStoredProcedureDefs;
         private CachedConnection<THistoryContext> _historyCachedConnection;
         private DbContextProvider<THistoryContext> _dbContextProvider;
 
 
-        public TestTemporalRepoFactory(string projectName) :base(projectName) {
+        public TestTemporalRepoFactory(Assembly projectAssembly, ConfigurationType configurationType) 
+            :base(projectAssembly, configurationType) {
             HistoryDbContext = DbContextProvider<THistoryContext>.GetInterceptorContext(HistoryDbContextSettings, HistoryCachedConnection);
             if (HistoryDbContext is ISqlServerDbContext<THistoryContext>)
                 (HistoryDbContext as ISqlServerDbContext<THistoryContext>).StoredProcedureDefs = HistoryStoredProcedureDefs;

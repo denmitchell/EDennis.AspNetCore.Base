@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Internal = ConfigurationApi.Lib;
 
-namespace Colors2Launcher {
+namespace ConfigurationApi.Launcher {
     public class Launcher : ILauncher {
 
         /// <summary>

@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EDennis.AspNetCore.Base;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -79,11 +79,10 @@ namespace ConfigurationApi.Lib.Models {
         }
 
 
+
         private ConfigurationDbContext GetDbContext() {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(ConfigurationApiConfiguration.GetConfiguration(env))
-                .Build();
+            var config = ConfigurationUtils.BuildBuilder(typeof(Startup).Assembly,
+                ConfigurationType.ManifestedEmbeddedFiles, null).Build();
 
             var cxnString = config["DbContexts:ConfigurationDbContext:ConnectionString"];
 

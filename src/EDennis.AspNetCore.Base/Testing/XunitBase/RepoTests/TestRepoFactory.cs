@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
-
+using System.Reflection;
 
 namespace EDennis.AspNetCore.Base.Testing {
     public class TestRepoFactory<TRepo, TEntity, TContext>
@@ -23,10 +23,12 @@ namespace EDennis.AspNetCore.Base.Testing {
         private DbContextProvider<TContext> _dbContextProvider;
         private StoredProcedureDefs<TContext> _storedProcedureDefs;
 
-        protected string _projectName;
+        protected Assembly _projectAssembly;
+        protected ConfigurationType _configurationType;
 
-        public TestRepoFactory(string projectName) {
-            _projectName = projectName;
+        public TestRepoFactory(Assembly projectAssembly, ConfigurationType configurationType) {
+            _projectAssembly = projectAssembly;
+            _configurationType = configurationType;
             DbContext = DbContextProvider<TContext>.GetInterceptorContext(DbContextSettings, CachedConnection);
             if (DbContext is ISqlServerDbContext<TContext>)
                 (DbContext as ISqlServerDbContext<TContext>).StoredProcedureDefs = StoredProcedureDefs;
@@ -36,11 +38,7 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual IConfiguration Configuration {
             get {
                 if (_configuration == null) {
-                    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                    _configuration = new ConfigurationBuilder()
-                        .AddJsonFile($"appsettings.{env}.json", true, true)
-                        .AddJsonFile($"ProjectRoot\\{_projectName}\\appsettings.{env}.json", true, true)
-                        .Build();
+                    _configuration = ConfigurationUtils.BuildBuilder(_projectAssembly, _configurationType, null).Build();
                 }
                 return _configuration;
             }
@@ -134,6 +132,8 @@ namespace EDennis.AspNetCore.Base.Testing {
         public virtual void ResetRepo() {
             DbContextProvider<TContext>.Reset(DbContextSettings, CachedConnection);
         }
+
+
 
     }
 

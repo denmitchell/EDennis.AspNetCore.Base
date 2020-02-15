@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -10,29 +9,22 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using ConfigCore.ApiSource;
-using ConfigCore.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace EDennis.AspNetCore.Base.Web {
 
+
     public abstract class ProgramBase<TStartup> : ProgramBase, IProgram
         where TStartup : class {
-        public override Type Startup {
-            get {
-                return typeof(TStartup);
-            }
-        }
+        public override Type Startup => typeof(TStartup);
     }
 
 
     public abstract class ProgramBase : IProgram {
         public abstract string ProjectName { get; }
+        public abstract ConfigurationType ConfigurationType { get; }
         public virtual Func<string[], IConfigurationBuilder> AppConfigurationBuilderFunc { get; set; }
         public virtual Func<string[], IConfigurationBuilder> HostConfigurationBuilderFunc { get; set; }
-        public virtual bool UsesConfigurationApi { get; } = true;
-        public virtual bool UsesEmbeddedConfigurationFiles { get; } = true;
-        public virtual bool UsesLauncherConfigurationFile { get; } = true;
 
         /// <summary>
         /// Whether the project places all wwwroot artifacts in 
@@ -152,49 +144,7 @@ namespace EDennis.AspNetCore.Base.Web {
 
 
         private IConfigurationBuilder CreateDefaultConfigurationBuilder(string[] args) {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-            var apiUrl = "ConfigurationApiUrl";
-            var apiKey = "ConfigurationApiKey";
-
-            var configBuilder = new ConfigurationBuilder();
-
-
-            if (UsesEmbeddedConfigurationFiles) {
-                var assembly = Startup.Assembly;
-                ManifestEmbeddedFileProvider provider = new ManifestEmbeddedFileProvider(assembly);
-                if (UsesProjectRoot) {
-                    configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.json", true, true);
-                    configBuilder.AddJsonFile(provider, $"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true, true);
-                } else {
-                    configBuilder.AddJsonFile(provider, $"appsettings.json", true, true);
-                    configBuilder.AddJsonFile(provider, $"appsettings.{env}.json", true, true);
-                }
-            } else {
-                if (UsesProjectRoot) {
-                    configBuilder.AddJsonFile($"ProjectRoot\\{ProjectName}\\appsettings.json", true, true);
-                    configBuilder.AddJsonFile($"ProjectRoot\\{ProjectName}\\appsettings.{env}.json", true, true);
-                } else {
-                    configBuilder.AddJsonFile($"appsettings.json", true, true);
-                    configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
-                }
-            }
-
-            if (UsesConfigurationApi)
-                configBuilder.AddApiSource(apiUrl, "ApiKey", apiKey, ProjectName, false);
-
-            //if needed, to add/overwrite settings for a Launcher (during testing)
-            if (UsesLauncherConfigurationFile)
-                configBuilder.AddJsonFile($"appsettings.Launcher.json", true, true);
-
-
-            configBuilder
-                .AddEnvironmentVariables()
-                .AddCommandLine(args)
-                .AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
-
-            return configBuilder;
-
-
+            return ConfigurationUtils.BuildBuilder(Startup.Assembly, ConfigurationType, args);
         }
 
 

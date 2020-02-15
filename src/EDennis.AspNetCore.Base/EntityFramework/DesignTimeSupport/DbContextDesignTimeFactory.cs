@@ -22,20 +22,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         //holds configuration data
         private IConfiguration _config;
 
-        /// <summary>
-        /// Overrideable method for building a relevant configuration
-        /// </summary>
-        /// <returns>Configuration object</returns>
-        public virtual IConfiguration BuildConfiguration() {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonFile($"appsettings.json", true);
-            builder.AddJsonFile($"appsettings.{env}.json", true);
-            return builder.Build();
-        }
-
-
-
+        public virtual ConfigurationType ConfigurationType { get; }
 
 
         /// <summary>
@@ -47,7 +34,7 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         public virtual TContext CreateDbContext(string[] args) {
 
             //create the options builder from the configuration data
-            _config = BuildConfiguration();
+            _config = ConfigurationUtils.BuildBuilder(typeof(TContext).Assembly,ConfigurationType,args).Build();
 
             DbContextSettings<TContext> settings = new DbContextSettings<TContext>();
             _config.GetSection($"DbContexts:{typeof(TContext).Name}").Bind(settings);
@@ -65,6 +52,9 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
             return context;
 
         }
+
+
+
     }
 
 

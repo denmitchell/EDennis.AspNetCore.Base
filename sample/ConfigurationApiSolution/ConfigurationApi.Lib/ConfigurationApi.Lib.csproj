@@ -28,19 +28,11 @@
   </ItemGroup>
 
 
+  <!--embedded configuration files-->
   <ItemGroup>
     <Content Remove="ProjectRoot\ConfigurationApi\**\*.*" />
     <EmbeddedResource Include="ProjectRoot\ConfigurationApi\**\*.*" />
   </ItemGroup>
-
-
-  <!--<ItemGroup>
-    <Content Remove="ProjectRoot\ConfigurationApi.Lib\appsettings.Development.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectRoot\ConfigurationApi.Lib\appsettings.Development.json" />
-  </ItemGroup>-->
 
 
   <ItemGroup>

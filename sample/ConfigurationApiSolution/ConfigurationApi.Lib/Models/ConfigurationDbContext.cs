@@ -1,6 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationApi.Lib.Models {
+
+    public class ConfigurationDbContextDesignTimeFactory 
+        : MigrationsExtensionsDbContextDesignTimeFactory<ConfigurationDbContext> {
+        public override ConfigurationType ConfigurationType => ConfigurationType.ManifestedEmbeddedFiles;
+    }
+
     public class ConfigurationDbContext : DbContext {
 
         public ConfigurationDbContext(DbContextOptions<ConfigurationDbContext> options)

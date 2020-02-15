@@ -17,7 +17,11 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TContext : DbContext, ISqlServerDbContext<TContext>
         where TRepo : Repo<TEntity, TContext> {
 
-        public virtual string ProjectName { get; set; } = typeof(TRepo).Assembly.GetName().Name;
+        public virtual ConfigurationType ConfigurationType {
+            get {
+                return ConfigurationType.PhysicalFiles;
+            }
+        }
 
         protected ITestOutputHelper Output { get; }
         protected TRepo Repo { get; }
@@ -25,7 +29,8 @@ namespace EDennis.AspNetCore.Base.Testing {
 
         public RepoTests(ITestOutputHelper output) {
             Output = output;
-            Factory = new TestRepoFactory<TRepo, TEntity, TContext>(ProjectName);
+            Factory = new TestRepoFactory<TRepo, TEntity, TContext>(
+                typeof(TRepo).Assembly,ConfigurationType);
             Repo = Factory.CreateRepo();
         }
 
