@@ -12,11 +12,11 @@ namespace Hr.RepoApi.Tests {
         }
 
 
-        private string[] _propertiesToIgnore = new string[] { "SysStart", "SysEnd" }; 
+        private string[] _propertiesToIgnore = new string[] { "SysStart", "SysEnd", "SysUser" }; 
 
         class TestJson_ : TestJsonAttribute {            
             public TestJson_(string methodName, string testScenario, string testCase, string serverName = "(LocalDb)\\MSSQLLocalDb", string testJsonSchema = "_", string testJsonTable = "TestJson") 
-                : base("Hr123", "Hr.RepoApi.Lib", "PersonRepo", methodName, testScenario, testCase, serverName, testJsonSchema, testJsonTable){ }
+                : base("Hr123", "Hr.RepoApi", "PersonRepo", methodName, testScenario, testCase, serverName, testJsonSchema, testJsonTable){ }
         }
 
         [Theory]

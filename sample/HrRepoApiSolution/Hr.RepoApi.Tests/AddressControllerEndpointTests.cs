@@ -30,7 +30,7 @@ namespace Hr.RepoApi.Tests {
 
         internal class TestJson_ : TestJsonAttribute {
             public TestJson_(string methodName, string testScenario, string testCase)
-                : base("Hr123", "Hr.RepoApi.Lib", "AddressController", methodName, testScenario, testCase) {
+                : base("Hr123", "Hr.RepoApi", "AddressController", methodName, testScenario, testCase) {
             }
         }
 

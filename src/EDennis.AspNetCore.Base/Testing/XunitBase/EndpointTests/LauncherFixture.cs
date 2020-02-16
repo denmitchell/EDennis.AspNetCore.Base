@@ -35,6 +35,9 @@ namespace EDennis.AspNetCore.Base.Testing {
 
             var launcher = new TLauncher();
 
+            //asynchronously initiate the launch of the server 
+            launcher.Launch(new string[] { arg });
+
             Program = new TProgram();
 
             //create the HttpClient
@@ -42,9 +45,7 @@ namespace EDennis.AspNetCore.Base.Testing {
                 BaseAddress = new Uri(Program.Api.MainAddress)
             };
 
-            //asynchronously initiate the launch of the server 
-            launcher.Launch(new string[] { arg });
-            _ = HttpClient.PingAsync(10).Result;
+            //_ = HttpClient.PingAsync(10).Result;
 
         }
 

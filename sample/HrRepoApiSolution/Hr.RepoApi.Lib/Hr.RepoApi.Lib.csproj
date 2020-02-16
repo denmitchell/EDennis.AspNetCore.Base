@@ -28,10 +28,20 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Remove="ProjectRoot\Hr.RepoApi\**\*.*" />
     <EmbeddedResource Include="ProjectRoot\Hr.RepoApi\**\*.*" />
-  </ItemGroup>
+  </ItemGroup>-->
+
+  <!--<ItemGroup>
+    <EmbeddedResource Remove="ProjectRoot\Hr.RepoApi\appsettings.Development.json" />
+  </ItemGroup>-->
+
+  <!--<ItemGroup>
+    <Content Include="ProjectRoot\Hr.RepoApi\appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>-->
 
   <ItemGroup>
     <Folder Include="MigrationsSql\PreUp\" />

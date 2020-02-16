@@ -1,12 +1,12 @@
 ﻿use Hr123;
-declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
+declare @ProjectName varchar(255) = 'Hr.RepoApi'
 declare @ClassName varchar(255) = 'AddressController'
 declare @MethodName varchar(255) = 'Get'
 declare @TestScenario varchar(255) = 'Not Found'
 declare @TestCase varchar(255) = 'C'
 
 declare @ControllerPath varchar(255) = 'api/Address'
-declare @TargetId int = -999299
+declare @TargetId int = -999399
 declare @ExpectedStatusCode int = 404 --Not Found
 
 begin transaction

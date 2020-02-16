@@ -1,5 +1,5 @@
 ﻿use Hr123;
-declare @ProjectName varchar(255) = 'Hr.RepoApi.Lib'
+declare @ProjectName varchar(255) = 'Hr.RepoApi'
 declare @ClassName varchar(255) = 'PersonRepo'
 declare @MethodName varchar(255) = 'Get'
 declare @TestScenario varchar(255) = 'Success'

@@ -25,7 +25,7 @@ namespace Hr.RepoApi.Tests {
 
         internal class TestJson_ : TestJsonAttribute {
             public TestJson_(string methodName, string testScenario, string testCase)
-                : base("Hr123", "Hr.RepoApi.Lib", "ProcController", methodName, testScenario, testCase) {
+                : base("Hr123", "Hr.RepoApi", "ProcController", methodName, testScenario, testCase) {
             }
         }
 

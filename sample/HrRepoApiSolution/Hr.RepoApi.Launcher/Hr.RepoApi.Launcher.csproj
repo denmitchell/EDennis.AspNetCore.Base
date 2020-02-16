@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigurationApi.Lib" Version="1.1.6" />
-    <PackageReference Include="IdentityServer.Lib" Version="1.1.0" />
+    <PackageReference Include="ConfigurationApi.Lib" Version="1.1.7" />
+    <PackageReference Include="IdentityServer.Lib" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
