@@ -12,7 +12,7 @@ declare @SysUser varchar(255) = 'tester@example.org'
 declare @LinqWhere varchar(255) = 'Id ge -999006 and Id le -999004'
 
 declare @TargetId int = -999005
-declare @InvalidId int = -999299
+declare @InvalidId int = -999399
 declare @ExpectedStatusCode int = 400 --Bad Request
 
 

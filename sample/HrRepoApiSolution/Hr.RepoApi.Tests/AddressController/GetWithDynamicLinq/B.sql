@@ -6,7 +6,7 @@ declare @TestScenario varchar(255) = 'With Select'
 declare @TestCase varchar(255) = 'B'
 
 declare @ControllerPath varchar(255) = 'api/Address'
-declare @Where varchar(255) = 'FirstName.Contains("h")'
+declare @Where varchar(255) = 'StreetAddress.Contains("h")'
 declare @Select varchar(255) = 'new(StreetAddress,City)'
 declare @OrderBy varchar(255) = 'City asc, StreetAddress asc'
 declare @Skip int = 0
@@ -17,7 +17,7 @@ declare @pageCount int;
 declare @pageSize int;
 declare @rowCount int;
 
-select @rowCount = count(*) from Address where State = 'CA'
+select @rowCount = count(*) from Address where StreetAddress like '%h%'
 set @currentPage = 1 + ceiling(convert(decimal(10,2),@Skip)/@Take)
 set @pageCount = ceiling(convert(decimal(10,2),@rowCount)/@Take)
 set @pageSize = @Take
@@ -35,7 +35,7 @@ declare
 		(
 			select StreetAddress, City 
 				from Address
-				where State = 'CA'
+				where StreetAddress like '%h%'
 				order by City asc, StreetAddress asc
 				offset @Skip rows fetch next @Take rows only
 				for json path, include_null_values

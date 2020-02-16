@@ -21,7 +21,7 @@ declare @Input varchar(max) =
 	select
 		@Id Id,
 		@StreetAddress StreetAddress,
-		City,State,PostalCode,
+		City,State,PostalCode,PersonId,
 		@SysUser SysUser
 		from Address where Id = @Id
 	for json path, without_array_wrapper
