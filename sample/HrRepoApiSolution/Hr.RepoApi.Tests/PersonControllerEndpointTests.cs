@@ -36,7 +36,6 @@ namespace Hr.RepoApi.Tests {
 
         [Theory]
         [TestJson_("GetWithDevExtreme", "FilterSortSelectTake", "A")]
-        [TestJson_("GetWithDevExtreme", "Bad Request", "C")]
         public void GetWithDevExtreme(string t, JsonTestCase jsonTestCase) {
             var ea = GetWithDevExtreme_ExpectedActual(t, jsonTestCase);
 
@@ -45,8 +44,8 @@ namespace Hr.RepoApi.Tests {
 
 
         [Theory]
-        [TestJson_("GetWithDynamicLinq", "With Select", "A")]
-        [TestJson_("GetWithDynamicLinq", "Without Select", "B")]
+        [TestJson_("GetWithDynamicLinq", "Without Select", "A")]
+        [TestJson_("GetWithDynamicLinq", "With Select", "B")]
         public void GetWithDynamicLinq(string t, JsonTestCase jsonTestCase) {
             var ea = GetWithDynamicLinq_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, Output));
@@ -65,7 +64,6 @@ namespace Hr.RepoApi.Tests {
 
         [Theory]
         [TestJson_("Delete", "No Content", "A")]
-        [TestJson_("Delete", "Not Found", "C")]
         public void Delete(string t, JsonTestCase jsonTestCase) {
             var ea = Delete_ExpectedActual(t, jsonTestCase);
             Assert.True(ea.Actual.IsEqualAndWrite(ea.Expected, propertiesToIgnore, Output));

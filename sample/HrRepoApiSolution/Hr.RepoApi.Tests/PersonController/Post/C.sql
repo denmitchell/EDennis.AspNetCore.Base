@@ -1,6 +1,6 @@
 ﻿use Hr123;
 declare @ProjectName varchar(255) = 'Hr.RepoApi'
-declare @ClassName varchar(255) = 'PersonRepo'
+declare @ClassName varchar(255) = 'PersonController'
 declare @MethodName varchar(255) = 'Post'
 declare @TestScenario varchar(255) = 'Conflict'
 declare @TestCase varchar(255) = 'C'

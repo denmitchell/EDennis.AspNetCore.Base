@@ -32,8 +32,8 @@ namespace Hr.RepoApi.Tests {
 
 
         [Theory]
-        [TestJson_("PersonAndAddressesByState", "Success", "A")]
-        public void PersonAndAddressesByState(string t, JsonTestCase jsonTestCase) {
+        [TestJson_("PersonsAndAddressesByState", "Success", "A")]
+        public void PersonsAndAddressesByState(string t, JsonTestCase jsonTestCase) {
             var ea = GetJsonFromJsonStoredProcedure_ExpectedActual(t, jsonTestCase);
             Assert.True(ObjectExtensions.IsEqualAndWrite(ea.Expected, ea.Actual, Output, _propertiesToIgnore, true, false));
         }
