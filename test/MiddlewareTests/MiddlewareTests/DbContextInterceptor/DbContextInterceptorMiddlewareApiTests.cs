@@ -1,19 +1,18 @@
 ﻿using EDennis.AspNetCore.Base;
 using EDennis.AspNetCore.Base.EntityFramework;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
 using EDennis.Samples.DbContextInterceptorMiddlewareApi;
-using EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
-using EDennis.Samples.DbContextInterceptorMiddlewareApi.Tests;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
+using Lcr = EDennis.Samples.DbContextInterceptorMiddlewareApi.Launcher;
+using Lib = EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
     /// <summary>
@@ -59,8 +58,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonPerson("CUD", "", "B")]
         public void Person(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["DbContextInterceptorApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
 
             client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, "TestProject");
             

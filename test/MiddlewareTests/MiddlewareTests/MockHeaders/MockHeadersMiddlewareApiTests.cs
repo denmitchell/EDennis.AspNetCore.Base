@@ -1,12 +1,14 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.MockHeadersMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Lib = EDennis.Samples.MockHeadersMiddlewareApi.Lib;
+using Lcr = EDennis.Samples.MockHeadersMiddlewareApi.Launcher;
+using EDennis.AspNetCore.Base.Testing;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
     /// <summary>
@@ -42,8 +44,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Get", "", "C")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["MockHeadersApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
+
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case

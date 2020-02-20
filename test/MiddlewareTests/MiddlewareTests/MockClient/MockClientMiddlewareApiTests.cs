@@ -5,7 +5,7 @@ using EDennis.NetCoreTestingUtilities.Extensions;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using Launcher = EDennis.Samples.MockClientMiddlewareApi.Launcher;
+using Lcr = EDennis.Samples.MockClientMiddlewareApi.Launcher;
 using Lib = EDennis.Samples.MockClientMiddlewareApi.Lib;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
@@ -47,7 +47,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("GetB", "GetB Method Authorization", "D")]
         public virtual void Get(string t, JsonTestCase jsonTestCase) {
 
-            using var fixture = new LauncherFixture<Lib.Program, Launcher.Program>();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
             var client = fixture.HttpClient;
             _output.WriteLine($"Test case: {t}");
 

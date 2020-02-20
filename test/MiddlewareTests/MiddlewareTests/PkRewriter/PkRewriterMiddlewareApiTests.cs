@@ -2,13 +2,15 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using PkRewriterApi.Tests;
 using PkRewriterApi;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Lib = PkRewriterApi.Lib;
+using Lcr = PkRewriterApi.Launcher;
+using EDennis.AspNetCore.Base.Testing;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
     /// <summary>
@@ -45,8 +47,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Create", "", "D")]
         public void Create(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["PkRewriterApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case
@@ -83,8 +85,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Update", "CreateUpdate", "C")]
         public void CreateUpdate(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["PkRewriterApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case
@@ -125,8 +127,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Update", "Update", "C")]
         public void Update(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["PkRewriterApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case
@@ -156,8 +158,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Query", "", "C")]
         public void Query(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["PkRewriterApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case

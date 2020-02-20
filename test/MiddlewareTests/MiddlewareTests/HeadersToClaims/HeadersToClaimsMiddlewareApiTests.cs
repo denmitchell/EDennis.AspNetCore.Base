@@ -1,13 +1,14 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib;
-using EDennis.Samples.HeadersToClaimsMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
+using EDennis.AspNetCore.Base.Testing;
+using Lib = EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib;
+using Lcr = EDennis.Samples.HeadersToClaimsMiddlewareApi.Launcher;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
     /// <summary>
@@ -43,8 +44,9 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Get", "", "C")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["HeadersToClaimsApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
+
             _output.WriteLine($"Test case: {t}");
 
             //send configuration for test case
@@ -55,7 +57,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             Assert.Equal((int)System.Net.HttpStatusCode.OK, status.GetStatusCode());
 
             var headersQueryString = jsonTestCase.GetObject<string>("Headers");
-            var expected = jsonTestCase.GetObject<List<SimpleClaim>>("Expected");
+            var expected = jsonTestCase.GetObject<List<Lib.SimpleClaim>>("Expected");
 
             var url = $"Claims?{headersQueryString}";
 
@@ -63,7 +65,7 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var content = result.Content.ReadAsStringAsync().Result;
             _output.WriteLine(content);
 
-            var actual = JsonSerializer.Deserialize<List<SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var actual = JsonSerializer.Deserialize<List<Lib.SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
         }

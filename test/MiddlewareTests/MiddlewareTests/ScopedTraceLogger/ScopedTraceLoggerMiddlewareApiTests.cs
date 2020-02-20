@@ -2,16 +2,13 @@
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.ScopedLoggerMiddlewareApi.Tests;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
+using Lib = EDennis.Samples.ScopedLoggerMiddlewareApi.Lib;
+using Lcr = EDennis.Samples.ScopedLoggerMiddlewareApi.Launcher;
+using EDennis.AspNetCore.Base.Testing;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
     /// <summary>
@@ -47,8 +44,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Get", "", "C")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["ScopedLoggerApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
 
             client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, EntryPoint.TestProject.ToString());
 

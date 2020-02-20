@@ -20,7 +20,7 @@ namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Controllers {
         public List<Person> Get() => _repo.Context.Person.ToList();
 
         [HttpGet("{id}")]
-        public Person Get(int id) => _repo.GetById(id);
+        public Person Get(int id) => _repo.Get(id);
 
         [HttpDelete("{id}")]
         public void Delete(int id) => _repo.Delete(id);

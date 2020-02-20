@@ -1,14 +1,17 @@
 ﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.ScopePropertiesMiddlewareApi.Tests;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Lib = EDennis.Samples.ScopePropertiesMiddlewareApi.Lib;
+using Lcr = EDennis.Samples.ScopePropertiesMiddlewareApi.Launcher;
+
 
 namespace EDennis.AspNetCore.MiddlewareTests {
     /// <summary>
@@ -44,8 +47,8 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Get", "", "C")]
         public void Get(string t, JsonTestCase jsonTestCase) {
 
-            using var factory = new TestApis();
-            var client = factory.CreateClient["ScopePropertiesApi"]();
+            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            var client = fixture.HttpClient;
 
             client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, "TestProject");
 
