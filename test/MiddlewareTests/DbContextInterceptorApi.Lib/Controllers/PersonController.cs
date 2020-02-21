@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Controllers {
+namespace DbContextInterceptorApi.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class PersonController : ControllerBase {

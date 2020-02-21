@@ -5,7 +5,7 @@ using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
 
-namespace EDennis.Samples.MockClientMiddlewareApi {
+namespace MockClientApi {
     public class Program {
         public static int Main(string[] args) {
             Log.Logger = new LoggerConfiguration()

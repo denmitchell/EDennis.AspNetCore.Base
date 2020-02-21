@@ -1,17 +1,11 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using L = EDennis.Samples.ScopePropertiesMiddlewareApi.Lib;
-using System.Threading.Tasks;
+using A = ScopePropertiesApi.Lib;
 
-namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Launcher {
-
-    /// <summary>
-    /// This launcher runs all APIs needed for the test
-    /// </summary>
+namespace ScopePropertiesApi.Launcher {
     public class Program : ILauncher {
-
         public void Launch(string[] args, bool _) {
-            var l = new L.Program().Run(args);
-            ProgramBase.CanPingAsync(l);
+            var a = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(a);
         }
 
     }

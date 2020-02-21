@@ -1,26 +1,17 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using M = EDennis.Samples.MockClientMiddlewareApi.Lib;
+using A = MockClientApi.Lib;
 using I = IdentityServer.Lib;
-using System.Threading.Tasks;
 
-namespace EDennis.Samples.MockClientMiddlewareApi.Launcher {
+namespace MockClientApi.Launcher {
 
-    /// <summary>
-    /// This launcher runs all APIs from the .Lib project's Program.Run method
-    /// </summary>
     public class Program : ILauncher {
 
         public void Launch(string[] args, bool _) {
-            var m = new M.Program().Run(args);
             var i = new I.Program().Run(args);
-            ProgramBase.CanPingAsync(m, i);
+            ProgramBase.CanPingAsync(i);
+            var a = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(a);
         }
-
-
-        //public void Launch(string[] args) {
-        //    Task.Run(() => M.Program.Main(args));
-        //    Task.Run(() => I.Program.Main(args));
-        //}
 
     }
 }

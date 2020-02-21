@@ -18,15 +18,15 @@ namespace EDennis.AspNetCore.MiddlewareTests {
     /// the individual test cases were conflicting with each
     /// (possibly, one test case was updating the configuration
     /// while another test case was calling Get).  To resolve
-    /// the issue, I instantiate the TestApis within the
+    /// the issue, I instantiate the LauncherFixture within each
     /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class PkRewriterMiddlewareApiTests {
+    public class PkRewriterApiTests {
 
         private readonly ITestOutputHelper _output;
 
-        public PkRewriterMiddlewareApiTests(
+        public PkRewriterApiTests(
             ITestOutputHelper output) {
             _output = output;
         }

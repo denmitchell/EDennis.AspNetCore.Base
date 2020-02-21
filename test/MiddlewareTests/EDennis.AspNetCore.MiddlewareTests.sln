@@ -5,10 +5,6 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{5456C754-7577-4685-A6E4-97959E8B25A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "..\Common\EDennis.Samples.IdentityServer\IdentityServer.Lib\IdentityServer.Lib.csproj", "{14BAA4F3-9E7E-479A-B739-83AA2E4B18AD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj", "{1CA5F153-6541-4CBF-87B3-F3033338CE87}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbContextInterceptorApi.Lib", "DbContextInterceptorApi.Lib\DbContextInterceptorApi.Lib.csproj", "{0BAB2884-0DF7-49D0-9262-C7054D7F7708}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbContextInterceptorApi", "DbContextInterceptorApi\DbContextInterceptorApi.csproj", "{41923E0B-66AC-4CA5-84C6-1BEDF00F871A}"
@@ -35,9 +31,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScopedLoggerApi.Lib", "Scop
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScopedLoggerApi", "ScopedLoggerApi\ScopedLoggerApi.csproj", "{106F3E32-7755-43D8-94EB-F40D2EF9E98C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PkRewriterApi", "PkRewriterApi\PkRewriterApi.csproj", "{34399B3B-1C91-4251-BDF0-1BE07B02491B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkRewriterApi", "PkRewriterApi\PkRewriterApi.csproj", "{34399B3B-1C91-4251-BDF0-1BE07B02491B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PkRewriterApi.Lib", "PkRewriterApi.Lib\PkRewriterApi.Lib.csproj", "{67568EB8-70D4-4C80-A354-D98FD7E20EF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkRewriterApi.Lib", "PkRewriterApi.Lib\PkRewriterApi.Lib.csproj", "{67568EB8-70D4-4C80-A354-D98FD7E20EF9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "IdentityServer.Lib\IdentityServer.Lib.csproj", "{F3708624-EC84-4C74-87A2-48AFEB8BB627}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{B4A6B3CB-2E5C-4A27-80C3-A0F7BA7739F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +49,6 @@ Global
 		{5456C754-7577-4685-A6E4-97959E8B25A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5456C754-7577-4685-A6E4-97959E8B25A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5456C754-7577-4685-A6E4-97959E8B25A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14BAA4F3-9E7E-479A-B739-83AA2E4B18AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14BAA4F3-9E7E-479A-B739-83AA2E4B18AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14BAA4F3-9E7E-479A-B739-83AA2E4B18AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14BAA4F3-9E7E-479A-B739-83AA2E4B18AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1CA5F153-6541-4CBF-87B3-F3033338CE87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CA5F153-6541-4CBF-87B3-F3033338CE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1CA5F153-6541-4CBF-87B3-F3033338CE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1CA5F153-6541-4CBF-87B3-F3033338CE87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0BAB2884-0DF7-49D0-9262-C7054D7F7708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0BAB2884-0DF7-49D0-9262-C7054D7F7708}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BAB2884-0DF7-49D0-9262-C7054D7F7708}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,6 +109,14 @@ Global
 		{67568EB8-70D4-4C80-A354-D98FD7E20EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67568EB8-70D4-4C80-A354-D98FD7E20EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67568EB8-70D4-4C80-A354-D98FD7E20EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3708624-EC84-4C74-87A2-48AFEB8BB627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3708624-EC84-4C74-87A2-48AFEB8BB627}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3708624-EC84-4C74-87A2-48AFEB8BB627}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3708624-EC84-4C74-87A2-48AFEB8BB627}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4A6B3CB-2E5C-4A27-80C3-A0F7BA7739F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4A6B3CB-2E5C-4A27-80C3-A0F7BA7739F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4A6B3CB-2E5C-4A27-80C3-A0F7BA7739F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4A6B3CB-2E5C-4A27-80C3-A0F7BA7739F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

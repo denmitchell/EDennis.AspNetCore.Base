@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 
-namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib {
+namespace MockHeadersApi.Lib {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;

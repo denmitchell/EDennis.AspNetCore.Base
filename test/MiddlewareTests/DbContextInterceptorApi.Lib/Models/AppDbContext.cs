@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using System.Data.Common;
 
-namespace EDennis.Samples.DbContextInterceptorMiddlewareApi {
+namespace DbContextInterceptorApi {
 
     /// <summary>
     /// To Add Migration :
-    /// with DefaultProject = EDennis.Samples.DbContextConfigsApi ...
+    /// with DefaultProject = DbContextConfigsApi ...
     ///     PM > Add-Migration Initial -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi
     /// To Update Database:
     ///     PM > Update-Database -Context AppDbContext -Project DbContextInterceptorApi.Lib -StartupProject DbContextInterceptorApi

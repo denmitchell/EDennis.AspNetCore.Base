@@ -5,24 +5,25 @@ using EDennis.NetCoreTestingUtilities.Extensions;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using Lcr = EDennis.Samples.MockClientMiddlewareApi.Launcher;
-using Lib = EDennis.Samples.MockClientMiddlewareApi.Lib;
+using Lcr = MockClientApi.Launcher;
+using Lib = MockClientApi.Lib;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
 
     /// <summary>
-    /// NOTE: Use Launcher Pattern, rather than Factory Pattern,
-    ///       for these tests due to the fact that the built-in 
-    ///       Microsoft Authentication middleware creates its
-    ///       own HttpClient (and hence cannot generate it from
-    ///       a TestServer).
+    /// Note: IClassFixture was not used because
+    /// the individual test cases were conflicting with each
+    /// (possibly, one test case was updating the configuration
+    /// while another test case was calling Get).  To resolve
+    /// the issue, I instantiate the LauncherFixture within each
+    /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class MockClientMiddlewareApiTests  {
+    public class MockClientApiTests  {
 
         private readonly ITestOutputHelper _output;
 
-        public MockClientMiddlewareApiTests(
+        public MockClientApiTests(
             ITestOutputHelper output) {
             _output = output;
         }

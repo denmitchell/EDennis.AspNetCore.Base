@@ -4,36 +4,38 @@ using EDennis.AspNetCore.Base.Testing;
 using EDennis.AspNetCore.Base.Web;
 using EDennis.NetCoreTestingUtilities;
 using EDennis.NetCoreTestingUtilities.Extensions;
-using EDennis.Samples.DbContextInterceptorMiddlewareApi;
+using DbContextInterceptorApi;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using Xunit;
 using Xunit.Abstractions;
-using Lcr = EDennis.Samples.DbContextInterceptorMiddlewareApi.Launcher;
-using Lib = EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
+using Lcr = DbContextInterceptorApi.Launcher;
+using Lib = DbContextInterceptorApi.Lib;
+using DbContextInterceptorApi.Tests;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
+
     /// <summary>
     /// Note: IClassFixture was not used because
     /// the individual test cases were conflicting with each
     /// (possibly, one test case was updating the configuration
     /// while another test case was calling Get).  To resolve
-    /// the issue, I instantiate the TestApis within the
+    /// the issue, I instantiate the LauncherFixture within each
     /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class DbContextInterceptorMiddlewareApiTests {
+    public class DbContextInterceptorApiTests {
 
         private readonly ITestOutputHelper _output;
         private readonly static BlockingCollection<bool> bc = new BlockingCollection<bool>();
 
-        static DbContextInterceptorMiddlewareApiTests() {
+        static DbContextInterceptorApiTests() {
             bc.Add(true);
         }
 
-        public DbContextInterceptorMiddlewareApiTests(
+        public DbContextInterceptorApiTests(
             ITestOutputHelper output) {
             _output = output;
         }
@@ -55,14 +57,50 @@ namespace EDennis.AspNetCore.MiddlewareTests {
 
         [Theory]
         [TestJsonPerson("CUD", "", "A")]
+        public void PersonA(string t, JsonTestCase jsonTestCase) {
+
+            //using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
+            //var client = fixture.HttpClient;
+
+            var factory = new TestApis();
+            var client = factory.CreateClient["DbContextInterceptorApi"]();
+
+            client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, "TestProject");
+            
+            //ordinarily, include this line; however, we are testing isolation of updates by different users
+            //client.DefaultRequestHeaders.Add(Constants.USER_KEY, "tester@example.org");
+
+            _output.WriteLine($"Test case: {t}");
+
+            Configure<Person>(client, jsonTestCase.TestCase);
+
+            var testCases = new CrudTestCases<Person>(jsonTestCase);
+
+            TestCreate(client, testCases, 0);
+            TestCreate(client, testCases, 1);
+
+            TestUpdate(client, testCases, 0);
+            TestUpdate(client, testCases, 1);
+
+            TestDelete(client, testCases, 0);
+            TestDelete(client, testCases, 1);
+
+            TestReset(client, testCases, 0);
+            TestReset(client, testCases, 1);
+
+
+        }
+
+
+        [Theory]
         [TestJsonPerson("CUD", "", "B")]
-        public void Person(string t, JsonTestCase jsonTestCase) {
+        public void PersonB(string t, JsonTestCase jsonTestCase) {
 
             using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
             var client = fixture.HttpClient;
 
             client.DefaultRequestHeaders.Add(Constants.ENTRYPOINT_KEY, "TestProject");
-            
+
             //ordinarily, include this line; however, we are testing isolation of updates by different users
             //client.DefaultRequestHeaders.Add(Constants.USER_KEY, "tester@example.org");
 

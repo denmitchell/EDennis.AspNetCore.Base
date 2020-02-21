@@ -4,7 +4,7 @@ using MethodBoundaryAspect.Fody.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Lib.Controllers {
+namespace ScopedLoggerApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     [ScopedTraceLogger(logEntry:true,logExit:true)]

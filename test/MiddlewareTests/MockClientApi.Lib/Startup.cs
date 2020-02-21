@@ -15,7 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace EDennis.Samples.MockClientMiddlewareApi.Lib {
+namespace MockClientApi.Lib {
     public class Startup {
         public Startup(IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;

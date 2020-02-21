@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib.Controllers {
+namespace HeadersToClaimsApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ClaimsController : ControllerBase {

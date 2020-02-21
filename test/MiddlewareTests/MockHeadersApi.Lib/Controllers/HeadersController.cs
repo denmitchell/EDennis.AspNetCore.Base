@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using MockHeadersApi.Lib;
 using System.Collections.Generic;
 
-namespace EDennis.Samples.MockHeadersMiddlewareApi.Lib.Controllers {
+namespace MockHeadersApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class HeadersController : ControllerBase {

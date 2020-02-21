@@ -1,5 +1,6 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 
@@ -8,10 +9,9 @@ namespace EDennis.AspNetCore.Base.Testing {
     /// <summary>
     /// Xunit class fixture used to launch and terminate a web server for integration testing
     /// </summary>
-    public class LauncherFixture<TProgram,TLauncher> : IDisposable 
+    public class LauncherFixture<TProgram, TLauncher> : IDisposable
         where TProgram : IProgram, new()
-        where TLauncher : ILauncher, new()
-        {
+        where TLauncher : ILauncher, new() {
 
         //the threading mechanism used to remotely terminate launcher apps
         private readonly EventWaitHandle _ewh;
@@ -27,7 +27,16 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// Constructs a new fixture and sets up the EventWaitHandle for 
         /// remote termination of the entry-point app
         /// </summary>
-        public LauncherFixture() {
+        public LauncherFixture() : this(new string[] { }) {
+        }
+
+
+
+        /// <summary>
+        /// Constructs a new fixture and sets up the EventWaitHandle for 
+        /// remote termination of the entry-point app
+        /// </summary>
+        public LauncherFixture(string[] args) {
 
             //setup the EventWaitHandle
             var arg = $"ewh={Guid.NewGuid().ToString()}";
@@ -36,7 +45,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             var launcher = new TLauncher();
 
             //asynchronously initiate the launch of the server 
-            launcher.Launch(new string[] { arg });
+            launcher.Launch(args.Union(new string[] { arg }).ToArray());
 
             Program = new TProgram();
 
@@ -48,6 +57,7 @@ namespace EDennis.AspNetCore.Base.Testing {
             //_ = HttpClient.PingAsync(10).Result;
 
         }
+
 
         /// <summary>
         /// In disposing of this fixture instance, signal the EventWaitHandle so that the

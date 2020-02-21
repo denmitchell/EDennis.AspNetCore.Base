@@ -6,8 +6,8 @@ using System.IO;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
-using Lib = EDennis.Samples.MockHeadersMiddlewareApi.Lib;
-using Lcr = EDennis.Samples.MockHeadersMiddlewareApi.Launcher;
+using Lib = MockHeadersApi.Lib;
+using Lcr = MockHeadersApi.Launcher;
 using EDennis.AspNetCore.Base.Testing;
 
 namespace EDennis.AspNetCore.MiddlewareTests {
@@ -16,15 +16,15 @@ namespace EDennis.AspNetCore.MiddlewareTests {
     /// the individual test cases were conflicting with each
     /// (possibly, one test case was updating the configuration
     /// while another test case was calling Get).  To resolve
-    /// the issue, I instantiate the TestApis within the
+    /// the issue, I instantiate the LauncherFixture within each
     /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class MockHeadersMiddlewareApiTests {
+    public class MockHeadersApiTests {
 
         private readonly ITestOutputHelper _output;
 
-        public MockHeadersMiddlewareApiTests(
+        public MockHeadersApiTests(
             ITestOutputHelper output) {
             _output = output;
         }

@@ -1,16 +1,11 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using L = EDennis.Samples.ScopedLoggerMiddlewareApi.Lib;
+using A = ScopedLoggerApi.Lib;
 
-namespace EDennis.Samples.ScopedLoggerMiddlewareApi.Launcher {
-
-    /// <summary>
-    /// This launcher runs all APIs needed for the test
-    /// </summary>
+namespace ScopedLoggerApi.Launcher {
     public class Program : ILauncher {
-
         public void Launch(string[] args, bool _) {
-            var l = new L.Program().Run(args);
-            ProgramBase.CanPingAsync(l);
+            var a = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(a);
         }
 
     }

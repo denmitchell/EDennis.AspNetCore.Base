@@ -93,6 +93,15 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
+        public static string[] ToCommandLineArgs(this IConfiguration config) {
+            List<string> args= new List<string>();
+            var flattened = config.Flatten();
+            foreach(var entry in flattened) {
+                args.Add($"{entry.Key}={entry.Value}");
+            }
+            return args.ToArray();
+        }
+
         public static Dictionary<string, string> Flatten(this IConfiguration config) {
             var dict = new Dictionary<string, string>();
             config.GetChildren().AsParallel().ToList()

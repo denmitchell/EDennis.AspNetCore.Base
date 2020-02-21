@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 
-namespace EDennis.Samples.ScopedLoggerMiddlewareApi {
+namespace ScopedLoggerApi {
     public class Program {
         public static void Main(string[] args) {
              CreateHostBuilder(args).Build().Run();

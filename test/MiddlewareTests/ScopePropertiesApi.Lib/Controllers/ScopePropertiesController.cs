@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib.Controllers {
+namespace ScopePropertiesApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ScopePropertiesController : ControllerBase {

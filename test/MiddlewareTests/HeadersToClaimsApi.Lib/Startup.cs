@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
-namespace EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib {
+namespace HeadersToClaimsApi.Lib {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;

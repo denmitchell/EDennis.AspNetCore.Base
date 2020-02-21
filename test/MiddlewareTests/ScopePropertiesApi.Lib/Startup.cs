@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Linq;
 
-namespace EDennis.Samples.ScopePropertiesMiddlewareApi.Lib {
+namespace ScopePropertiesApi.Lib {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;

@@ -7,26 +7,29 @@ using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
 using EDennis.AspNetCore.Base.Testing;
-using Lib = EDennis.Samples.HeadersToClaimsMiddlewareApi.Lib;
-using Lcr = EDennis.Samples.HeadersToClaimsMiddlewareApi.Launcher;
+using Lib = HeadersToClaimsApi.Lib;
+using Lcr = HeadersToClaimsApi.Launcher;
+using System;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using System.Threading;
+using HeadersToClaimsApi.Tests;
 
-namespace EDennis.AspNetCore.MiddlewareTests {
-    /// <summary>
-    /// Note: IClassFixture was not used because
-    /// the individual test cases were conflicting with each
-    /// (possibly, one test case was updating the configuration
-    /// while another test case was calling Get).  To resolve
-    /// the issue, I instantiate the TestApis within the
-    /// test method.  This is inefficient, but it works.
-    /// </summary>
-    [Collection("Sequential")]
-    public class HeadersToClaimsMiddlewareApiTests {
+namespace MiddlewareTests {
+
+
+    public class HeadersToClaimsApiTests : IDisposable {
 
         private readonly ITestOutputHelper _output;
 
-        public HeadersToClaimsMiddlewareApiTests(
+        LauncherFixture<Lib.Program, Lcr.Program> fixture;
+        HttpClient client;
+
+        public HeadersToClaimsApiTests(
             ITestOutputHelper output) {
             _output = output;
+
+
         }
 
 
@@ -42,14 +45,13 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         [TestJsonA("Get", "", "A")]
         [TestJsonA("Get", "", "B")]
         [TestJsonA("Get", "", "C")]
-        public void Get(string t, JsonTestCase jsonTestCase) {
-
-            using var fixture = new LauncherFixture<Lib.Program, Lcr.Program>();
-            var client = fixture.HttpClient;
+        public virtual void Get(string t, JsonTestCase jsonTestCase) {
 
             _output.WriteLine($"Test case: {t}");
 
-            //send configuration for test case
+            var factory = new TestApis();
+            var client = factory.CreateClient["HeadersToClaimsApi"]();
+
             var jcfg = File.ReadAllText($"HeadersToClaims\\{jsonTestCase.TestCase}.json");
             var status = client.Configure("", jcfg);
 
@@ -68,7 +70,11 @@ namespace EDennis.AspNetCore.MiddlewareTests {
             var actual = JsonSerializer.Deserialize<List<Lib.SimpleClaim>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             Assert.True(actual.IsEqualOrWrite(expected, _output, true));
+
         }
 
+        public void Dispose() {
+            Sequentializer.Gatekeeper.Add(true);
+        }
     }
 }

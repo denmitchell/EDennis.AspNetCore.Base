@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace EDennis.Samples.MockClientMiddlewareApi.Lib.Controllers {
+namespace MockClientApi.Lib.Controllers {
     [ApiController]
     [Route("[controller]")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

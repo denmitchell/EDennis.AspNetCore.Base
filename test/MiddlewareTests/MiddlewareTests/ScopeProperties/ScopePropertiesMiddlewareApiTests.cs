@@ -9,8 +9,8 @@ using System.Linq;
 using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
-using Lib = EDennis.Samples.ScopePropertiesMiddlewareApi.Lib;
-using Lcr = EDennis.Samples.ScopePropertiesMiddlewareApi.Launcher;
+using Lib = ScopePropertiesApi.Lib;
+using Lcr = ScopePropertiesApi.Launcher;
 
 
 namespace EDennis.AspNetCore.MiddlewareTests {
@@ -19,15 +19,15 @@ namespace EDennis.AspNetCore.MiddlewareTests {
     /// the individual test cases were conflicting with each
     /// (possibly, one test case was updating the configuration
     /// while another test case was calling Get).  To resolve
-    /// the issue, I instantiate the TestApis within the
+    /// the issue, I instantiate the LauncherFixture within each
     /// test method.  This is inefficient, but it works.
     /// </summary>
     [Collection("Sequential")]
-    public class ScopePropertiesMiddlewareApiTests {
+    public class ScopePropertiesApiTests {
 
         private readonly ITestOutputHelper _output;
 
-        public ScopePropertiesMiddlewareApiTests(
+        public ScopePropertiesApiTests(
             ITestOutputHelper output) {
             _output = output;
         }

@@ -162,12 +162,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
-    <ProjectReference Include="..\..\Common\EDennis.Samples.IdentityServer\IdentityServer.Lib\IdentityServer.Lib.csproj" />
-    <ProjectReference Include="..\..\Common\EDennis.Samples.IdentityServer\IdentityServer\IdentityServer.csproj" />
     <ProjectReference Include="..\DbContextInterceptorApi.Lib\DbContextInterceptorApi.Lib.csproj" />
     <ProjectReference Include="..\DbContextInterceptorApi\DbContextInterceptorApi.csproj" />
     <ProjectReference Include="..\HeadersToClaimsApi.Lib\HeadersToClaimsApi.Lib.csproj" />
     <ProjectReference Include="..\HeadersToClaimsApi\HeadersToClaimsApi.csproj" />
+    <ProjectReference Include="..\IdentityServer.Lib\IdentityServer.Lib.csproj" />
+    <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
     <ProjectReference Include="..\MockClientApi.Lib\MockClientApi.Lib.csproj" />
     <ProjectReference Include="..\MockClientApi\MockClientApi.csproj" />
     <ProjectReference Include="..\MockHeadersApi.Lib\MockHeadersApi.Lib.csproj" />

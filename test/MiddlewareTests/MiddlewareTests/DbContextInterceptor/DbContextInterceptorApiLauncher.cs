@@ -1,16 +1,13 @@
 ﻿using EDennis.AspNetCore.Base.Web;
-using L = EDennis.Samples.DbContextInterceptorMiddlewareApi.Lib;
+using A = DbContextInterceptorApi.Lib;
 
-namespace EDennis.Samples.DbContextInterceptorMiddlewareApi.Launcher {
+namespace DbContextInterceptorApi.Launcher {
 
-    /// <summary>
-    /// This launcher runs all necessary APIs for a test
-    /// </summary>
     public class Program : ILauncher {
 
         public void Launch(string[] args, bool _) {
-            var l = new L.Program().Run(args);
-            ProgramBase.CanPingAsync(l);
+            var a = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(a);
         }
 
     }
