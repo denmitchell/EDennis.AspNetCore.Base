@@ -32,13 +32,13 @@ namespace EDennis.AspNetCore.Base.Testing {
         }
 
 
-        /// <summary>
-        /// Constructs a new fixture and sets up the EventWaitHandle for 
-        /// remote termination of the entry-point app
-        /// </summary>
-        public LauncherFixture(string[] args) {
-            Initialize(args);
-        }
+        ///// <summary>
+        ///// Constructs a new fixture and sets up the EventWaitHandle for 
+        ///// remote termination of the entry-point app
+        ///// </summary>
+        //public LauncherFixture(string[] args) {
+        //    Initialize(args);
+        //}
 
         private void Initialize(string[] args) {
             //setup the EventWaitHandle
