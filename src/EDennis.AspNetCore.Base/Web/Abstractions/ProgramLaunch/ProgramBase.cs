@@ -30,7 +30,7 @@ namespace EDennis.AspNetCore.Base.Web {
         /// Whether the project places all wwwroot artifacts in 
         /// wwwroot\{ProjectName}.
         /// </summary>
-        public virtual bool UsesProjectRoot { get; } = true;
+        public virtual bool UsesProjectRoot { get; } = false;
         public virtual string ApisConfigurationSection { get; } = "Apis";
         public abstract Type Startup { get; }
 
@@ -39,14 +39,14 @@ namespace EDennis.AspNetCore.Base.Web {
         public Apis Apis { get; }
         public Api Api { get; }
 
-        public ProgramBase() {
+        public ProgramBase(string[] args = null) {
 
             if (AppConfigurationBuilderFunc == null)
                 AppConfigurationBuilderFunc = (args) =>
                     CreateDefaultConfigurationBuilder(args);
 
             Apis = new Apis();
-            var config = AppConfigurationBuilderFunc(new string[] { }).Build();
+            var config = AppConfigurationBuilderFunc(args).Build();
             //var projectName = GetType().Assembly.GetName().Name.Replace(".Lib", "");
             try {
                 config.GetSection(ApisConfigurationSection).Bind(Apis);
@@ -106,7 +106,6 @@ namespace EDennis.AspNetCore.Base.Web {
                         {"URLS", $"{urls[0]};{urls[1]}"},
                         {"HTTPS_PORT", Api.HttpsPort.ToString()}
                     };
-
 
                 webBuilder
                     .ConfigureAppConfiguration((config) => {

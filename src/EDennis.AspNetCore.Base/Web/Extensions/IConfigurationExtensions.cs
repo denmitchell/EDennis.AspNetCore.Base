@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EDennis.AspNetCore.Base.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.Json;
@@ -90,6 +91,16 @@ namespace EDennis.AspNetCore.Base.Web
                 .Distinct()
                 .Select(key => GetSection(root, path == null ? key : ConfigurationPath.Combine(path, key)));
             return entries;
+        }
+
+
+        public static void RandomizePorts(this IConfiguration config, string projectName) {
+            Apis apis = new Apis();
+            config.GetSection("Apis").Bind(apis);
+            var apiKey = apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Key;
+            var ports = PortManager.GetPorts().Result;
+            config[$"Apis:{apiKey}:HttpsPort"] = ports.HttpsPort.ToString();
+            config[$"Apis:{apiKey}:HttpPort"] = ports.HttpPort.ToString();
         }
 
 

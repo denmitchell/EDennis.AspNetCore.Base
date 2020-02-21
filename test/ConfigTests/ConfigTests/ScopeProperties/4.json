@@ -1,9 +1,0 @@
-{
-  "ScopeProperties": {
-    "Enabled": true,
-    "UserSource":"JwtPhoneClaim",
-    "CopyHeaders": false,
-    "CopyClaims": false,
-    "AppendHostPath": true
-  }
- }

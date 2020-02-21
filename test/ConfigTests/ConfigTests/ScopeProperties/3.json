@@ -1,9 +1,0 @@
-{
-  "Enabled": true,
-  "ScopeProperties": {
-    "UserSource": "JwtClientIdClaim",
-    "CopyHeaders": false,
-    "CopyClaims": false,
-    "AppendHostPath": false
-  }
-}

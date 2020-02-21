@@ -37,7 +37,7 @@ namespace EDennis.AspNetCore.Base {
                     configBuilder.AddJsonFile($"ProjectRoot\\{projectName}\\appsettings.json", true, true);
                     configBuilder.AddJsonFile($"ProjectRoot\\{projectName}\\appsettings.{env}.json", true, true);
                     configBuilder.AddJsonFile($"appsettings.json", true, true);
-                    configBuilder.AddJsonFile("appsettings.{env}.json", true, true);
+                    configBuilder.AddJsonFile($"appsettings.{env}.json", true, true);
                     configBuilder.AddJsonFile($"appsettings.Launcher.json", true, true);
                     break;
             }
@@ -47,6 +47,7 @@ namespace EDennis.AspNetCore.Base {
                 configBuilder.AddCommandLine(args);
 
             configBuilder.AddCommandLine(new string[] { $"ASPNETCORE_ENVIRONMENT={env}" });
+
 
             return configBuilder;
 

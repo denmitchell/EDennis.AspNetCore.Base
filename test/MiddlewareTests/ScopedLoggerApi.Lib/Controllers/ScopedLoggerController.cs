@@ -12,15 +12,15 @@ namespace ScopedLoggerApi.Lib.Controllers {
 
         private readonly ILogger<ScopedLoggerController> _logger;
         
-        private IScopeProperties _scopeProperties;
+        public IScopeProperties ScopeProperties { get; set; }
 
         [DisableWeaving]
-        public string GetScopedTraceLoggerKey() => _scopeProperties?.ScopedTraceLoggerKey;
+        public string GetScopedTraceLoggerKey() => ScopeProperties?.ScopedTraceLoggerKey;
 
 
 
         public ScopedLoggerController(IScopeProperties scopeProperties, ILogger<ScopedLoggerController> logger) {
-            _scopeProperties = scopeProperties;
+            ScopeProperties = scopeProperties;
             _logger = logger;
 
             _logger.LogInformation("ScopedLoggerController constructed.");

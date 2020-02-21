@@ -14,22 +14,22 @@ namespace EDennis.AspNetCore.Base.Testing {
         where TLauncher : ILauncher, new() {
 
         //the threading mechanism used to remotely terminate launcher apps
-        private readonly EventWaitHandle _ewh;
+        private EventWaitHandle _ewh;
 
         /// <summary>
         /// An HttpClient that will be used for all tests of the entry-point application
         /// </summary>
-        public HttpClient HttpClient { get; }
+        public HttpClient HttpClient { get; private set; }
 
-        public IProgram Program { get; }
+        public IProgram Program { get; private set; }
 
         /// <summary>
         /// Constructs a new fixture and sets up the EventWaitHandle for 
         /// remote termination of the entry-point app
         /// </summary>
-        public LauncherFixture() : this(new string[] { }) {
+        public LauncherFixture() {
+            Initialize(new string[] { });
         }
-
 
 
         /// <summary>
@@ -37,7 +37,10 @@ namespace EDennis.AspNetCore.Base.Testing {
         /// remote termination of the entry-point app
         /// </summary>
         public LauncherFixture(string[] args) {
+            Initialize(args);
+        }
 
+        private void Initialize(string[] args) {
             //setup the EventWaitHandle
             var arg = $"ewh={Guid.NewGuid().ToString()}";
             _ewh = new EventWaitHandle(false, EventResetMode.ManualReset, arg);
@@ -53,8 +56,6 @@ namespace EDennis.AspNetCore.Base.Testing {
             HttpClient = new HttpClient {
                 BaseAddress = new Uri(Program.Api.MainAddress)
             };
-
-            //_ = HttpClient.PingAsync(10).Result;
 
         }
 

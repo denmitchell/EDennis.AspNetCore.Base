@@ -1,6 +1,0 @@
-{
-  "ScopeProperties": {
-    "Enabled": true,
-    "UserSource": "JwtNameClaim"
-  }
-}

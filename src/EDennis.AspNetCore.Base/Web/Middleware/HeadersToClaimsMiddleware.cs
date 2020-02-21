@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Primitives;
+using System.Diagnostics;
 
 namespace EDennis.AspNetCore.Base.Web {
 
@@ -54,6 +56,8 @@ namespace EDennis.AspNetCore.Base.Web {
                             foreach (var key in htc.Keys) {
                                 foreach (var hdr in req.Headers.Where(h => h.Key == key)) {
                                     foreach (var val in hdr.Value.ToArray()) {
+                                        Debug.WriteLine($"{this.GetHashCode()}: {htc[key]},{val}");
+
                                         claims.Add(new Claim(htc[key], val));
                                         claimsAdded = true;
                                     }

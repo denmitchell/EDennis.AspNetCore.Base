@@ -1,9 +1,0 @@
-{
-  "ScopeProperties": {
-    "Enabled": true,
-    "UserSource": "OasisNameClaim",
-    "CopyHeaders": true,
-    "CopyClaims": true,
-    "AppendHostPath": true
-  }
- }

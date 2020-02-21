@@ -1,13 +1,22 @@
-﻿using EDennis.AspNetCore.Base.EntityFramework;
+﻿using EDennis.AspNetCore.Base;
+using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.AspNetCore.Base.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Diagnostics;
 
 namespace Colors2.Models
 {
 
     public class ColorDbContextDesignTimeFactory :
-        MigrationsExtensionsDbContextDesignTimeFactory<Color2DbContext>{ }
+        MigrationsExtensionsDbContextDesignTimeFactory<Color2DbContext>{
+
+        public ColorDbContextDesignTimeFactory() {
+        }
+
+        public override ConfigurationType ConfigurationType => ConfigurationType.PhysicalFiles;
+
+    }
 
 
     public class Color2DbContext : DbContext, ISqlServerDbContext<Color2DbContext>

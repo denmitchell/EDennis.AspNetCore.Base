@@ -36,10 +36,15 @@ namespace EDennis.AspNetCore.Base.EntityFramework {
         /// <returns>DbContextBase object</returns>
         public virtual TContext CreateDbContext(string[] args) {
 
+            
+
             //create the options builder from the configuration data
             _config = ConfigurationUtils.BuildBuilder(typeof(TContext).Assembly, ConfigurationType, args).Build();
 
+
             var configKey = $"DbContexts:{typeof(TContext).Name}:ConnectionString";
+            Debug.WriteLine(configKey);
+
             var cxnString = _config[configKey];
 
             Debug.WriteLine($"Creating {typeof(TContext).Name} for {cxnString}");

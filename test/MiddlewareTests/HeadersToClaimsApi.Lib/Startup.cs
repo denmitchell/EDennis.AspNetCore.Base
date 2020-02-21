@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 
@@ -48,6 +49,8 @@ namespace HeadersToClaimsApi.Lib {
             //intercept request to add claims and headers 
             //(for ScopePropertiesMiddleware to process)
             app.Use(async (context, next) => {
+
+                Debug.WriteLine($"{this.GetHashCode()}: {context.Request.QueryString.ToString()}");
 
                 //add claims from query string
                 var claims = new List<Claim>();

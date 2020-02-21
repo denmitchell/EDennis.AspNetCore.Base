@@ -108,8 +108,8 @@ namespace Colors2Repo.Tests {
 
 
         [Theory]
-        [TestJson_("Update", "", "A")]
-        [TestJson_("Update", "", "B")]
+        [TestJson_("Patch", "", "A")]
+        [TestJson_("Patch", "", "B")]
         public async Task PatchAsync(string t, JsonTestCase jsonTestCase) {
             Output.WriteLine($"Test case: {t}");
 

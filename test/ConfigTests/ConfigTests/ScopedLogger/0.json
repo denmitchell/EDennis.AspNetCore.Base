@@ -1,9 +1,0 @@
-{
-  "Logging": {
-    "Loggers": {
-      "ScopedTraceLogger": {
-        "Enabled": true
-      }
-    }
-  }
-}

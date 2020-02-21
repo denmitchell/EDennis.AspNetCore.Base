@@ -1,9 +1,0 @@
-{
-  "ScopeProperties": {
-    "Enabled": true,
-    "UserSource": "JwtEmailClaim",
-    "CopyHeaders": false,
-    "CopyClaims": false,
-    "AppendHostPath": true
-  }
- }

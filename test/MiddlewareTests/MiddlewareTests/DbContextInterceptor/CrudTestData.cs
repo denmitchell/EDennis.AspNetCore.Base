@@ -3,7 +3,7 @@ using EDennis.AspNetCore.Base.EntityFramework;
 using EDennis.NetCoreTestingUtilities;
 using System.Collections.Generic;
 
-namespace EDennis.AspNetCore.MiddlewareTests {
+namespace MiddlewareTests {
 
     public class CrudTestCases<TEntity> : List<CrudTestCase<TEntity>> 
         where TEntity : IHasIntegerId { 

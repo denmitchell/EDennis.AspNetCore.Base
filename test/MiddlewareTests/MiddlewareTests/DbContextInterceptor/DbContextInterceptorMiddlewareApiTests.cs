@@ -15,7 +15,7 @@ using Lcr = DbContextInterceptorApi.Launcher;
 using Lib = DbContextInterceptorApi.Lib;
 using DbContextInterceptorApi.Tests;
 
-namespace EDennis.AspNetCore.MiddlewareTests {
+namespace MiddlewareTests {
 
     /// <summary>
     /// Note: IClassFixture was not used because
@@ -44,14 +44,14 @@ namespace EDennis.AspNetCore.MiddlewareTests {
         internal class TestJsonPerson : TestJsonAttribute {
             public TestJsonPerson(string methodName, string testScenario, string testCase)
                 : base("DbContextInterceptorApi", "PersonController",
-                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, EDennis.NetCoreTestingUtilities.DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
             }
         }
 
         internal class TestJsonPosition : TestJsonAttribute {
             public TestJsonPosition(string methodName, string testScenario, string testCase)
                 : base("DbContextInterceptorApi", "PositionController",
-                      methodName, testScenario, testCase, NetCoreTestingUtilities.DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
+                      methodName, testScenario, testCase, EDennis.NetCoreTestingUtilities.DatabaseProvider.Excel, "DbContextInterceptor\\TestJson.xlsx") {
             }
         }
 
