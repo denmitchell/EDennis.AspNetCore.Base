@@ -1,0 +1,32 @@
+﻿@inherits AddressListBase
+<table class="table table-sm">
+
+    @foreach (var address in Addresses) {
+        <tr>
+            @if (Editable) {
+                <td>
+                    <span class="oi oi-pencil"
+                          @onclick="(() => { _showEditPopup = true; AddressId = address.Id; })" />
+                </td>
+            }
+            <td>
+                @address.StreetAddress, @address.City, @address.State @address.PostalCode
+            </td>
+        </tr>
+    }
+    @if (Editable) {
+        <tr>
+            <td>
+                <span class="oi oi-plus"
+                      @onclick="(()=> { _showEditPopup = true; AddressId = 0; })" />
+            </td>
+
+            <td>
+                <i>(new address)</i>
+            </td>
+        </tr>
+    }
+</table>
+@if (_showEditPopup) {
+    <AddressPopup AddressId="@AddressId" PersonId="@PersonId" CloseEventCallback="PopupClosed"></AddressPopup>
+}

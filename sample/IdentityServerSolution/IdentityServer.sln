@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Lib", "Ident
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{97E1FA4B-F6CD-468C-A9A5-45078ABC5DB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDennis.AspNetCore.Base", "..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj", "{32F097EF-D49C-4449-B5B0-47C2958331A8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Launcher", "IdentityServer.Launcher\IdentityServer.Launcher.csproj", "{9714480A-7D02-4541-9F08-A1299781FD94}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{97E1FA4B-F6CD-468C-A9A5-45078ABC5DB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97E1FA4B-F6CD-468C-A9A5-45078ABC5DB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97E1FA4B-F6CD-468C-A9A5-45078ABC5DB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32F097EF-D49C-4449-B5B0-47C2958331A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9714480A-7D02-4541-9F08-A1299781FD94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9714480A-7D02-4541-9F08-A1299781FD94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9714480A-7D02-4541-9F08-A1299781FD94}.Release|Any CPU.ActiveCfg = Release|Any CPU

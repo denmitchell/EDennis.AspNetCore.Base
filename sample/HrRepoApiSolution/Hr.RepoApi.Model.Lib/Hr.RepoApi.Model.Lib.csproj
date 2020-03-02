@@ -4,12 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
-    <Version>1.0.5</Version>
+    <Version>1.0.7-alpha</Version>
     <PackageReleaseNotes>Added Person.Addresses</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
   </ItemGroup>
 
 </Project>

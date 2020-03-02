@@ -1,0 +1,30 @@
+﻿@inherits PagerBase
+<nav aria-label="Pager">
+    <ul class="pagination">
+        <li class="page-item @(HasPreviousPageSet ? "" : "disabled")">
+            <button class="page-link" disabled=@(!HasPreviousPageSet)
+                    @onclick="PreviousPageSetAsync">
+                Previous
+            </button>
+        </li>
+        @for (int i = FromPage; i <= ToPage; i++) {
+            int currentPage = i;
+            <li class="page-item @(currentPage == CurrentPage ? "active" : "")">
+                <span class="page-link"
+                      @onclick="@(()=>SetPageAsync(currentPage))">@currentPage</span>
+                </li>
+            }
+        <li class="page-item @(HasNextPageSet ? "" : "disabled")">
+            <button class="page-link" disabled=@(!HasNextPageSet)
+                    @onclick="NextPageSetAsync">
+                Next
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link" @onclick="NewAsync">
+                <span class="oi oi-plus">
+                </span>
+            </button>
+        </li>
+    </ul>
+</nav>

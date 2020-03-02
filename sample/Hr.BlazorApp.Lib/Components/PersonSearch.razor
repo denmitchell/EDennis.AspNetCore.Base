@@ -1,0 +1,50 @@
+﻿@page "/PersonSearch"
+@inherits PersonSearchBase
+<h3>Person Search</h3>
+@*check if needed ...*@
+@if (Persons == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <EditForm Model="PersonSearchParameters" OnSubmit="@OnSearchAsync">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>
+                        <InputNumber @bind-Value="@PersonSearchParameters.Id"></InputNumber>
+                    </th>
+                    <th>
+                        <InputText @bind-Value="@PersonSearchParameters.FirstNamePattern"></InputText>
+                    </th>
+                    <th>
+                        <InputText @bind-Value="@PersonSearchParameters.LastNamePattern"></InputText>
+                    </th>
+                    <th><button type="submit" class="oi oi-magnifying-glass"></button></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var person in Persons) {
+                <tr>
+                    <td>
+                        <a href="@($"PersonDetail/{person.Id}?editable=true")">
+                            <span class="oi oi-pencil" />
+                        </a>
+                    </td>
+                    <td><a href="@($"PersonDetail/{person.Id}")">@person.Id</a></td>
+                    <td>@person.FirstName</td>
+                    <td>@person.LastName</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </EditForm>
+    <Pager RowCount="@rowCount" @ref="Pager" PagerChangedCallback="OnPagerChangedAsync" NewCallback="OnNewAsync" />
+}
+

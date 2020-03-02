@@ -6,13 +6,14 @@
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    <PackageReleaseNotes>Now using ConfigurationUtils class</PackageReleaseNotes>
-    <Version>1.1.7</Version>
-    <AssemblyVersion>1.1.7.0</AssemblyVersion>
-    <FileVersion>1.1.7.0</FileVersion>
+    <PackageReleaseNotes>Now using EDennis 3.1.0-alpha</PackageReleaseNotes>
+    <Version>1.1.8-alpha</Version>
+    <AssemblyVersion>1.1.8.0</AssemblyVersion>
+    <FileVersion>1.1.8.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
     <PackageReference Include="MethodBoundaryAspect.Fody" Version="2.0.118" />
     <PackageReference Include="EDennis.MigrationsExtensions" Version="3.6.1" />
@@ -32,11 +33,6 @@
   <ItemGroup>
     <Content Remove="ProjectRoot\ConfigurationApi\**\*.*" />
     <EmbeddedResource Include="ProjectRoot\ConfigurationApi\**\*.*" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
   </ItemGroup>
 
   <ItemGroup>

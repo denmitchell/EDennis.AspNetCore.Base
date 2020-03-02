@@ -1,0 +1,106 @@
+﻿@page "/PersonDetail/{Id}"
+@page "/PersonDetail"
+@inherits PersonDetailBase
+
+@if (Person.Id != default) {
+    <h1>Details for @Person.FirstName @Person.LastName</h1>
+} else {
+    <h1>New Person Record</h1>
+}
+
+<div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="editSwitch"
+           @bind="@Editable">
+    <label class="custom-control-label" for="editSwitch">Edit this record</label>
+</div>
+
+<EditForm Model="Person" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    @if (Editable) {
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    }
+    <div class="form-group row">
+        <label for="id" class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-9">
+            <InputNumber id="id"
+                         readonly class="form-control-plaintext"
+                         @bind-Value="@Person.Id" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="firstName" class="col-sm-3 col-form-label">First name</label>
+        <div class="col-sm-9">
+            <InputText id="firstName"
+                       readonly=@(!Editable) class="@InputClass"
+                       @bind-Value="@Person.FirstName"
+                       @oninput="@(()=>Dirty=true)" />
+            @if (Editable) {
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(()=> Person.FirstName)" />
+            }
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lastName" class="col-sm-3 col-form-label">Last name</label>
+        <div class="col-sm-9">
+            <InputText id="lastName"
+                       readonly=@(!Editable) class="@InputClass"
+                       @bind-Value="@Person.LastName"
+                       @oninput="@(()=>Dirty=true)" />
+            @if (Editable) {
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(()=> Person.LastName)" />
+            }
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="dateOfBirth" class="col-sm-3 col-form-label">Date of birth</label>
+        <div class="col-sm-9">
+            <InputDate id="dateOfBirth"
+                       readonly=@(!Editable) class="@InputClass"
+                       @bind-Value="@Person.DateOfBirth"
+                       @oninput="@(()=>Dirty=true)" />
+            @if (Editable) {
+                <ValidationMessage class="offset-sm-3 col-sm-8" For="@(()=> Person.DateOfBirth)" />
+            }
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="sysUser" class="col-sm-3 col-form-label">Last saved by</label>
+        <div class="col-sm-9">
+            <InputText id="sysUser"
+                       readonly="readonly" class="form-control-plaintext"
+                       @bind-Value="@Person.SysUser" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="sysStart" class="col-sm-3 col-form-label">Last saved on</label>
+        <div class="col-sm-9">
+            <InputDate id="sysStart"
+                       readonly="readonly" class="form-control-plaintext"
+                       @bind-Value="@Person.SysStart" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="sysStart" class="col-sm-3 col-form-label">Addresses</label>
+        <div class="col-sm-9">
+            <CascadingValue Name="Editable" Value="@Editable">
+                <AddressList PersonId="@Person.Id"></AddressList>
+            </CascadingValue>
+        </div>
+    </div>
+    <button type="submit" class="btn @(Dirty ? "btn-primary" : "btn-outline-secondary") edit-btn @(Dirty ? "" : "disabled")"
+            disabled=@(!Dirty)>
+        Save
+    </button>
+    <button class="btn btn-primary edit-outline-btn"
+            @onclick="@Close">
+        @(!Dirty || !Editable ? "Close" : "Cancel")
+    </button>
+    <button class="btn @(Editable && Person.Id != default ? "btn-danger" : "btn-outline-secondary") @(Editable && Person.Id != default ? "" : "disabled")"
+            disabled=@(!Editable || Person.Id == default)
+            @onclick="@DeletePerson">
+        Delete
+    </button>
+</EditForm>
+@if (Saved) {
+    <div class="alert @StatusClass">@Message</div>
+}

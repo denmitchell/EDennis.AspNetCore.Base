@@ -5,12 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigurationApi.Lib" Version="1.1.7" />
-    <PackageReference Include="IdentityServer.Lib" Version="1.1.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
-    <ProjectReference Include="..\Hr.RepoApi.Lib\Hr.RepoApi.Lib.csproj" />
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
+    <PackageReference Include="ConfigurationApi.Lib" Version="1.1.8-alpha" />
+    <PackageReference Include="IdentityServer.Lib" Version="1.1.2-alpha" />
+    <PackageReference Include="Hr.RepoApi.Lib" Version="1.1.0-alpha" />
   </ItemGroup>
   <!--<ItemGroup>
     <Content Update="C:\Users\MitchellDenC\.nuget\packages\configurationapi.lib\1.0.9\contentFiles\any\netcoreapp3.1\ProjectRoot\ConfigurationApi\appsettings.Development.json">

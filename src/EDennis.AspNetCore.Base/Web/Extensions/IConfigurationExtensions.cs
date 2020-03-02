@@ -94,16 +94,6 @@ namespace EDennis.AspNetCore.Base.Web
         }
 
 
-        public static void RandomizePorts(this IConfiguration config, string projectName) {
-            Apis apis = new Apis();
-            config.GetSection("Apis").Bind(apis);
-            var apiKey = apis.FirstOrDefault(a => a.Value.ProjectName == projectName).Key;
-            var ports = PortManager.GetPorts().Result;
-            config[$"Apis:{apiKey}:HttpsPort"] = ports.HttpsPort.ToString();
-            config[$"Apis:{apiKey}:HttpPort"] = ports.HttpPort.ToString();
-        }
-
-
         public static string[] ToCommandLineArgs(this IConfiguration config) {
             List<string> args= new List<string>();
             var flattened = config.Flatten();

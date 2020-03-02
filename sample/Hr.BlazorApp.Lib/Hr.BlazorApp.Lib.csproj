@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\bootstrap\bootstrap.min.css" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\FONT-LICENSE" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\ICON-LICENSE" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\open-iconic\README.md" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\css\site.css" />
+    <Content Include="ProjectRoot\Hr.BlazorApp\wwwroot\favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
+  </ItemGroup>
+
+</Project>

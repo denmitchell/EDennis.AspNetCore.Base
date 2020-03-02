@@ -10,12 +10,13 @@
     <Authors>IdentityServer.Lib</Authors>
     <Product>IdentityServer.Lib</Product>
     <Company>IdentityServer.Lib</Company>
-    <Version>1.1.1</Version>
+    <Version>1.1.2-alpha</Version>
     <PackageReleaseNotes>Uses ConfigurationUtils</PackageReleaseNotes>
   </PropertyGroup>
 
 
   <ItemGroup>
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
     <PackageReference Include="IdentityServer4" Version="3.1.1" />
 
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.1" />
@@ -30,10 +31,6 @@
   <ItemGroup>
     <Content Remove="ProjectRoot\IdentityServer\**\*.*" />
     <EmbeddedResource Include="ProjectRoot\IdentityServer\**\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
   </ItemGroup>
 
 </Project>

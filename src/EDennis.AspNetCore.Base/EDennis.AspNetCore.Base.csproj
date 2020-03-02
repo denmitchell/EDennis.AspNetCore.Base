@@ -4,21 +4,21 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>library</OutputType>
     <IsPackable>true</IsPackable>
-    <Version>3.0.1</Version>
+    <Version>3.1.1-alpha</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Provides numerous helper classes for building and testing multi-tier ASP.NET Core Web Applications</Description>
+    <Description>Alpha version that still requires (a) updated code comments, (b) updated wiki documentation, and (c) completed sample solution</Description>
     <Authors>Dennis Mitchell</Authors>
     <Company>edennis.com</Company>
-    <Copyright>Dennis Mitchell @2019</Copyright>
+    <Copyright>Dennis Mitchell @2020</Copyright>
     <PackageProjectUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</PackageProjectUrl>
     <RepositoryUrl>https://github.com/denmitchell/EDennis.AspNetCore.Base</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
     <PackageIcon>icon.png</PackageIcon>
     <!--<PackageIconUrl>https://avatars0.githubusercontent.com/u/2938333?s=400&amp;amp;v=4</PackageIconUrl>-->
     <PackageTags>ASP.NET Core, EFCore, MVC, Testing, Api Launcher</PackageTags>
-    <PackageReleaseNotes>Update ProgramBase to include ProjectName abstract property</PackageReleaseNotes>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
-    <FileVersion>3.0.1.0</FileVersion>
+    <PackageReleaseNotes>Alpha version -- not for production yet</PackageReleaseNotes>
+    <AssemblyVersion>3.1.1</AssemblyVersion>
+    <FileVersion>3.1.1</FileVersion>
 
   </PropertyGroup>
 
@@ -37,10 +37,8 @@
 
   
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="4.4.0" />
     <PackageReference Include="ConfigCore" Version="2.0.0" />
     <PackageReference Include="Dapper" Version="2.0.30" />
-    <PackageReference Include="DevExpress.Xpo" Version="19.2.6" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
     <PackageReference Include="EDennis.MigrationsExtensions" Version="3.6.1" />
     <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.8.6" />

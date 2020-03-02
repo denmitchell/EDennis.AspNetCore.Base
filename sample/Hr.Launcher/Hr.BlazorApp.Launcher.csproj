@@ -6,10 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ConfigurationApi.Lib" Version="1.1.8-alpha" />
+    <PackageReference Include="Hr.RepoApi.Lib" Version="1.1.0-alpha" />
+    <PackageReference Include="IdentityServer.Lib" Version="1.1.2-alpha" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
-    <ProjectReference Include="..\Hr.Api.Lib\Hr.Api.Lib.csproj" />
-    <ProjectReference Include="..\Hr.RazorApp.Lib\Hr.RazorApp.Lib.csproj" />
-    <ProjectReference Include="..\IdentityServer.Lib\IdentityServer.Lib.csproj" />
+    <ProjectReference Include="..\Hr.BlazorApp.Lib\Hr.BlazorApp.Lib.csproj" />
   </ItemGroup>
 
 </Project>

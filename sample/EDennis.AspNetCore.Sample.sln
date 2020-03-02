@@ -3,16 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.Api.Launcher", "Hr.Launcher\Hr.Api.Launcher.csproj", "{F883FF32-8C93-4D83-8E23-30BAD383224A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp.Lib", "Hr.RazorApp.Lib\Hr.RazorApp.Lib.csproj", "{5D5DE738-7638-4FA5-8D5B-100F47D85011}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.RazorApp", "Hr.RazorApp\Hr.RazorApp.csproj", "{20A9521E-4EB4-495C-962F-488B7F6BCDBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.BlazorApp.Launcher", "Hr.Launcher\Hr.BlazorApp.Launcher.csproj", "{F883FF32-8C93-4D83-8E23-30BAD383224A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{0D3BCC3D-8F63-4E30-BF94-9B5106E3B3B8}"
-	ProjectSection(SolutionItems) = preProject
-		EDennis.AspNetCore.Base.3.0.0.nupkg = EDennis.AspNetCore.Base.3.0.0.nupkg
-	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hr.BlazorApp", "Hr.BlazorApp\Hr.BlazorApp.csproj", "{03519BB4-5288-4345-9B3F-E16E24704B87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hr.BlazorApp.Lib", "Hr.BlazorApp.Lib\Hr.BlazorApp.Lib.csproj", "{931E23B9-2536-4037-A9EC-4365F2461B34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,14 +21,14 @@ Global
 		{F883FF32-8C93-4D83-8E23-30BAD383224A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F883FF32-8C93-4D83-8E23-30BAD383224A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F883FF32-8C93-4D83-8E23-30BAD383224A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D5DE738-7638-4FA5-8D5B-100F47D85011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D5DE738-7638-4FA5-8D5B-100F47D85011}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D5DE738-7638-4FA5-8D5B-100F47D85011}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D5DE738-7638-4FA5-8D5B-100F47D85011}.Release|Any CPU.Build.0 = Release|Any CPU
-		{20A9521E-4EB4-495C-962F-488B7F6BCDBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20A9521E-4EB4-495C-962F-488B7F6BCDBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20A9521E-4EB4-495C-962F-488B7F6BCDBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20A9521E-4EB4-495C-962F-488B7F6BCDBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03519BB4-5288-4345-9B3F-E16E24704B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03519BB4-5288-4345-9B3F-E16E24704B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03519BB4-5288-4345-9B3F-E16E24704B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03519BB4-5288-4345-9B3F-E16E24704B87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{931E23B9-2536-4037-A9EC-4365F2461B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{931E23B9-2536-4037-A9EC-4365F2461B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{931E23B9-2536-4037-A9EC-4365F2461B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{931E23B9-2536-4037-A9EC-4365F2461B34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,14 +6,17 @@
     <IsPackable>true</IsPackable>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Hr.Api.Lib</PackageId>
-    <Authors>Hr.Api.Lib</Authors>
-    <Product>Hr.Api.Lib</Product>
+    <PackageId>Hr.RepoApi.Lib</PackageId>
+    <Authors>Hr.RepoApi.Lib</Authors>
+    <Product>Hr.RepoApi.Lib</Product>
+    <Version>1.1.0-alpha</Version>
+    <PackageReleaseNotes>initial release</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.5" />
+    <PackageReference Include="Hr.RepoApi.Model.Lib" Version="1.0.7-alpha" />
 
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
@@ -46,11 +49,6 @@
   <ItemGroup>
     <Folder Include="MigrationsSql\PreUp\" />
     <Folder Include="MigrationsSql\TemporalInserts\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
-    <ProjectReference Include="..\Hr.RepoApi.Model.Lib\Hr.RepoApi.Model.Lib.csproj" />
   </ItemGroup>
 
 </Project>

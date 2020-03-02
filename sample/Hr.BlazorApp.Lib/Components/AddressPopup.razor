@@ -1,0 +1,67 @@
+﻿@inherits AddressPopupBase
+<div class="modal d-block" id="editAddress" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titleCaption">Edit Address</h5>
+                <button type="button" class="close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@Address" Context="formContext" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group">
+                        <label for="streetAddress">Street address:</label>
+                        <InputText id="streetAddress" class="form-control"
+                                   placeholder="Enter street address"
+                                   @bind-Value="Address.StreetAddress"
+                                   @oninput="@(()=>Dirty=true)" />
+                        <ValidationMessage For="@(()=> Address.StreetAddress)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <InputText id="city" class="form-control"
+                                   placeholder="Enter city"
+                                   @bind-Value="Address.City"
+                                   @oninput="@(()=>Dirty=true)" />
+                        <ValidationMessage For="@(()=> Address.City)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State:</label>
+                        <InputSelect id="state" class="form-control"
+                                     @bind-Value="Address.State"
+                                     @oninput="@(()=>Dirty=true)">
+                            @foreach (var state in States) {
+                                <option value="@state.Code">@state.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(()=> Address.State)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode">Postal Code:</label>
+                        <InputText id="postalCode" class="form-control"
+                                   placeholder="Enter postal code."
+                                   @bind-Value="Address.PostalCode"
+                                   @oninput="@(()=>Dirty=true)" />
+                        <ValidationMessage For="@(()=> Address.PostalCode)" />
+                    </div>
+                    <button type="submit" class="btn @(Dirty ? "btn-primary" : "btn-outline-secondary") edit-btn @(Dirty ? "" : "disabled")"
+                            disabled=@(!Dirty)>
+                        Save
+                    </button>
+                    <button class="btn btn-primary edit-outline-btn" @onclick="@Close">
+                        @(!Dirty ? "Close" : "Cancel")
+                    </button>
+                    <button class="btn @(Address.Id != default ? "btn-danger" : "btn-outline-secondary") @(Address.Id != default ? "" : "disabled")"
+                            disabled=@(Address.Id == default)
+                            @onclick="@DeleteAddress">
+                        Delete
+                    </button>
+
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>

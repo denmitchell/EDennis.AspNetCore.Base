@@ -17,7 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ConfigurationApi.Lib\ConfigurationApi.Lib.csproj" />
   </ItemGroup>
 

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EDennis.AspNetCore.Base" Version="3.1.1-alpha" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
     <PackageReference Include="EDennis.NetCoreTestingUtilities" Version="3.8.6" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
@@ -22,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\EDennis.AspNetCore.Base\EDennis.AspNetCore.Base.csproj" />
     <ProjectReference Include="..\Hr.RepoApi.Launcher\Hr.RepoApi.Launcher.csproj" />
     <ProjectReference Include="..\Hr.RepoApi.Lib\Hr.RepoApi.Lib.csproj" />
     <ProjectReference Include="..\Hr.RepoApi.Model.Lib\Hr.RepoApi.Model.Lib.csproj" />

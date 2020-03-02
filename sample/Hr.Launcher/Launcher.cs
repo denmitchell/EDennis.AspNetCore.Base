@@ -1,8 +1,9 @@
 ﻿using EDennis.AspNetCore.Base.Web;
 using System;
-using A = Hr.Api.Lib;
+using C = ConfigurationApi.Lib;
 using I = IdentityServer.Lib;
-using R = Hr.RazorApp.Lib;
+using A = Hr.RepoApi.Lib;
+using B = Hr.BlazorApp.Lib;
 
 namespace Hr.Launcher {
     public class Launcher : ILauncher {
@@ -24,20 +25,20 @@ namespace Hr.Launcher {
         /// <param name="openBrowser"></param>
         public void Launch(string[] args, bool openBrowser = false) {
 
-            var is4 = new I.Program().Run(args); //async. launch IdentityServer.Lib 
-            var api = new A.Program().Run(args); //async. launch Hr.Api.Lib
+            var cApi = new C.Program().Run(args);
+            ProgramBase.CanPingAsync(cApi);
 
-            //conditionally launch the User app (based upon commandline arg)
-            //(see launchSettings.json for how to pass commandline arguments)
-            if (args.ToCommandLineArgs()["entryPoint"]
-                    .Equals("UserApp", StringComparison.Ordinal)) {
-                var app = new R.Program().Run(args);
-                ProgramBase.CanPingAsync(is4, api, app);
-                ProgramBase.OpenBrowser("https://localhost:44307");
-            } else {
-                ProgramBase.CanPingAsync(is4, api);
-                ProgramBase.OpenBrowser("https://localhost:44319/swagger");
-            }
+            var iApi = new I.Program().Run(args);
+            ProgramBase.CanPingAsync(iApi);
+
+            var aApi = new A.Program().Run(args);
+            ProgramBase.CanPingAsync(aApi);
+
+            var bApi = new B.Program().Run(args);
+            ProgramBase.CanPingAsync(bApi);
+
+
+            ProgramBase.OpenBrowser("https://localhost:44357");
         }
 
     }
