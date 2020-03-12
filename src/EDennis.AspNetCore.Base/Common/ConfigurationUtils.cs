@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -13,6 +14,10 @@ namespace EDennis.AspNetCore.Base {
             Assembly projectAssembly,
             ConfigurationType configurationType = ConfigurationType.PhysicalFiles,
             string[] args = null) {
+
+            //TODO: Add some logging or exception-throwing to assist
+            //clients with connectionString = null error
+            // -- e.g., check path to appsettings file
 
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
             var apiUrl = "ConfigurationApiUrl";
